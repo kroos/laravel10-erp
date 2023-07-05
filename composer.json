@@ -13,9 +13,13 @@
         "laravel/tinker": "^2.8"
     },
     "require-dev": {
+        "crabbly/fpdf-laravel": "^1.0",
         "fakerphp/faker": "^1.9.1",
+        "intervention/image": "^2.7",
+        "kylekatarnls/laravel-carbon-2": "^1.0",
         "laravel/pint": "^1.0",
         "laravel/sail": "^1.18",
+        "maatwebsite/excel": "^3.1",
         "mockery/mockery": "^1.4.4",
         "nunomaduro/collision": "^7.0",
         "phpunit/phpunit": "^10.1",
