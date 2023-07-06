@@ -9,13 +9,16 @@ use Illuminate\Notifications\Notifiable;
 // custom email reset password in 
 // https://laracasts.com/discuss/channels/laravel/how-to-override-the-tomail-function-in-illuminateauthnotificationsresetpasswordphp
 use App\Notifications\ResetPassword;
+
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Login extends Authenticatable // implements MustVerifyEmail
 {
 	protected $connection = 'sqlite';
 	protected $table = 'logins';
 	use HasApiTokens, HasFactory, Notifiable;
+	use SoftDeletes;
 
 	 /**
 	 * The attributes that are mass assignable.
