@@ -1,5 +1,7 @@
+/* animate.css */
+@import "animate.css/source/animate.css";
+/* @import "select2-bootstrap-5-theme/src/select2-bootstrap-5-theme.css"; */
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-@import 'datatables.net-dt';

@@ -1,0 +1,15 @@
+$fa-font-path: "@fortawesome/fontawesome-free/webfonts";
+// Font Awesome
+@import "@fortawesome/fontawesome-free/scss/fontawesome.scss";
+@import "@fortawesome/fontawesome-free/scss/solid.scss";
+@import "@fortawesome/fontawesome-free/scss/brands.scss";
+@import "@fortawesome/fontawesome-free/scss/regular.scss";
+
+// material design font mdi/font
+@import "@mdi/font/scss/materialdesignicons.scss";
+
+// pretty checkbox
+@import "pretty-checkbox/src/pretty-checkbox.scss";
+
+// select2 bootstrap5 theme
+// @import "select2-bootstrap-5-theme/src/select2-bootstrap-5-theme.scss";
