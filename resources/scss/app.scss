@@ -1,12 +1,12 @@
 // bootstrap 5
-@import "../../node_modules/bootstrap/scss/bootstrap.scss";
-@import "../../node_modules/bootstrap/scss/bootstrap-utilities.scss";
-@import "../../node_modules/bootstrap/scss/bootstrap-grid.scss";
-@import "../../node_modules/bootstrap/scss/bootstrap-reboot.scss";
-@import "../../node_modules/bootstrap-icons/font/bootstrap-icons.scss";
+// @import "../../node_modules/bootstrap/scss/bootstrap.scss";
+// @import "../../node_modules/bootstrap/scss/bootstrap-utilities.scss";
+// @import "../../node_modules/bootstrap/scss/bootstrap-grid.scss";
+// @import "../../node_modules/bootstrap/scss/bootstrap-reboot.scss";
+// @import "../../node_modules/bootstrap-icons/font/bootstrap-icons.scss";
 
 // Font Awesome
-$fa-font-path: "@fortawesome/fontawesome-free/webfonts";
+$fa-font-path: "../webfonts";
 @import "../../node_modules/@fortawesome/fontawesome-free/scss/fontawesome.scss";
 @import "../../node_modules/@fortawesome/fontawesome-free/scss/solid.scss";
 @import "../../node_modules/@fortawesome/fontawesome-free/scss/brands.scss";
@@ -23,4 +23,7 @@ $fa-font-path: "@fortawesome/fontawesome-free/webfonts";
 @import "../../node_modules/sweetalert2/src/variables.scss";
 
 // select2 bootstrap5 theme
+@import "../../node_modules/select2/src/scss/core.scss";
+@import "../../node_modules/select2/src/scss/theme/default/layout.scss";
 // @import "../../node_modules/select2-bootstrap-5-theme/src/select2-bootstrap-5-theme.scss";
+// @import "../../node_modules/select2-theme-bootstrap5/src/select2-bootstrap.scss"

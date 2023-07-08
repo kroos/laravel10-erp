@@ -1,5 +1,13 @@
+@import url('https://fonts.googleapis.com/css?family=Playfair&#43;Display:700,900&amp;display=swap');
+
 /* animate.css */
 @import "../../node_modules/animate.css/source/animate.css";
+
+/* bootstrap5 */
+@import "../../node_modules/bootstrap/dist/css/bootstrap.css";
+@import "../../node_modules/bootstrap/dist/css/bootstrap-grid.css";
+@import "../../node_modules/bootstrap/dist/css/bootstrap-reboot.css";
+@import "../../node_modules/bootstrap/dist/css/bootstrap-utilities.css";
 
 @import "../../node_modules/datatables.net-bs5/css/dataTables.bootstrap5.css";
 @import "../../node_modules/datatables.net-colreorder-bs5/css/colReorder.bootstrap5.css";
@@ -9,16 +17,12 @@
 @import "../../node_modules/@claviska/jquery-minicolors/jquery.minicolors.css";
 @import "../../node_modules/@mdi/font/css/materialdesignicons.css";
 
-@import "../../node_modules/select2/dist/css/select2.css";
-
 @import "../../node_modules/gijgo/css/gijgo.css";
 
 @import "../../node_modules/jquery-ui/themes/base/core.css";
 @import "../../node_modules/jquery-ui/themes/base/all.css";
 
-/* @tailwind base;
-@tailwind components;
-@tailwind utilities; */
+@import "./bootstrapValidator4/css/bootstrapValidator.css";
 
 /* for template */
 .bd-placeholder-img {
@@ -84,3 +88,5 @@
 .bd-mode-toggle {
     z-index: 1500;
 }
+
+@import "./blog.css";
