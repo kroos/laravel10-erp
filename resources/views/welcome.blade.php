@@ -10,7 +10,11 @@
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,600&display=swap" rel="stylesheet" />
 
-        @vite(['resources/css/app.css', 'resources/scss/app.scss'])
+        {{-- CSS Scripts --}}
+        @vite([
+            'resources/css/app.css',
+            'resources/scss/app.scss',
+        ])
 
     </head>
     <body class="antialiased">
@@ -55,8 +59,20 @@
             </div>
         </div>
     </body>
-    @vite(['resources/js/app.js'])
-    <script>
+        @vite([
+            'node_modules/jquery/dist/jquery.js',
+            'resources/js/app.js',
+            'node_modules/jquery-chained/jquery.chained.js',
+            'node_modules/jquery-chained/jquery.chained.remote.js',
+            'node_modules/jquery-ui/dist/jquery-ui.js',
+        ])
 
+    <script type="module">
+        jQuery.noConflict ();
+        (function($){
+            $(document).ready(function(){
+    console.log("Hello world!");
+            });
+        })(jQuery);
     </script>
 </html>

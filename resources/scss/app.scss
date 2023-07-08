@@ -1,15 +1,26 @@
-$fa-font-path: "@fortawesome/fontawesome-free/webfonts";
+// bootstrap 5
+@import "../../node_modules/bootstrap/scss/bootstrap.scss";
+@import "../../node_modules/bootstrap/scss/bootstrap-utilities.scss";
+@import "../../node_modules/bootstrap/scss/bootstrap-grid.scss";
+@import "../../node_modules/bootstrap/scss/bootstrap-reboot.scss";
+@import "../../node_modules/bootstrap-icons/font/bootstrap-icons.scss";
+
 // Font Awesome
-@import "@fortawesome/fontawesome-free/scss/fontawesome.scss";
-@import "@fortawesome/fontawesome-free/scss/solid.scss";
-@import "@fortawesome/fontawesome-free/scss/brands.scss";
-@import "@fortawesome/fontawesome-free/scss/regular.scss";
+$fa-font-path: "@fortawesome/fontawesome-free/webfonts";
+@import "../../node_modules/@fortawesome/fontawesome-free/scss/fontawesome.scss";
+@import "../../node_modules/@fortawesome/fontawesome-free/scss/solid.scss";
+@import "../../node_modules/@fortawesome/fontawesome-free/scss/brands.scss";
+@import "../../node_modules/@fortawesome/fontawesome-free/scss/regular.scss";
 
 // material design font mdi/font
-@import "@mdi/font/scss/materialdesignicons.scss";
+@import "../../node_modules/@mdi/font/scss/materialdesignicons.scss";
 
 // pretty checkbox
-@import "pretty-checkbox/src/pretty-checkbox.scss";
+@import "../../node_modules/pretty-checkbox/src/pretty-checkbox.scss";
+
+
+@import "../../node_modules/sweetalert2/src/sweetalert2.scss";
+@import "../../node_modules/sweetalert2/src/variables.scss";
 
 // select2 bootstrap5 theme
-// @import "select2-bootstrap-5-theme/src/select2-bootstrap-5-theme.scss";
+// @import "../../node_modules/select2-bootstrap-5-theme/src/select2-bootstrap-5-theme.scss";
