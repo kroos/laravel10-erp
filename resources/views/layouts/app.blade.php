@@ -121,7 +121,9 @@
 										<li><a class="dropdown-item" href="#">Apply Leave</a></li>
 										<form method="POST" action="{{ route('logout') }}">
 											@csrf
-											<li><x-responsive-nav-link :href="route('logout')" class="dropdown-item" onclick="event.preventDefault(); this.closest('form').submit();">Logout</x-responsive-nav-link></li>
+											<li>
+												<x-responsive-nav-link :href="route('logout')" class="dropdown-item" onclick="event.preventDefault(); this.closest('form').submit();">Logout</x-responsive-nav-link>
+											</li>
 										</form>
 									</ul>
 								</div>
@@ -418,13 +420,13 @@
 	</footer>
 </body>
 <script type="text/javascript" src="{{ asset('js/app.js') }}"></script>
-<script src="{{ asset('js/ckeditor/ckeditor.js') }}"></script>
-<script src="{{ asset('js/ckeditor/adapters/jquery.js') }}"></script>
+<script type="text/javascript" src="{{ asset('js/ckeditor/ckeditor.js') }}"></script>
+<script type="text/javascript" src="{{ asset('js/ckeditor/adapters/jquery.js') }}"></script>
 {{-- <script type="module" src="js/ckeditor/ckeditor.js"></script>
 <script type="module" src="js/ckeditor/adapters/jquery.js"></script>
 <script type="module" src="js/datetime-moment.js" ></script>
 <script type="module" src="js/dataTable-any-number.js" ></script> --}}
-<script type="module">
+<script type="text/javascript" >
 	jQuery.noConflict ();
 	(function($){
 		$(document).ready(function(){

@@ -1,48 +1,44 @@
-<x-guest-layout>
-    <!-- Session Status -->
-    <x-auth-session-status class="mb-4" :status="session('status')" />
+@extends('layouts.app')
 
-    <form method="POST" action="{{ route('login') }}">
-        @csrf
+@section('content')
 
-        <!-- Email Address -->
-        <div>
-            <x-input-label for="email" :value="__('Username')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="username" :value="old('username')" required autofocus autocomplete="username" />
-            <x-input-error :messages="$errors->get('username')" class="mt-2" />
+{!! Form::open(['route' => ['login'], 'id' => 'form', 'autocomplete' => 'off', 'files' => true]) !!}
+<div class="mb-3 row">
+    <div class="form-group row {{ $errors->has('username') ? 'has-error' : '' }}">
+        {!! Form::label('username', 'Username : ', ['class' => 'col-sm-2 col-form-label col-form-label-sm']) !!}
+        <div class="col-sm-10">
+            {{ Form::text('username', @$value, ['class' => 'form-control form-control-sm', 'id' => 'username', 'placeholder' => 'Username']) }}
         </div>
-
-        <!-- Password -->
-        <div class="mt-4">
-            <x-input-label for="password" :value="__('Password')" />
-
-            <x-text-input id="password" class="block mt-1 w-full"
-                            type="password"
-                            name="password"
-                            required autocomplete="current-password" />
-
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
+    </div>
+</div>
+<div class="mb-3 row">
+    <div class="form-group row {{ $errors->has('password') ? 'has-error' : '' }}">
+        {!! Form::label('password', 'Password : ', ['class' => 'col-sm-2 col-form-label col-form-label-sm']) !!}
+        <div class="col-sm-10">
+            {{ Form::password('password', ['class' => 'form-control form-control-sm', 'id' => 'password', 'placeholder' => 'Password']) }}
         </div>
-
-        <!-- Remember Me -->
-        <div class="block mt-4">
-            <label for="remember_me" class="inline-flex items-center">
-                <input id="remember_me" type="checkbox" class="rounded dark:bg-gray-900 border-gray-300 dark:border-gray-700 text-indigo-600 shadow-sm focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:focus:ring-offset-gray-800" name="remember">
-                <span class="ml-2 text-sm text-gray-600 dark:text-gray-400">{{ __('Remember me') }}</span>
-            </label>
+    </div>
+</div>
+<div class="mb-3 row">
+    <div class="pretty p-svg p-round p-plain p-jelly">
+        {{ Form::checkbox('remember', @$value, false, ['class' => 'form-check-input form-check-input-sm', 'id' => 'remember_me']) }}
+        <div class="state p-success">
+            <span class="svg" uk-icon="icon: check"></span>
+            <label for="remember_me">{{ __('Remember me') }}</label>
         </div>
+    </div>
+</div>
+{!! Form::submit('Login', ['class' => 'btn btn-sm btn-outline-secondary']) !!}
+{!! Form::close(); !!}
 
-        <div class="flex items-center justify-end mt-4">
-            @if (Route::has('password.request'))
-                <a class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800" href="{{ route('password.request') }}">
-                    {{ __('Forgot your password?') }}
-                </a>
-            @endif
+<div class="flex items-center justify-end mt-4">
+    @if (Route::has('password.request'))
+        <a class="btn btn-sm btn-outline-secondary" href="{{ route('password.request') }}">
+            {{ __('Forgot your password?') }}
+        </a>
+    @endif
+</div>
+@endsection
 
-            {{-- <button class="btn btn-sm btn-outline-secondary" type="button"> --}}
-            <x-primary-button class="btn btn-sm btn-outline-secondary">
-                {{ __('Log in') }}
-            </x-primary-button>
-        </div>
-    </form>
-</x-guest-layout>
+@section('js')
+@endsection

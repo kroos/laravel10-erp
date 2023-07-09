@@ -1,25 +1,19 @@
-<x-guest-layout>
-    <div class="mb-4 text-sm text-gray-600 dark:text-gray-400">
-        {{ __('Forgot your password? No problem. Just let us know your email address and we will email you a password reset link that will allow you to choose a new one.') }}
+@extends('layouts.app')
+@section('content')
+<div class="mb-3 row text-sm">
+    {{ __('Forgot your password? No problem. Just let us know your username and we will email you a password reset link that will allow you to choose a new one.') }}
+</div>
+{{ Form::open(['route' => ['password.email'], 'id' => 'form', 'autocomplete' => 'off', 'files' => true]) }}
+<div class="mb-3 row">
+    <div class="form-group row {{ $errors->has('username') ? 'has-error' : '' }}">
+        {!! Form::label('username', 'Username : ', ['class' => 'col-sm-2 col-form-label col-form-label-sm']) !!}
+        <div class="col-sm-10">
+            {{ Form::text('username', @$value, ['class' => 'form-control form-control-sm', 'id' => 'username', 'placeholder' => 'Username']) }}
+        </div>
     </div>
-
-    <!-- Session Status -->
-    <x-auth-session-status class="mb-4" :status="session('status')" />
-
-    <form method="POST" action="{{ route('password.email') }}">
-        @csrf
-
-        <!-- Email Address -->
-        <div>
-            <x-input-label for="email" :value="__('Username')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="username" :value="old('username')" required autofocus />
-            <x-input-error :messages="$errors->get('username')" class="mt-2" />
-        </div>
-
-        <div class="flex items-center justify-end mt-4">
-            <x-primary-button class="btn btn-sm btn-outline-secondary">
-                {{ __('Email Password Reset Link') }}
-            </x-primary-button>
-        </div>
-    </form>
-</x-guest-layout>
+</div>
+{!! Form::submit('Email Password Reset Link', ['class' => 'btn btn-sm btn-outline-secondary']) !!}
+{{ Form::close() }}
+@endsection
+@section('js')
+@endsection
