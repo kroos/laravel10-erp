@@ -23,7 +23,7 @@
     <div class="pretty p-svg p-round p-plain p-jelly">
         {{ Form::checkbox('remember', @$value, false, ['class' => 'form-check-input form-check-input-sm', 'id' => 'remember_me']) }}
         <div class="state p-success">
-            <span class="svg" uk-icon="icon: check"></span>
+            <span class="svg"><i class="bi bi-check"></i></span>
             <label for="remember_me">{{ __('Remember me') }}</label>
         </div>
     </div>

@@ -30,7 +30,7 @@ Route::middleware('auth')->group(function () {
 
 #############################################################################################
 Route::resources([
-    'staff' => 'App\Http\Controllers\ProfileController::class',
+    'staff' => 'App\Http\Controllers\ProfileController',
 ]);
 
 

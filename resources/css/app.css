@@ -9,6 +9,8 @@
 @import "../../node_modules/bootstrap/dist/css/bootstrap-reboot.css";
 @import "../../node_modules/bootstrap/dist/css/bootstrap-utilities.css";
 
+@import "../../node_modules/bootstrap-icons/font/bootstrap-icons.css";
+
 @import "../../node_modules/datatables.net-bs5/css/dataTables.bootstrap5.css";
 @import "../../node_modules/datatables.net-colreorder-bs5/css/colReorder.bootstrap5.css";
 @import "../../node_modules/datatables.net-fixedheader-bs5/css/fixedHeader.bootstrap5.css";
