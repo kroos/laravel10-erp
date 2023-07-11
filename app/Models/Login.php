@@ -6,19 +6,26 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
+
+use Illuminate\Database\Eloquent\SoftDeletes;
+// use Illuminate\Database\Eloquent\Relations\HasOne;
+// use Illuminate\Database\Eloquent\Relations\HasOneThrough;
+// use Illuminate\Database\Eloquent\Relations\HasOneOrMany;
+// use Illuminate\Database\Eloquent\Relations\HasMany;
+// use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+// use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+
 // custom email reset password in 
 // https://laracasts.com/discuss/channels/laravel/how-to-override-the-tomail-function-in-illuminateauthnotificationsresetpasswordphp
 use App\Notifications\ResetPassword;
 
-use Laravel\Sanctum\HasApiTokens;
-use Illuminate\Database\Eloquent\SoftDeletes;
-
 class Login extends Authenticatable // implements MustVerifyEmail
 {
-	protected $connection = 'sqlite';
+	protected $connection = 'mysql';
 	protected $table = 'logins';
-	use HasApiTokens, HasFactory, Notifiable;
-	use SoftDeletes;
+	use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
 
 	 /**
 	 * The attributes that are mass assignable.
@@ -85,22 +92,26 @@ class Login extends Authenticatable // implements MustVerifyEmail
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
-	public function belongtouser()
-	{
-		return $this->belongsTo('App\Models\User', 'user_id');
-	}
-
-	/////////////////////////////////////////////////////////////////////////////////////////////////////
 	// for email Notifiable
 	// https://laravel.com/docs/7.x/notifications
 	public function routeNotificationForMail($notification)
 	{
 		// Return email address only...
 		// return $this->belongtouser->email;
-
-		// Return name and email address...
 		return [$this->belongtouser->email => $this->belongtouser->name];
 	}
+	
+	/////////////////////////////////////////////////////////////////////////////////////////////////////
+	// db relation hasMany/hasOne
+
+	/////////////////////////////////////////////////////////////////////////////////////////////////////
+	// db relation belongsTo
+	public function belongtouser(): BelongsTo
+	{
+		return $this->belongsTo(Staff::class, 'staff_id');
+	}
+	
+	/////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
 	// all acl will be done here

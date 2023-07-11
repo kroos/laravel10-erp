@@ -33,7 +33,8 @@
 								<div class="dropdown">
 									<a href="{{ url('/dashboard') }}" class="btn btn-sm btn-outline-secondary dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">{{ Auth::user()->belongtouser->name }}</a>
 									<ul class="dropdown-menu">
-										<li><a class="dropdown-item" href="{{ route('profile.edit') }}">Profile</a></li>
+										<li><a class="dropdown-item" href="#">Profile</a></li>
+										<li><a class="dropdown-item" href="#">Notifications</a></li>
 										<li><a class="dropdown-item" href="#">Apply Leave</a></li>
 										<form method="POST" action="{{ route('logout') }}">
 											@csrf
@@ -109,6 +110,18 @@
 
 				<h4 class="pb-4 mb-4 fst-italic border-bottom text-center">
 					{{ config('app.name') }}
+					{{-- <i class="bi bi-0-square"></i>
+					<i class="form-control fa-brands fa-google"></i>
+					<span class="mdi mdi-access-point-check"></span> --}}
+					<noscript>
+						<style type="text/css">
+							.pagecontainer {display:none;}
+						</style>
+						<div class="noscriptmsg text-danger">
+							This page requires JavaScript. Please enable it.  
+							<meta http-equiv="refresh" content="0; url={{ url('/') }}" />
+						</div>
+					</noscript>
 				</h4>
 
 				@if(Session::has('flash_message'))

@@ -28,6 +28,10 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+Route::resources([
+    'profile' => 'App\Http\Controllers\Profile',
+]);
+
 #############################################################################################
 Route::resources([
     'staff' => 'App\Http\Controllers\ProfileController',

@@ -2,7 +2,7 @@
 
 @section('content')
 
-{!! Form::open(['route' => ['login'], 'id' => 'form', 'autocomplete' => 'off', 'files' => true]) !!}
+{!! Form::open(['route' => ['login'], 'class' => 'needs-validation','id' => 'form', 'autocomplete' => 'off', 'files' => true]) !!}
 <div class="mb-3 row">
     <div class="form-group row {{ $errors->has('username') ? 'has-error' : '' }}">
         {!! Form::label('username', 'Username : ', ['class' => 'col-sm-2 col-form-label col-form-label-sm']) !!}
@@ -41,4 +41,48 @@
 @endsection
 
 @section('js')
+/////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////////
+// validator
+$(document).ready(function() {
+	$('#form').bootstrapValidator({
+		feedbackIcons: {
+			valid: 'fa-light fa-check',
+			invalid: 'fa-sharp fa-light fa-xmark',
+			validating: 'fa-duotone fa-spinner-third'
+		},
+		fields: {
+			username: {
+				validators: {
+					notEmpty: {
+						message: 'Please insert username'
+					},
+				}
+			},
+			password: {
+				validators: {
+					notEmpty : {
+						message: 'Please insert password'
+					},
+				}
+			},
+		}
+	})
+	.find('[name="reason"]')
+	// .ckeditor()
+	// .editor
+		.on('change', function() {
+			// Revalidate the bio field
+		$('#form').bootstrapValidator('revalidateField', 'reason');
+		// console.log($('#reason').val());
+	})
+	;
+});
+
+/////////////////////////////////////////////////////////////////////////////////////////
 @endsection

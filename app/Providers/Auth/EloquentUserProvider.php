@@ -35,7 +35,7 @@ class EloquentUserProvider extends UserProvider
         // dd($plain, $credentials['password']);
         // this is for plain text user password
         // dd($plain, $user->getAuthPassword());
-        if ($plain == $user->getAuthPassword() && $user->status == 1) {
+        if ($plain == $user->getAuthPassword() && $user->active == 1) {
             return true;
         } else {
             return false;
