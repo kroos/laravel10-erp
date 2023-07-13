@@ -21,7 +21,7 @@
 					{{-- <a class="link-secondary" href="#">Subscribe</a> --}}
 				</div>
 				<div class="col-4 text-center">
-					<a class="blog-header-logo text-body-emphasis text-decoration-none" href="/">{!! config('app.name') !!}</a>
+					<a class="blog-header-logo text-body-emphasis text-decoration-none" href="{{ url('/') }}">{!! config('app.name') !!}</a>
 				</div>
 				<div class="col-4 d-flex justify-content-end align-items-center">
 					{{-- <a class="link-secondary" href="#" aria-label="Search">
@@ -342,7 +342,7 @@
 	</main>
 
 	<footer class="py-5 text-center text-body-secondary bg-body-tertiary">
-		<p>{{ config('app.name') }} built from <a href="https://getbootstrap.com/">Bootstrap</a> by <a href="">IT Department</a>.</p>
+		<p>{{ config('app.name') }} built from <a href="https://getbootstrap.com/">Bootstrap</a> by <a href="{{ url('/') }}">IT Department</a>.</p>
 	</footer>
 </body>
 <script type="text/javascript" src="{{ asset('js/app.js') }}"></script>
