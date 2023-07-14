@@ -31,11 +31,11 @@
 						<div class="sm:fixed sm:top-0 sm:right-0 p-6 text-right z-10">
 							@auth
 								<div class="dropdown">
-									<a href="{{ url('/dashboard') }}" class="btn btn-sm btn-outline-secondary dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">{{ Auth::user()->belongtouser->name }}</a>
+									<a href="{{ url('/dashboard') }}" class="btn btn-sm btn-outline-secondary dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">{{ Auth::user()->belongtostaff->name }}</a>
 									<ul class="dropdown-menu">
 										<li><a class="dropdown-item" href="#">Profile</a></li>
 										<li><a class="dropdown-item" href="#">Notifications</a></li>
-										<li><a class="dropdown-item" href="#">Apply Leave</a></li>
+										<li><a class="dropdown-item" href="{{ route('leave.index') }}">Apply Leave</a></li>
 										<form method="POST" action="{{ route('logout') }}">
 											@csrf
 											<li>

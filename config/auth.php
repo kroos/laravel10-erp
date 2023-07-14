@@ -72,6 +72,12 @@ return [
         //     'driver' => 'database',
         //     'table' => 'users',
         // ],
+
+        'forgotpassprovider' => [
+            'driver' => 'eloquent',
+            'model' => App\Model\Staff::class,
+            'table' => 'staffs',
+        ],
     ],
 
     /*

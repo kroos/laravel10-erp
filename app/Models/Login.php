@@ -61,17 +61,27 @@ class Login extends Authenticatable // implements MustVerifyEmail
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	// public function getAuthIdentifierName()
-	// {
-	// 	return 'c_id';
-	// }
+	public function getAuthIdentifierName()
+	{
+		return 'username';
+	}
 
 	// for password
-	// public function getAuthPassword()
-	// {
-	// 	return $this->c_headera;
-	// }
+	public function getAuthPassword()
+	{
+		return $this->password;
+	}
 
+	/////////////////////////////////////////////////////////////////////////////////////////////////////
+	// db relation hasMany/hasOne
+
+	/////////////////////////////////////////////////////////////////////////////////////////////////////
+	// db relation belongsTo
+	public function belongtostaff(): BelongsTo
+	{
+		return $this->belongsTo(\App\Models\Staff::class, 'staff_id');
+	}
+	
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
 	// custom email reset password in 
 	// https://laracasts.com/discuss/channels/laravel/how-to-override-the-tomail-function-in-illuminateauthnotificationsresetpasswordphp
@@ -88,7 +98,8 @@ class Login extends Authenticatable // implements MustVerifyEmail
      */
 	public function getEmailForPasswordReset()
 	{
-		return $this->belongtouser->email;
+		return $this->belongtostaff->email;
+		// return $this->email;
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -98,17 +109,7 @@ class Login extends Authenticatable // implements MustVerifyEmail
 	{
 		// Return email address only...
 		// return $this->belongtouser->email;
-		return [$this->belongtouser->email => $this->belongtouser->name];
-	}
-	
-	/////////////////////////////////////////////////////////////////////////////////////////////////////
-	// db relation hasMany/hasOne
-
-	/////////////////////////////////////////////////////////////////////////////////////////////////////
-	// db relation belongsTo
-	public function belongtouser(): BelongsTo
-	{
-		return $this->belongsTo(Staff::class, 'staff_id');
+		return [$this->belongtostaff->email => $this->belongtostaff->name];
 	}
 	
 	/////////////////////////////////////////////////////////////////////////////////////////////////////

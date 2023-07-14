@@ -6,11 +6,8 @@ use App\Http\Controllers\Controller;
 
 // load model
 use App\Model\HumanResources\WorkingHour;
-
 use Illuminate\Http\Request;
-
 use \Carbon\Carbon;
-
 use Session;
 
 class WorkingHourController extends Controller
@@ -22,7 +19,7 @@ class WorkingHourController extends Controller
 
 	public function index()
 	{
-		return view('generalAndAdministrative.hr.hrsettings.index');
+		return view('humanresources.config.index');
 	}
 
 	public function create()
@@ -183,6 +180,6 @@ class WorkingHourController extends Controller
 
 	public function destroy(WorkingHour $workingHour)
 	{
-	//
+
 	}
 }

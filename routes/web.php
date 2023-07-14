@@ -22,20 +22,24 @@ Route::get('/dashboard', function () {
     return view('welcome');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-});
+// Route::middleware('auth')->group(function () {
+//     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+//     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+//     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+// });
 
 Route::resources([
-    'profile' => 'App\Http\Controllers\Profile',
+    'staff' => 'App\Http\Controllers\Profile',
 ]);
 
 #############################################################################################
+// ipma erp controller
 Route::resources([
-    'staff' => 'App\Http\Controllers\ProfileController',
+    'leave' => 'App\Http\Controllers\HumanResources\Leave\LeaveController',
+    'profile' => 'App\Http\Controllers\HumanResources\Profile\ProfileController',
 ]);
+
+#############################################################################################
 
 
 
