@@ -19,12 +19,14 @@
 @import "../../node_modules/@claviska/jquery-minicolors/jquery.minicolors.css";
 @import "../../node_modules/@mdi/font/css/materialdesignicons.css";
 
-@import "../../node_modules/gijgo/css/gijgo.css";
+/* @import "../../node_modules/gijgo/css/gijgo.css"; */
 
 @import "../../node_modules/jquery-ui/themes/base/core.css";
 @import "../../node_modules/jquery-ui/themes/base/all.css";
 
 @import "./bootstrapValidator4/css/bootstrapValidator.css";
+
+@import "../../node_modules/pc-bootstrap4-datetimepicker/build/css/bootstrap-datetimepicker.css";
 
 /* for template */
 .bd-placeholder-img {
