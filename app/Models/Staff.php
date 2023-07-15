@@ -49,6 +49,15 @@ class Staff extends Authenticatable
         return $this->hasMany(Login::class, 'staff_id');
     }
 
+    public function hasmanyemergency()
+    {
+        return $this->hasMany(HumanResources\HREmergency::class, 'staff_id');
+    }
+
+    public function hasmanyleaveentitlements()
+    {
+        return $this->hasMany(HumanResources\HRLeaveEntitlements::class, 'staff_id');
+    }
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
 	// db relation belongsTo

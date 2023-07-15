@@ -18,16 +18,25 @@
 		<header class="border-bottom lh-1 py-3">
 			<div class="row flex-nowrap justify-content-between align-items-center">
 				<div class="col-4 pt-1">
-					{{-- <a class="link-secondary" href="#">Subscribe</a> --}}
+					<!-- <a class="link-secondary" href="#">Subscribe</a> -->
 				</div>
 				<div class="col-4 text-center">
 					<a class="blog-header-logo text-body-emphasis text-decoration-none" href="{{ url('/') }}">{!! config('app.name') !!}</a>
+					<noscript>
+						<style type="text/css">
+							.pagecontainer {display:none;}
+						</style>
+						<div class="noscriptmsg text-danger">
+							This page requires JavaScript. Please enable it or you can contact your IT administrator.
+							<meta http-equiv="refresh" content="0; url={{ url('/') }}" />
+						</div>
+					</noscript>
 				</div>
 				<div class="col-4 d-flex justify-content-end align-items-center">
-					{{-- <a class="link-secondary" href="#" aria-label="Search">
+<!-- 					<a class="link-secondary" href="#" aria-label="Search">
 						<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="mx-3" role="img" viewBox="0 0 24 24"><title>Search</title><circle cx="10.5" cy="10.5" r="7.5"/><path d="M21 21l-5.2-5.2"/></svg>
-					</a> --}}
-					@if (Route::has('login'))
+					</a>
+ -->					@if (Route::has('login'))
 						<div class="sm:fixed sm:top-0 sm:right-0 p-6 text-right z-10">
 							@auth
 								<div class="dropdown">
@@ -110,18 +119,7 @@
 
 				<h4 class="pb-4 mb-4 fst-italic border-bottom text-center">
 					{{ config('app.name') }}
-					<!-- <i class="bi bi-0-square"></i>
-					<i class="form-control fa-brands fa-google"></i>
-					<span class="mdi mdi-access-point-check"></span> -->
-					<noscript>
-						<style type="text/css">
-							.pagecontainer {display:none;}
-						</style>
-						<div class="noscriptmsg text-danger">
-							This page requires JavaScript. Please enable it.  
-							<meta http-equiv="refresh" content="0; url={{ url('/') }}" />
-						</div>
-					</noscript>
+					need to put something or loose it for this div
 				</h4>
 
 				@if(Session::has('flash_message'))
@@ -152,7 +150,7 @@
 					@yield('content')
 				</article>
 
-				{{-- <article class="blog-post">
+				<!-- <article class="blog-post">
 					<h2 class="display-5 link-body-emphasis mb-1">Sample blog post</h2>
 					<p class="blog-post-meta">January 1, 2021 by <a href="#">Mark</a></p>
 					
@@ -204,9 +202,9 @@
 					<p>This is some additional paragraph placeholder content. It has been written to fill the available space and show how a longer snippet of text affects the surrounding content. We'll repeat it often to keep the demonstration flowing, so be on the lookout for this exact same string of text.</p>
 					<pre><code>Example code block</code></pre>
 					<p>This is some additional paragraph placeholder content. It's a slightly shorter version of the other highly repetitive body text used throughout.</p>
-				</article> --}}
+				</article> -->
 
-				{{-- <article class="blog-post">
+				<!-- <article class="blog-post">
 					<h2 class="display-5 link-body-emphasis mb-1">Another blog post</h2>
 					<p class="blog-post-meta">December 23, 2020 by <a href="#">Jacob</a></p>
 					
@@ -252,9 +250,9 @@
 					</table>
 					
 					<p>This is some additional paragraph placeholder content. It's a slightly shorter version of the other highly repetitive body text used throughout.</p>
-				</article> --}}
+				</article> -->
 
-				{{-- <article class="blog-post">
+				<!-- <article class="blog-post">
 					<h2 class="display-5 link-body-emphasis mb-1">New feature</h2>
 					<p class="blog-post-meta">December 14, 2020 by <a href="#">Chris</a></p>
 					
@@ -265,17 +263,17 @@
 						<li>Third list item to close it out</li>
 					</ul>
 					<p>This is some additional paragraph placeholder content. It's a slightly shorter version of the other highly repetitive body text used throughout.</p>
-				</article> --}}
+				</article> -->
 
-				{{-- <nav class="blog-pagination" aria-label="Pagination">
+				<!-- <nav class="blog-pagination" aria-label="Pagination">
 					<a class="btn btn-outline-primary rounded-pill" href="#">Older</a>
 					<a class="btn btn-outline-secondary rounded-pill disabled">Newer</a>
-				</nav> --}}
+				</nav> -->
 
 			</div>
 
-			{{-- do not uncomment
-			<div class="col-md-4">
+			<!-- do not uncomment -->
+			<!-- <div class="col-md-4">
 				<div class="position-sticky" style="top: 2rem;">
 					<div class="p-4 mb-3 bg-body-tertiary rounded">
 						<h4 class="fst-italic">About</h4>
@@ -342,13 +340,13 @@
 						</ol>
 					</div>
 				</div>
-			</div> --}}
+			</div> -->
 		</div>
 
 	</main>
 
 	<footer class="py-5 text-center text-body-secondary bg-body-tertiary">
-		<p>{{ config('app.name') }} built from <a href="https://getbootstrap.com/">Bootstrap</a> by <a href="{{ url('/') }}">IT Department</a>.</p>
+		<p>{{ config('app.name') }} made from <a href="https://getbootstrap.com/">Bootstrap</a> & <a href="https://laravel.com">Laravel v.{{ app()->version() }}</a> by <a href="{{ url('/') }}">IT Department</a>.</p>
 	</footer>
 </body>
 <script type="text/javascript" src="{{ asset('js/app.js') }}"></script>

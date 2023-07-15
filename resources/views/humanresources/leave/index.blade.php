@@ -1,7 +1,11 @@
 @extends('layouts.app')
 
 @section('content')
+<?php
+// 1st sekali check profile. checking utk email & emergency person. lock kat sini smpi user isi baru buleh apply cuti.
 
+dd(Auth::user()->belongstostaff->hasmanyemergency()->count());
+?>
 
 @endsection
 

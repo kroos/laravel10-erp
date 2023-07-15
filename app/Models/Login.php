@@ -77,7 +77,7 @@ class Login extends Authenticatable // implements MustVerifyEmail
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
 	// db relation belongsTo
-	public function belongtostaff(): BelongsTo
+	public function belongstostaff(): BelongsTo
 	{
 		return $this->belongsTo(Staff::class, 'staff_id');
 	}
