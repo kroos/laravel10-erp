@@ -1,39 +1,40 @@
-<x-guest-layout>
-    <form method="POST" action="{{ route('password.store') }}">
-        @csrf
+@extends('layouts.app')
 
-        <!-- Password Reset Token -->
-        <input type="hidden" name="token" value="{{ $request->route('token') }}">
-
-        <!-- Email Address -->
-        <div>
-            <x-input-label for="email" :value="__('Username')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="username" :value="old('username', $request->username)" required autofocus autocomplete="username" />
-            <x-input-error :messages="$errors->get('username')" class="mt-2" />
+@section('content')
+{!! Form::open(['route' => ['password.store'], 'class' => 'needs-validation','id' => 'form', 'autocomplete' => 'off', 'files' => true]) !!}
+<input type="hidden" name="token" value="{{ $request->route('token') }}">
+<?php
+$pass = App\Models\Staff::firstwhere('email', $request->email)->hasmanylogin()->firstWhere('active', 1)->username;
+?>
+<div class="mb-3 row">
+    <div class="form-group row {{ $errors->has('username') ? 'has-error' : '' }}">
+        {!! Form::label('username', 'Username : ', ['class' => 'col-sm-2 col-form-label col-form-label-sm']) !!}
+        <div class="col-sm-10">
+            {{ Form::text('username', old('username', $pass), ['class' => 'form-control form-control-sm col-auto', 'id' => 'username', 'placeholder' => 'Username']) }}
         </div>
-
-        <!-- Password -->
-        <div class="mt-4">
-            <x-input-label for="password" :value="__('Password')" />
-            <x-text-input id="password" class="block mt-1 w-full" type="password" name="password" required autocomplete="new-password" />
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
+    </div>
+</div>
+<div class="mb-3 row">
+    <div class="form-group row {{ $errors->has('password') ? 'has-error' : '' }}">
+        {!! Form::label('password', 'Password : ', ['class' => 'col-sm-2 col-form-label col-form-label-sm']) !!}
+        <div class="col-sm-10">
+            {{ Form::password('password', ['class' => 'form-control form-control-sm col-auto', 'id' => 'password', 'placeholder' => 'Password']) }}
         </div>
-
-        <!-- Confirm Password -->
-        <div class="mt-4">
-            <x-input-label for="password_confirmation" :value="__('Confirm Password')" />
-
-            <x-text-input id="password_confirmation" class="block mt-1 w-full"
-                                type="password"
-                                name="password_confirmation" required autocomplete="new-password" />
-
-            <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
+    </div>
+</div>
+<div class=" row">
+    <div class="form-group row {{ $errors->has('password_confirmation') ? 'has-error' : '' }}">
+        {!! Form::label('password_confirmation', 'Confirm Password : ', ['class' => 'col-sm-2 col-form-label col-form-label-sm']) !!}
+        <div class="col-sm-10">
+            {{ Form::password('password_confirmation', ['class' => 'form-control form-control-sm col-auto', 'id' => 'password_confirmation', 'placeholder' => 'Confirm Password']) }}
         </div>
+    </div>
+</div>
 
-        <div class="flex items-center justify-end mt-4">
-            <x-primary-button>
-                {{ __('Reset Password') }}
-            </x-primary-button>
-        </div>
-    </form>
-</x-guest-layout>
+
+{!! Form::submit('Reset Password', ['class' => 'btn btn-sm btn-outline-secondary']) !!}
+{!! Form::close(); !!}
+@endsection
+
+@section('js')
+@endsection

@@ -59,15 +59,15 @@
 	</div>
 
 	<main class="container">
-		{{-- <div class="p-4 p-md-5 mb-4 rounded text-body-emphasis bg-body-secondary">
+		<!-- <div class="p-4 p-md-5 mb-4 rounded text-body-emphasis bg-body-secondary">
 			<div class="col-lg-6 px-0">
 				<h1 class="display-4 fst-italic">Title of a longer featured blog post</h1>
 				<p class="lead my-3">Multiple lines of text that form the lede, informing new readers quickly and efficiently about what’s most interesting in this post’s contents.</p>
 				<p class="lead mb-0"><a href="#" class="text-body-emphasis fw-bold">Continue reading...</a></p>
 			</div>
-		</div> --}}
+		</div> -->
 
-		{{-- <div class="row mb-2">
+		<!-- <div class="row mb-2">
 			<div class="col-md-6">
 				<div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
 					<div class="col p-4 d-flex flex-column position-static">
@@ -102,17 +102,17 @@
 					</div>
 				</div>
 			</div>
-		</div> --}}
+		</div> -->
 
 		<div class="row g-5">
-			{{-- <div class="col-md-8"> do not uncomment this --}}
+			<!-- <div class="col-md-8"> do not uncomment this  -->
 			<div class="col-md-12">
 
 				<h4 class="pb-4 mb-4 fst-italic border-bottom text-center">
 					{{ config('app.name') }}
-					{{-- <i class="bi bi-0-square"></i>
+					<!-- <i class="bi bi-0-square"></i>
 					<i class="form-control fa-brands fa-google"></i>
-					<span class="mdi mdi-access-point-check"></span> --}}
+					<span class="mdi mdi-access-point-check"></span> -->
 					<noscript>
 						<style type="text/css">
 							.pagecontainer {display:none;}
@@ -125,9 +125,15 @@
 				</h4>
 
 				@if(Session::has('flash_message'))
-				<h5 class="pb-4 mb-4 border-bottom text-center alert alert-success">
+				<h6 class="pb-4 mb-4 border-bottom text-center alert alert-success">
 					{{ Session::get('flash_message') }}
-				</h5>
+				</h6>
+				@endif
+
+				@if(Session::has('status'))
+				<h6 class="pb-4 mb-4 border-bottom text-center alert alert-success">
+					{{ Session::get('status') }}
+				</h6>
 				@endif
 
 				@if(count($errors) > 0 )

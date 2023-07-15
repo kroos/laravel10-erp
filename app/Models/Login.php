@@ -79,16 +79,16 @@ class Login extends Authenticatable // implements MustVerifyEmail
 	// db relation belongsTo
 	public function belongtostaff(): BelongsTo
 	{
-		return $this->belongsTo(\App\Models\Staff::class, 'staff_id');
+		return $this->belongsTo(Staff::class, 'staff_id');
 	}
 	
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
 	// custom email reset password in 
 	// https://laracasts.com/discuss/channels/laravel/how-to-override-the-tomail-function-in-illuminateauthnotificationsresetpasswordphp
-	public function sendPasswordResetNotification($token)
-	{
-			$this->notify(new ResetPassword($token));
-	}
+	// public function sendPasswordResetNotification($token)
+	// {
+	// 		$this->notify(new ResetPassword($token));
+	// }
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
     /**

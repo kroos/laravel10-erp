@@ -12,7 +12,7 @@ class LeaveController extends Controller
      */
     public function index()
     {
-        return view('humanhesources.leave.index');
+        return view('humanresources.leave.index');
     }
 
     /**

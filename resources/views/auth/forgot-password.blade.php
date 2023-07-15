@@ -8,7 +8,7 @@
     <div class="form-group row {{ $errors->has('username') ? 'has-error' : '' }}">
         {!! Form::label('username', 'Username : ', ['class' => 'col-sm-2 col-form-label col-form-label-sm']) !!}
         <div class="col-sm-10">
-            {{ Form::text('username', @$value, ['class' => 'form-control form-control-sm', 'id' => 'username', 'placeholder' => 'Username']) }}
+            {{ Form::text('username', @$value, ['class' => 'form-control form-control-sm col-auto', 'id' => 'username', 'placeholder' => 'Username']) }}
         </div>
     </div>
 </div>

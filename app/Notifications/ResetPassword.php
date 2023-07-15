@@ -98,7 +98,7 @@ class ResetPassword extends Notification
 
         return url(route('password.reset', [
             'token' => $this->token,
-            'username' => $notifiable->getEmailForPasswordReset(),
+            'email' => $notifiable->getEmailForPasswordReset(),
         ], false));
     }
 
