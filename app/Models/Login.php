@@ -116,6 +116,19 @@ class Login extends Authenticatable // implements MustVerifyEmail
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
 	// all acl will be done here
+	public function isOwner( $id ) {
+		if ( auth()->user()->belongstostaff->id == $id ) {
+			return true;
+		} // else {
+		// 	$re = \Auth::user()->belongstostaff->belongtomanyposition;
+		// 	foreach ($re as $key) {
+		// 		if($key->pivot->main == 1) {
+		// 			if($key->group_id == 1 || $key->group_id == 2) {return true;} else {return false;}
+		// 		}
+		// 	}
+		// }
+	}
+
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
 }

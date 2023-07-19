@@ -15,20 +15,15 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 // use Illuminate\Database\Eloquent\Relations\BelongsTo;
 // use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-class HRLeaveEntitlement extends Model
+class OptCategory extends Model
 {
 	use HasFactory;
+	// protected $connection = 'mysql';
+	protected $table = 'option_categories';
 
-	protected $connection = 'mysql';
-	protected $table = 'hr_leave_entitlements';
-
-	/////////////////////////////////////////////////////////////////////////////////////////
-	// hasmany relationship
-
-	/////////////////////////////////////////////////////////////////////////////////////////
-	//belongsto relationship
-	public function belongstostaff(): BelongsTo
+	/////////////////////////////////////////////////////////////////////////////////////////////////////
+	public function hasmanybranch(): HasMany
 	{
-		return $this->belongsTo(Staff::class, 'staff_id');
+		return $this->hasMany(HumanResources\DepartmentPivot::class, 'category_id');
 	}
 }

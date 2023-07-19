@@ -15,20 +15,15 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 // use Illuminate\Database\Eloquent\Relations\BelongsTo;
 // use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-class HRLeaveEntitlement extends Model
+class HRLeaveApprovalFlow extends Model
 {
-	use HasFactory;
+    use HasFactory;
+    // protected $connection = 'mysql';
+    protected $table = 'hr_leave_approval_flow';
 
-	protected $connection = 'mysql';
-	protected $table = 'hr_leave_entitlements';
-
-	/////////////////////////////////////////////////////////////////////////////////////////
-	// hasmany relationship
-
-	/////////////////////////////////////////////////////////////////////////////////////////
-	//belongsto relationship
-	public function belongstostaff(): BelongsTo
-	{
-		return $this->belongsTo(Staff::class, 'staff_id');
-	}
+    /////////////////////////////////////////////////////////////////////////////////////////////////////
+    public function hasmanydepartment(): HasMany
+    {
+        return $this->hasMany(App\Models\Staff::class, 'leave_flow_id');
+    }
 }

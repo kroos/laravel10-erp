@@ -3,8 +3,8 @@
 namespace App\Models\HumanResources;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use App\Models\Model;
 // use Illuminate\Database\Eloquent\Model;
+use App\Models\Model;
 
 // db relation class to load
 // use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -17,17 +17,17 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class HREmergency extends Model
 {
-    use HasFactory;
-    protected $connection = 'mysql';
-    protected $table = 'hr_emergency';
+	use HasFactory;
+	protected $connection = 'mysql';
+	protected $table = 'hr_emergency';
 
-    /////////////////////////////////////////////////////////////////////////////////////////
-    // hasmany relationship
+	/////////////////////////////////////////////////////////////////////////////////////////
+	// hasmany relationship
 
-    /////////////////////////////////////////////////////////////////////////////////////////
-    //belongsto relationship
-    public function belongstostaff(): BelongsTo
-    {
-        return $this->belongsTo(Staff::class, 'staff_id');
-    }
+	/////////////////////////////////////////////////////////////////////////////////////////
+	//belongsto relationship
+	public function belongstostaff(): BelongsTo
+	{
+		return $this->belongsTo(Staff::class, 'staff_id');
+	}
 }

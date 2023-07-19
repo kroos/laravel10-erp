@@ -10,17 +10,17 @@ use App\Models\Model;
 // use Illuminate\Database\Eloquent\Relations\HasOne;
 // use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 // use Illuminate\Database\Eloquent\Relations\HasOneOrMany;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+// use Illuminate\Database\Eloquent\Relations\HasMany;
 // use Illuminate\Database\Eloquent\Relations\HasManyThrough;
-// use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 // use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-class HRLeaveEntitlement extends Model
+class HRLeave extends Model
 {
 	use HasFactory;
 
-	protected $connection = 'mysql';
-	protected $table = 'hr_leave_entitlements';
+	// protected $connection = 'mysql';
+	protected $table = 'hr_leaves';
 
 	/////////////////////////////////////////////////////////////////////////////////////////
 	// hasmany relationship
@@ -30,5 +30,10 @@ class HRLeaveEntitlement extends Model
 	public function belongstostaff(): BelongsTo
 	{
 		return $this->belongsTo(Staff::class, 'staff_id');
+	}
+
+	public function belongstooptleave(): BelongsTo
+	{
+		return $this->belongsTo(\App\Models\HumanResources\OptLeave::class, 'leave_type_id');
 	}
 }

@@ -7,6 +7,11 @@ use Illuminate\Http\Request;
 
 class LeaveController extends Controller
 {
+    function __construct()
+    {
+        $this->middleware('auth');
+        $this->middleware('leaveaccess', ['only' => ['show', 'edit', 'update']]);
+    }
     /**
      * Display a listing of the resource.
      */

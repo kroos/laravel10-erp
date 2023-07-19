@@ -15,20 +15,17 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 // use Illuminate\Database\Eloquent\Relations\BelongsTo;
 // use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-class HRLeaveEntitlement extends Model
+class OptLeave extends Model
 {
 	use HasFactory;
-
-	protected $connection = 'mysql';
-	protected $table = 'hr_leave_entitlements';
+	// protected $connection = 'mysql';
+	protected $table = 'option_leaves';
 
 	/////////////////////////////////////////////////////////////////////////////////////////
 	// hasmany relationship
-
-	/////////////////////////////////////////////////////////////////////////////////////////
-	//belongsto relationship
-	public function belongstostaff(): BelongsTo
+	public function hasmanytypeleave(): HasMany
 	{
-		return $this->belongsTo(Staff::class, 'staff_id');
+		return $this->hasMany(HumanResources\HRLeave::class, 'leave_type_id');
 	}
+
 }
