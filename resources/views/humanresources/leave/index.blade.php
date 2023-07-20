@@ -105,7 +105,7 @@ $lea =  $us->hasmanyleave()->where('date_time_start', '>=', $starty)->get();
 // dd($lea);
 ?>
 @if( $lea->count() > 0 )
-		<table class="table table-hover table-sm" id="leaves" style="font-size:10px">
+		<table class="table table-hover table-sm" id="leaves" style="font-size:12px">
 			<thead>
 				<tr>
 					<th rowspan="2">ID</th>
@@ -125,38 +125,65 @@ $lea =  $us->hasmanyleave()->where('date_time_start', '>=', $starty)->get();
 			</thead>
 			<tbody>
 @foreach($lea as $leav)
-				<tr>
-					<td>
 <?php
 $dts = \Carbon\Carbon::parse($leav->date_time_start)->format('Y');
+$dte = \Carbon\Carbon::parse($leav->date_time_end)->format('D, j F Y g:i a');
 $arr = str_split( $dts, 2 );
-?>
-						HR9-{{ str_pad( $leav->leave_no, 5, "0", STR_PAD_LEFT ) }}/{{ $arr[1] }}
-							<br />
-						<a href="#" class="btn btn-primary" alt="Print PDF" title="Print PDF" target="_blank"><i class="far fa-file-pdf"></i></a>
-<?php
- // only available if only now is before date_time_start and active is 1
+// only available if only now is before date_time_start and active is 1
 $dtsl = \Carbon\Carbon::parse( $leav->date_time_start );
 $dt = \Carbon\Carbon::now()->lte( $dtsl );
 ?>
-@if( $leav->status == 1 && $dt == 1 )
-						<a href="{{ __('route') }}" class="btn btn-primary cancel_btn" id="cancel_btn_{{ $leav->id }}" data-id="{{ $leav->id }}" alt="Cancel" title="Cancel"><i class="fas fa-ban"></i></a>
+				<tr>
+					<td>
+						<a href="#" class="btn btn-sm btn-outline-secondary" alt="Print PDF" title="Print PDF" target="_blank"><i class="far fa-file-pdf"></i></a>
+						HR9-{{ str_pad( $leav->leave_no, 5, "0", STR_PAD_LEFT ) }}/{{ $arr[1] }}
+@if( is_null($leav->status) && $dt === true )
+						<a href="#" class="btn btn-primary cancel_btn" id="cancel_btn_{{ $leav->id }}" data-id="{{ $leav->id }}" alt="Cancel" title="Cancel"><i class="fas fa-ban"></i></a>
 @endif
 					</td>
+<?php
+if ( ($leav->leave_type_id == 9) || ($leav->leave_type_id != 9 && $leav->half_type_id == 2) ) {
+	$dts = \Carbon\Carbon::parse($leav->date_time_start)->format('D, j F Y g:i a');
+	$dte = \Carbon\Carbon::parse($leav->date_time_end)->format('D, j F Y g:i a');
+	if( ($leav->leave_type_id != 9 && $leav->half_type_id == 2 && $leav->active == 1) ) {
+		if ($leav->leave_type_id != 9 && $leav->half_type_id == 2 && $leav->active != 1) {
+			$dper = '0 Day';
+		} else {
+			$dper = 'Half Day';
+		}
+	} else {
+		$i = \Carbon\Carbon::parse($leav->period_time);
+		$dper = $i->hour.' hour, '.$i->minute.' minutes, '.$i->second.' seconds';
+	}
+} else {
+	$dts = \Carbon\Carbon::parse($leav->date_time_start)->format('D, j F Y ');
+	$dte = \Carbon\Carbon::parse($leav->date_time_end)->format('D, j F Y ');
+	$dper = $leav->period_day.' day/s';
+}
+?>
 					<td>{{ \Carbon\Carbon::parse($leav->created_at)->format('D, j F Y') }}</td>
 					<td>{{ $leav->belongstooptleave->leave }}</td>
 					<td>{{ $leav->reason }}</td>
 					<td>{{ $dts }}</td>
 					<td>{{ $dte }}</td>
-					<td>{{ $dper	}}</td>
-<!-- @if( ($us->ergroup->category_id == 1 || $us->ergroup->group_id == 5 || $us->ergroup->group_id == 6) || $us->erneedbackup == 1 ) -->
-					<td>{{ $officer }}</td>
-					<td>{{ $stat }}</td>
-<!-- @endif -->
+					<td>{{ $dper }}</td>
 					<td>
+						@if($us->belongstoleaveapprovalflow->backup_approval == 1 && is_null($leav->hasoneleaveapprovalbackup()->first()))
+							Pending Backup
+						@elseif($us->belongstoleaveapprovalflow->supervisor_approval == 1 && is_null($leav->hasoneleaveapprovalsupervisor()->first()))
+							Pending Supervisor
+						@elseif($us->belongstoleaveapprovalflow->hod_approval == 1 && is_null($leav->hasoneleaveapprovalhod()->first()))
+							Pending Head of Department
+						@elseif($us->belongstoleaveapprovalflow->director_approval == 1 && is_null($leav->hasoneleaveapprovaldir()->first()))
+							Pending Director
+						@elseif($us->belongstoleaveapprovalflow->hr_approval == 1 && is_null($leav->hasoneleaveapprovalhr()->first()))
+							Pending HR
+						@else
+							Not Pending anything
+						@endif
 					</td>
-					<td>{{ $leav->remarks }}</td>
-					<td>{{ $leav->belongtoleavestatus->status }}</td>
+					<td>1</td>
+					<td>2</td>
 				</tr>
 @endforeach
 			</tbody>
@@ -185,6 +212,14 @@ $e =  $us->hasmanyemergency()->get();
 
 @section('js')
 /////////////////////////////////////////////////////////////////////////////////////////
+// datatables
+$.fn.dataTable.moment( 'ddd, D MMMM YYYY' );
+$.fn.dataTable.moment( 'ddd, D MMMM YYYY h:mm a' );
+$('#leaves').DataTable({
+	"lengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "All"] ],
+	"order": [[0, "desc" ]],	// sorting the 6th column descending
+	// responsive: true
+});
 /////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////
 @endsection

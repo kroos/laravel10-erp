@@ -9,7 +9,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 // db relation class to load
-// use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 // use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 // use Illuminate\Database\Eloquent\Relations\HasOneOrMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -67,6 +67,31 @@ class Staff extends Authenticatable
 	public function hasmanyleavereplacement(): HasMany
 	{
 		return $this->hasMany(HumanResources\HRLeaveReplacement::class, 'staff_id');
+	}
+
+	public function hasoneleaveapprovalbackup(): HasOne
+	{
+		return $this->hasOne(HumanResources\HRLeaveApprovalBackup::class, 'staff_id');
+	}
+
+	public function hasoneleaveapprovalsupervisor(): HasOne
+	{
+		return $this->hasOne(HumanResources\HRLeaveApprovalSupervisor::class, 'staff_id');
+	}
+
+	public function hasoneleaveapprovalhod(): HasOne
+	{
+		return $this->hasOne(HumanResources\HRLeaveApprovalHOD::class, 'staff_id');
+	}
+
+	public function hasoneleaveapprovaldir(): HasOne
+	{
+		return $this->hasOne(HumanResources\HRLeaveApprovalDirector::class, 'staff_id');
+	}
+
+	public function hasoneleaveapprovalhr(): HasOne
+	{
+		return $this->hasOne(HumanResources\HRLeaveApprovalHR::class, 'staff_id');
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////

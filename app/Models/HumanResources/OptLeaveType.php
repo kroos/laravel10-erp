@@ -15,11 +15,11 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 // use Illuminate\Database\Eloquent\Relations\BelongsTo;
 // use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-class OptLeave extends Model
+class OptLeaveType extends Model
 {
 	use HasFactory;
 	// protected $connection = 'mysql';
-	protected $table = 'option_leaves';
+	protected $table = 'option_leave_types';
 
 	/////////////////////////////////////////////////////////////////////////////////////////
 	// hasmany relationship
