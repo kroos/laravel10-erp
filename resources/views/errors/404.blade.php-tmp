@@ -1,9 +1,0 @@
-<span style='color: #ff0000'>
-Fatal error: Uncaught Error: Call to undefined function each() in C:\Users\IPMA IT\AppData\Roaming\Sublime Text\Packages\PHPTools\php.tools\codeFormatter.php:54
-Stack trace:
-#0 C:\Users\IPMA IT\AppData\Roaming\Sublime Text\Packages\PHPTools\php.tools\codeFormatter.php(41): AddMissingCurlyBraces->addBraces('@extends('layou...')
-#1 C:\Users\IPMA IT\AppData\Roaming\Sublime Text\Packages\PHPTools\php.tools\codeFormatter.php(326): AddMissingCurlyBraces->format('@extends('layou...')
-#2 C:\Users\IPMA IT\AppData\Roaming\Sublime Text\Packages\PHPTools\php.tools\codeFormatter.php(1736): CodeFormatter->formatCode('@extends('layou...')
-#3 {main}
-  thrown in C:\Users\IPMA IT\AppData\Roaming\Sublime Text\Packages\PHPTools\php.tools\codeFormatter.php on line 54
-</span>

@@ -27,3 +27,4 @@ class OptBranch extends Model
 		return $this->hasMany(HumanResources\DepartmentPivot::class, 'branch_id');
 	}
 }
+

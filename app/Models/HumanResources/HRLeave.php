@@ -37,3 +37,5 @@ class HRLeave extends Model
 		return $this->belongsTo(\App\Models\HumanResources\OptLeave::class, 'leave_type_id');
 	}
 }
+
+

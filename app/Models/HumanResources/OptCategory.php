@@ -27,3 +27,4 @@ class OptCategory extends Model
 		return $this->hasMany(HumanResources\DepartmentPivot::class, 'category_id');
 	}
 }
+

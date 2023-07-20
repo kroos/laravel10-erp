@@ -49,3 +49,4 @@ class PasswordResetLinkController extends Controller
                             ->withErrors(['username' => __($status)]);
     }
 }
+

@@ -29,3 +29,4 @@ class OptLeave extends Model
 	}
 
 }
+

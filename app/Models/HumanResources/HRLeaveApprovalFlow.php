@@ -27,3 +27,4 @@ class HRLeaveApprovalFlow extends Model
         return $this->hasMany(App\Models\Staff::class, 'leave_flow_id');
     }
 }
+

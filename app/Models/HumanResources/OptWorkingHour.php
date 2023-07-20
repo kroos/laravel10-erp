@@ -25,3 +25,4 @@ class WorkingHour extends Model
 		return $this->hasMany(HumanResources\DepartmentPivot::class, 'wh_group_id');
 	}
 }
+

@@ -63,3 +63,4 @@ class NewPasswordController extends Controller
                             ->withErrors(['username' => __($status)]);
     }
 }
+

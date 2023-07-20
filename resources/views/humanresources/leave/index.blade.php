@@ -96,6 +96,7 @@ $leaveALMC =  $us->hasmanyleaveentitlement()->where('year', date('Y'))->first();
 		</dl>
 
 
+
 <!-- list of leaves -->
 <?php
 // dd(\Carbon\Carbon::now()->copy()->startOfYear());
@@ -187,3 +188,4 @@ $e =  $us->hasmanyemergency()->get();
 /////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////
 @endsection
+

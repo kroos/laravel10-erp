@@ -9,3 +9,4 @@ class StaffDepartmentPivot extends Model
 {
     use HasFactory;
 }
+

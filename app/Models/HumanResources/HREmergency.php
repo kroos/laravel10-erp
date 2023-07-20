@@ -31,3 +31,4 @@ class HREmergency extends Model
 		return $this->belongsTo(Staff::class, 'staff_id');
 	}
 }
+

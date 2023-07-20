@@ -50,3 +50,4 @@ class DepartmentPivot extends Model
 		return $this->belongsTo(HumanResources\OptWorkingHour::class, 'wh_group_id', 'group');
 	}
 }
+
