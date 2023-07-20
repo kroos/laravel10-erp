@@ -113,6 +113,38 @@ class Login extends Authenticatable // implements MustVerifyEmail
 	}
 	
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
+	// used for mustVerifyEmail
+	/**
+	 * Determine if the user has verified their email address.
+	 *
+	 * @return bool
+	 */
+	public function hasVerifiedEmail()
+	{
+		// return ! is_null($this->email_verified_at);
+		return ! is_null($this->belongstouser->email_verified_at);
+	}
+
+	/**
+	 * Mark the given user's email as verified.
+	 *
+	 * @return bool
+	 */
+	public function markEmailAsVerified()
+	{
+		return $this->belongstouser->forceFill([
+			'email_verified_at' => $this->freshTimestamp(),
+		])->save();
+	}
+
+	// Method to send email verification
+	public function sendEmailVerificationNotification()
+	{
+		// We override the default notification and will use our own
+		$this->notify(new EmailVerificationNotification());
+	}
+
+	/////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
 	// all acl will be done here
