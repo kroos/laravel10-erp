@@ -233,6 +233,24 @@ if ( ($leav->leave_type_id == 9) || ($leav->leave_type_id != 9 && $leav->half_ty
 		<p class="card-text text-justify text-lead">Sorry, no record for your leave. Click on "Leave Application" to apply a leave.</p>
 @endif
 
+<div class="col-auto table-responsive">
+	<h4>Leave</h4>
+	<table class="table table-hover table-sm" id="approver" style="font-size:12px">
+		<thead>
+			<tr>
+				<th></th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td></td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+
+
 @endsection
 
 @section('js')
