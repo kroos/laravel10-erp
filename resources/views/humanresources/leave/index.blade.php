@@ -144,9 +144,6 @@ $dt = \Carbon\Carbon::now()->lte( $dtsl );
 					<td>{{ __('route') }}
 						<a href="#" class="btn btn-sm btn-outline-secondary" alt="Print PDF" title="Print PDF" target="_blank"><i class="far fa-file-pdf"></i></a>
 						HR9-{{ str_pad( $leav->leave_no, 5, "0", STR_PAD_LEFT ) }}/{{ $arr[1] }}
-@if( is_null($leav->leave_status_id) && $dt === true )
-						<a href="{{ __('route') }}" class="btn btn-sm btn-outline-secondary cancel_btn" id="cancel_btn_{{ $leav->id }}" data-id="{{ $leav->id }}" alt="Cancel" title="Cancel"><i class="fas fa-ban"></i></a>
-@endif
 					</td>
 <?php
 if ( ($leav->leave_type_id == 9) || ($leav->leave_type_id != 9 && $leav->half_type_id == 2) ) {
@@ -220,6 +217,9 @@ if ( ($leav->leave_type_id == 9) || ($leav->leave_type_id != 9 && $leav->half_ty
 					<td>
 						@if(is_null($leav->leave_status_id))
 							Pending
+							@if($dt === true )
+								<a href="{{ __('route') }}" class="btn btn-sm btn-outline-secondary cancel_btn" id="cancel_btn_{{ $leav->id }}" data-id="{{ $leav->id }}" alt="Cancel" title="Cancel"><i class="fas fa-ban"></i></a>
+							@endif
 						@else
 							{{ $leav->belongstooptleavestatus->status }}
 						@endif
@@ -243,7 +243,7 @@ $.fn.dataTable.moment( 'D MMM YYYY h:mm a' );
 $('#leaves').DataTable({
 	"lengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "All"] ],
 	"order": [[0, "desc" ]],	// sorting the 6th column descending
-	// responsive: true
+	responsive: true
 });
 
 /////////////////////////////////////////////////////////////////////////////////////////
