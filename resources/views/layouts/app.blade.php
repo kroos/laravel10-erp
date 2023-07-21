@@ -42,13 +42,13 @@
 								<div class="dropdown">
 									<a href="{{ url('/dashboard') }}" class="btn btn-sm btn-outline-secondary dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">{{ Auth::user()->belongstostaff->name }}</a>
 									<ul class="dropdown-menu">
-										<li><a class="dropdown-item" href="#">Profile</a></li>
-										<li><a class="dropdown-item" href="#">Notifications</a></li>
-										<li><a class="dropdown-item" href="{{ route('leave.index') }}">Apply Leave</a></li>
+										<li><a class="dropdown-item" href="#"><i class="fa fa-regular fa-user"></i> Profile</a></li>
+										<li><a class="dropdown-item" href="#"><i class="fa fa-light fa-comment"></i> Notifications</a></li>
+										<li><a class="dropdown-item" href="{{ route('leave.index') }}"><i class="fa fa-light fa-mug-hot"></i> Apply Leave</a></li>
 										<form method="POST" action="{{ route('logout') }}">
 											@csrf
 											<li>
-												<a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault(); this.closest('form').submit();">Log Out</a>
+												<a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault(); this.closest('form').submit();"><i class="fa fa-light fa-right-from-bracket"></i> Log Out</a>
 											</li>
 										</form>
 									</ul>
@@ -117,10 +117,10 @@
 			<!-- <div class="col-md-8"> do not uncomment this  -->
 			<div class="col-md-12">
 
-				<h4 class="pb-4 mb-4 fst-italic border-bottom text-center">
+				<!-- <h4 class="pb-4 mb-4 fst-italic border-bottom text-center">
 					{{ config('app.name') }}
 					need to put something or loose it for this div
-				</h4>
+				</h4> -->
 
 				@if(Session::has('flash_message'))
 				<h6 class="pb-4 mb-4 border-bottom text-center alert alert-success">

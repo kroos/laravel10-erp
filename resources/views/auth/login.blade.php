@@ -7,7 +7,7 @@
     <div class="form-group row {{ $errors->has('username') ? 'has-error' : '' }}">
         {!! Form::label('username', 'Username : ', ['class' => 'col-sm-2 col-form-label col-form-label-sm']) !!}
         <div class="col-sm-10">
-            {{ Form::text('username', @$value, ['class' => 'form-control form-control-sm', 'id' => 'username', 'placeholder' => 'Username']) }}
+            {{ Form::text('username', @$value, ['class' => 'form-control form-control-sm col-auto', 'id' => 'username', 'placeholder' => 'Username']) }}
         </div>
     </div>
 </div>
@@ -15,7 +15,7 @@
     <div class="form-group row {{ $errors->has('password') ? 'has-error' : '' }}">
         {!! Form::label('password', 'Password : ', ['class' => 'col-sm-2 col-form-label col-form-label-sm']) !!}
         <div class="col-sm-10">
-            {{ Form::password('password', ['class' => 'form-control form-control-sm', 'id' => 'password', 'placeholder' => 'Password']) }}
+            {{ Form::password('password', ['class' => 'form-control form-control-sm col-auto', 'id' => 'password', 'placeholder' => 'Password']) }}
         </div>
     </div>
 </div>
@@ -52,9 +52,9 @@
 $(document).ready(function() {
 	$('#form').bootstrapValidator({
 		feedbackIcons: {
-			valid: 'fa-light fa-check',
-			invalid: 'fa-sharp fa-light fa-xmark',
-			validating: 'fa-duotone fa-spinner-third'
+			valid: 'fa fa-light fa-check',
+			invalid: 'fa fa-sharp fa-light fa-xmark',
+			validating: 'fa fa-duotone fa-spinner-third'
 		},
 		fields: {
 			username: {

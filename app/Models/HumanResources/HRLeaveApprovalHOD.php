@@ -29,12 +29,22 @@ class HRLeaveApprovalHOD extends Model
     // belongsto relationship
     public function belongstostaff(): BelongsTo
     {
-        return $this->belongsTo(\App\Models\Staff::class, 'staff_id');
+        return $this->belongsTo(\App\Models\Staff::class, 'staff_id')->withDefault([
+            'name' => 'No data'
+        ]);
     }
 
     public function belongstostaffleave(): BelongsTo
     {
-        return $this->belongsTo(HumanResources\HRLeave::class, 'staff_leave_id');
+        return $this->belongsTo(HumanResources\HRLeave::class, 'staff_leave_id')->withDefault([
+            'name' => 'No data'
+        ]);
     }
 
+    public function belongstoleavestatus(): BelongsTo
+    {
+        return $this->belongsTo(\App\Models\HumanResources\OptLeaveStatus::class, 'leave_status_id')->withDefault([
+            'name' => 'No data'
+        ]);
+    }
 }

@@ -2,75 +2,79 @@
 
 @section('content')
 <?php
+use Illuminate\Support\Str;
 // 1st sekali check profile. checking utk email & emergency person. lock kat sini smpi user isi baru buleh apply cuti.
 
 // check emergency person
 $us = \Auth::user()->belongstostaff;
 $emer = $us->hasmanyemergency()->get();
-
 // check email
-// dd ($us->email);
 $email = $us->email;
 $e =  $us->hasmanyemergency()->get();
 $leaveALMC =  $us->hasmanyleaveentitlement()->where('year', date('Y'))->first();
 // $leaveALMC =  $us->hasmanyleaveentitlements()->whereFirst('year', date('Y'));
 // dd($leaveALMC);
 ?>
-
-		<dl class="row">
-			<dt class="col-sm-3"><h5 class="text-danger">Attention :</h5></dt>
-			<dd class="col-sm-9">
-				<p>Please complete your profile before applying your leave.<br />
-					@if(is_null($email) && is_null($emer) && $e->count() == 0)
-						<a href="{{ route('profile.edit',  $us->id ) }}" class="btn btn-sm btn-outline-secondary" >Profile</a>
+<div class="col-auto table-responsive">
+	<table class="table table-hover table-sm col-auto">
+		<tr>
+			<th>Attention</th>
+			<td colspan="2">
+				<p>
+					Please complete your profile before applying your leave.<br />
+					@if(is_null($email) && is_null($emer) && $emer->count() == 0)
+						<a href="{{ route('profile.edit',  $us->id ) }}" class="btn btn-sm btn-outline-secondary"><i class="fa fa-regular fa-user"></i>Profile</a>
 					@else
-						<a href="{{ route('leave.create' ) }}" class="btn btn-sm btn-outline-secondary" >Leave Application</a>
+						<a href="{{ route('leave.create' ) }}" class="btn btn-sm btn-outline-secondary">Leave Application</a>
 					@endif
 				</p>
-			</dd>
-
-			<dt class="col-sm-3"><h5>Annual Leave :</h5></dt>
-			<dd class="col-sm-9">
-				<dl class="row">
-					<dt class="col-sm-3">Initialize : </dt>
-					<dd class="col-sm-9">{{ $leaveALMC->al_initialise + $leaveALMC->al_adjustment }} days</dd>
-					<dt class="col-sm-3">Balance :</dt>
-					<dd class="col-sm-9"><span class=" {{ ($leaveALMC->al_balance < 4)?'text-danger font-weight-bold':'' }}">{{ $leaveALMC->al_balance }} days</span>
-					</dd>
-				</dl>
-			</dd>
-
-			<dt class="col-sm-3"><h5>MC Leave :</h5></dt>
-			<dd class="col-sm-9">
-				<dl class="row">
-					<dt class="col-sm-3">Initialize :</dt>
-					<dd class="col-sm-9">{{ $leaveALMC->mc_initialise + $leaveALMC->mc_adjustment }} days</dd>
-					<dt class="col-sm-3">Balance :</dt>
-					<dd class="col-sm-9"><span class=" {{ ($leaveALMC->medical_leave_balance < 4)?'text-danger font-weight-bold':'' }}">{{ $leaveALMC->mc_balance }} days</span></dd>
-				</dl>
-			</dd>
-
-			@if( $us->gender_id == 2 )
-				<dt class="col-sm-3 text-truncate"><h5>Maternity Leave :</h5></dt>
-				<dd class="col-sm-9">
-					<dl class="row">
-						<dt class="col-sm-3">Initialize :</dt>
-						<dd class="col-sm-9">{{ $leaveALMC->maternity_initialise + $leaveALMC->maternity_adjustment }} days</dd>
-						<dt class="col-sm-3">Balance :</dt>
-						<dd class="col-sm-9"><span class=" {{ ($leaveALMC->maternity_leave_balance < 4)?'text-danger font-weight-bold':'' }}">{{ $leaveALMC->maternity_leave_balance }} days</span></dd>
-					</dl>
-				</dd>
-			@endif
-			<dt class="col-sm-3"><h5>Unpaid Leave Utilize :</h5></dt>
-			<dd class="col-sm-9">{{  $us->hasmanyleave()->whereYear( 'date_time_start', date('Y') )->whereIn('leave_type_id', [3, 6])->get()->sum('period_day') }} days</dd>
-			@if($us->hasmanyleavereplacement()->where('leave_balance', '<>', 0)->get()->sum('leave_balance') > 0)
-				<dt class="col-sm-3"><h5>Replacement Leave :</h5></dt>
-				<dd class="col-sm-9">{{ $oi->sum('leave_balance') }} days</dd>
-			@endif
-
-			@if($us->belongstoleaveapprovalflow->backup_approval == 1)
-				<dt class="col-sm-3"><h5>Backup Personnel :</h5></dt>
-				<dd class="col-sm-9">
+			</td>
+		</tr>
+		<tr>
+			<th rowspan="2">Annual Leave :</th>
+			<td>Initialize :</td>
+			<td>{{ $leaveALMC->al_initialise + $leaveALMC->al_adjustment }} days</td>
+		</tr>
+		<tr>
+			<td>Balance:</td>
+			<td><span class=" {{ ($leaveALMC->al_balance < 4)?'text-danger font-weight-bold':'' }}">{{ $leaveALMC->al_balance }} days</span></td>
+		</tr>
+		<tr>
+			<th rowspan="2">Medical Certificate Leave :</th>
+			<td>Initialize :</td>
+			<td>{{ $leaveALMC->mc_initialise + $leaveALMC->mc_adjustment }} days</td>
+		</tr>
+		<tr>
+			<td>Balance :</td>
+			<td><span class=" {{ ($leaveALMC->medical_leave_balance < 4)?'text-danger font-weight-bold':'' }}">{{ $leaveALMC->mc_balance }} days</span></td>
+		</tr>
+		@if( $us->gender_id == 2 )
+		<tr>
+			<th rowspan="2">Maternity Leave :</th>
+			<td>Initialize :</td>
+			<td>{{ $leaveALMC->maternity_initialise + $leaveALMC->maternity_adjustment }} days</td>
+		</tr>
+		<tr>
+			<td>Balance :</td>
+			<td><span class=" {{ ($leaveALMC->maternity_leave_balance < 4)?'text-danger font-weight-bold':'' }}">{{ $leaveALMC->maternity_leave_balance }} days</span></td>
+		</tr>
+		@endif
+		<tr>
+			<th>Unpaid Leave :</th>
+			<td colspan="2">{{  $us->hasmanyleave()->whereYear( 'date_time_start', date('Y') )->whereIn('leave_type_id', [3, 6])->get()->sum('period_day') }} days</td>
+		</tr>
+		@if($us->hasmanyleavereplacement()->where('leave_balance', '<>', 0)->get()->sum('leave_balance') > 0)
+		<tr>
+			<th>
+				Replacement Leave :
+			</th>
+			<td colspan="2">{{ $oi->sum('leave_balance') }} days</td>
+		</tr>
+		@endif
+		@if($us->belongstoleaveapprovalflow->backup_approval == 1)
+			<tr>
+				<th>Backup Personnel :</th>
+				<td colspan="2">
 				<?php
 				// find backup person according to its department
 				// need to get the department 1st
@@ -91,12 +95,16 @@ $leaveALMC =  $us->hasmanyleaveentitlement()->where('year', date('Y'))->first();
 						</li>
 					@endforeach
 					</ul>
-				</dd>
-			@endif
-		</dl>
+				</td>
+			</tr>
+		@endif
+	</table>
+</div>
 
 
 
+<div class="col-auto table-responsive">
+	<h4>Leave</h4>
 <!-- list of leaves -->
 <?php
 // dd(\Carbon\Carbon::now()->copy()->startOfYear());
@@ -112,10 +120,9 @@ $lea =  $us->hasmanyleave()->where('date_time_start', '>=', $starty)->get();
 					<th rowspan="2">Date Apply</th>
 					<th rowspan="2">Leave</th>
 					<th rowspan="2">Reason</th>
-					<th colspan="2">Date/Time Leave</th>
+					<th colspan="2" >Date/Time Leave</th>
 					<th rowspan="2">Period</th>
 					<th rowspan="2">Approval, Remarks and Updated At</th>
-					<th rowspan="2">Remarks</th>
 					<th rowspan="2">Leave Status</th>
 				</tr>
 				<tr>
@@ -127,24 +134,24 @@ $lea =  $us->hasmanyleave()->where('date_time_start', '>=', $starty)->get();
 @foreach($lea as $leav)
 <?php
 $dts = \Carbon\Carbon::parse($leav->date_time_start)->format('Y');
-$dte = \Carbon\Carbon::parse($leav->date_time_end)->format('D, j F Y g:i a');
+$dte = \Carbon\Carbon::parse($leav->date_time_end)->format('j M Y g:i a');
 $arr = str_split( $dts, 2 );
 // only available if only now is before date_time_start and active is 1
 $dtsl = \Carbon\Carbon::parse( $leav->date_time_start );
 $dt = \Carbon\Carbon::now()->lte( $dtsl );
 ?>
 				<tr>
-					<td>
+					<td>{{ __('route') }}
 						<a href="#" class="btn btn-sm btn-outline-secondary" alt="Print PDF" title="Print PDF" target="_blank"><i class="far fa-file-pdf"></i></a>
 						HR9-{{ str_pad( $leav->leave_no, 5, "0", STR_PAD_LEFT ) }}/{{ $arr[1] }}
-@if( is_null($leav->status) && $dt === true )
-						<a href="#" class="btn btn-primary cancel_btn" id="cancel_btn_{{ $leav->id }}" data-id="{{ $leav->id }}" alt="Cancel" title="Cancel"><i class="fas fa-ban"></i></a>
+@if( is_null($leav->leave_status_id) && $dt === true )
+						<a href="{{ __('route') }}" class="btn btn-sm btn-outline-secondary cancel_btn" id="cancel_btn_{{ $leav->id }}" data-id="{{ $leav->id }}" alt="Cancel" title="Cancel"><i class="fas fa-ban"></i></a>
 @endif
 					</td>
 <?php
 if ( ($leav->leave_type_id == 9) || ($leav->leave_type_id != 9 && $leav->half_type_id == 2) ) {
-	$dts = \Carbon\Carbon::parse($leav->date_time_start)->format('D, j F Y g:i a');
-	$dte = \Carbon\Carbon::parse($leav->date_time_end)->format('D, j F Y g:i a');
+	$dts = \Carbon\Carbon::parse($leav->date_time_start)->format('j M Y g:i a');
+	$dte = \Carbon\Carbon::parse($leav->date_time_end)->format('j M Y g:i a');
 	if( ($leav->leave_type_id != 9 && $leav->half_type_id == 2 && $leav->active == 1) ) {
 		if ($leav->leave_type_id != 9 && $leav->half_type_id == 2 && $leav->active != 1) {
 			$dper = '0 Day';
@@ -153,74 +160,150 @@ if ( ($leav->leave_type_id == 9) || ($leav->leave_type_id != 9 && $leav->half_ty
 		}
 	} else {
 		$i = \Carbon\Carbon::parse($leav->period_time);
-		$dper = $i->hour.' hour, '.$i->minute.' minutes, '.$i->second.' seconds';
+		$dper = $i->hour.' hour, '.$i->minute.' minutes';
 	}
 } else {
-	$dts = \Carbon\Carbon::parse($leav->date_time_start)->format('D, j F Y ');
-	$dte = \Carbon\Carbon::parse($leav->date_time_end)->format('D, j F Y ');
+	$dts = \Carbon\Carbon::parse($leav->date_time_start)->format('j M Y ');
+	$dte = \Carbon\Carbon::parse($leav->date_time_end)->format('j M Y ');
 	$dper = $leav->period_day.' day/s';
 }
 ?>
-					<td>{{ \Carbon\Carbon::parse($leav->created_at)->format('D, j F Y') }}</td>
+					<td>{{ \Carbon\Carbon::parse($leav->created_at)->format('j M Y') }}</td>
 					<td>{{ $leav->belongstooptleave->leave }}</td>
-					<td>{{ $leav->reason }}</td>
+					<td>{{ Str::of($leav->reason)->words(3, ' >') }}</td>
 					<td>{{ $dts }}</td>
 					<td>{{ $dte }}</td>
 					<td>{{ $dper }}</td>
 					<td>
-						@if($us->belongstoleaveapprovalflow->backup_approval == 1 && is_null($leav->hasoneleaveapprovalbackup()->first()))
-							Pending Backup
-						@elseif($us->belongstoleaveapprovalflow->supervisor_approval == 1 && is_null($leav->hasoneleaveapprovalsupervisor()->first()))
-							Pending Supervisor
-						@elseif($us->belongstoleaveapprovalflow->hod_approval == 1 && is_null($leav->hasoneleaveapprovalhod()->first()))
-							Pending Head of Department
-						@elseif($us->belongstoleaveapprovalflow->director_approval == 1 && is_null($leav->hasoneleaveapprovaldir()->first()))
-							Pending Director
-						@elseif($us->belongstoleaveapprovalflow->hr_approval == 1 && is_null($leav->hasoneleaveapprovalhr()->first()))
-							Pending HR
+						<table class="table table-hover table-sm">
+							<tbody>
+								@if($us->belongstoleaveapprovalflow->backup_approval == 1)
+									<tr>
+										<td>Backup <?=$leav->hasoneleaveapprovalbackup()?->first()?->belongstostaff?->name ?></td>
+										<td>{{ $leav->hasoneleaveapprovalbackup()?->first()?->belongstoleavestatus?->status ?? 'Pending' }}</td>
+									</tr>
+								@endif
+
+								@if($us->belongstoleaveapprovalflow->supervisor_approval == 1)
+									<tr>
+										<td>Supervisor {{ $leav->hasoneleaveapprovalsupervisor()?->first()?->belongstostaff?->name }}</td>
+										<td>{{ $leav->hasoneleaveapprovalsupervisor()?->first()?->belongstoleavestatus?->status ?? 'Pending' }}</td>
+									</tr>
+								@endif
+
+								@if($us->belongstoleaveapprovalflow->hod_approval == 1)
+									<tr>
+										<td>HOD {{ $leav->hasoneleaveapprovalhod()?->first()?->belongstostaff?->name }}</td>
+										<td>{{ $leav->hasoneleaveapprovalhod()?->first()?->belongstoleavestatus?->status ?? 'Pending' }}</td>
+										</tr>
+								@endif
+
+								@if($us->belongstoleaveapprovalflow->director_approval == 1)
+									<tr>
+										<td>Director {{ $leav->hasoneleaveapprovaldir()->first()?->belongstostaff?->name }}</td>
+										<td>{{ $leav->hasoneleaveapprovaldir()->first()->belongstoleavestatus->status ?? 'Pending' }}</td>
+									</tr>
+								@endif
+
+								@if($us->belongstoleaveapprovalflow->hr_approval == 1)
+									@if(!is_null($leav->hasoneleaveapprovalhr()))
+										<tr>
+											<td>HR {{ $leav->hasoneleaveapprovalhr()->first()?->belongstostaff?->name }}</td>
+											<td>{{ $leav->hasoneleaveapprovalhr()->first()->belongstoleavestatus->status ?? 'Pending' }}</td>
+										</tr>
+									@endif
+								@endif
+
+							</tbody>
+						</table>
+					</td>
+					<td>
+						@if(is_null($leav->leave_status_id))
+							Pending
 						@else
-							Not Pending anything
+							{{ $leav->belongstooptleavestatus->status }}
 						@endif
 					</td>
-					<td>1</td>
-					<td>2</td>
 				</tr>
 @endforeach
 			</tbody>
 		</table>
-
+</div>
 @else
 		<p class="card-text text-justify text-lead">Sorry, no record for your leave. Click on "Leave Application" to apply a leave.</p>
 @endif
-
-	</div>
-	<div class="card-footer justify-content-center">
-<?php
-$w =  $us->gender_id;
-$r =  $us->mobile;
-$e =  $us->hasmanyemergency()->get();
-?>
-		<a href="{{ ( is_null($w) && is_null($r) && $e->count() == 0)?route('profile.edit', \Auth::user()->belongstostaff->id):route('leave.create') }}" class="btn btn-sm btn-outline-secondary">{{ ( is_null($w) || is_null($r) || $e->count() == 0)?'Profile':'Leave Application' }}</a>
-	</div>
-</div>
-
-
-
-
 
 @endsection
 
 @section('js')
 /////////////////////////////////////////////////////////////////////////////////////////
 // datatables
-$.fn.dataTable.moment( 'ddd, D MMMM YYYY' );
-$.fn.dataTable.moment( 'ddd, D MMMM YYYY h:mm a' );
+$.fn.dataTable.moment( 'D MMM YYYY' );
+$.fn.dataTable.moment( 'D MMM YYYY h:mm a' );
 $('#leaves').DataTable({
 	"lengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "All"] ],
 	"order": [[0, "desc" ]],	// sorting the 6th column descending
 	// responsive: true
 });
+
 /////////////////////////////////////////////////////////////////////////////////////////
+// cancel leave
+$(document).on('click', '.cancel_btn', function(e){
+	var ackID = $(this).data('id');
+	SwalDelete(ackID);
+	e.preventDefault();
+});
+
+function SwalDelete(ackID){
+	swal.fire({
+		title: 'Cancel Leave',
+		text: 'Are you sure to cancel this leave?',
+		type: 'info',
+		showCancelButton: true,
+		confirmButtonColor: '#3085d6',
+		cancelButtonColor: '#d33',
+		cancelButtonText: 'Cancel',
+		confirmButtonText: 'Yes',
+		showLoaderOnConfirm: true,
+
+		preConfirm: function() {
+			return new Promise(function(resolve) {
+				$.ajax({
+					url: '{{ url('staffLeave') }}' + '/' + ackID,
+					type: 'PATCH',
+					dataType: 'json',
+					data: {
+							id: ackID,
+							cancel: 1,
+							_token : $('meta[name=csrf-token]').attr('content')
+					},
+				})
+				.done(function(response){
+					swal.fire('Accept', response.message, response.status)
+					.then(function(){
+						window.location.reload(true);
+					});
+					// $('#cancel_btn_' + ackID).parent().parent().remove();
+				})
+				.fail(function(){
+					swal.fire('Oops...', 'Something went wrong with ajax !', 'error');
+				})
+			});
+		},
+		allowOutsideClick: false			  
+	})
+	.then((result) => {
+		if (result.dismiss === swal.DismissReason.cancel) {
+			swal.fire('Cancel Action', 'Leave is still active.', 'info')
+		}
+	});
+}
+//auto refresh right after clicking OK button
+$(document).on('click', '.swal2-confirm', function(e){
+	window.location.reload(true);
+});
+
+
 /////////////////////////////////////////////////////////////////////////////////////////
 @endsection
 
