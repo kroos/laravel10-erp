@@ -94,6 +94,11 @@ class Staff extends Authenticatable
 		return $this->hasOne(HumanResources\HRLeaveApprovalHR::class, 'staff_id');
 	}
 
+	public function hasmanyleaveamend(): HasMany
+	{
+		return $this->hasMany(HumanResources\HRLeaveAmend::class, 'staff_id');
+	}
+
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
 	// db relation belongsToMany
 	public function belongstomanydepartment(): BelongsToMany

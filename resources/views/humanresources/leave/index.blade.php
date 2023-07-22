@@ -141,7 +141,7 @@ $dtsl = \Carbon\Carbon::parse( $leav->date_time_start );
 $dt = \Carbon\Carbon::now()->lte( $dtsl );
 ?>
 				<tr>
-					<td>{{ __('route') }}
+					<td>
 						<a href="#" class="btn btn-sm btn-outline-secondary" alt="Print PDF" title="Print PDF" target="_blank"><i class="far fa-file-pdf"></i></a>
 						HR9-{{ str_pad( $leav->leave_no, 5, "0", STR_PAD_LEFT ) }}/{{ $arr[1] }}
 					</td>
@@ -166,7 +166,7 @@ if ( ($leav->leave_type_id == 9) || ($leav->leave_type_id != 9 && $leav->half_ty
 }
 ?>
 					<td>{{ \Carbon\Carbon::parse($leav->created_at)->format('j M Y') }}</td>
-					<td>{{ $leav->belongstooptleave->leave }}</td>
+					<td>{{ $leav->belongstooptleavetype->leave }}</td>
 					<td>{{ Str::of($leav->reason)->words(3, ' >') }}</td>
 					<td>{{ $dts }}</td>
 					<td>{{ $dte }}</td>
@@ -192,23 +192,21 @@ if ( ($leav->leave_type_id == 9) || ($leav->leave_type_id != 9 && $leav->half_ty
 									<tr>
 										<td>HOD {{ $leav->hasoneleaveapprovalhod()?->first()?->belongstostaff?->name }}</td>
 										<td>{{ $leav->hasoneleaveapprovalhod()?->first()?->belongstoleavestatus?->status ?? 'Pending' }}</td>
-										</tr>
+									</tr>
 								@endif
 
 								@if($us->belongstoleaveapprovalflow->director_approval == 1)
 									<tr>
-										<td>Director {{ $leav->hasoneleaveapprovaldir()->first()?->belongstostaff?->name }}</td>
-										<td>{{ $leav->hasoneleaveapprovaldir()->first()->belongstoleavestatus->status ?? 'Pending' }}</td>
+										<td>Director {{ $leav->hasoneleaveapprovaldir()?->first()?->belongstostaff?->name }}</td>
+										<td>{{ $leav->hasoneleaveapprovaldir()?->first()?->belongstoleavestatus?->status ?? 'Pending' }}</td>
 									</tr>
 								@endif
 
 								@if($us->belongstoleaveapprovalflow->hr_approval == 1)
-									@if(!is_null($leav->hasoneleaveapprovalhr()))
-										<tr>
-											<td>HR {{ $leav->hasoneleaveapprovalhr()->first()?->belongstostaff?->name }}</td>
-											<td>{{ $leav->hasoneleaveapprovalhr()->first()->belongstoleavestatus->status ?? 'Pending' }}</td>
-										</tr>
-									@endif
+									<tr>
+										<td>HR {{ $leav->hasoneleaveapprovalhr()?->first()?->belongstostaff?->name }}</td>
+										<td>{{ $leav->hasoneleaveapprovalhr()?->first()?->belongstoleavestatus?->status ?? 'Pending' }}</td>
+									</tr>
 								@endif
 
 							</tbody>
@@ -230,11 +228,11 @@ if ( ($leav->leave_type_id == 9) || ($leav->leave_type_id != 9 && $leav->half_ty
 		</table>
 </div>
 @else
-		<p class="card-text text-justify text-lead">Sorry, no record for your leave. Click on "Leave Application" to apply a leave.</p>
+		<p class="card-text text-justify text-lead">No record for your leave. Click on "Leave Application" to apply a leave.</p>
 @endif
-
+<p>&nbsp;</p>
 <div class="col-auto table-responsive">
-	<h4>Leave</h4>
+	<h4>Approver</h4>
 	<table class="table table-hover table-sm" id="approver" style="font-size:12px">
 		<thead>
 			<tr>
@@ -248,9 +246,6 @@ if ( ($leav->leave_type_id == 9) || ($leav->leave_type_id != 9 && $leav->half_ty
 		</tbody>
 	</table>
 </div>
-
-
-
 @endsection
 
 @section('js')
@@ -276,7 +271,7 @@ function SwalDelete(ackID){
 	swal.fire({
 		title: 'Cancel Leave',
 		text: 'Are you sure to cancel this leave?',
-		type: 'info',
+		icon: 'info',
 		showCancelButton: true,
 		confirmButtonColor: '#3085d6',
 		cancelButtonColor: '#d33',
@@ -287,12 +282,12 @@ function SwalDelete(ackID){
 		preConfirm: function() {
 			return new Promise(function(resolve) {
 				$.ajax({
-					url: '{{ url('staffLeave') }}' + '/' + ackID,
+					url: '{{ url('leavecancel') }}' + '/' + ackID,
 					type: 'PATCH',
 					dataType: 'json',
 					data: {
 							id: ackID,
-							cancel: 1,
+							cancel: 3,
 							_token : $('meta[name=csrf-token]').attr('content')
 					},
 				})

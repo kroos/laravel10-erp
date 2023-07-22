@@ -28,22 +28,16 @@ class HRLeaveApprovalBackup extends Model
 	// belongsto relationship
 	public function belongstostaff(): BelongsTo
 	{
-		return $this->belongsTo(\App\Models\Staff::class, 'staff_id')->withDefault([
-			'name' => 'No data'
-		]);
+		return $this->belongsTo(\App\Models\Staff::class, 'staff_id')->withDefault();
 	}
 
 	public function belongstostaffleave(): BelongsTo
 	{
-		return $this->belongsTo(HumanResources\HRLeave::class, 'staff_leave_id')->withDefault([
-			'name' => 'No data'
-		]);
+		return $this->belongsTo(HumanResources\HRLeave::class, 'leave_id')->withDefault();
 	}
 
 	public function belongstoleavestatus(): BelongsTo
 	{
-		return $this->belongsTo(\App\Models\HumanResources\OptLeaveStatus::class, 'leave_status_id')->withDefault([
-			'name' => 'No data'
-		]);
+		return $this->belongsTo(\App\Models\HumanResources\OptLeaveStatus::class, 'leave_status_id')->withDefault();
 	}
 }

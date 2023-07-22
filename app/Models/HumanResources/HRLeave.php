@@ -24,62 +24,51 @@ class HRLeave extends Model
 
 	/////////////////////////////////////////////////////////////////////////////////////////
 	// hasmany relationship
+	public function hasmanyleaveamend(): HasMany
+	{
+		return $this->hasMany(\App\Models\HumanResources\HRLeaveAmend::class, 'leave_id')->withDefault();
+	}
+
 	public function hasoneleaveapprovalbackup(): HasOne
 	{
-		return $this->hasOne(\App\Models\HumanResources\HRLeaveApprovalBackup::class, 'staff_leave_id')->withDefault([
-			'name' => 'No data'
-		]);
+		return $this->hasOne(\App\Models\HumanResources\HRLeaveApprovalBackup::class, 'leave_id')->withDefault();
 	}
 
 	public function hasoneleaveapprovalsupervisor(): HasOne
 	{
-		return $this->hasOne(\App\Models\HumanResources\HRLeaveApprovalSupervisor::class, 'staff_leave_id')->withDefault([
-			'name' => 'No data'
-		]);
+		return $this->hasOne(\App\Models\HumanResources\HRLeaveApprovalSupervisor::class, 'leave_id')->withDefault();
 	}
 
 	public function hasoneleaveapprovalhod(): HasOne
 	{
-		return $this->hasOne(\App\Models\HumanResources\HRLeaveApprovalHOD::class, 'staff_leave_id')->withDefault([
-			'name' => 'No data'
-		]);
+		return $this->hasOne(\App\Models\HumanResources\HRLeaveApprovalHOD::class, 'leave_id')->withDefault();
 	}
 
 	public function hasoneleaveapprovaldir(): HasOne
 	{
-		return $this->hasOne(\App\Models\HumanResources\HRLeaveApprovalDirector::class, 'staff_leave_id')->withDefault([
-			'name' => 'No data'
-		]);
+		return $this->hasOne(\App\Models\HumanResources\HRLeaveApprovalDirector::class, 'leave_id')->withDefault();
 	}
 
 	public function hasoneleaveapprovalhr(): HasOne
 	{
-		return $this->hasOne(\App\Models\HumanResources\HRLeaveApprovalHR::class, 'staff_leave_id')->withDefault([
-			'name' => 'No data'
-		]);
+		return $this->hasOne(\App\Models\HumanResources\HRLeaveApprovalHR::class, 'leave_id')->withDefault();
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////
 	//belongsto relationship
 	public function belongstostaff(): BelongsTo
 	{
-		return $this->belongsTo(Staff::class, 'staff_id')->withDefault([
-			'name' => 'No data'
-		]);
+		return $this->belongsTo(Staff::class, 'staff_id')->withDefault();
 	}
 
-	public function belongstooptleave(): BelongsTo
+	public function belongstooptleavetype(): BelongsTo
 	{
-		return $this->belongsTo(\App\Models\HumanResources\OptLeaveType::class, 'leave_type_id')->withDefault([
-			'name' => 'No data'
-		]);
+		return $this->belongsTo(\App\Models\HumanResources\OptLeaveType::class, 'leave_type_id')->withDefault();
 	}
 
 	public function belongstooptleavestatus(): BelongsTo
 	{
-		return $this->belongsTo(\App\Models\HumanResources\OptLeaveStatus::class, 'leave_status_id')->withDefault([
-			'name' => 'No data'
-		]);
+		return $this->belongsTo(\App\Models\HumanResources\OptLeaveStatus::class, 'leave_status_id')->withDefault();
 	}
 }
 
