@@ -29,6 +29,11 @@ class HRLeave extends Model
 		return $this->hasMany(\App\Models\HumanResources\HRLeaveAmend::class, 'leave_id')->withDefault();
 	}
 
+	public function hasmanyleavereplacement(): HasMany
+	{
+		return $this->hasMany(\App\Models\HumanResources\HRLeaveReplacement::class, 'leave_id')->withDefault();
+	}
+
 	public function hasoneleaveapprovalbackup(): HasOne
 	{
 		return $this->hasOne(\App\Models\HumanResources\HRLeaveApprovalBackup::class, 'leave_id')->withDefault();

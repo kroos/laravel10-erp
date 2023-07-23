@@ -17,19 +17,23 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class HRLeaveReplacement extends Model
 {
-    use HasFactory;
+	use HasFactory;
 
-    protected $connection = 'mysql';
-    protected $table = 'hr_leave_replacements';
+	protected $connection = 'mysql';
+	protected $table = 'hr_leave_replacements';
 
-    /////////////////////////////////////////////////////////////////////////////////////////
-    // hasmany relationship
+	/////////////////////////////////////////////////////////////////////////////////////////
+	// hasmany relationship
 
-    /////////////////////////////////////////////////////////////////////////////////////////
-    //belongsto relationship
-    public function belongstostaff(): BelongsTo
-    {
-        return $this->belongsTo(Staff::class, 'staff_id');
-    }
+	/////////////////////////////////////////////////////////////////////////////////////////
+	//belongsto relationship
+	public function belongstostaff(): BelongsTo
+	{
+		return $this->belongsTo(Staff::class, 'staff_id');
+	}
+
+	public function belongstoleave(): BelongsTo
+	{
+		return $this->belongsTo(\App\Models\HumanResources\HRLeave::class, 'leave_id');
+	}
 }
-

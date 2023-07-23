@@ -98,12 +98,13 @@ class AjaxController extends Controller
 
 				// update di table staffleavereplcaement. remarks kata sapa reject
 				$n->hasmanyleavereplacement()->update([
+					'leave_id' => NULL
 					'leave_balance' => $n->period_day,
 					'leave_utilize' => $addr,
 					'remarks' => 'Cancelled by '.\Auth::user()->belongtostaff->name
 				]);
 				// update di table staff leave pulokk staffleave
-				$n->update(['leave_replacement_id' => NULL, 'period_day' => 0, 'leave_status_id' => 3, 'remarks' => 'Cancelled By '.\Auth::user()->belongtostaff->name]);
+				$n->update(['period_day' => 0, 'leave_status_id' => 3, 'remarks' => 'Cancelled By '.\Auth::user()->belongtostaff->name]);
 			}
 
 			if( $n->leave_id == 7 ) { // leave deduct from ML
