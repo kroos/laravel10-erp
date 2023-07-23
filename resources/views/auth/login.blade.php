@@ -52,9 +52,9 @@
 $(document).ready(function() {
 	$('#form').bootstrapValidator({
 		feedbackIcons: {
-			valid: 'fa fa-light fa-check',
-			invalid: 'fa fa-sharp fa-light fa-xmark',
-			validating: 'fa fa-duotone fa-spinner-third'
+			valid: 'fas fa-light fa-check',
+			invalid: 'fas fa-sharp fa-light fa-xmark',
+			validating: 'fas fa-duotone fa-spinner-third'
 		},
 		fields: {
 			username: {

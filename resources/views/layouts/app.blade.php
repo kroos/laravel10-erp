@@ -42,13 +42,13 @@
 								<div class="dropdown">
 									<a href="{{ url('/dashboard') }}" class="btn btn-sm btn-outline-secondary dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">{{ Auth::user()->belongstostaff->name }}</a>
 									<ul class="dropdown-menu">
-										<li><a class="dropdown-item" href="#"><i class="fa fa-regular fa-user"></i> Profile</a></li>
-										<li><a class="dropdown-item" href="#"><i class="fa fa-light fa-comment"></i> Notifications</a></li>
-										<li><a class="dropdown-item" href="{{ route('leave.index') }}"><i class="fa fa-light fa-mug-hot"></i> Apply Leave</a></li>
+										<li><a class="dropdown-item" href="#"><i class="fas fa-regular fa-user"></i> Profile</a></li>
+										<li><a class="dropdown-item" href="#"><i class="fas fa-light fa-comment"></i> Notifications</a></li>
+										<li><a class="dropdown-item" href="{{ route('leave.index') }}"><i class="fas fa-light fa-mug-hot"></i> Apply Leave</a></li>
 										<form method="POST" action="{{ route('logout') }}">
 											@csrf
 											<li>
-												<a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault(); this.closest('form').submit();"><i class="fa fa-light fa-right-from-bracket"></i> Log Out</a>
+												<a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault(); this.closest('form').submit();"><i class="fas fa-light fa-right-from-bracket"></i> Log Out</a>
 											</li>
 										</form>
 									</ul>
