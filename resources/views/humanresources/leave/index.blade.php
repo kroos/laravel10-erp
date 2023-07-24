@@ -21,7 +21,7 @@ $leaveALMC =  $us->hasmanyleaveentitlement()->where('year', date('Y'))->first();
 			<th>Attention</th>
 			<td colspan="2">
 				<p>
-					Please complete your profile before applying your leave.<br />
+					Please complete your profile before applying your leave. Once completed, please proceed with leave application.<br />
 					@if(is_null($email) && is_null($emer) && $emer->count() == 0)
 						<a href="{{ route('profile.edit',  $us->id ) }}" class="btn btn-sm btn-outline-secondary"><i class="fa fa-regular fa-user"></i>Profile</a>
 					@else
@@ -56,7 +56,7 @@ $leaveALMC =  $us->hasmanyleaveentitlement()->where('year', date('Y'))->first();
 		</tr>
 		<tr>
 			<td>Balance :</td>
-			<td><span class=" {{ ($leaveALMC->maternity_leave_balance < 4)?'text-danger font-weight-bold':'' }}">{{ $leaveALMC->maternity_leave_balance }} days</span></td>
+			<td><span class=" {{ ($leaveALMC->maternity_balance < 4)?'text-danger font-weight-bold':'' }}">{{ $leaveALMC->maternity_balance }} days</span></td>
 		</tr>
 		@endif
 		<tr>
@@ -68,7 +68,7 @@ $leaveALMC =  $us->hasmanyleaveentitlement()->where('year', date('Y'))->first();
 			<th>
 				Replacement Leave :
 			</th>
-			<td colspan="2">{{ $oi->sum('leave_balance') }} days</td>
+			<td colspan="2">{{ $us->hasmanyleavereplacement()->sum('leave_balance') }} days</td>
 		</tr>
 		@endif
 		@if($us->belongstoleaveapprovalflow->backup_approval == 1)
@@ -166,7 +166,7 @@ if ( ($leav->leave_type_id == 9) || ($leav->leave_type_id != 9 && $leav->half_ty
 }
 ?>
 					<td>{{ \Carbon\Carbon::parse($leav->created_at)->format('j M Y') }}</td>
-					<td>{{ $leav->belongstooptleavetype->leave }}</td>
+					<td>{{ $leav->belongstooptleavetype->leave_type_code }}</td>
 					<td>{{ Str::of($leav->reason)->words(3, ' >') }}</td>
 					<td>{{ $dts }}</td>
 					<td>{{ $dte }}</td>

@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 
 // load model
 use App\Models\HumanResources\HRLeave;
+use App\Models\HumanResources\OptLeaveType;
+use App\Models\Setting;
 
 class AjaxController extends Controller
 {
@@ -40,14 +42,14 @@ class AjaxController extends Controller
 				// echo $n->period_day.' period cuti<br />';
 
 				// cari al dari staff, year yg sama dgn date apply cuti.
-				// echo $n->belongtostaff->hasmanyleaveentitlement()->where('year', $dts->format('Y'))->first()->annual_leave_balance.' applicant annual leave balance<br />';
+				// echo $n->belongtostaff->hasmanyleaveentitlement()->where('year', $dts->format('Y'))->first()->al_balance.' applicant annual leave balance<br />';
 
 				$addl = $n->period_day + $n->belongtostaff->hasmanyleaveentitlement()->where('year', $dts->format('Y'))->first()->al_balance;
 				// echo $addl.' masukkan dalam annual balance<br />';
 
 				// update the al balance
 				$n->belongtostaff->hasmanyleaveentitlement()->where('year', $dts->format('Y'))->update([
-					'annual_leave_balance' => $addl,
+					'al_balance' => $addl,
 					'remarks' => 'Cancelled By '.\Auth::user()->belongtostaff->name.' reference hr_leaves.id'.$request->id
 				]);
 				// update period, status leave of the applicant. status close by HOD/supervisor
@@ -98,7 +100,7 @@ class AjaxController extends Controller
 
 				// update di table staffleavereplcaement. remarks kata sapa reject
 				$n->hasmanyleavereplacement()->update([
-					'leave_id' => NULL
+					'leave_id' => NULL,
 					'leave_balance' => $n->period_day,
 					'leave_utilize' => $addr,
 					'remarks' => 'Cancelled by '.\Auth::user()->belongtostaff->name
@@ -184,5 +186,163 @@ class AjaxController extends Controller
 				'message' => 'Your leave has been cancelled.',
 			]);
 		}
+	}
+
+	//////////////////////////////////////////////////////////////////////////////////////////////
+	// get types of leave according to user
+	public function leaveType(Request $request)
+	{
+		// tahun sekarang ni
+		$year = \Carbon\Carbon::parse(now())->year;
+
+		$user = \Auth::user()->belongstostaff;
+		// checking for annual leave, mc, nrl and maternity
+		// hati-hati dgn yg ni sbb melibatkan masa
+		$leaveALMC = $user->hasmanyleaveentitlement()->where('year', date('Y'))->first();
+		// cari kalau ada replacement leave
+		$oi = $user->hasmanyleavereplacement()->where('leave_balance', '<>', 0)->whereYear('date', date('Y'))->get();
+
+		// dd($oi->sum('leave_balance'));
+
+		if(Setting::where('id', 3)->first()->active == 1){				// special unpaid leave activated
+			if($user->gender_id == 1){									// laki
+				if($oi->sum('leave_balance') < 1){						// laki | no nrl
+					if($leaveALMC->al_balance < 1){						// laki | no nrl | no al
+						if($leaveALMC->mc_balance < 1){					// laki | no nrl | no al | no mc
+							$er = OptLeaveType::whereIn('id', [3,6,9,12])->get();
+						} else {										// laki | no nrl | no al | mc
+							$er = OptLeaveType::whereIn('id', [2,3,6,9,11,12])->get();
+						}
+					} else {											// laki | no nrl | al
+						if($leaveALMC->mc_balance < 1){					// laki | no nrl | al | no mc
+							$er = OptLeaveType::whereIn('id', [1,5,9,12])->get();
+						} else {										// laki | no nrl | al | mc
+							$er = OptLeaveType::whereIn('id', [1,2,5,9,11,12])->get();
+						}
+					}
+				} else {												// laki | nrl
+					if($leaveALMC->al_balance < 1){						// laki | nrl | no al
+						if($leaveALMC->mc_balance < 1){					// laki | nrl | no al | no mc
+							$er = OptLeaveType::whereIn('id', [3,4,6,9,10,12])->get();
+						} else {										// laki | nrl | no al | mc
+							$er = OptLeaveType::whereIn('id', [2,3,4,6,9,10,11,12])->get();
+						}
+					} else {											// laki | nrl | al
+						if($leaveALMC->mc_balance < 1){					// laki | nrl | al | no mc
+							$er = OptLeaveType::whereIn('id', [1,4,5,9,10,12])->get();
+						} else {										// laki | nrl | al | mc
+							$er = OptLeaveType::whereIn('id', [1,2,4,5,9,10,11,12])->get();
+						}
+					}
+				}
+			} else {													// pempuan
+				if($oi->sum('leave_balance') < 1){						// pempuan | no nrl
+					if($leaveALMC->al_balance < 1){						// pempuan | no nrl | no al
+						if($leaveALMC->mc_balance < 1){					// pempuan | no nrl | no al | no mc
+							$er = OptLeaveType::whereIn('id', [3,6,7,9,12])->get();
+						} else {										// pempuan | no nrl | no al | mc
+							$er = OptLeaveType::whereIn('id', [2,3,6,7,9,11,12])->get();
+						}
+					} else {											// pempuan | no nrl | al
+						if($leaveALMC->mc_balance < 1){					// pempuan | no nrl | al | no mc
+							$er = OptLeaveType::whereIn('id', [1,5,7,9,12])->get();
+						} else {										// pempuan | no nrl | al | mc
+							$er = OptLeaveType::whereIn('id', [1,2,5,7,9,11,12])->get();
+						}
+					}
+				} else {												// pempuan | nrl
+					if($leaveALMC->al_balance < 1){						// pempuan | nrl | no al
+						if($leaveALMC->mc_balance < 1){					// pempuan | nrl | no al | no mc
+							$er = OptLeaveType::whereIn('id', [3,4,6,7,9,10,12])->get();
+						} else {										// pempuan | nrl | no al | mc
+							$er = OptLeaveType::whereIn('id', [2,3,4,6,7,9,10,11,12])->get();
+						}
+					} else {											// pempuan | nrl | al
+						if($leaveALMC->mc_balance < 1){					// pempuan | nrl | al | no mc
+							$er = OptLeaveType::whereIn('id', [1,4,5,7,9,10,12])->get();
+						} else {										// pempuan | nrl | al | mc
+							$er = OptLeaveType::whereIn('id', [1,2,4,5,7,9,10,11,12])->get();
+						}
+					}
+				}
+			}
+		} else {														// special unpaid leave deactivated
+			if($user->gender_id == 1){									// laki
+				if($oi->sum('leave_balance') < 1){						// laki | no nrl
+					if($leaveALMC->al_balance < 1){						// laki | no nrl | no al
+						if($leaveALMC->mc_balance < 1){					// laki | no nrl | no al | no mc
+							$er = OptLeaveType::whereIn('id', [3,6,9])->get();
+						} else {										// laki | no nrl | no al | mc
+							$er = OptLeaveType::whereIn('id', [2,3,6,9,11])->get();
+						}
+					} else {											// laki | no nrl | al
+						if($leaveALMC->mc_balance < 1){					// laki | no nrl | al | no mc
+							$er = OptLeaveType::whereIn('id', [1,5,9])->get();
+						} else {										// laki | no nrl | al | mc
+							$er = OptLeaveType::whereIn('id', [1,2,5,9,11])->get();
+						}
+					}
+				} else {												// laki | nrl
+					if($leaveALMC->al_balance < 1){						// laki | nrl | no al
+						if($leaveALMC->mc_balance < 1){					// laki | nrl | no al | no mc
+							$er = OptLeaveType::whereIn('id', [3,4,6,9,10])->get();
+						} else {										// laki | nrl | no al | mc
+							$er = OptLeaveType::whereIn('id', [2,3,4,6,9,10,11])->get();
+						}
+					} else {											// laki | nrl | al
+						if($leaveALMC->mc_balance < 1){					// laki | nrl | al | no mc
+							$er = OptLeaveType::whereIn('id', [1,4,5,9,10])->get();
+						} else {										// laki | nrl | al | mc
+							$er = OptLeaveType::whereIn('id', [1,2,4,5,9,10,11])->get();
+						}
+					}
+				}
+			} else {													// pempuan
+				if($oi->sum('leave_balance') < 1){						// pempuan | no nrl
+					if($leaveALMC->al_balance < 1){						// pempuan | no nrl | no al
+						if($leaveALMC->mc_balance < 1){					// pempuan | no nrl | no al | no mc
+							$er = OptLeaveType::whereIn('id', [3,6,7,9])->get();
+						} else {										// pempuan | no nrl | no al | mc
+							$er = OptLeaveType::whereIn('id', [2,3,6,7,9,11])->get();
+						}
+					} else {											// pempuan | no nrl | al
+						if($leaveALMC->mc_balance < 1){					// pempuan | no nrl | al | no mc
+							$er = OptLeaveType::whereIn('id', [1,5,7,9])->get();
+						} else {										// pempuan | no nrl | al | mc
+							$er = OptLeaveType::whereIn('id', [1,2,5,7,9,11])->get();
+						}
+					}
+				} else {												// pempuan | nrl
+					if($leaveALMC->al_balance < 1){						// pempuan | nrl | no al
+						if($leaveALMC->mc_balance < 1){					// pempuan | nrl | no al | no mc
+							$er = OptLeaveType::whereIn('id', [3,4,6,7,9,10])->get();
+						} else {										// pempuan | nrl | no al | mc
+							$er = OptLeaveType::whereIn('id', [2,3,4,6,7,9,10,11])->get();
+						}
+					} else {											// pempuan | nrl | al
+						if($leaveALMC->mc_balance < 1){					// pempuan | nrl | al | no mc
+							$er = OptLeaveType::whereIn('id', [1,4,5,7,9,10])->get();
+						} else {										// pempuan | nrl | al | mc
+							$er = OptLeaveType::whereIn('id', [1,2,4,5,7,9,10,11])->get();
+						}
+					}
+				}
+			}
+		}
+
+		// https://select2.org/data-sources/formats
+		foreach ($er as $key) {
+			$cuti['results'][] = [
+					'id' => $key->id,
+					'text' => $key->leave_type_code.' | '.$key->leave_type,
+			];
+			// $cuti['pagination'] = ['more' => true];
+		}
+		return response()->json( $cuti );
+	}
+
+	public function backupperson(Request $request)
+	{
+		return $this->response()->json( $backup );
 	}
 }
