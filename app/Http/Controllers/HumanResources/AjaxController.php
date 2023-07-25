@@ -13,6 +13,7 @@ use App\Models\Setting;
 
 use \Carbon\Carbon;
 use \Carbon\CarbonPeriod;
+use Illuminate\Support\Arr;
 // use Session;
 
 class AjaxController extends Controller
@@ -352,13 +353,14 @@ class AjaxController extends Controller
 		// 1st, check what year is now and disable every public holiday on that year
 		$d = Carbon::now(config('app.timezone'));
 		// echo $d->year;					// this year
-		// echo $d->addYear()->year;		// nest year
+		// echo $d->addYear()->year;		// next year
 
 		// list all holiday date based on this year and next year
-		$hdate = HRHolidayCalendar::whereRaw( '"'.$d->year.'" BETWEEN YEAR(date_start) AND YEAR(date_end)' )->orwhereRaw( '"'.$d->addYear()->year.'" BETWEEN YEAR(date_start) AND YEAR(date_end)' )->get();
+		$hdate = HRHolidayCalendar::whereRaw( '"'.$d->copy()->year.'" BETWEEN YEAR(date_start) AND YEAR(date_end)' )->orwhereRaw( '"'.$d->copy()->addYear()->year.'" BETWEEN YEAR(date_start) AND YEAR(date_end)' )->get();
+		// dd($hdate);
+		$holiday = [];
 		foreach ($hdate as $nda) {
 			$period = \Carbon\CarbonPeriod::create($nda->date_start, '1 days', $nda->date_end);
-			$holiday = [];
 			foreach ($period as $key) {
 				// echo 'moment("'.$key->format('Y-m-d').'"),';
 				$holiday[] = $key->format('Y-m-d');
@@ -378,16 +380,14 @@ class AjaxController extends Controller
 
 		// block saturday according to group
 		// make sure $request->id comes from table staff
-		$sat = \App\Models\Staff::find($request->id)?->belongstorestdaygroup()->first()->hasmanyrestdaycalendar()->get();
+		$sat = \App\Models\Staff::find($request->id)?->belongstorestdaygroup()->first()->hasmanyrestdaycalendar()->whereYear('saturday_date', $d->copy()->year)->orwhereYear('saturday_date', $d->copy()->addYear()->year)->get();
+		// dd($sat);
 		// $sat = \App\Models\Staff::find(196)->belongstorestdaygroup->first()->hasmanyrestdaycalendar()->get();
 		// echo $sat;
 		if(!is_null($sat)) {
+			$saturdays = [];
 			foreach ($sat as $key) {
-				$period1 = \Carbon\CarbonPeriod::create($key->date_time_start, '1 days', $key->date_time_end);
-				$saturdays = [];
-				foreach ($period1 as $key1) {
-					$saturdays[] = $key1->format('Y-m-d');
-				}
+				$saturdays[] = $key->saturday_date;
 			}
 		} else {
 			$saturdays = [];
@@ -397,11 +397,13 @@ class AjaxController extends Controller
 		if(Setting::find(1)->active == 1) {
 			// block self leave
 			// make sure $request->id comes from table staff
-			$leaveday = \App\Models\Staff::find($request->id)?->hasmanyleave()->whereNull('leave_status_id')->orwhereIn('leave_status_id', [5,6])->orwhereRaw('"'.$d->year.'" BETWEEN YEAR(date_time_start) AND YEAR(date_time_end)')->orwhereRaw('"'.$d->addYear()->year.'" BETWEEN YEAR(date_time_start) AND YEAR(date_time_end)')->get();
+			$leaveday = \App\Models\HumanResources\HRLeave::where('staff_id', $request->id)->/*whereNull('leave_status_id')->*/whereIn('leave_status_id', [5,6,NULL])->whereRaw('"'.$d->copy()->year.'" BETWEEN YEAR(date_time_start) AND YEAR(date_time_end)')->orwhereRaw('"'.$d->copy()->addYear()->year.'" BETWEEN YEAR(date_time_start) AND YEAR(date_time_end)')->get();
+			// echo $leaveday;
+			// dd($leaveday);
 			if(!is_null($leaveday)) {
+				$leavday = [];
 				foreach ($leaveday as $key) {
 					$period1 = \Carbon\CarbonPeriod::create($key->date_time_start, '1 days', $key->date_time_end);
-					$leavday = [];
 					foreach ($period1 as $key1) {
 						$leavday[] = $key1->format('Y-m-d');
 					}
@@ -412,7 +414,8 @@ class AjaxController extends Controller
 		} else {
 			$leavday = [];
 		}
-		$unavailableleave = $holiday + $sundays + $leavday + $saturdays;
+		// $unavailableleave = $holiday + $sundays + $leavday + $saturdays;
+		$unavailableleave = Arr::collapse([$holiday, $sundays, $leavday, $saturdays]);
 		return response()->json($unavailableleave);
 	}
 
