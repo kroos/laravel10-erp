@@ -8,7 +8,12 @@ use Illuminate\Http\Request;
 // load model
 use App\Models\HumanResources\HRLeave;
 use App\Models\HumanResources\OptLeaveType;
+use App\Models\HumanResources\HRHolidayCalendar;;
 use App\Models\Setting;
+
+use \Carbon\Carbon;
+use \Carbon\CarbonPeriod;
+// use Session;
 
 class AjaxController extends Controller
 {
@@ -195,7 +200,7 @@ class AjaxController extends Controller
 		// tahun sekarang ni
 		$year = \Carbon\Carbon::parse(now())->year;
 
-		$user = \Auth::user()->belongstostaff;
+		$user = \App\Models\Staff::find($request->id);
 		// checking for annual leave, mc, nrl and maternity
 		// hati-hati dgn yg ni sbb melibatkan masa
 		$leaveALMC = $user->hasmanyleaveentitlement()->where('year', date('Y'))->first();
@@ -341,8 +346,83 @@ class AjaxController extends Controller
 		return response()->json( $cuti );
 	}
 
+	public function unavailabledate(Request $request)
+	{
+		// globally mark date for weekend and holiday as unavailable to choose
+		// 1st, check what year is now and disable every public holiday on that year
+		$d = Carbon::now(config('app.timezone'));
+		// echo $d->year;					// this year
+		// echo $d->addYear()->year;		// nest year
+
+		// list all holiday date based on this year and next year
+		$hdate = HRHolidayCalendar::whereRaw( '"'.$d->year.'" BETWEEN YEAR(date_start) AND YEAR(date_end)' )->orwhereRaw( '"'.$d->addYear()->year.'" BETWEEN YEAR(date_start) AND YEAR(date_end)' )->get();
+		foreach ($hdate as $nda) {
+			$period = \Carbon\CarbonPeriod::create($nda->date_start, '1 days', $nda->date_end);
+			$holiday = [];
+			foreach ($period as $key) {
+				// echo 'moment("'.$key->format('Y-m-d').'"),';
+				$holiday[] = $key->format('Y-m-d');
+			}
+		}
+
+		// block every sunday
+		$today = Carbon::now();
+		$start_date = Carbon::create($today->year, 1, 1);
+		$end_date = Carbon::create($today->year + 1, 1, 1);
+		$sundays = [];
+		foreach ($start_date->daysUntil($end_date) as $date) {
+			if ($date->dayOfWeek === Carbon::SUNDAY) {
+				$sundays[] = $date->format('Y-m-d');
+			}
+		}
+
+		// block saturday according to group
+		// make sure $request->id comes from table staff
+		$sat = \App\Models\Staff::find($request->id)?->belongstorestdaygroup()->first()->hasmanyrestdaycalendar()->get();
+		// $sat = \App\Models\Staff::find(196)->belongstorestdaygroup->first()->hasmanyrestdaycalendar()->get();
+		// echo $sat;
+		if(!is_null($sat)) {
+			foreach ($sat as $key) {
+				$period1 = \Carbon\CarbonPeriod::create($key->date_time_start, '1 days', $key->date_time_end);
+				$saturdays = [];
+				foreach ($period1 as $key1) {
+					$saturdays[] = $key1->format('Y-m-d');
+				}
+			}
+		} else {
+			$saturdays = [];
+		}
+
+		// double date checking
+		if(Setting::find(1)->active == 1) {
+			// block self leave
+			// make sure $request->id comes from table staff
+			$leaveday = \App\Models\Staff::find($request->id)?->hasmanyleave()->whereNull('leave_status_id')->orwhereIn('leave_status_id', [5,6])->orwhereRaw('"'.$d->year.'" BETWEEN YEAR(date_time_start) AND YEAR(date_time_end)')->orwhereRaw('"'.$d->addYear()->year.'" BETWEEN YEAR(date_time_start) AND YEAR(date_time_end)')->get();
+			if(!is_null($leaveday)) {
+				foreach ($leaveday as $key) {
+					$period1 = \Carbon\CarbonPeriod::create($key->date_time_start, '1 days', $key->date_time_end);
+					$leavday = [];
+					foreach ($period1 as $key1) {
+						$leavday[] = $key1->format('Y-m-d');
+					}
+				}
+			} else {
+				$leavday = [];
+			}
+		} else {
+			$leavday = [];
+		}
+		$unavailableleave = $holiday + $sundays + $leavday + $saturdays;
+		return response()->json($unavailableleave);
+	}
+
 	public function backupperson(Request $request)
 	{
-		return $this->response()->json( $backup );
+		// we r going to find a backup person
+		// 1st, we need to take a look into his/her department.
+		$user = \Auth::user()->belongstostaff;
+		$dept = $user->belongstomanydepartment;
+		dd($dept);
+		// return $this->response()->json( $backup );
 	}
 }

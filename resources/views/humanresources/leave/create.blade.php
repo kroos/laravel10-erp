@@ -67,12 +67,12 @@ $('#leave_id').select2({
 		type: 'POST',
 		dataType: 'json',
 		data: function (params) {
-			var query = {
-				search: 'params.{{ \Auth::user()->belongstostaff->id }}',
+			var data = {
+				id: {{ \Auth::user()->belongstostaff->id }},
 				_token: '{!! csrf_token() !!}',
 			}
 			// Query parameters will be ?search=[term]&_token=67y0VEKOi0SnS3HBcEHR0qOv10rO1l9fn82ovUWD
-			return query;
+			return data;
 		}
 	},
 	allowClear: true,
@@ -99,12 +99,11 @@ $('#leave_id').select2({
 <?php
 $user = \Auth::user()->belongstostaff;
 $userneedbackup = $user->belongstoleaveapprovalflow->backup_approval;
-
 ?>
 
 $('#leave_id').on('change', function() {
 	$selection = $(this).find(':selected');
-	// console.log($selection.val());
+	console.log($selection.val());
 
 	// annual leave & UPL
 	if ($selection.val() == '1' || $selection.val() == '3') {
@@ -161,7 +160,8 @@ $('#leave_id').on('change', function() {
 				'<div class="form-group row mb-3 {{ $errors->has('staff_id') ? 'has-error' : '' }}">' +
 					'{{ Form::label('backupperson', 'Backup Person : ', ['class' => 'col-sm-2 col-form-label']) }}' +
 					'<div class="col-sm-10 backup">' +
-						'{{ Form::select('staff_id', $sel, @$value, ['class' => 'form-control', 'id' => 'backupperson', 'placeholder' => 'Please Choose', 'autocomplete' => 'off']) }}' +
+						'{{ Form::select('staff_id', [], @$value, ['class' => 'form-control', 'id' => 'backupperson', 'placeholder' => 'Please Choose', 'autocomplete' => 'off']) }}' +
+						'<select name="staff_id" id="backupperson" class="form-control form-select form-select-sm" placeholder="Please choose" autocomplete="off"></select>' +
 					'</div>' +
 				'</div>' +
 		@endif
@@ -188,7 +188,7 @@ $('#leave_id').on('change', function() {
 				dataType: 'json',
 				data: function (params) {
 					var query = {
-						search: 'params.{{ \Auth::user()->belongstostaff->id }}',
+						id: {{ \Auth::user()->belongstostaff->id }},
 						_token: '{!! csrf_token() !!}',
 					}
 					// Query parameters will be ?search=[term]&_token=67y0VEKOi0SnS3HBcEHR0qOv10rO1l9fn82ovUWD
@@ -207,34 +207,28 @@ $('#leave_id').on('change', function() {
 			format:'YYYY-MM-DD',
 			useCurrent: false,
 			daysOfWeekDisabled: [0],
-			@if(\App\Model\HRSettings3Days::first()->t3_days_checking == 1)
-			minDate: moment().add(3, 'days').format('YYYY-MM-DD'),
+			@if(\App\Models\Setting::find(4)->first()->active == 1)		// 3days checking
+				minDate: moment().add(3, 'days').format('YYYY-MM-DD'),
 			@endif
-			disabledDates: 
-					[
-						<?php
-						// block holiday tgk dlm disable date in datetimepicker
-							foreach ($nodate as $nda) {
-								$period = \Carbon\CarbonPeriod::create($nda->date_start, '1 days', $nda->date_end);
-								foreach ($period as $key) {
-									echo 'moment("'.$key->format('Y-m-d').'"),';
-									// $holiday[] = $key->format('Y-m-d');
-								}
-							}
-							if(\App\Model\HRSettingsDoubleDate::first()->double_date_setting == 1) {		// setting for double date
-							// block cuti sendiri
-								foreach ($nodate1 as $key) {
-									$period1 = \Carbon\CarbonPeriod::create($key->date_time_start, '1 days', $key->date_time_end);
-									foreach ($period1 as $key1) {
-										echo 'moment("'.$key1->format('Y-m-d').'"),';
-										// $holiday[] = $key1->format('Y-m-d');
-									}
-								}
-							}
-
-						?>
-					],
+			// disabledDates: [],
 		})
+		// .disabledDates({
+		// 	ajax: {
+		// 		url: '{{ route('leavedate.unavailabledate') }}',
+		// 		// data: { '_token': '{!! csrf_token() !!}' },
+		// 		type: 'POST',
+		// 		dataType: 'json',
+		// 		data: function (params) {
+		// 			var query = {
+		// 				search: 'params.{{ \Auth::user()->belongstostaff->id }}',
+		// 				_token: '{!! csrf_token() !!}',
+		// 			}
+		// 			// Query parameters will be ?search=[term]&_token=67y0VEKOi0SnS3HBcEHR0qOv10rO1l9fn82ovUWD
+		// 			return query;
+		// 		}
+		// 	},
+		// })
+		// .minDate()
 		.on('dp.change dp.show dp.update', function(e) {
 			$('#form').bootstrapValidator('revalidateField', 'date_time_start');
 			var minDate = $('#from').val();
@@ -267,36 +261,15 @@ $('#leave_id').on('change', function() {
 				$('.removehalfleave').remove();
 			}
 		});
-		
+
 		$('#to').datetimepicker({
 			useCurrent: false,
 			format:'YYYY-MM-DD',
 			daysOfWeekDisabled: [0],
-			@if(\App\Model\HRSettings3Days::first()->t3_days_checking == 1)
-			minDate: moment().add(3, 'days').format('YYYY-MM-DD'),
+			@if(\App\Models\Setting::find(1)->first()->active == 1)
+				minDate: moment().add(3, 'days').format('YYYY-MM-DD'),
 			@endif
-			disabledDates:[
-		<?php
-		// block holiday tgk dlm disable date in datetimepicker
-		foreach ($nodate as $nda) {
-			$period = \Carbon\CarbonPeriod::create($nda->date_start, '1 days', $nda->date_end);
-			foreach ($period as $key) {
-				echo 'moment("'.$key->format('Y-m-d').'"),';
-			}
-		}
-		if(\App\Model\HRSettingsDoubleDate::first()->double_date_setting == 1) {		// setting for double date
-		// block cuti sendiri
-			foreach ($nodate1 as $key) {
-				// echo $key->date_time_start.' datetime start';
-				// echo $key->date_time_end.' datetime end';
-				$period1 = \Carbon\CarbonPeriod::create($key->date_time_start, '1 days', $key->date_time_end);
-				foreach ($period1 as $key1) {
-					echo 'moment("'.$key1->format('Y-m-d').'"),';
-				}
-			}
-		}
-		?>
-							],
+			disabledDates:[],
 		})
 		.on('dp.change dp.show dp.update', function(e) {
 			$('#form').bootstrapValidator('revalidateField', 'date_time_end');
@@ -338,7 +311,7 @@ $('#leave_id').on('change', function() {
 				var datenow =$('#from').val();
 		
 				var data1 = $.ajax({
-					url: "{{ route('workinghour.workingtime') }}",
+					url: "",
 					type: "POST",
 					data: {date: datenow, _token: '{!! csrf_token() !!}'},
 					dataType: 'json',

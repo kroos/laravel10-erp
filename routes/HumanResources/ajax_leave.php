@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Route;
 Route::patch('/leavecancel/{hrleave}', [AjaxController::class, 'update'])->name('leavecancel.update');
 Route::post('/leaveType', [AjaxController::class, 'leaveType'])->name('leaveType.leaveType');
 Route::post('/backupperson', [AjaxController::class, 'backupperson'])->name('backupperson.backupperson');
+Route::post('/unavailabledate', [AjaxController::class, 'unavailabledate'])->name('leavedate.unavailabledate');
 
 // Route::get('/login/{login}', [
 // 	'as' => 'login.edit',

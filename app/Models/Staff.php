@@ -113,8 +113,12 @@ class Staff extends Authenticatable
 		return $this->belongsTo(HumanResources\HRLeaveApprovalFlow::class, 'leave_flow_id');
 	}
 
-	/////////////////////////////////////////////////////////////////////////////////////////////////////
-	// db relation belongsTo
+	// db relation BelongsTo
+	public function belongstorestdaygroup(): BelongsTo
+	{
+		return $this->belongsTo(HumanResources\OptRestdayGroup::class, 'restday_group_id');
+	}
+
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
 }
 
