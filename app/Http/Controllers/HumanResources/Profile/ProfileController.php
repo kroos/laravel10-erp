@@ -15,7 +15,7 @@ class ProfileController extends Controller
      */
     public function index()
     {
-        //
+        return view('humanresources.profile.index');
     }
 
     /**
@@ -23,7 +23,7 @@ class ProfileController extends Controller
      */
     public function create()
     {
-        //
+        return view('humanresources.profile.create');
     }
 
     /**
@@ -61,8 +61,8 @@ class ProfileController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Staff $staff)
-    {
-        //
-    }
+    // public function destroy(Staff $staff)
+    // {
+    //     //
+    // }
 }

@@ -25,7 +25,7 @@ class DepartmentPivot extends Model
 	// db relation belongsToMany
 	public function belongstomanystaff(): BelongsToMany
 	{
-		return $this->belongsToMany(\App\Models\Staff::class, 'pivot_staff_pivotdepts', 'pivot_dept_id', 'staff_id')->withPivot('main', 'id')->withTimestamps();
+		return $this->belongsToMany(\App\Models\Staff::class, 'pivot_staff_pivotdepts', 'pivot_dept_id', 'staff_id')->withTimestamps();
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
