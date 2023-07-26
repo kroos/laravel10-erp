@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Model\HumanResource\HRSettings;
+namespace App\Models\HumanResources;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Models\Model;
 
 // db relation class to load
@@ -14,8 +15,10 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 // use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 
-class WorkingHour extends Model
+class OptWorkingHour extends Model
 {
+	use HasFactory;
+
 	// protected $connection = 'mysql';
 	protected $table = 'option_working_hours';
 
