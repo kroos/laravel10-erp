@@ -119,6 +119,15 @@ class Staff extends Authenticatable
 		return $this->belongsTo(HumanResources\OptRestdayGroup::class, 'restday_group_id');
 	}
 
+	public function belongstogender(): BelongsTo
+	{
+		return $this->belongsTo(HumanResources\OptGender::class, 'gender_id');
+	}
+
+	public function belongstonationality(): BelongsTo
+	{
+		return $this->belongsTo(HumanResources\OptCountry::class, 'nationality_id');
+	}
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
 }
 
