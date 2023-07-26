@@ -103,7 +103,7 @@ $userneedbackup = $user->belongstoleaveapprovalflow->backup_approval;
 
 $('#leave_id').on('change', function() {
 	$selection = $(this).find(':selected');
-	console.log($selection.val());
+	// console.log($selection.val());
 
 	// annual leave & UPL
 	if ($selection.val() == '1' || $selection.val() == '3') {
@@ -124,14 +124,14 @@ $('#leave_id').on('change', function() {
 
 				'<div class="form-group row mb-3 {{ $errors->has('date_time_start') ? 'has-error' : '' }}">' +
 					'{{ Form::label('from', 'From : ', ['class' => 'col-sm-2 col-form-label']) }}' +
-					'<div class="col-sm-10 datetime">' +
+					'<div class="col-sm-10 datetime" style="position: relative">' +
 						'{{ Form::text('date_time_start', @$value, ['class' => 'form-control col-auto', 'id' => 'from', 'placeholder' => 'From : ', 'autocomplete' => 'off']) }}' +
 					'</div>' +
 				'</div>' +
 
 				'<div class="form-group row mb-3 {{ $errors->has('date_time_end') ? 'has-error' : '' }}">' +
 					'{{ Form::label('to', 'To : ', ['class' => 'col-sm-2 col-form-label']) }}' +
-					'<div class="col-sm-10 datetime">' +
+					'<div class="col-sm-10 datetime" style="position: relative">' +
 						'{{ Form::text('date_time_end', @$value, ['class' => 'form-control col-auto', 'id' => 'to', 'placeholder' => 'To : ', 'autocomplete' => 'off']) }}' +
 					'</div>' +
 				'</div>' +
@@ -139,13 +139,13 @@ $('#leave_id').on('change', function() {
 				'<div class="form-group row mb-3 {{ $errors->has('leave_type') ? 'has-error' : '' }}" id="wrapperday">' +
 					'{{ Form::label('leave_type', 'Jenis Cuti : ', ['class' => 'col-sm-2 col-form-label removehalfleave']) }}' +
 					'<div class="col-sm-10 row removehalfleave" id="halfleave">' +
-						'<div class="pretty p-default p-curve form-check removehalfleave" id="removeleavehalf">' +
+						'<div class="pretty p-default p-curve form-check form-check-inline removehalfleave" id="removeleavehalf">' +
 							'{{ Form::radio('leave_type', '1', true, ['id' => 'radio1', 'class' => 'form-check-input removehalfleave']) }}' +
 							'<div class="state p-success removehalfleave">' +
 								'{{ Form::label('radio1', 'Cuti Penuh', ['class' => 'form-check-label removehalfleave']) }}' +
 							'</div>' +
 						'</div>' +
-						'<div class="pretty p-default p-curve form-check removehalfleave" id="appendleavehalf">' +
+						'<div class="pretty p-default p-curve form-check form-check-inline removehalfleave" id="appendleavehalf">' +
 							'{{ Form::radio('leave_type', '2', NULL, ['id' => 'radio2', 'class' => 'form-check-input removehalfleave']) }}' +
 							'<div class="state p-success removehalfleave">' +
 								'{{ Form::label('radio2', 'Cuti Separuh', ['class' => 'form-check-label removehalfleave']) }}' +
@@ -159,8 +159,8 @@ $('#leave_id').on('change', function() {
 		@if( $userneedbackup == 1 )
 				'<div class="form-group row mb-3 {{ $errors->has('staff_id') ? 'has-error' : '' }}">' +
 					'{{ Form::label('backupperson', 'Backup Person : ', ['class' => 'col-sm-2 col-form-label']) }}' +
-					'<div class="col-sm-10 backup">' +
-						'<select name="staff_id" id="backupperson" class="form-control form-select form-select-sm col-auto" placeholder="Please choose" autocomplete="off"></select>' +
+					'<div class="col-auto backup">' +
+						'<select name="staff_id" id="backupperson" class="form-control form-select form-select-sm " placeholder="Please choose" autocomplete="off"></select>' +
 					'</div>' +
 				'</div>' +
 		@endif
@@ -183,7 +183,7 @@ $('#leave_id').on('change', function() {
 			ajax: {
 				url: '{{ route('backupperson.backupperson') }}',
 				// data: { '_token': '{!! csrf_token() !!}' },
-				type: 'POST',
+				type: 'GET',
 				dataType: 'json',
 				data: function (params) {
 					var query = {
@@ -214,33 +214,44 @@ $('#leave_id').on('change', function() {
 			success: function(data, textStatus, jqXHR)
 			{
 				// return data;
-
+				// start date
 				$('#from').datetimepicker({
 					format:'YYYY-MM-DD',
 					useCurrent: false,
-					daysOfWeekDisabled: [0],
-					@if(\App\Models\Setting::find(4)->first()->active == 1)		// 3days checking
-						minDate: moment().add(3, 'days').format('YYYY-MM-DD'),
-					@endif
+					icons: {
+						time: "fas fas-regular fa-clock fa-beat",
+						date: "fas fas-regular fa-calendar fa-beat",
+						up: "fas fas-regular fa-arrow-up fa-beat",
+						down: "fas fas-regular fa-arrow-down fa-beat",
+						previous: 'fas fas-regular fa-arrow-left fa-beat',
+						next: 'fas fas-regular fa-arrow-right fa-beat',
+						today: 'fas fas-regular fa-calenday-day fa-beat',
+						clear: 'fas fas-regular fa-broom-wide fa-beat',
+						close: 'fas fas-regular fa-rectangle-xmark fa-beat'
+					},
+					// daysOfWeekDisabled: [0],
+					minDate: moment().format('YYYY-MM-DD'),
 					disabledDates: data,
+					//minDate: data[1],
 				})
 				.on('dp.change dp.show dp.update', function(e) {
 					$('#form').bootstrapValidator('revalidateField', 'date_time_start');
-					var minDate = $('#from').val();
-					$('#to').datetimepicker('minDate', minDate);
+					var minDaten = $('#from').val();
+					console.log(minDaten);
+					$('#to').datetimepicker('minDate', minDaten);
 
 					if($('#from').val() === $('#to').val()) {
 						if( $('.removehalfleave').length === 0) {
 							$('#wrapperday').append(
 									'{{ Form::label('leave_type', 'Jenis Cuti : ', ['class' => 'col-sm-2 col-form-label removehalfleave']) }}' +
-									'<div class="col-sm-10 mb-3 removehalfleave" id="halfleave">' +
-										'<div class="pretty p-default p-curve form-check removehalfleave" id="removeleavehalf">' +
+									'<div class="col-auto mb-3 removehalfleave row" id="halfleave">' +
+										'<div class="pretty p-default p-curve form-check form-check-inline removehalfleave" id="removeleavehalf">' +
 											'{{ Form::radio('leave_type', '1', true, ['id' => 'radio1', 'class' => ' removehalfleave']) }}' +
 											'<div class="state p-success removehalfleave">' +
 												'{{ Form::label('radio1', 'Cuti Penuh', ['class' => 'form-check-label removehalfleave']) }}' +
 											'</div>' +
 										'</div>' +
-										'<div class="pretty p-default p-curve form-check removehalfleave" id="appendleavehalf">' +
+										'<div class="pretty p-default p-curve form-check form-check-inline removehalfleave" id="appendleavehalf">' +
 											'{{ Form::radio('leave_type', '2', NULL, ['id' => 'radio2', 'class' => ' removehalfleave']) }}' +
 											'<div class="state p-success removehalfleave">' +
 												'{{ Form::label('radio2', 'Cuti Separuh', ['class' => 'form-check-label removehalfleave']) }}' +
@@ -260,11 +271,20 @@ $('#leave_id').on('change', function() {
 				$('#to').datetimepicker({
 					useCurrent: false,
 					format:'YYYY-MM-DD',
-					daysOfWeekDisabled: [0],
-					@if(\App\Models\Setting::find(1)->first()->active == 1)
-						minDate: moment().add(3, 'days').format('YYYY-MM-DD'),
-					@endif
+					//daysOfWeekDisabled: [0],
+					minDate: moment().format('YYYY-MM-DD'),
 					disabledDates:data,
+					icons: {
+						time: "fas fas-regular fa-clock fa-beat",
+						date: "fas fas-regular fa-calendar fa-beat",
+						up: "fas fas-regular fa-arrow-up fa-beat",
+						down: "fas fas-regular fa-arrow-down fa-beat",
+						previous: 'fas fas-regular fa-arrow-left fa-beat',
+						next: 'fas fas-regular fa-arrow-right fa-beat',
+						today: 'fas fas-regular fa-calenday-day fa-beat',
+						clear: 'fas fas-regular fa-broom-wide fa-beat',
+						close: 'fas fas-regular fa-rectangle-xmark fa-beat'
+					},
 				})
 				.on('dp.change dp.show dp.update', function(e) {
 					$('#form').bootstrapValidator('revalidateField', 'date_time_end');
@@ -275,13 +295,13 @@ $('#leave_id').on('change', function() {
 							$('#wrapperday').append(
 									'{{ Form::label('leave_type', 'Jenis Cuti : ', ['class' => 'col-sm-2 col-form-label removehalfleave']) }}' +
 									'<div class="col-sm-10 mb-3 removehalfleave" id="halfleave">' +
-										'<div class="pretty p-default p-curve form-check removehalfleave" id="removeleavehalf">' +
+										'<div class="pretty p-default p-curve form-check form-check-inline removehalfleave" id="removeleavehalf">' +
 											'{{ Form::radio('leave_type', '1', true, ['id' => 'radio1', 'class' => ' removehalfleave']) }}' +
 											'<div class="state p-success removehalfleave">' +
 												'{{ Form::label('radio1', 'Cuti Penuh', ['class' => 'form-check-label removehalfleave']) }}' +
 											'</div>' +
 										'</div>' +
-										'<div class="pretty p-default p-curve form-check removehalfleave" id="appendleavehalf">' +
+										'<div class="pretty p-default p-curve form-check form-check-inline removehalfleave" id="appendleavehalf">' +
 											'{{ Form::radio('leave_type', '2', NULL, ['id' => 'radio2', 'class' => ' removehalfleave']) }}' +
 											'<div class="state p-success removehalfleave">' +
 												'{{ Form::label('radio2', 'Cuti Separuh Hari', ['class' => 'form-check-label removehalfleave']) }}' +
@@ -297,12 +317,12 @@ $('#leave_id').on('change', function() {
 						$('.removehalfleave').remove();
 					}
 				});
-
+				// end date
 			},
-			error: function (jqXHR, textStatus, errorThrown)
-			{
-				return textStatus;
-			}
+			// error: function (jqXHR, textStatus, errorThrown)
+			// {
+			// 	return textStatus;
+			// }
 		});
 
 		/////////////////////////////////////////////////////////////////////////////////////////
@@ -334,13 +354,13 @@ $('#leave_id').on('change', function() {
 				// checking so there is no double
 				if( $('.removetest').length == 0 ) {
 					$('#wrappertest').append(
-						'<div class="pretty p-default p-curve form-check removetest">' +
+						'<div class="pretty p-default p-curve form-check form-check-inline removetest">' +
 							'<input type="radio" name="leave_half" value="' + obj.start_am + '/' + obj.end_am + '" id="am" checked="checked">' +
 							'<div class="state p-primary">' +
 								'<label for="am" class="form-check-label">' + moment(obj.start_am, 'HH:mm:ss').format('h:mm a') + ' to ' + moment(obj.end_am, 'HH:mm:ss').format('h:mm a') + '</label> ' +
 							'</div>' +
 						'</div>' +
-						'<div class="pretty p-default p-curve form-check removetest">' +
+						'<div class="pretty p-default p-curve form-check form-check-inline removetest">' +
 							'<input type="radio" name="leave_half" value="' + obj.start_pm + '/' + obj.end_pm + '" id="pm">' +
 							'<div class="state p-primary">' +
 								'<label for="pm" class="form-check-label">' + moment(obj.start_pm, 'HH:mm:ss').format('h:mm a') + ' to ' + moment(obj.end_pm, 'HH:mm:ss').format('h:mm a') + '</label> ' +

@@ -380,10 +380,9 @@ class AjaxController extends Controller
 
 		// block saturday according to group
 		// make sure $request->id comes from table staff
-		$sat = \App\Models\Staff::find($request->id)?->belongstorestdaygroup()->first()->hasmanyrestdaycalendar()->whereYear('saturday_date', $d->copy()->year)->orwhereYear('saturday_date', $d->copy()->addYear()->year)->get();
+		// ->whereYear('saturday_date', $d->copy()->year)->whereYear('saturday_date', $d->copy()->addYear()->year)->get()
+		$sat = \App\Models\Staff::find($request->id)?->belongstorestdaygroup()->first()->hasmanyrestdaycalendar()->whereRaw('(YEAR (`saturday_date`) = '.$d->copy()->year.' Or YEAR ( `saturday_date` ) = '.$d->copy()->addYear()->year.')')->get();
 		// dd($sat);
-		// $sat = \App\Models\Staff::find(196)->belongstorestdaygroup->first()->hasmanyrestdaycalendar()->get();
-		// echo $sat;
 		if(!is_null($sat)) {
 			$saturdays = [];
 			foreach ($sat as $key) {
@@ -414,9 +413,21 @@ class AjaxController extends Controller
 		} else {
 			$leavday = [];
 		}
-		// $unavailableleave = $holiday + $sundays + $leavday + $saturdays;
-		$unavailableleave = Arr::collapse([$holiday, $sundays, $leavday, $saturdays]);
+
+		if(\App\Models\Setting::find(4)->first()->active == 1){		// 3days checking
+			$lusa1 = Carbon::now()->addDays(\App\Models\Setting::find(5)->first()->active + 1)->format('Y-m-d');
+			$period2 = \Carbon\CarbonPeriod::create(Carbon::now()->format('Y-m-d'), '1 days', $lusa1);
+			$lusa = [];
+			foreach ($period2 as $key1) {
+				$lusa[] = $key1->format('Y-m-d');
+			}
+		} else {
+			$lusa = [];
+		}
+
+		$unavailableleave = Arr::collapse([$holiday, $sundays, $leavday, $saturdays, $lusa]);
 		return response()->json($unavailableleave);
+		// print_r($date[1]);
 	}
 
 	public function backupperson(Request $request)
@@ -424,8 +435,37 @@ class AjaxController extends Controller
 		// we r going to find a backup person
 		// 1st, we need to take a look into his/her department.
 		$user = \Auth::user()->belongstostaff;
-		$dept = $user->belongstomanydepartment;
-		dd($dept);
-		// return $this->response()->json( $backup );
+		$dept = $user->belongstomanydepartment()->first();
+		$userindept = $dept->belongstomanystaff()->where('active', 1)->get();
+
+
+		// backup from own department if he/she have
+		// https://select2.org/data-sources/formats
+		$backup['results'][] = [];
+		if ($userindept) {
+			foreach($userindept as $key){
+				if($key->id != \Auth::user()->belongstostaff->id){
+					$backup['results'][] = [
+							'id' => $key->id,
+							'text' => $key->name,
+					];
+				}
+			}
+		}
+
+		$crossbacku = $user->crossbackupto()?->wherePivot('active', 1)->get();
+		$crossbackup['results'][] = [];
+		if($crossbacku) {
+			foreach($crossbacku as $key){
+				$crossbackup['results'][] = [
+						'id' => $key->id,
+						'text' => $key->name,
+				];
+			}
+		}
+		// dd($crossbackup);
+		// $allbackups = Arr::collapse([$backup, $crossbackup]);
+		$allbackups = array_merge_recursive($backup, $crossbackup);
+		return response()->json( $allbackups );
 	}
 }
