@@ -37,9 +37,9 @@ class ProfileController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Staff $staff)
+    public function show(Staff $profile)
     {
-        //
+        return view('humanresources.profile.show', compact('profile'));
     }
 
     /**
@@ -53,9 +53,9 @@ class ProfileController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Staff $staff)
+    public function update(Request $request, Staff $profile)
     {
-        //
+        return view('humanresources.profile.edit', compact('profile'));
     }
 
     /**

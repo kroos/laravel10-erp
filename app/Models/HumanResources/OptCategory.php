@@ -22,7 +22,7 @@ class OptCategory extends Model
 	protected $table = 'option_categories';
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
-	public function hasmanybranch(): HasMany
+	public function hasmanydepartment(): HasMany
 	{
 		return $this->hasMany(HumanResources\DepartmentPivot::class, 'category_id');
 	}

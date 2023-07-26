@@ -30,5 +30,10 @@ class HREmergency extends Model
 	{
 		return $this->belongsTo(Staff::class, 'staff_id');
 	}
+
+	public function belongstorelationship(): BelongsTo
+	{
+		return $this->belongsTo(OptRelationship::class, 'relationship_id');
+	}
 }
 
