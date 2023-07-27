@@ -183,7 +183,7 @@ $('#leave_id').on('change', function() {
 			ajax: {
 				url: '{{ route('backupperson.backupperson') }}',
 				// data: { '_token': '{!! csrf_token() !!}' },
-				type: 'GET',
+				type: 'POST',
 				dataType: 'json',
 				data: function (params) {
 					var query = {
