@@ -492,8 +492,7 @@ class AjaxController extends Controller
 		$dty = $dt->copy()->year;
 
 		// get group working hour from department
-		// $gwh = \App\Models\Staff::find($request->id)->belongstomanydepartment()->first()->wh_group_id;
-		$gwh = 0;
+		$gwh = \App\Models\Staff::find($request->id)->belongstomanydepartment()->first()->wh_group_id;
 
 		// pls be remind, this is for leave application, so if maintenance (group=1/$gwh=1) apply leave, we should give user category 8
 
