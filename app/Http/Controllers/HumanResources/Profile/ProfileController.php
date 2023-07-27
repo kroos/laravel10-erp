@@ -7,9 +7,18 @@ use Illuminate\Http\Request;
 
 // load models
 use App\Models\Staff;
+use App\Models\HumanResources\DepartmentPivot;
+use App\Models\HumanResources\OptGender;
 
 class ProfileController extends Controller
 {
+
+    function __construct()
+	{
+		$this->middleware('auth');
+        $this->middleware('profileaccess');
+	}
+
     /**
      * Display a listing of the resource.
      */
@@ -23,7 +32,7 @@ class ProfileController extends Controller
      */
     public function create()
     {
-        return view('humanresources.profile.create');
+        //
     }
 
     /**
@@ -45,9 +54,12 @@ class ProfileController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Staff $staff)
+    public function edit(Staff $profile)
     {
-        //
+        $department = DepartmentPivot::all()->pluck('department','id')->sortKeys()->toArray();
+        $gender = OptGender::all()->pluck('gender','id')->sortKeys()->toArray();
+
+        return view('humanresources.profile.edit', compact('profile', 'department', 'gender'));
     }
 
     /**
@@ -55,7 +67,7 @@ class ProfileController extends Controller
      */
     public function update(Request $request, Staff $profile)
     {
-        return view('humanresources.profile.edit', compact('profile'));
+        //
     }
 
     /**
