@@ -183,14 +183,13 @@ $('#leave_id').on('change', function() {
 			ajax: {
 				url: '{{ route('backupperson.backupperson') }}',
 				// data: { '_token': '{!! csrf_token() !!}' },
-				type: 'GET',
+				type: 'POST',
 				dataType: 'json',
 				data: function (params) {
 					var query = {
 						id: {{ \Auth::user()->belongstostaff->id }},
 						_token: '{!! csrf_token() !!}',
 					}
-					// Query parameters will be ?search=[term]&_token=67y0VEKOi0SnS3HBcEHR0qOv10rO1l9fn82ovUWD
 					return query;
 				}
 			},
@@ -203,127 +202,155 @@ $('#leave_id').on('change', function() {
 		// $('#datetimepicker').data("DateTimePicker").OPTION()
 		// $('#datetimepicker').data('DateTimePicker').daysOfWeekDisabled([1, 2]);
 
-		$.ajax({
-			url : "{{ route('leavedate.unavailabledate') }}",
+		// $.ajax({
+		// 	url : "{{ route('leavedate.unavailabledate') }}",
+		// 	type: "POST",
+		// 	// dataType: 'json',
+		// 	data : {
+		// 				id: {{ \Auth::user()->belongstostaff->id }},
+		// 				_token: '{!! csrf_token() !!}',
+		// 			},
+		// 	success: function(data, textStatus, jqXHR)
+		// 	{
+		// 		return data;
+		// 	},
+		// 	error: function (jqXHR, textStatus, errorThrown)
+		// 	{
+		// 		return textStatus;
+		// 	}
+		// });
+
+		var data2 = $.ajax({
+			url: "{{ route('leavedate.unavailabledate') }}",
 			type: "POST",
-			// dataType: 'json',
 			data : {
 						id: {{ \Auth::user()->belongstostaff->id }},
 						_token: '{!! csrf_token() !!}',
 					},
-			success: function(data, textStatus, jqXHR)
-			{
-				// return data;
-				// start date
-				$('#from').datetimepicker({
-					format:'YYYY-MM-DD',
-					useCurrent: false,
-					icons: {
-						time: "fas fas-regular fa-clock fa-beat",
-						date: "fas fas-regular fa-calendar fa-beat",
-						up: "fas fas-regular fa-arrow-up fa-beat",
-						down: "fas fas-regular fa-arrow-down fa-beat",
-						previous: 'fas fas-regular fa-arrow-left fa-beat',
-						next: 'fas fas-regular fa-arrow-right fa-beat',
-						today: 'fas fas-regular fa-calenday-day fa-beat',
-						clear: 'fas fas-regular fa-broom-wide fa-beat',
-						close: 'fas fas-regular fa-rectangle-xmark fa-beat'
-					},
-					// daysOfWeekDisabled: [0],
-					minDate: moment().format('YYYY-MM-DD'),
-					disabledDates: data,
-					//minDate: data[1],
-				})
-				.on('dp.change dp.show dp.update', function(e) {
-					$('#form').bootstrapValidator('revalidateField', 'date_time_start');
-					var minDaten = $('#from').val();
-					console.log(minDaten);
-					$('#to').datetimepicker('minDate', minDaten);
-
-					if($('#from').val() === $('#to').val()) {
-						if( $('.removehalfleave').length === 0) {
-							$('#wrapperday').append(
-									'{{ Form::label('leave_type', 'Jenis Cuti : ', ['class' => 'col-sm-2 col-form-label removehalfleave']) }}' +
-									'<div class="col-auto mb-3 removehalfleave row" id="halfleave">' +
-										'<div class="pretty p-default p-curve form-check form-check-inline removehalfleave" id="removeleavehalf">' +
-											'{{ Form::radio('leave_type', '1', true, ['id' => 'radio1', 'class' => ' removehalfleave']) }}' +
-											'<div class="state p-success removehalfleave">' +
-												'{{ Form::label('radio1', 'Cuti Penuh', ['class' => 'form-check-label removehalfleave']) }}' +
-											'</div>' +
-										'</div>' +
-										'<div class="pretty p-default p-curve form-check form-check-inline removehalfleave" id="appendleavehalf">' +
-											'{{ Form::radio('leave_type', '2', NULL, ['id' => 'radio2', 'class' => ' removehalfleave']) }}' +
-											'<div class="state p-success removehalfleave">' +
-												'{{ Form::label('radio2', 'Cuti Separuh', ['class' => 'form-check-label removehalfleave']) }}' +
-											'</div>' +
-										'</div>' +
-									'</div>' +
-									'<div class="form-group row col-sm-10 offset-sm-2 {{ $errors->has('leave_half') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
-									'</div>'
-							);
-						}
-					}
-					if($('#from').val() !== $('#to').val()) {
-						$('.removehalfleave').remove();
-					}
+			dataType: 'json',
+			global: false,
+			async:false,
+			success: function (response) {
+				// you will get response from your php page (what you echo or print)
+				// return response;
+				var arrItems = [];              		// The array to store JSON data.
+				$.each(response, function (index, value) {
+					arrItems.push(value);       		// Push the value inside the array.
 				});
-
-				$('#to').datetimepicker({
-					useCurrent: false,
-					format:'YYYY-MM-DD',
-					//daysOfWeekDisabled: [0],
-					minDate: moment().format('YYYY-MM-DD'),
-					disabledDates:data,
-					icons: {
-						time: "fas fas-regular fa-clock fa-beat",
-						date: "fas fas-regular fa-calendar fa-beat",
-						up: "fas fas-regular fa-arrow-up fa-beat",
-						down: "fas fas-regular fa-arrow-down fa-beat",
-						previous: 'fas fas-regular fa-arrow-left fa-beat',
-						next: 'fas fas-regular fa-arrow-right fa-beat',
-						today: 'fas fas-regular fa-calenday-day fa-beat',
-						clear: 'fas fas-regular fa-broom-wide fa-beat',
-						close: 'fas fas-regular fa-rectangle-xmark fa-beat'
-					},
-				})
-				.on('dp.change dp.show dp.update', function(e) {
-					$('#form').bootstrapValidator('revalidateField', 'date_time_end');
-					var maxDate = $('#to').val();
-					$('#from').datetimepicker('maxDate', maxDate);
-					if($('#from').val() === $('#to').val()) {
-						if( $('.removehalfleave').length === 0) {
-							$('#wrapperday').append(
-									'{{ Form::label('leave_type', 'Jenis Cuti : ', ['class' => 'col-sm-2 col-form-label removehalfleave']) }}' +
-									'<div class="col-sm-10 mb-3 removehalfleave" id="halfleave">' +
-										'<div class="pretty p-default p-curve form-check form-check-inline removehalfleave" id="removeleavehalf">' +
-											'{{ Form::radio('leave_type', '1', true, ['id' => 'radio1', 'class' => ' removehalfleave']) }}' +
-											'<div class="state p-success removehalfleave">' +
-												'{{ Form::label('radio1', 'Cuti Penuh', ['class' => 'form-check-label removehalfleave']) }}' +
-											'</div>' +
-										'</div>' +
-										'<div class="pretty p-default p-curve form-check form-check-inline removehalfleave" id="appendleavehalf">' +
-											'{{ Form::radio('leave_type', '2', NULL, ['id' => 'radio2', 'class' => ' removehalfleave']) }}' +
-											'<div class="state p-success removehalfleave">' +
-												'{{ Form::label('radio2', 'Cuti Separuh Hari', ['class' => 'form-check-label removehalfleave']) }}' +
-											'</div>' +
-										'</div>' +
-									'</div>' +
-									'<div class="form-group row col-sm-10 offset-sm-2 {{ $errors->has('leave_half') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
-									'</div>'
-							);
-						}
-					}
-					if($('#from').val() !== $('#to').val()) {
-						$('.removehalfleave').remove();
-					}
-				});
-				// end date
+				return arrItems;
 			},
-			// error: function (jqXHR, textStatus, errorThrown)
-			// {
-			// 	return textStatus;
-			// }
+			error: function(jqXHR, textStatus, errorThrown) {
+				console.log(textStatus, errorThrown);
+			}
+		}).responseText;
+
+		// this is how u cange from json to array type data
+		var data = $.parseJSON( data2 );
+
+		// start date
+		$('#from').datetimepicker({
+			format:'YYYY-MM-DD',
+			useCurrent: false,
+			icons: {
+				time: "fas fas-regular fa-clock fa-beat",
+				date: "fas fas-regular fa-calendar fa-beat",
+				up: "fas fas-regular fa-arrow-up fa-beat",
+				down: "fas fas-regular fa-arrow-down fa-beat",
+				previous: 'fas fas-regular fa-arrow-left fa-beat',
+				next: 'fas fas-regular fa-arrow-right fa-beat',
+				today: 'fas fas-regular fa-calenday-day fa-beat',
+				clear: 'fas fas-regular fa-broom-wide fa-beat',
+				close: 'fas fas-regular fa-rectangle-xmark fa-beat'
+			},
+			// daysOfWeekDisabled: [0],
+			minDate: moment().format('YYYY-MM-DD'),
+			disabledDates: data,
+			//minDate: data[1],
+		})
+		.on('dp.change dp.show dp.update', function(e) {
+			$('#form').bootstrapValidator('revalidateField', 'date_time_start');
+			var minDaten = $('#from').val();
+			console.log(minDaten);
+			$('#to').datetimepicker('minDate', minDaten);
+
+			if($('#from').val() === $('#to').val()) {
+				if( $('.removehalfleave').length === 0) {
+					$('#wrapperday').append(
+							'{{ Form::label('leave_type', 'Jenis Cuti : ', ['class' => 'col-sm-2 col-form-label removehalfleave']) }}' +
+							'<div class="col-auto mb-3 removehalfleave row" id="halfleave">' +
+								'<div class="pretty p-default p-curve form-check form-check-inline removehalfleave" id="removeleavehalf">' +
+									'{{ Form::radio('leave_type', '1', true, ['id' => 'radio1', 'class' => ' removehalfleave']) }}' +
+									'<div class="state p-success removehalfleave">' +
+										'{{ Form::label('radio1', 'Cuti Penuh', ['class' => 'form-check-label removehalfleave']) }}' +
+									'</div>' +
+								'</div>' +
+								'<div class="pretty p-default p-curve form-check form-check-inline removehalfleave" id="appendleavehalf">' +
+									'{{ Form::radio('leave_type', '2', NULL, ['id' => 'radio2', 'class' => ' removehalfleave']) }}' +
+									'<div class="state p-success removehalfleave">' +
+										'{{ Form::label('radio2', 'Cuti Separuh', ['class' => 'form-check-label removehalfleave']) }}' +
+									'</div>' +
+								'</div>' +
+							'</div>' +
+							'<div class="form-group row col-sm-10 offset-sm-2 {{ $errors->has('leave_half') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
+							'</div>'
+					);
+				}
+			}
+			if($('#from').val() !== $('#to').val()) {
+				$('.removehalfleave').remove();
+			}
 		});
+
+		$('#to').datetimepicker({
+			useCurrent: false,
+			format:'YYYY-MM-DD',
+			//daysOfWeekDisabled: [0],
+			minDate: moment().format('YYYY-MM-DD'),
+			disabledDates:data,
+			icons: {
+				time: "fas fas-regular fa-clock fa-beat",
+				date: "fas fas-regular fa-calendar fa-beat",
+				up: "fas fas-regular fa-arrow-up fa-beat",
+				down: "fas fas-regular fa-arrow-down fa-beat",
+				previous: 'fas fas-regular fa-arrow-left fa-beat',
+				next: 'fas fas-regular fa-arrow-right fa-beat',
+				today: 'fas fas-regular fa-calenday-day fa-beat',
+				clear: 'fas fas-regular fa-broom-wide fa-beat',
+				close: 'fas fas-regular fa-rectangle-xmark fa-beat'
+			},
+		})
+		.on('dp.change dp.show dp.update', function(e) {
+			$('#form').bootstrapValidator('revalidateField', 'date_time_end');
+			var maxDate = $('#to').val();
+			$('#from').datetimepicker('maxDate', maxDate);
+			if($('#from').val() === $('#to').val()) {
+				if( $('.removehalfleave').length === 0) {
+					$('#wrapperday').append(
+							'{{ Form::label('leave_type', 'Jenis Cuti : ', ['class' => 'col-sm-2 col-form-label removehalfleave']) }}' +
+							'<div class="col-sm-10 mb-3 removehalfleave" id="halfleave">' +
+								'<div class="pretty p-default p-curve form-check form-check-inline removehalfleave" id="removeleavehalf">' +
+									'{{ Form::radio('leave_type', '1', true, ['id' => 'radio1', 'class' => ' removehalfleave']) }}' +
+									'<div class="state p-success removehalfleave">' +
+										'{{ Form::label('radio1', 'Cuti Penuh', ['class' => 'form-check-label removehalfleave']) }}' +
+									'</div>' +
+								'</div>' +
+								'<div class="pretty p-default p-curve form-check form-check-inline removehalfleave" id="appendleavehalf">' +
+									'{{ Form::radio('leave_type', '2', NULL, ['id' => 'radio2', 'class' => ' removehalfleave']) }}' +
+									'<div class="state p-success removehalfleave">' +
+										'{{ Form::label('radio2', 'Cuti Separuh Hari', ['class' => 'form-check-label removehalfleave']) }}' +
+									'</div>' +
+								'</div>' +
+							'</div>' +
+							'<div class="form-group row col-sm-10 offset-sm-2 {{ $errors->has('leave_half') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
+							'</div>'
+					);
+				}
+			}
+			if($('#from').val() !== $('#to').val()) {
+				$('.removehalfleave').remove();
+			}
+		});
+		// end date
 
 		/////////////////////////////////////////////////////////////////////////////////////////
 		// enable radio
@@ -333,9 +360,9 @@ $('#leave_id').on('change', function() {
 				var datenow =$('#from').val();
 		
 				var data1 = $.ajax({
-					url: "",
-					type: "POST",
-					data: {date: datenow, _token: '{!! csrf_token() !!}'},
+					url: "{{ route('leavedate.timeleave') }}",
+					type: "GET",
+					data: {date: datenow, _token: '{!! csrf_token() !!}', id: {{ \Auth::user()->belongstostaff->id }} },
 					dataType: 'json',
 					global: false,
 					async:false,
@@ -370,7 +397,7 @@ $('#leave_id').on('change', function() {
 				}
 			}
 		});
-		
+
 		$(document).on('change', '#removeleavehalf :radio', function () {
 		//$('#removeleavehalf :radio').change(function() {
 			if (this.checked) {

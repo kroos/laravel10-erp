@@ -468,4 +468,40 @@ class AjaxController extends Controller
 		$allbackups = array_merge_recursive($backup, $crossbackup);
 		return response()->json( $allbackups );
 	}
+
+	public function timeleave(Request $request)
+	{
+		// get year from leave date
+		$dt = \Carbon\Carbon::parse($request->date);
+		// echo $dt->year;
+		// echo $dt->dayOfWeek;	// if = 5, meaning its friday so need to look at category 3
+		$dt = 6;
+		$dty = 2023;
+
+		// get group working hour from department
+		// $gwh = \App\Models\Staff::find($request->id)->belongstomanydepartment()->first()->wh_group_id;
+		$gwh = 1;
+
+		// if department wh_group_id = 1, meaning category = 6,7,8
+		// if from monday to thursday and saturday, whgroup_id = 0, so category 1,2,4. depends of date
+
+		// if($gwh == 1 && $dt->copy()->dayOfWeek == 5){										// wh_group_id=1 & friday, so category=7 => maintenance team
+		if($gwh == 1 && $dt == 5){
+			// $time = \App\Models\HumanResources\OptWorkingHour::whereRaw('"'.$request->date.'" BETWEEN effective_date_start AND effective_date_end')->where(['year' => $dt->copy()->year, 'group' => $gwh, 'category' => 7])->get();
+			$time = \App\Models\HumanResources\OptWorkingHour::whereRaw('"'.$request->date.'" BETWEEN effective_date_start AND effective_date_end')->where(['year' => $dty, 'group' => $gwh, 'category' => 7])->get();
+		} elseif ($gwh == 1 && $dt != 5) {
+			// $time = \App\Models\HumanResources\OptWorkingHour::whereRaw('"'.$request->date.'" BETWEEN effective_date_start AND effective_date_end')->where(['year' => $dt->copy()->year, 'group' => $gwh, 'category' => 7])->get();
+			$time = \App\Models\HumanResources\OptWorkingHour::whereRaw('"'.$request->date.'" BETWEEN effective_date_start AND effective_date_end')->where(['year' => $dty, 'group' => $gwh])->get();
+		}
+
+		// $time = \App\Models\HumanResources\OptWorkingHour::whereRaw('"'.$request->date.'" BETWEEN effective_date_start AND effective_date_end')->where(['year' => $dt->copy()->year, 'group' => $gwh])->get();
+		return $time;
+
+		// return response()->json([
+		// 	'start_am' => $time->first()->time_start_am,
+		// 	'end_am' => $time->first()->time_end_am,
+		// 	'start_pm' => $time->first()->time_start_pm,
+		// 	'end_pm' => $time->first()->time_end_pm,
+		// ]);
+	}
 }
