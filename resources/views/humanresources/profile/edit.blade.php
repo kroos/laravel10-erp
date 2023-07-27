@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
+
 <style>
   .table {
     border-collapse: separate;
@@ -15,6 +16,9 @@ $emergencies = $profile->hasmanyemergency()->get();
 <div class="col-auto table-responsive">
 
   <img src="{{ asset('storage/user_profile/' . $profile->image) }}" class="rounded mx-auto d-block" width="220" height="250">
+
+  {!! Form::model($profile, ['route' => ['profile.update', $profile->id], 'method' => 'PATCH', 'id' => 'form', 'class' => 'form-horizontal', 'autocomplete' => 'off', 'files' => true]) !!}
+  @csrf
 
   <table class="table">
     <tr class="my-2">
@@ -36,13 +40,13 @@ $emergencies = $profile->hasmanyemergency()->get();
         IC
       </td>
       <td class="col-md-5">
-        {{ $profile->ic }}
+        {{ Form::text( 'ic', @$value, ['class' => 'form-control', 'id' => 'stat', 'placeholder' => 'Please Insert', 'autocomplete' => 'off'] ) }}
       </td>
       <td class="table-primary col-md-2">
         PHONE NUMBER
       </td>
       <td>
-        {{ $profile->mobile }}
+        {{ Form::text( 'mobile', @$value, ['class' => 'form-control', 'id' => 'stat', 'placeholder' => 'Please Insert', 'autocomplete' => 'off'] ) }}
       </td>
     </tr>
     <tr class="my-2">
@@ -50,7 +54,7 @@ $emergencies = $profile->hasmanyemergency()->get();
         DEPARTMENT
       </td>
       <td class="col-md-5">
-        {{ $profile->belongstomanydepartment()->first()->department }}
+        {!! Form::select('department', $department, @$value, ['class' => 'form-control', 'id' => 'stat', 'placeholder' => 'Please Select', 'autocomplete' => 'off']) !!}
       </td>
       <td class="table-primary col-md-2">
         SATURDAY GROUPING
@@ -72,7 +76,9 @@ $emergencies = $profile->hasmanyemergency()->get();
         GENDER
       </td>
       <td>
-        {{ $profile->belongstogender->gender }}
+        <!-- {{ $profile->belongstogender->gender }} -->
+
+        {!! Form::select('gender_id', $gender, @$value, ['class' => 'form-control', 'id' => 'stat', 'placeholder' => 'Please Select', 'autocomplete' => 'off']) !!}
       </td>
     </tr>
     <tr class="my-2">
@@ -150,6 +156,28 @@ $emergencies = $profile->hasmanyemergency()->get();
       </td>
     </tr>
   </table>
+  {{ Form::close() }}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   @if ($emergencies->isNotEmpty())
   <table class="table">
@@ -193,13 +221,14 @@ $emergencies = $profile->hasmanyemergency()->get();
 
   <div class="container d-flex justify-content-center align-items-center">
     <div class="text-center">
-      <a href="{{ route('profile.edit', $profile->id) }}">
-        <button type="button" class="btn btn-sm btn-outline-secondary">EDIT</button>
-      </a>
+      <!-- <a href="{{ route('profile.edit', $profile->id) }}"> -->
+      <button type="button" class="btn btn-sm btn-outline-secondary">UPDATE</button>
+      <!-- </a> -->
     </div>
   </div>
 
 </div>
+
 @endsection
 
 @section('js')

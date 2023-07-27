@@ -67,5 +67,6 @@ class Kernel extends HttpKernel
 
         ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         'leaveaccess' => \App\Http\Middleware\Leave\RedirectIfNotOwnerLeave::class,
+        'profileaccess' => \App\Http\Middleware\HumanResources\Profile\RedirectIfNotOwnerProfile::class,
     ];
 }
