@@ -15,16 +15,17 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 // use Illuminate\Database\Eloquent\Relations\BelongsTo;
 // use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-class OptCategory extends Model
+class OptRelationship extends Model
 {
 	use HasFactory;
-	// protected $connection = 'mysql';
-	protected $table = 'option_categories';
+	protected $connection = 'mysql';
+	protected $table = 'option_relationships';
 
-	/////////////////////////////////////////////////////////////////////////////////////////////////////
-	public function hasmanydepartment(): HasMany
+	/////////////////////////////////////////////////////////////////////////////////////////
+	// hasmany relationship
+	public function hasmanyemergency(): HasMany
 	{
-		return $this->hasMany(HumanResources\DepartmentPivot::class, 'category_id');
+		return $this->hasMany(HumanResources\HREmergency::class, 'relationship_id');
 	}
 }
 

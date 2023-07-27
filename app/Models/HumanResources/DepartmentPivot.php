@@ -32,22 +32,22 @@ class DepartmentPivot extends Model
 	// db relation belongsTo
 	public function belongstodepartment(): BelongsTo
 	{
-		return $this->belongsTo(HumanResources\OptDepartment::class, 'group_id');
+		return $this->belongsTo(\App\Models\HumanResources\OptDepartment::class, 'group_id');
 	}
 
 	public function belongstobranch(): BelongsTo
 	{
-		return $this->belongsTo(HumanResources\OptBranch::class, 'branch_id');
+		return $this->belongsTo(\App\Models\HumanResources\OptBranch::class, 'branch_id');
 	}
 
 	public function belongstocategory(): BelongsTo
 	{
-		return $this->belongsTo(HumanResources\OptCategory::class, 'category_id');
+		return $this->belongsTo(\App\Models\HumanResources\OptCategory::class, 'category_id');
 	}
 
 	public function belongstowhgroup(): BelongsTo
 	{
-		return $this->belongsTo(HumanResources\OptWorkingHour::class, 'wh_group_id', 'group');
+		return $this->belongsTo(\App\Models\HumanResources\OptWorkingHour::class, 'wh_group_id', 'group');
 	}
 }
 
