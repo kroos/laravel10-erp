@@ -8,7 +8,7 @@ Route::patch('/leavecancel/{hrleave}', [AjaxController::class, 'update'])->name(
 Route::post('/leaveType', [AjaxController::class, 'leaveType'])->name('leaveType.leaveType');
 Route::post('/backupperson', [AjaxController::class, 'backupperson'])->name('backupperson.backupperson');
 Route::post('/unavailabledate', [AjaxController::class, 'unavailabledate'])->name('leavedate.unavailabledate');
-Route::get('/timeleave', [AjaxController::class, 'timeleave'])->name('leavedate.timeleave');
+Route::post('/timeleave', [AjaxController::class, 'timeleave'])->name('leavedate.timeleave')->middleware();
 
 // Route::get('/login/{login}', [
 // 	'as' => 'login.edit',

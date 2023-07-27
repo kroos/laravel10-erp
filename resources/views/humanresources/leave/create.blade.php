@@ -361,7 +361,7 @@ $('#leave_id').on('change', function() {
 		
 				var data1 = $.ajax({
 					url: "{{ route('leavedate.timeleave') }}",
-					type: "GET",
+					type: "POST",
 					data: {date: datenow, _token: '{!! csrf_token() !!}', id: {{ \Auth::user()->belongstostaff->id }} },
 					dataType: 'json',
 					global: false,
