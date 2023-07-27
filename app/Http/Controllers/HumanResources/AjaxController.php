@@ -10,6 +10,8 @@ use App\Models\HumanResources\HRLeave;
 use App\Models\HumanResources\OptLeaveType;
 use App\Models\HumanResources\HRHolidayCalendar;;
 use App\Models\Setting;
+use App\Models\HumanResources\OptWorkingHour;
+use App\Models\HumanResources\HRLeaveEntitlement;
 
 use \Carbon\Carbon;
 use \Carbon\CarbonPeriod;
@@ -355,6 +357,30 @@ class AjaxController extends Controller
 		// echo $d->year;					// this year
 		// echo $d->addYear()->year;		// next year
 
+		// block every sunday
+		$today = Carbon::now();
+		$start_date = Carbon::create($today->year, 1, 1);
+		$end_date = Carbon::create($today->year + 1, 1, 1);
+		$sundays = [];
+		foreach ($start_date->daysUntil($end_date) as $date) {
+			if ($date->dayOfWeek === Carbon::SUNDAY) {
+				$sundays[] = $date->format('Y-m-d');
+			}
+		}
+
+		$nystart_date = $start_date->copy()->addYear();
+		$nyend_date = $end_date->copy()->addYears(5)->subDay();
+		// block next year if entitlements and working hours not set
+		$entit = HRLeaveEntitlement::where('year', $nystart_date->copy()->year)->get();
+		$wh = OptWorkingHour::where('year', $nystart_date->copy()->year)->get();
+		// dd([empty($entit->count()), empty($wh->count()), $entit->count()]);
+		$nextyear = [];
+		if(empty($entit->count()) || empty($wh->count())){
+			foreach ($nystart_date->daysUntil($nyend_date) as $nydate) {
+				$nextyear[] = $nydate->format('Y-m-d');
+			}
+		}
+
 		// list all holiday date based on this year and next year
 		$hdate = HRHolidayCalendar::whereRaw( '"'.$d->copy()->year.'" BETWEEN YEAR(date_start) AND YEAR(date_end)' )->orwhereRaw( '"'.$d->copy()->addYear()->year.'" BETWEEN YEAR(date_start) AND YEAR(date_end)' )->get();
 		// dd($hdate);
@@ -364,17 +390,6 @@ class AjaxController extends Controller
 			foreach ($period as $key) {
 				// echo 'moment("'.$key->format('Y-m-d').'"),';
 				$holiday[] = $key->format('Y-m-d');
-			}
-		}
-
-		// block every sunday
-		$today = Carbon::now();
-		$start_date = Carbon::create($today->year, 1, 1);
-		$end_date = Carbon::create($today->year + 1, 1, 1);
-		$sundays = [];
-		foreach ($start_date->daysUntil($end_date) as $date) {
-			if ($date->dayOfWeek === Carbon::SUNDAY) {
-				$sundays[] = $date->format('Y-m-d');
 			}
 		}
 
@@ -425,9 +440,8 @@ class AjaxController extends Controller
 			$lusa = [];
 		}
 
-		$unavailableleave = Arr::collapse([$holiday, $sundays, $leavday, $saturdays, $lusa]);
+		$unavailableleave = Arr::collapse([$holiday, $sundays, $leavday, $saturdays, $lusa, $nextyear]);
 		return response()->json($unavailableleave);
-		// print_r($date[1]);
 	}
 
 	public function backupperson(Request $request)
@@ -437,7 +451,6 @@ class AjaxController extends Controller
 		$user = \Auth::user()->belongstostaff;
 		$dept = $user->belongstomanydepartment()->first();
 		$userindept = $dept->belongstomanystaff()->where('active', 1)->get();
-
 
 		// backup from own department if he/she have
 		// https://select2.org/data-sources/formats
@@ -475,33 +488,50 @@ class AjaxController extends Controller
 		$dt = \Carbon\Carbon::parse($request->date);
 		// echo $dt->year;
 		// echo $dt->dayOfWeek;	// if = 5, meaning its friday so need to look at category 3
-		$dt = 6;
-		$dty = 2023;
+
+		$dty = $dt->copy()->year;
 
 		// get group working hour from department
-		// $gwh = \App\Models\Staff::find($request->id)->belongstomanydepartment()->first()->wh_group_id;
-		$gwh = 1;
+		$gwh = \App\Models\Staff::find($request->id)->belongstomanydepartment()->first()->wh_group_id;
 
-		// if department wh_group_id = 1, meaning category = 6,7,8
-		// if from monday to thursday and saturday, whgroup_id = 0, so category 1,2,4. depends of date
+		// pls be remind, this is for leave application, so if maintenance (group=1/$gwh=1) apply leave, we should give user category 8
 
-		// if($gwh == 1 && $dt->copy()->dayOfWeek == 5){										// wh_group_id=1 & friday, so category=7 => maintenance team
-		if($gwh == 1 && $dt == 5){
-			// $time = \App\Models\HumanResources\OptWorkingHour::whereRaw('"'.$request->date.'" BETWEEN effective_date_start AND effective_date_end')->where(['year' => $dt->copy()->year, 'group' => $gwh, 'category' => 7])->get();
-			$time = \App\Models\HumanResources\OptWorkingHour::whereRaw('"'.$request->date.'" BETWEEN effective_date_start AND effective_date_end')->where(['year' => $dty, 'group' => $gwh, 'category' => 7])->get();
-		} elseif ($gwh == 1 && $dt != 5) {
-			// $time = \App\Models\HumanResources\OptWorkingHour::whereRaw('"'.$request->date.'" BETWEEN effective_date_start AND effective_date_end')->where(['year' => $dt->copy()->year, 'group' => $gwh, 'category' => 7])->get();
-			$time = \App\Models\HumanResources\OptWorkingHour::whereRaw('"'.$request->date.'" BETWEEN effective_date_start AND effective_date_end')->where(['year' => $dty, 'group' => $gwh])->get();
+		if($dt->copy()->dayOfWeek == 5) {				// friday
+			if($gwh == 1){								// friday | geng maintenance
+				if($dty == date('Y')){					// friday | geng maintenance | in same year
+					$time = OptWorkingHour::whereRaw('"'.$request->date.'" BETWEEN effective_date_start AND effective_date_end')->where(['year' => $dty, 'group' => $gwh, 'category' => 8])->get();
+				} else {								// friday | geng maintenance | not in same year
+					$time = OptWorkingHour::whereRaw('"'.$request->date.'" BETWEEN effective_date_start AND effective_date_end')->where(['year' => $dty, 'group' => $gwh, 'category' => 8])->get();
+				}
+			} else {									// not geng maintenance
+				if($dty == date('Y')){					// friday | not geng maintenance | in same year
+					$time = OptWorkingHour::whereRaw('"'.$request->date.'" BETWEEN effective_date_start AND effective_date_end')->where(['year' => $dty, 'group' => $gwh, 'category' => 3])->get();
+				} else {								// friday | not geng maintenance | not in same year
+					$time = OptWorkingHour::whereRaw('"'.$request->date.'" BETWEEN effective_date_start AND effective_date_end')->where(['year' => $dty, 'group' => $gwh, 'category' => 3])->get();
+				}
+			}
+		} else {										// not on friday
+			if($gwh == 1){								// not on friday | geng maintenance
+				if($dty == date('Y')){					// not on friday | geng maintenance | in same year
+					$time = OptWorkingHour::whereRaw('"'.$request->date.'" BETWEEN effective_date_start AND effective_date_end')->where(['year' => $dty, 'group' => $gwh, 'category' => 8])->get();
+				} else {								// not on friday | geng maintenance | not in same year
+					$time = OptWorkingHour::whereRaw('"'.$request->date.'" BETWEEN effective_date_start AND effective_date_end')->where(['year' => $dty, 'group' => $gwh, 'category' => 8])->get();
+				}
+			} else {									// not on friday | not geng maintenance
+				if($dty == date('Y')){					// not on friday | not geng maintenance | in same year
+					$time = OptWorkingHour::whereRaw('"'.$request->date.'" BETWEEN effective_date_start AND effective_date_end')->where(['year' => $dty, 'group' => $gwh])->whereIn('category', [1,2,4])->get();
+				} else {								// not on friday | not geng maintenance | not in same year
+					$time = OptWorkingHour::whereRaw('"'.$request->date.'" BETWEEN effective_date_start AND effective_date_end')->where(['year' => $dty, 'group' => $gwh])->whereIn('category', [1,2,4])->get();
+
+				}
+			}
 		}
 
-		// $time = \App\Models\HumanResources\OptWorkingHour::whereRaw('"'.$request->date.'" BETWEEN effective_date_start AND effective_date_end')->where(['year' => $dt->copy()->year, 'group' => $gwh])->get();
-		return $time;
-
-		// return response()->json([
-		// 	'start_am' => $time->first()->time_start_am,
-		// 	'end_am' => $time->first()->time_end_am,
-		// 	'start_pm' => $time->first()->time_start_pm,
-		// 	'end_pm' => $time->first()->time_end_pm,
-		// ]);
+		return response()->json([
+			'start_am' => $time->first()->time_start_am,
+			'end_am' => $time->first()->time_end_am,
+			'start_pm' => $time->first()->time_start_pm,
+			'end_pm' => $time->first()->time_end_pm,
+		]);
 	}
 }
