@@ -138,6 +138,21 @@ class Staff extends Authenticatable
 	{
 		return $this->belongsTo(HumanResources\OptCountry::class, 'nationality_id');
 	}
+
+	public function belongstoreligion(): BelongsTo
+	{
+		return $this->belongsTo(HumanResources\OptReligion::class, 'religion_id');
+	}
+
+	public function belongstorace(): BelongsTo
+	{
+		return $this->belongsTo(HumanResources\OptRace::class, 'race_id');
+	}
+
+	public function belongstomaritalstatus(): BelongsTo
+	{
+		return $this->belongsTo(HumanResources\OptMaritalStatus::class, 'marital_status_id');
+	}
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
 }
 
