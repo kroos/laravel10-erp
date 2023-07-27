@@ -81,6 +81,7 @@ $leaveALMC =  $us->hasmanyleaveentitlement()->where('year', date('Y'))->first();
 				$dept = $us->belongstomanydepartment()->get();
 				?>
 					<ul>
+					<!-- backup from own department -->
 					@foreach($dept as $de)
 						<li>
 							{{ $de->name }}
@@ -94,14 +95,25 @@ $leaveALMC =  $us->hasmanyleaveentitlement()->where('year', date('Y'))->first();
 							</ol>
 						</li>
 					@endforeach
+					<!-- backup from cross department -->
+					<?php
+					$crossbacku = $us->crossbackupto()?->wherePivot('active', 1)->get();
+					?>
+					@if($crossbacku)
+						<li>
+							<ol>
+							@foreach($crossbacku as $key)
+								<li>{{ $key->name }}</li>
+							@endforeach
+							</ol>
+						</li>
+					@endif
 					</ul>
 				</td>
 			</tr>
 		@endif
 	</table>
 </div>
-
-
 
 <div class="col-auto table-responsive">
 	<h4>Leave</h4>

@@ -43,7 +43,7 @@
 		<p class="col-sm-2 col-form-label">Acknowledgement :</p>
 		<div class="col-auto form-check">
 			{{ Form::checkbox('akuan', 1, @$value, ['class' => 'form-check-input ', 'id' => 'akuan1']) }}
-				<label for="akuan1" class="form-check-label mb-3 bg-warning text-danger rounded">I hereby confirmed that all details and information filled in are <strong>CORRECT</strong> and <strong>CHECKED</strong> before sending.</label>
+				<label for="akuan1" class="form-check-label p-3 mb-3 bg-warning text-danger rounded">I hereby confirmed that all details and information filled in are <strong>CORRECT</strong> and <strong>CHECKED</strong> before sending.</label>
 		</div>
 	</div>
 
@@ -101,7 +101,8 @@ $user = \Auth::user()->belongstostaff;
 $userneedbackup = $user->belongstoleaveapprovalflow->backup_approval;
 ?>
 
-//  ajax to get the unavailable date
+/////////////////////////////////////////////////////////////////////////////////////////
+//  global variable : ajax to get the unavailable date
 var data2 = $.ajax({
 	url: "{{ route('leavedate.unavailabledate') }}",
 	type: "POST",
@@ -129,6 +130,8 @@ var data2 = $.ajax({
 // this is how u cange from json to array type data
 var data = $.parseJSON( data2 );
 
+/////////////////////////////////////////////////////////////////////////////////////////
+// start here when user start to select the option
 $('#leave_id').on('change', function() {
 	$selection = $(this).find(':selected');
 	// console.log($selection.val());
@@ -256,7 +259,7 @@ $('#leave_id').on('change', function() {
 				if( $('.removehalfleave').length === 0) {
 					$('#wrapperday').append(
 							'{{ Form::label('leave_type', 'Jenis Cuti : ', ['class' => 'col-sm-2 col-form-label removehalfleave']) }}' +
-							'<div class="col-auto mb-3 removehalfleave row" id="halfleave">' +
+							'<div class="col-sm-10 mb-3 removehalfleave row" id="halfleave">' +
 								'<div class="pretty p-default p-curve form-check form-check-inline removehalfleave" id="removeleavehalf">' +
 									'{{ Form::radio('leave_type', '1', true, ['id' => 'radio1', 'class' => ' removehalfleave']) }}' +
 									'<div class="state p-success removehalfleave">' +
@@ -400,33 +403,33 @@ $('#leave_id').on('change', function() {
 		$('#wrapper').append(
 			'<div id="remove">' +
 				<!-- mc leave -->
-				'<div class="form-group row {{ $errors->has('date_time_start') ? 'has-error' : '' }}">' +
+				'<div class="form-group row mb-3 {{ $errors->has('date_time_start') ? 'has-error' : '' }}">' +
 					'{{ Form::label('from', 'From : ', ['class' => 'col-sm-2 col-form-label']) }}' +
-					'<div class="col-sm-10 datetime">' +
+					'<div class="col-auto datetime">' +
 						'{{ Form::text('date_time_start', @$value, ['class' => 'form-control', 'id' => 'from', 'placeholder' => 'From : ', 'autocomplete' => 'off']) }}' +
 					'</div>' +
 				'</div>' +
 
-				'<div class="form-group row {{ $errors->has('date_time_end') ? 'has-error' : '' }}">' +
+				'<div class="form-group row mb-3 {{ $errors->has('date_time_end') ? 'has-error' : '' }}">' +
 					'{{ Form::label('to', 'To : ', ['class' => 'col-sm-2 col-form-label']) }}' +
-					'<div class="col-sm-10 datetime">' +
+					'<div class="col-auto datetime">' +
 						'{{ Form::text('date_time_end', @$value, ['class' => 'form-control', 'id' => 'to', 'placeholder' => 'To : ', 'autocomplete' => 'off']) }}' +
 					'</div>' +
 				'</div>' +
 
 
-				'<div class="form-group row {{ $errors->has('document') ? 'has-error' : '' }}">' +
-					'{{ Form::label( 'doc', 'Supporting Document : ', ['class' => 'col-sm-2 col-form-label'] ) }}' +
-					'<div class="col-sm-10 supportdoc">' +
+				'<div class="form-group row mb-3 {{ $errors->has('document') ? 'has-error' : '' }}">' +
+					'{{ Form::label( 'doc', 'Upload Supporting Document : ', ['class' => 'col-sm-2 col-form-label'] ) }}' +
+					'<div class="col-auto supportdoc">' +
 						'{{ Form::file( 'document', ['class' => 'form-control form-control-file', 'id' => 'doc', 'placeholder' => 'Supporting Document']) }}' +
 					'</div>' +
 				'</div>' +
 
-				'<div class="form-group row {{ $errors->has('akuan') ? 'has-error' : '' }}">' +
-					'{{ Form::label('suppdoc', 'Surat Sokongan : ', ['class' => 'col-sm-2 col-form-label']) }}' +
-					'<div class="col-sm-10 form-check suppdoc">' +
-						'{{ Form::checkbox('documentsupport', 1, @$value, ['class' => 'form-check-input bg-warning rounded', 'id' => 'suppdoc']) }}' +
-						'<label for="suppdoc" class="form-check-label p-3 mb-2 bg-warning text-danger rounded">Sila Pastikan anda menghantar <strong>Surat Sokongan</strong> dalam tempoh <strong>3 Hari</strong> selepas tarikh cuti.</label>' +
+				'<div class="form-group row mb-3 {{ $errors->has('akuan') ? 'has-error' : '' }}">' +
+					'<p class="col-sm-2 col-form-label">Supporting Documents :</p>' +
+					'<div class="col-auto form-check suppdoc">' +
+						'{{ Form::checkbox('documentsupport', 1, @$value, ['class' => 'form-check-input ', 'id' => 'suppdoc']) }}' +
+						'<label for="suppdoc" class="form-check-label p-3 mb-2 bg-warning text-danger rounded">Please ensure you will send <strong>Supporting Documents</strong> within <strong>3 Days</strong> after date leave.</label>' +
 					'</div>' +
 				'</div>' +
 
@@ -454,9 +457,9 @@ $('#leave_id').on('change', function() {
 				close: 'fas fas-regular fa-rectangle-xmark fa-beat'
 			},
 			format:'YYYY-MM-DD',
-			useCurrent: false,
-			minDate: moment().format('YYYY-MM-DD'),
-			disabledDates: data,
+			useCurrent: true,
+			// minDate: moment().format('YYYY-MM-DD'),
+			// disabledDates: data,
 			// daysOfWeekDisabled: [0],
 			// minDate: data[1],
 		})
@@ -479,9 +482,9 @@ $('#leave_id').on('change', function() {
 				close: 'fas fas-regular fa-rectangle-xmark fa-beat'
 			},
 			format:'YYYY-MM-DD',
-			useCurrent: false,
-			minDate: moment().format('YYYY-MM-DD'),
-			disabledDates: data,
+			useCurrent: true,
+			// minDate: moment().format('YYYY-MM-DD'),
+			// disabledDates: data,
 			// daysOfWeekDisabled: [0],
 			// minDate: data[1],
 		})
@@ -508,9 +511,9 @@ $oi = \Auth::user()->belongstostaff->hasmanyleavereplacement()->where('leave_bal
 		$('#remove').remove();
 		$('#wrapper').append(
 			'<div id="remove">' +
-				'<div class="form-group row {{ $errors->has('leave_replacement_id') ? 'has-error' : '' }}">' +
+				'<div class="form-group row mb-3 {{ $errors->has('leave_replacement_id') ? 'has-error' : '' }}">' +
 					'{{ Form::label('nrla', 'Please Choose Your Replacement Leave : ', ['class' => 'col-sm-2 col-form-label']) }}' +
-					'<div class="col-sm-10 nrl">' +
+					'<div class="col-auto nrl">' +
 						'<p>Total Non Replacement Leave = {{ $oi->sum('leave_balance') }} days</p>' +
 						'<select name="leave_replacement_id" id="nrla" class="form-control">' +
 							'<option value="">Please select</option>' +
@@ -521,29 +524,29 @@ $oi = \Auth::user()->belongstostaff->hasmanyleavereplacement()->where('leave_bal
 					'</div>' +
 				'</div>' +
 
-				'<div class="form-group row {{ $errors->has('date_time_start') ? 'has-error' : '' }}">' +
+				'<div class="form-group row mb-3 {{ $errors->has('date_time_start') ? 'has-error' : '' }}">' +
 					'{{ Form::label('from', 'From : ', ['class' => 'col-sm-2 col-form-label']) }}' +
-					'<div class="col-sm-10 datetime">' +
+					'<div class="col-auto datetime">' +
 						'{{ Form::text('date_time_start', @$value, ['class' => 'form-control', 'id' => 'from', 'placeholder' => 'From : ', 'autocomplete' => 'off']) }}' +
 					'</div>' +
 				'</div>' +
-				'<div class="form-group row {{ $errors->has('date_time_end') ? 'has-error' : '' }}">' +
+				'<div class="form-group row mb-3 {{ $errors->has('date_time_end') ? 'has-error' : '' }}">' +
 					'{{ Form::label('to', 'To : ', ['class' => 'col-sm-2 col-form-label']) }}' +
-					'<div class="col-sm-10 datetime">' +
+					'<div class="col-auto datetime">' +
 						'{{ Form::text('date_time_end', @$value, ['class' => 'form-control', 'id' => 'to', 'placeholder' => 'To : ', 'autocomplete' => 'off']) }}' +
 					'</div>' +
 				'</div>' +
 
-				'<div class="form-group row {{ $errors->has('leave_type') ? 'has-error' : '' }}" id="wrapperday">' +
+				'<div class="form-group row mb-3 {{ $errors->has('leave_type') ? 'has-error' : '' }}" id="wrapperday">' +
 					'{{ Form::label('leave_type', 'Jenis Cuti : ', ['class' => 'col-sm-2 col-form-label removehalfleave']) }}' +
 					'<div class="col-sm-10 removehalfleave" id="halfleave">' +
-						'<div class="pretty p-default p-curve form-check removehalfleave" id="removeleavehalf">' +
+						'<div class="pretty p-default p-curve form-check-inline removehalfleave" id="removeleavehalf">' +
 							'{{ Form::radio('leave_type', '1', true, ['id' => 'radio1', 'class' => ' removehalfleave']) }}' +
 							'<div class="state p-success removehalfleave">' +
 								'{{ Form::label('radio1', 'Cuti Penuh', ['class' => 'form-check-label removehalfleave']) }}' +
 							'</div>' +
 						'</div>' +
-						'<div class="pretty p-default p-curve form-check removehalfleave" id="appendleavehalf">' +
+						'<div class="pretty p-default p-curve form-check-inline removehalfleave" id="appendleavehalf">' +
 							'{{ Form::radio('leave_type', '2', NULL, ['id' => 'radio2', 'class' => ' removehalfleave']) }}' +
 							'<div class="state p-success removehalfleave">' +
 								'{{ Form::label('radio2', 'Cuti Separuh', ['class' => 'form-check-label removehalfleave']) }}' +
@@ -597,13 +600,13 @@ $oi = \Auth::user()->belongstostaff->hasmanyleavereplacement()->where('leave_bal
 					$('#wrapperday').append(
 						'{{ Form::label('leave_type', 'Jenis Cuti : ', ['class' => 'col-sm-2 col-form-label removehalfleave']) }}' +
 						'<div class="col-sm-10 removehalfleave" id="halfleave">' +
-							'<div class="pretty p-default p-curve form-check removehalfleave" id="removeleavehalf">' +
+							'<div class="pretty p-default p-curve form-check form-check-inline removehalfleave" id="removeleavehalf">' +
 								'{{ Form::radio('leave_type', '1', true, ['id' => 'radio1', 'class' => ' removehalfleave']) }}' +
 								'<div class="state p-success removehalfleave">' +
 									'{{ Form::label('radio1', 'Cuti Penuh', ['class' => 'form-check-label removehalfleave']) }}' +
 								'</div>' +
 							'</div>' +
-							'<div class="pretty p-default p-curve form-check removehalfleave" id="appendleavehalf">' +
+							'<div class="pretty p-default p-curve form-check form-check-inline removehalfleave" id="appendleavehalf">' +
 								'{{ Form::radio('leave_type', '2', NULL, ['id' => 'radio2', 'class' => ' removehalfleave']) }}' +
 								'<div class="state p-success removehalfleave">' +
 									'{{ Form::label('radio2', 'Cuti Separuh', ['class' => 'form-check-label removehalfleave']) }}' +
@@ -648,13 +651,13 @@ $oi = \Auth::user()->belongstostaff->hasmanyleavereplacement()->where('leave_bal
 					$('#wrapperday').append(
 						'{{ Form::label('leave_type', 'Jenis Cuti : ', ['class' => 'col-sm-2 col-form-label removehalfleave']) }}' +
 						'<div class="col-sm-10 removehalfleave" id="halfleave">' +
-							'<div class="pretty p-default p-curve form-check removehalfleave" id="removeleavehalf">' +
+							'<div class="pretty p-default p-curve form-check form-check-inline removehalfleave" id="removeleavehalf">' +
 								'{{ Form::radio('leave_type', '1', true, ['id' => 'radio1', 'class' => ' removehalfleave']) }}' +
 								'<div class="state p-success removehalfleave">' +
 									'{{ Form::label('radio1', 'Cuti Penuh', ['class' => 'form-check-label removehalfleave']) }}' +
 								'</div>' +
 							'</div>' +
-							'<div class="pretty p-default p-curve form-check removehalfleave" id="appendleavehalf">' +
+							'<div class="pretty p-default p-curve form-check form-check-inline removehalfleave" id="appendleavehalf">' +
 								'{{ Form::radio('leave_type', '2', NULL, ['id' => 'radio2', 'class' => ' removehalfleave']) }}' +
 								'<div class="state p-success removehalfleave">' +
 									'{{ Form::label('radio2', 'Cuti Separuh Hari', ['class' => 'form-check-label removehalfleave']) }}' +
@@ -701,13 +704,13 @@ $oi = \Auth::user()->belongstostaff->hasmanyleavereplacement()->where('leave_bal
 				// checking so there is no double
 				if( $('.removetest').length == 0 ) {
 					$('#wrappertest').append(
-						'<div class="pretty p-default p-curve form-check removetest">' +
+						'<div class="pretty p-default p-curve form-check form-check-inline removetest">' +
 							'<input type="radio" name="leave_half" value="' + obj.start_am + '/' + obj.end_am + '" id="am" checked="checked">' +
 							'<div class="state p-primary">' +
 								'<label for="am" class="form-check-label">' + moment(obj.start_am, 'HH:mm:ss').format('h:mm a') + ' to ' + moment(obj.end_am, 'HH:mm:ss').format('h:mm a') + '</label> ' +
 							'</div>' +
 						'</div>' +
-						'<div class="pretty p-default p-curve form-check removetest">' +
+						'<div class="pretty p-default p-curve form-check form-check-inline removetest">' +
 							'<input type="radio" name="leave_half" value="' + obj.start_pm + '/' + obj.end_pm + '" id="pm">' +
 							'<div class="state p-primary">' +
 								'<label for="pm" class="form-check-label">' + moment(obj.start_pm, 'HH:mm:ss').format('h:mm a') + ' to ' + moment(obj.end_pm, 'HH:mm:ss').format('h:mm a') + '</label> ' +
@@ -772,13 +775,13 @@ $oi = \Auth::user()->belongstostaff->hasmanyleavereplacement()->where('leave_bal
 				// checking so there is no double
 				if( $('.removetest').length == 0 ) {
 					$('#wrappertest').append(
-						'<div class="pretty p-default p-curve form-check removetest">' +
+						'<div class="pretty p-default p-curve form-check form-check-inline removetest">' +
 							'<input type="radio" name="leave_half" value="' + obj.start_am + '/' + obj.end_am + '" id="am" checked="checked">' +
 							'<div class="state p-primary">' +
 								'<label for="am" class="form-check-label">' + moment(obj.start_am, 'HH:mm:ss').format('h:mm a') + ' to ' + moment(obj.end_am, 'HH:mm:ss').format('h:mm a') + '</label> ' +
 							'</div>' +
 						'</div>' +
-						'<div class="pretty p-default p-curve form-check removetest">' +
+						'<div class="pretty p-default p-curve form-check form-check-inline removetest">' +
 							'<input type="radio" name="leave_half" value="' + obj.start_pm + '/' + obj.end_pm + '" id="pm">' +
 							'<div class="state p-primary">' +
 								'<label for="pm" class="form-check-label">' + moment(obj.start_pm, 'HH:mm:ss').format('h:mm a') + ' to ' + moment(obj.end_pm, 'HH:mm:ss').format('h:mm a') + '</label> ' +
@@ -794,8 +797,6 @@ $oi = \Auth::user()->belongstostaff->hasmanyleavereplacement()->where('leave_bal
 				}
 			}
 		});
-
-		/////////////////////////////////////////////////////////////////////////////////////////
 	}
 
 
