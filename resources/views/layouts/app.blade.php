@@ -42,9 +42,9 @@
 								<div class="dropdown">
 									<a href="{{ url('/dashboard') }}" class="btn btn-sm btn-outline-secondary dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">{{ Auth::user()->belongstostaff->name }}</a>
 									<ul class="dropdown-menu">
-										<li><a class="dropdown-item" href="{{ route('profile.show', Auth::user()->belongstostaff->id) }}"><i class="fas fa-regular fa-user"></i> Profile</a></li>
-										<li><a class="dropdown-item" href="#"><i class="fas fa-light fa-comment"></i> Notifications</a></li>
-										<li><a class="dropdown-item" href="{{ route('leave.index') }}"><i class="fas fa-light fa-mug-hot"></i> Apply Leave</a></li>
+										<li><a class="dropdown-item" href="{{ route('profile.show', Auth::user()->belongstostaff->id) }}"><i class="fa-regular fa-user"></i> Profile</a></li>
+										<li><a class="dropdown-item" href="#"><i class="fa-regular fa-comment"></i> Notifications</a></li>
+										<li><a class="dropdown-item" href="{{ route('leave.index') }}"><i class="fa-solid fa-mug-hot"></i> Apply Leave</a></li>
 										<form method="POST" action="{{ route('logout') }}">
 											@csrf
 											<li>
