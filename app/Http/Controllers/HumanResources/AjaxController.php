@@ -217,29 +217,29 @@ class AjaxController extends Controller
 				if($oi->sum('leave_balance') < 1){						// laki | no nrl
 					if($leaveALMC->al_balance < 1){						// laki | no nrl | no al
 						if($leaveALMC->mc_balance < 1){					// laki | no nrl | no al | no mc
-							$er = OptLeaveType::whereIn('id', [3,6,9,11,12])->get();
+							$er = OptLeaveType::whereIn('id', [3,6,9,11,12])->get()->sortBy('sorting');
 						} else {										// laki | no nrl | no al | mc
-							$er = OptLeaveType::whereIn('id', [2,3,6,9,12])->get();
+							$er = OptLeaveType::whereIn('id', [2,3,6,9,12])->get()->sortBy('sorting');
 						}
 					} else {											// laki | no nrl | al
 						if($leaveALMC->mc_balance < 1){					// laki | no nrl | al | no mc
-							$er = OptLeaveType::whereIn('id', [1,5,9,11,12])->get();
+							$er = OptLeaveType::whereIn('id', [1,5,9,11,12])->get()->sortBy('sorting');
 						} else {										// laki | no nrl | al | mc
-							$er = OptLeaveType::whereIn('id', [1,2,5,9,12])->get();
+							$er = OptLeaveType::whereIn('id', [1,2,5,9,12])->get()->sortBy('sorting');
 						}
 					}
 				} else {												// laki | nrl
 					if($leaveALMC->al_balance < 1){						// laki | nrl | no al
 						if($leaveALMC->mc_balance < 1){					// laki | nrl | no al | no mc
-							$er = OptLeaveType::whereIn('id', [3,4,6,9,10,11,12])->get();
+							$er = OptLeaveType::whereIn('id', [3,4,6,9,10,11,12])->get()->sortBy('sorting');
 						} else {										// laki | nrl | no al | mc
-							$er = OptLeaveType::whereIn('id', [2,3,4,6,9,10,12])->get();
+							$er = OptLeaveType::whereIn('id', [2,3,4,6,9,10,12])->get()->sortBy('sorting');
 						}
 					} else {											// laki | nrl | al
 						if($leaveALMC->mc_balance < 1){					// laki | nrl | al | no mc
-							$er = OptLeaveType::whereIn('id', [1,4,5,9,10,11,12])->get();
+							$er = OptLeaveType::whereIn('id', [1,4,5,9,10,11,12])->get()->sortBy('sorting');
 						} else {										// laki | nrl | al | mc
-							$er = OptLeaveType::whereIn('id', [1,2,4,5,9,10,12])->get();
+							$er = OptLeaveType::whereIn('id', [1,2,4,5,9,10,12])->get()->sortBy('sorting');
 						}
 					}
 				}
@@ -247,29 +247,29 @@ class AjaxController extends Controller
 				if($oi->sum('leave_balance') < 1){						// pempuan | no nrl
 					if($leaveALMC->al_balance < 1){						// pempuan | no nrl | no al
 						if($leaveALMC->mc_balance < 1){					// pempuan | no nrl | no al | no mc
-							$er = OptLeaveType::whereIn('id', [3,6,7,9,11,12])->get();
+							$er = OptLeaveType::whereIn('id', [3,6,7,9,11,12])->get()->sortBy('sorting');
 						} else {										// pempuan | no nrl | no al | mc
-							$er = OptLeaveType::whereIn('id', [2,3,6,7,9,12])->get();
+							$er = OptLeaveType::whereIn('id', [2,3,6,7,9,12])->get()->sortBy('sorting');
 						}
 					} else {											// pempuan | no nrl | al
 						if($leaveALMC->mc_balance < 1){					// pempuan | no nrl | al | no mc
-							$er = OptLeaveType::whereIn('id', [1,5,7,9,11,12])->get();
+							$er = OptLeaveType::whereIn('id', [1,5,7,9,11,12])->get()->sortBy('sorting');
 						} else {										// pempuan | no nrl | al | mc
-							$er = OptLeaveType::whereIn('id', [1,2,5,7,9,12])->get();
+							$er = OptLeaveType::whereIn('id', [1,2,5,7,9,12])->get()->sortBy('sorting');
 						}
 					}
 				} else {												// pempuan | nrl
 					if($leaveALMC->al_balance < 1){						// pempuan | nrl | no al
 						if($leaveALMC->mc_balance < 1){					// pempuan | nrl | no al | no mc
-							$er = OptLeaveType::whereIn('id', [3,4,6,7,9,10,11,12])->get();
+							$er = OptLeaveType::whereIn('id', [3,4,6,7,9,10,11,12])->get()->sortBy('sorting');
 						} else {										// pempuan | nrl | no al | mc
-							$er = OptLeaveType::whereIn('id', [2,3,4,6,7,9,10,12])->get();
+							$er = OptLeaveType::whereIn('id', [2,3,4,6,7,9,10,12])->get()->sortBy('sorting');
 						}
 					} else {											// pempuan | nrl | al
 						if($leaveALMC->mc_balance < 1){					// pempuan | nrl | al | no mc
-							$er = OptLeaveType::whereIn('id', [1,4,5,7,9,10,11,12])->get();
+							$er = OptLeaveType::whereIn('id', [1,4,5,7,9,10,11,12])->get()->sortBy('sorting');
 						} else {										// pempuan | nrl | al | mc
-							$er = OptLeaveType::whereIn('id', [1,2,4,5,7,9,10,12])->get();
+							$er = OptLeaveType::whereIn('id', [1,2,4,5,7,9,10,12])->get()->sortBy('sorting');
 						}
 					}
 				}
@@ -279,29 +279,29 @@ class AjaxController extends Controller
 				if($oi->sum('leave_balance') < 1){						// laki | no nrl
 					if($leaveALMC->al_balance < 1){						// laki | no nrl | no al
 						if($leaveALMC->mc_balance < 1){					// laki | no nrl | no al | no mc
-							$er = OptLeaveType::whereIn('id', [3,6,9,11])->get();
+							$er = OptLeaveType::whereIn('id', [3,6,9,11])->get()->sortBy('sorting');
 						} else {										// laki | no nrl | no al | mc
-							$er = OptLeaveType::whereIn('id', [2,3,6,9])->get();
+							$er = OptLeaveType::whereIn('id', [2,3,6,9])->get()->sortBy('sorting');
 						}
 					} else {											// laki | no nrl | al
 						if($leaveALMC->mc_balance < 1){					// laki | no nrl | al | no mc
-							$er = OptLeaveType::whereIn('id', [1,5,9,11])->get();
+							$er = OptLeaveType::whereIn('id', [1,5,9,11])->get()->sortBy('sorting');
 						} else {										// laki | no nrl | al | mc
-							$er = OptLeaveType::whereIn('id', [1,2,5,9])->get();
+							$er = OptLeaveType::whereIn('id', [1,2,5,9])->get()->sortBy('sorting');
 						}
 					}
 				} else {												// laki | nrl
 					if($leaveALMC->al_balance < 1){						// laki | nrl | no al
 						if($leaveALMC->mc_balance < 1){					// laki | nrl | no al | no mc
-							$er = OptLeaveType::whereIn('id', [3,4,6,9,10,11])->get();
+							$er = OptLeaveType::whereIn('id', [3,4,6,9,10,11])->get()->sortBy('sorting');
 						} else {										// laki | nrl | no al | mc
-							$er = OptLeaveType::whereIn('id', [2,3,4,6,9,10])->get();
+							$er = OptLeaveType::whereIn('id', [2,3,4,6,9,10])->get()->sortBy('sorting');
 						}
 					} else {											// laki | nrl | al
 						if($leaveALMC->mc_balance < 1){					// laki | nrl | al | no mc
-							$er = OptLeaveType::whereIn('id', [1,4,5,9,10,11])->get();
+							$er = OptLeaveType::whereIn('id', [1,4,5,9,10,11])->get()->sortBy('sorting');
 						} else {										// laki | nrl | al | mc
-							$er = OptLeaveType::whereIn('id', [1,2,4,5,9,10])->get();
+							$er = OptLeaveType::whereIn('id', [1,2,4,5,9,10])->get()->sortBy('sorting');
 						}
 					}
 				}
@@ -309,29 +309,29 @@ class AjaxController extends Controller
 				if($oi->sum('leave_balance') < 1){						// pempuan | no nrl
 					if($leaveALMC->al_balance < 1){						// pempuan | no nrl | no al
 						if($leaveALMC->mc_balance < 1){					// pempuan | no nrl | no al | no mc
-							$er = OptLeaveType::whereIn('id', [3,6,7,9,11])->get();
+							$er = OptLeaveType::whereIn('id', [3,6,7,9,11])->get()->sortBy('sorting');
 						} else {										// pempuan | no nrl | no al | mc
-							$er = OptLeaveType::whereIn('id', [2,3,6,7,9])->get();
+							$er = OptLeaveType::whereIn('id', [2,3,6,7,9])->get()->sortBy('sorting');
 						}
 					} else {											// pempuan | no nrl | al
 						if($leaveALMC->mc_balance < 1){					// pempuan | no nrl | al | no mc
-							$er = OptLeaveType::whereIn('id', [1,5,7,9,11])->get();
+							$er = OptLeaveType::whereIn('id', [1,5,7,9,11])->get()->sortBy('sorting');
 						} else {										// pempuan | no nrl | al | mc
-							$er = OptLeaveType::whereIn('id', [1,2,5,7,9])->get();
+							$er = OptLeaveType::whereIn('id', [1,2,5,7,9])->get()->sortBy('sorting');
 						}
 					}
 				} else {												// pempuan | nrl
 					if($leaveALMC->al_balance < 1){						// pempuan | nrl | no al
 						if($leaveALMC->mc_balance < 1){					// pempuan | nrl | no al | no mc
-							$er = OptLeaveType::whereIn('id', [3,4,6,7,9,10,11])->get();
+							$er = OptLeaveType::whereIn('id', [3,4,6,7,9,10,11])->get()->sortBy('sorting');
 						} else {										// pempuan | nrl | no al | mc
-							$er = OptLeaveType::whereIn('id', [2,3,4,6,7,9,10])->get();
+							$er = OptLeaveType::whereIn('id', [2,3,4,6,7,9,10])->get()->sortBy('sorting');
 						}
 					} else {											// pempuan | nrl | al
 						if($leaveALMC->mc_balance < 1){					// pempuan | nrl | al | no mc
-							$er = OptLeaveType::whereIn('id', [1,4,5,7,9,10,11])->get();
+							$er = OptLeaveType::whereIn('id', [1,4,5,7,9,10,11])->get()->sortBy('sorting');
 						} else {										// pempuan | nrl | al | mc
-							$er = OptLeaveType::whereIn('id', [1,2,4,5,7,9,10])->get();
+							$er = OptLeaveType::whereIn('id', [1,2,4,5,7,9,10])->get()->sortBy('sorting');
 						}
 					}
 				}
