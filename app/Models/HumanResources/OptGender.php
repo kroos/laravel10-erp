@@ -24,6 +24,6 @@ class OptGender extends Model
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
 	public function hasmanystaff(): HasMany
 	{
-		return $this->hasMany(Staff::class, 'gender_id');
+		return $this->hasMany(\App\Models\Staff::class, 'gender_id');
 	}
 }

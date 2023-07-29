@@ -25,6 +25,6 @@ class HRRestdayCalendar extends Model
 	/////////////////////////////////////////////////////////////////////////////////////////
 	public function belongstorestdaygroup(): BelongsTo
 	{
-		return $this->belongsTo(HumanResources\OptRestdayGroup::class, 'restday_group_id');
+		return $this->belongsTo(\App\Models\HumanResources\OptRestdayGroup::class, 'restday_group_id');
 	}
 }

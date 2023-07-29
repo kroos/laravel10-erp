@@ -51,59 +51,59 @@ class Staff extends Authenticatable
 
 	public function hasmanyemergency(): HasMany
 	{
-		return $this->hasMany(HumanResources\HREmergency::class, 'staff_id');
+		return $this->hasMany(\App\Models\HumanResources\HREmergency::class, 'staff_id');
 	}
 
 	public function hasmanyleave(): HasMany
 	{
-		return $this->hasMany(HumanResources\HRLeave::class, 'staff_id');
+		return $this->hasMany(\App\Models\HumanResources\HRLeave::class, 'staff_id');
 	}
 
 	public function hasmanyleaveentitlement(): HasMany
 	{
-		return $this->hasMany(HumanResources\HRLeaveEntitlement::class, 'staff_id');
+		return $this->hasMany(\App\Models\HumanResources\HRLeaveEntitlement::class, 'staff_id');
 	}
 
 	public function hasmanyleavereplacement(): HasMany
 	{
-		return $this->hasMany(HumanResources\HRLeaveReplacement::class, 'staff_id');
+		return $this->hasMany(\App\Models\HumanResources\HRLeaveReplacement::class, 'staff_id');
 	}
 
 	public function hasoneleaveapprovalbackup(): HasOne
 	{
-		return $this->hasOne(HumanResources\HRLeaveApprovalBackup::class, 'staff_id');
+		return $this->hasOne(\App\Models\HumanResources\HRLeaveApprovalBackup::class, 'staff_id');
 	}
 
 	public function hasoneleaveapprovalsupervisor(): HasOne
 	{
-		return $this->hasOne(HumanResources\HRLeaveApprovalSupervisor::class, 'staff_id');
+		return $this->hasOne(\App\Models\HumanResources\HRLeaveApprovalSupervisor::class, 'staff_id');
 	}
 
 	public function hasoneleaveapprovalhod(): HasOne
 	{
-		return $this->hasOne(HumanResources\HRLeaveApprovalHOD::class, 'staff_id');
+		return $this->hasOne(\App\Models\HumanResources\HRLeaveApprovalHOD::class, 'staff_id');
 	}
 
 	public function hasoneleaveapprovaldir(): HasOne
 	{
-		return $this->hasOne(HumanResources\HRLeaveApprovalDirector::class, 'staff_id');
+		return $this->hasOne(\App\Models\HumanResources\HRLeaveApprovalDirector::class, 'staff_id');
 	}
 
 	public function hasoneleaveapprovalhr(): HasOne
 	{
-		return $this->hasOne(HumanResources\HRLeaveApprovalHR::class, 'staff_id');
+		return $this->hasOne(\App\Models\HumanResources\HRLeaveApprovalHR::class, 'staff_id');
 	}
 
 	public function hasmanyleaveamend(): HasMany
 	{
-		return $this->hasMany(HumanResources\HRLeaveAmend::class, 'staff_id');
+		return $this->hasMany(\App\Models\HumanResources\HRLeaveAmend::class, 'staff_id');
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
 	// db relation belongsToMany
 	public function belongstomanydepartment(): BelongsToMany
 	{
-		return $this->belongsToMany(HumanResources\DepartmentPivot::class, 'pivot_staff_pivotdepts', 'staff_id', 'pivot_dept_id')->withPivot('main', 'id')->withTimestamps();
+		return $this->belongsToMany(\App\Models\HumanResources\DepartmentPivot::class, 'pivot_staff_pivotdepts', 'staff_id', 'pivot_dept_id')->withPivot('main', 'id')->withTimestamps();
 	}
 
 	public function crossbackupto(): BelongsToMany
@@ -120,38 +120,38 @@ class Staff extends Authenticatable
 	// db relation BelongsTo
 	public function belongstoleaveapprovalflow(): BelongsTo
 	{
-		return $this->belongsTo(HumanResources\HRLeaveApprovalFlow::class, 'leave_flow_id');
+		return $this->belongsTo(\App\Models\HumanResources\HRLeaveApprovalFlow::class, 'leave_flow_id');
 	}
 
 	// db relation BelongsTo
 	public function belongstorestdaygroup(): BelongsTo
 	{
-		return $this->belongsTo(HumanResources\OptRestdayGroup::class, 'restday_group_id');
+		return $this->belongsTo(\App\Models\HumanResources\OptRestdayGroup::class, 'restday_group_id');
 	}
 
 	public function belongstogender(): BelongsTo
 	{
-		return $this->belongsTo(HumanResources\OptGender::class, 'gender_id');
+		return $this->belongsTo(\App\Models\HumanResources\OptGender::class, 'gender_id');
 	}
 
 	public function belongstonationality(): BelongsTo
 	{
-		return $this->belongsTo(HumanResources\OptCountry::class, 'nationality_id');
+		return $this->belongsTo(\App\Models\HumanResources\OptCountry::class, 'nationality_id');
 	}
 
 	public function belongstoreligion(): BelongsTo
 	{
-		return $this->belongsTo(HumanResources\OptReligion::class, 'religion_id');
+		return $this->belongsTo(\App\Models\HumanResources\OptReligion::class, 'religion_id');
 	}
 
 	public function belongstorace(): BelongsTo
 	{
-		return $this->belongsTo(HumanResources\OptRace::class, 'race_id');
+		return $this->belongsTo(\App\Models\HumanResources\OptRace::class, 'race_id');
 	}
 
 	public function belongstomaritalstatus(): BelongsTo
 	{
-		return $this->belongsTo(HumanResources\OptMaritalStatus::class, 'marital_status_id');
+		return $this->belongsTo(\App\Models\HumanResources\OptMaritalStatus::class, 'marital_status_id');
 	}
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
 }

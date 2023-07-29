@@ -25,32 +25,32 @@ class OptLeaveStatus extends Model
 	// hasmany relationship
 	public function hasmanyleave(): HasMany
 	{
-		return $this->hasMany(HumanResources\HRLeave::class, 'leave_status_id');
+		return $this->hasMany(\App\Models\HumanResources\HRLeave::class, 'leave_status_id');
 	}
 
 	public function hasmanyleaveapprovalbackup(): HasMany
 	{
-		return $this->hasMany(HumanResources\HRLeaveApprovalBackup::class, 'leave_status_id');
+		return $this->hasMany(\App\Models\HumanResources\HRLeaveApprovalBackup::class, 'leave_status_id');
 	}
 
 	public function hasmanyleaveapprovalsupervisor(): HasMany
 	{
-		return $this->hasMany(HumanResources\HRLeaveApprovalSupervisor::class, 'leave_status_id');
+		return $this->hasMany(\App\Models\HumanResources\HRLeaveApprovalSupervisor::class, 'leave_status_id');
 	}
 
 	public function hasmanyleaveapprovalhod(): HasMany
 	{
-		return $this->hasMany(HumanResources\HRLeaveApprovalHOD::class, 'leave_status_id');
+		return $this->hasMany(\App\Models\HumanResources\HRLeaveApprovalHOD::class, 'leave_status_id');
 	}
 
 	public function hasmanyleaveapprovaldir(): HasMany
 	{
-		return $this->hasMany(HumanResources\HRLeaveApprovalDirector::class, 'leave_status_id');
+		return $this->hasMany(\App\Models\HumanResources\HRLeaveApprovalDirector::class, 'leave_status_id');
 	}
 
 	public function hasmanyleaveapprovalhr(): HasMany
 	{
-		return $this->hasMany(HumanResources\HRLeaveApprovalHR::class, 'leave_status_id');
+		return $this->hasMany(\App\Models\HumanResources\HRLeaveApprovalHR::class, 'leave_status_id');
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////

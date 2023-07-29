@@ -25,7 +25,7 @@ class OptLeaveType extends Model
 	// hasmany relationship
 	public function hasmanytypeleave(): HasMany
 	{
-		return $this->hasMany(HumanResources\HRLeave::class, 'leave_type_id');
+		return $this->hasMany(\App\Models\HumanResources\HRLeave::class, 'leave_type_id');
 	}
 
 }

@@ -28,12 +28,12 @@ class HREmergency extends Model
 	//belongsto relationship
 	public function belongstostaff(): BelongsTo
 	{
-		return $this->belongsTo(Staff::class, 'staff_id');
+		return $this->belongsTo(\App\Models\Staff::class, 'staff_id');
 	}
 
 	public function belongstorelationship(): BelongsTo
 	{
-		return $this->belongsTo(OptRelationship::class, 'relationship_id');
+		return $this->belongsTo(\App\Models\HumanResources\OptRelationship::class, 'relationship_id');
 	}
 }
 

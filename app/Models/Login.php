@@ -79,7 +79,7 @@ class Login extends Authenticatable // implements MustVerifyEmail
 	// db relation belongsTo
 	public function belongstostaff(): BelongsTo
 	{
-		return $this->belongsTo(Staff::class, 'staff_id');
+		return $this->belongsTo(\App\Models\Staff::class, 'staff_id');
 	}
 	
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -99,7 +99,7 @@ class Login extends Authenticatable // implements MustVerifyEmail
 	public function getEmailForPasswordReset()
 	{
 		// return $this->email;
-		return $this->belongtostaff->email;
+		return $this->belongstostaff->email;
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -109,7 +109,7 @@ class Login extends Authenticatable // implements MustVerifyEmail
 	{
 		// Return email address only...
 		// return $this->belongtouser->email;
-		return [$this->belongtostaff->email => $this->belongtostaff->name];
+		return [$this->belongstostaff->email => $this->belongstostaff->name];
 	}
 	
 	/////////////////////////////////////////////////////////////////////////////////////////////////////

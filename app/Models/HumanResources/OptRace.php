@@ -24,6 +24,6 @@ class OptRace extends Model
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
 	public function hasmanystaff(): HasMany
 	{
-		return $this->hasMany(Staff::class, 'race_id');
+		return $this->hasMany(\App\Models\Staff::class, 'race_id');
 	}
 }

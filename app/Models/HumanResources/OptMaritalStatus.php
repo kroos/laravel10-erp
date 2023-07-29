@@ -24,6 +24,6 @@ class OptMaritalStatus extends Model
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
 	public function hasmanystaff(): HasMany
 	{
-		return $this->hasMany(Staff::class, 'marital_status_id');
+		return $this->hasMany(\App\Models\Staff::class, 'marital_status_id');
 	}
 }
