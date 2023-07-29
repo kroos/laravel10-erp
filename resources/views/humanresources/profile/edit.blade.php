@@ -2,232 +2,184 @@
 
 @section('content')
 
-<style>
-  .table {
-    border-collapse: separate;
-    border-spacing: 0 10px;
-  }
-</style>
-
 <?php
 $emergencies = $profile->hasmanyemergency()->get();
 ?>
 
-<div class="col-auto table-responsive">
+{!! Form::model($profile, ['route' => ['profile.update', $profile->id], 'method' => 'PATCH', 'id' => 'form', 'class' => 'form-horizontal', 'autocomplete' => 'off', 'files' => true]) !!}
 
-  <img src="{{ asset('storage/user_profile/' . $profile->image) }}" class="rounded mx-auto d-block" width="220" height="250">
+<div class="container rounded bg-white mt-5 mb-5">
+  <div class="row">
+    <div class="col-md-3 border-right">
+      <div class="d-flex flex-column align-items-center text-center p-3 py-5">
+        <img class="rounded-circle mt-5" width="150px" src="{{ asset('storage/user_profile/' . $profile->image) }}">
+        <span class="font-weight-bold">{{ $profile->name }}</span>
+        <span class="font-weight-bold">{{ $profile->hasmanylogin()->where('active', 1)->first()->username }}</span>
+        <span> </span>
+      </div>
+    </div>
+    <div class="col-md-5 border-right">
+      <div class="p-3 py-5">
 
-  {!! Form::model($profile, ['route' => ['profile.update', $profile->id], 'method' => 'PATCH', 'id' => 'form', 'class' => 'form-horizontal', 'autocomplete' => 'off', 'files' => true]) !!}
-  @csrf
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h4 class="text-right">Profile Update</h4>
+        </div>
 
-  <table class="table">
-    <tr class="my-2">
-      <td class="table-primary col-md-2">
-        NAME
-      </td>
-      <td class="col-md-5">
-        {{ $profile->name }}
-      </td>
-      <td class="table-primary col-md-2">
-        ID
-      </td>
-      <td>
-        {{ $profile->hasmanylogin()->where('active', 1)->first()->username }}
-      </td>
-    </tr>
-    <tr class="my-2">
-      <td class="table-primary col-md-2">
-        IC
-      </td>
-      <td class="col-md-5">
-        {{ Form::text( 'ic', @$value, ['class' => 'form-control', 'id' => 'stat', 'placeholder' => 'Please Insert', 'autocomplete' => 'off'] ) }}
-      </td>
-      <td class="table-primary col-md-2">
-        PHONE NUMBER
-      </td>
-      <td>
-        {{ Form::text( 'mobile', @$value, ['class' => 'form-control', 'id' => 'stat', 'placeholder' => 'Please Insert', 'autocomplete' => 'off'] ) }}
-      </td>
-    </tr>
-    <tr class="my-2">
-      <td class="table-primary col-md-2">
-        DEPARTMENT
-      </td>
-      <td class="col-md-5">
-        {!! Form::select('department', $department, @$value, ['class' => 'form-control', 'id' => 'stat', 'placeholder' => 'Please Select', 'autocomplete' => 'off']) !!}
-      </td>
-      <td class="table-primary col-md-2">
-        SATURDAY GROUPING
-      </td>
-      <td>
-        Group {{ $profile->restday_group_id }}
-      </td>
-    </tr>
-    <tr class="my-2">
-      <td class="table-primary col-md-2">
-        DATE OF BIRTH
-      </td>
-      <td class="col-md-5">
-        @if ($profile->dob != NULL)
-        {{ \Carbon\Carbon::parse($profile->dob)->format('d F Y') }}
+        <div class="row mt-3">
+          <div class="col-md-12">
+            <label class="labels">Name</label>
+            <input type="text" class="form-control" placeholder="enter name" value="{{ $profile->name }}" readonly>
+          </div>
+        </div>
+
+        <div class="row mt-3">
+          <div class="col-md-6">
+            <label class="labels">IC</label>
+            {{ Form::text( 'ic', @$value, ['class' => 'form-control', 'id' => 'ic', 'placeholder' => 'Please Insert', 'autocomplete' => 'off'] ) }}
+          </div>
+          <div class="col-md-6">
+            <label class="labels">PHONE NUMBER</label>
+            {{ Form::text( 'mobile', @$value, ['class' => 'form-control', 'id' => 'mobile', 'placeholder' => 'Please Insert', 'autocomplete' => 'off'] ) }}
+          </div>
+        </div>
+
+        <div class="row mt-3">
+          <div class="col-md-12">
+            <label class="labels">EMAIL</label>
+            {{ Form::text( 'email', @$value, ['class' => 'form-control', 'id' => 'email', 'placeholder' => 'Please Insert', 'autocomplete' => 'off'] ) }}
+          </div>
+        </div>
+
+        <div class="row mt-3">
+          <div class="col-md-12">
+            <label class="labels">ADDRESS</label>
+            {{ Form::text( 'address', @$value, ['class' => 'form-control', 'id' => 'address', 'placeholder' => 'Please Insert', 'autocomplete' => 'off'] ) }}
+          </div>
+        </div>
+
+        <div class="row mt-3">
+          <div class="col-md-12">
+            <label class="labels">DEPARTMENT</label>
+            <input type="text" class="form-control" placeholder="enter name" value="{{ $profile->belongstomanydepartment()->first()->department }}" readonly>
+          </div>
+        </div>
+
+        <div class="row mt-3">
+          <div class="col-md-6">
+            <label class="labels">CATEGORY</label>
+            <input type="text" class="form-control" placeholder="enter name" value="{{ $profile->belongstomanydepartment->first()->belongstocategory->category }}" readonly>
+          </div>
+          <div class="col-md-6">
+            <label class="labels">SATURDAY GROUPING</label>
+            <input type="text" class="form-control" placeholder="enter name" value="Group {{ $profile->restday_group_id }}" readonly>
+          </div>
+        </div>
+
+        <div class="row mt-3">
+          <div class="col-md-6">
+            <label class="labels">DATE OF BIRTH</label>
+            {!! Form::date( 'dob', @$value, ['class' => 'form-control', 'id' => 'dob', 'autocomplete' => 'off'] ) !!}
+          </div>
+          <div class="col-md-6">
+            <label class="labels">GENDER</label>
+            {!! Form::select( 'gender_id', $gender, @$value, ['class' => 'form-control', 'id' => 'gender_id', 'placeholder' => 'Please Select', 'autocomplete' => 'off'] ) !!}
+          </div>
+        </div>
+
+        <div class="row mt-3">
+          <div class="col-md-6">
+            <label class="labels">NATIONALITY</label>
+            {!! Form::select( 'nationality_id', $nationality, @$value, ['class' => 'form-control', 'id' => 'nationality_id', 'placeholder' => 'Please Select', 'autocomplete' => 'off'] ) !!}
+          </div>
+          <div class="col-md-6">
+            <label class="labels">RACE</label>
+            {!! Form::select( 'race_id', $race, @$value, ['class' => 'form-control', 'id' => 'race_id', 'placeholder' => 'Please Select', 'autocomplete' => 'off'] ) !!}
+          </div>
+        </div>
+
+        <div class="row mt-3">
+          <div class="col-md-6">
+            <label class="labels">RELIGION</label>
+            {!! Form::select( 'religion_id', $religion, @$value, ['class' => 'form-control', 'id' => 'religion_id', 'placeholder' => 'Please Select', 'autocomplete' => 'off'] ) !!}
+          </div>
+          <div class="col-md-6">
+            <label class="labels">MARITAL STATUS</label>
+            {!! Form::select( 'marital_status_id', $marital_status, @$value, ['class' => 'form-control', 'id' => 'marital_status_id', 'placeholder' => 'Please Select', 'autocomplete' => 'off'] ) !!}
+          </div>
+        </div>
+
+        <div class="row mt-3">
+          <div class="col-md-6">
+            <label class="labels">JOIN DATE</label>
+            <input type="text" class="form-control" placeholder="enter name" value="{{ \Carbon\Carbon::parse($profile->join)->format('d F Y') }}" readonly>
+          </div>
+          <div class="col-md-6">
+            <label class="labels">CONFIRM DATE</label>
+            <input type="text" class="form-control" placeholder="enter name" value="{{ \Carbon\Carbon::parse($profile->confirmed)->format('d F Y') }}" readonly>
+          </div>
+        </div>
+
+        <div class="mt-5 text-center">
+          {!! Form::button('Save', ['class' => 'btn btn-primary btn-block', 'type' => 'submit']) !!}
+        </div>
+      </div>
+    </div>
+
+
+
+
+
+
+    <div class="col-md-4">
+      <div class="p-3 py-5">
+
+        <div class="row mt-3">
+          <div class="d-flex justify-content-between align-items-center experience">
+            <span>Edit Emergency Contact</span>
+            <span class="border px-3 p-1 add-experience">
+              <i class="fa fa-plus"></i>&nbsp;Experience
+            </span>
+          </div>
+        </div>
+
+        @if ($emergencies->isNotEmpty())
+        @foreach ($emergencies as $emergency)
+        <div class="row mt-3">
+          <div class="col-md-12">
+            <label class="labels">NAME</label>
+            <input type="text" class="form-control" placeholder="experience" value="{{ $emergency->contact_person }}">
+          </div>
+        </div>
+
+        <div class="row mt-3">
+          <div class="col-md-12">
+            <label class="labels">RELATIONSHIP</label>
+            <input type="text" class="form-control" placeholder="additional details" value="{{ $emergency->belongstorelationship->relationship}}">
+          </div>
+        </div>
+
+        <div class="row mt-3">
+          <div class="col-md-12">
+            <label class="labels">ADDRESS</label>
+            <input type="text" class="form-control" placeholder="experience" value="{{ $emergency->address }}">
+          </div>
+        </div>
+
+        <div class="row mt-3">
+          <div class="col-md-12">
+            <label class="labels">PHONE</label>
+            <input type="text" class="form-control" placeholder="additional details" value="{{ $emergency->phone }}">
+          </div>
+        </div>
+        @endforeach
         @endif
-      </td>
-      <td class="table-primary col-md-2">
-        GENDER
-      </td>
-      <td>
-        <!-- {{ $profile->belongstogender->gender }} -->
 
-        {!! Form::select('gender_id', $gender, @$value, ['class' => 'form-control', 'id' => 'stat', 'placeholder' => 'Please Select', 'autocomplete' => 'off']) !!}
-      </td>
-    </tr>
-    <tr class="my-2">
-      <td class="table-primary col-md-2">
-        EMAIL
-      </td>
-      <td class="col-md-5">
-        {{ $profile->email }}
-      </td>
-      <td class="table-primary col-md-2">
-        NATIONALITY
-      </td>
-      <td>
-        {{ $profile->belongstonationality->country }}
-      </td>
-    </tr>
-    <tr class="my-2">
-      <td class="table-primary col-md-2">
-        CATEGORY
-      </td>
-      <td class="col-md-5">
-        {{ $profile->belongstomanydepartment->first()->belongstocategory->category }}
-      </td>
-      <td class="table-primary col-md-2">
-        RELIGION
-      </td>
-      <td>
-        @if ($profile->religion_id != NULL)
-        {{ $profile->belongstoreligion->religion }}
-        @endif
-      </td>
-    </tr>
-    <tr class="my-2">
-      <td class="table-primary col-md-2">
-        RACE
-      </td>
-      <td class="col-md-5">
-        @if ($profile->race_id != NULL)
-        {{ $profile->belongstorace->race }}
-        @endif
-      </td>
-      <td class="table-primary col-md-2">
-        MARITAL STATUS
-      </td>
-      <td>
-        @if ($profile->marital_status_id != NULL)
-        {{ $profile->belongstomaritalstatus->marital_status }}
-        @endif
-      </td>
-    </tr>
-    <tr class="my-2">
-      <td class="table-primary col-md-2">
-        JOIN DATE
-      </td>
-      <td class="col-md-5">
-        @if ($profile->join != NULL)
-        {{ \Carbon\Carbon::parse($profile->join)->format('d F Y') }}
-        @endif
-      </td>
-      <td class="table-primary col-md-2">
-        CONFIRM DATE
-      </td>
-      <td>
-        @if ($profile->confirmed != NULL)
-        {{ \Carbon\Carbon::parse($profile->confirmed)->format('d F Y') }}
-        @endif
-      </td>
-    </tr>
-    <tr class="my-2">
-      <td class="table-primary col-md-2">
-        ADDRESS
-      </td>
-      <td colspan="3" class="col-md-5">
-        {{ $profile->address }}
-      </td>
-    </tr>
-  </table>
-  {{ Form::close() }}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  @if ($emergencies->isNotEmpty())
-  <table class="table">
-    <tr>
-      <td class="table-success">
-        EMERGENCY CONTACT
-      </td>
-    </tr>
-    @foreach ($emergencies as $emergency)
-    <tr class="my-2">
-      <td class="table-primary col-md-2">
-        NAME
-      </td>
-      <td class="col-md-5">
-        {{ $emergency->contact_person }}
-      </td>
-      <td class="table-primary col-md-2">
-        RELATIONSHIP
-      </td>
-      <td>
-        {{ $emergency->belongstorelationship->relationship}}
-      </td>
-    </tr>
-    <tr class="my-2">
-      <td class="table-primary col-md-2">
-        ADDRESS
-      </td>
-      <td class="col-md-5">
-        {{ $emergency->address }}
-      </td>
-      <td class="table-primary col-md-2">
-        PHONE
-      </td>
-      <td>
-        {{ $emergency->phone }}
-      </td>
-    </tr>
-    @endforeach
-  </table>
-  @endif
-
-  <div class="container d-flex justify-content-center align-items-center">
-    <div class="text-center">
-      <!-- <a href="{{ route('profile.edit', $profile->id) }}"> -->
-      <button type="button" class="btn btn-sm btn-outline-secondary">UPDATE</button>
-      <!-- </a> -->
+        <button type="button" class="btn btn-sm btn-outline-secondary">UPDATE</button>
+      </div>
     </div>
   </div>
-
 </div>
+{{ Form::close() }}
 
 @endsection
 
