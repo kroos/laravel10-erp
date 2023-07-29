@@ -208,7 +208,7 @@ class AjaxController extends Controller
 		// hati-hati dgn yg ni sbb melibatkan masa
 		$leaveALMC = $user->hasmanyleaveentitlement()->where('year', date('Y'))->first();
 		// cari kalau ada replacement leave
-		$oi = $user->hasmanyleavereplacement()->where('leave_balance', '<>', 0)->whereYear('date', date('Y'))->get();
+		$oi = $user->hasmanyleavereplacement()->where('leave_balance', '<>', 0)->whereYear('date_start', date('Y'))->get();
 
 		// dd($oi->sum('leave_balance'));
 
@@ -368,6 +368,7 @@ class AjaxController extends Controller
 			}
 		}
 
+		// block next year date till entitlement and working hour were generate
 		$nystart_date = $start_date->copy()->addYear();
 		$nyend_date = $end_date->copy()->addYears(5)->subDay();
 		// block next year if entitlements and working hours not set
