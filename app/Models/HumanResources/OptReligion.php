@@ -24,6 +24,6 @@ class OptReligion extends Model
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
 	public function hasmanystaff(): HasMany
 	{
-		return $this->hasMany(Staff::class, 'religion_id');
+		return $this->hasMany(\App\Models\Staff::class, 'religion_id');
 	}
 }

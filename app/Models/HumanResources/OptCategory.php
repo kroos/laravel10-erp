@@ -24,7 +24,7 @@ class OptCategory extends Model
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
 	public function hasmanydepartment(): HasMany
 	{
-		return $this->hasMany(HumanResources\DepartmentPivot::class, 'category_id');
+		return $this->hasMany(\App\Models\HumanResources\DepartmentPivot::class, 'category_id');
 	}
 }
 

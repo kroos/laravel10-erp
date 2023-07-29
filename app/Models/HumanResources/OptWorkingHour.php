@@ -25,7 +25,7 @@ class OptWorkingHour extends Model
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
 	public function hasmanydepartment(): HasMany
 	{
-		return $this->hasMany(HumanResources\DepartmentPivot::class, 'wh_group_id');
+		return $this->hasMany(\App\Models\HumanResources\DepartmentPivot::class, 'wh_group_id');
 	}
 }
 

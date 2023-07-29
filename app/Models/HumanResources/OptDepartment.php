@@ -24,7 +24,7 @@ class OptDepartment extends Model
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
 	public function hasmanydepartment(): HasMany
 	{
-		return $this->hasMany(HumanResources\DepartmentPivot::class, 'department_id');
+		return $this->hasMany(\App\Models\HumanResources\DepartmentPivot::class, 'department_id');
 	}
 
 }

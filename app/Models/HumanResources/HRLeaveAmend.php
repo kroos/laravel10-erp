@@ -33,7 +33,7 @@ class HRLeaveAmend extends Model
 
     public function belongstostaffleave(): BelongsTo
     {
-        return $this->belongsTo(HumanResources\HRLeave::class, 'leave_id')->withDefault();
+        return $this->belongsTo(\App\Models\HumanResources\HRLeave::class, 'leave_id')->withDefault();
     }
 
 
