@@ -24,7 +24,7 @@ class OptBranch extends Model
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
 	public function hasmanybranch(): HasMany
 	{
-		return $this->hasMany(HumanResources\DepartmentPivot::class, 'branch_id');
+		return $this->hasMany(\App\Models\HumanResources\DepartmentPivot::class, 'branch_id');
 	}
 }
 

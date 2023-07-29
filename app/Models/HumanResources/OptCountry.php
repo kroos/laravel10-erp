@@ -24,6 +24,6 @@ class OptCountry extends Model
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
 	public function hasmanystaff(): HasMany
 	{
-		return $this->hasMany(Staff::class, 'nationality_id');
+		return $this->hasMany(\App\Models\Staff::class, 'nationality_id');
 	}
 }

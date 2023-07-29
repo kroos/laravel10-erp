@@ -26,7 +26,7 @@ class OptRestdayGroup extends Model
 	// hasmany relationship
 	public function hasmanystaff(): HasMany
 	{
-		return $this->hasMany(Staff::class, 'restday_group_id');
+		return $this->hasMany(\App\Models\Staff::class, 'restday_group_id');
 	}
 
 	public function hasmanyrestdaycalendar(): HasMany

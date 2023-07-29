@@ -25,7 +25,7 @@ class OptRelationship extends Model
 	// hasmany relationship
 	public function hasmanyemergency(): HasMany
 	{
-		return $this->hasMany(HumanResources\HREmergency::class, 'relationship_id');
+		return $this->hasMany(\App\Models\HumanResources\HREmergency::class, 'relationship_id');
 	}
 }
 

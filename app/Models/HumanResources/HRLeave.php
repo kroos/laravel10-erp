@@ -63,7 +63,7 @@ class HRLeave extends Model
 	//belongsto relationship
 	public function belongstostaff(): BelongsTo
 	{
-		return $this->belongsTo(Staff::class, 'staff_id')->withDefault();
+		return $this->belongsTo(\App\Models\Staff::class, 'staff_id')->withDefault();
 	}
 
 	public function belongstooptleavetype(): BelongsTo
