@@ -7,8 +7,14 @@ use Illuminate\Http\Request;
 
 // load models
 use App\Models\Staff;
-use App\Models\HumanResources\DepartmentPivot;
 use App\Models\HumanResources\OptGender;
+use App\Models\HumanResources\OptCountry;
+use App\Models\HumanResources\OptReligion;
+use App\Models\HumanResources\OptRace;
+use App\Models\HumanResources\OptMaritalStatus;
+
+// load validation
+use App\Http\Requests\ProfileRequest;
 
 class ProfileController extends Controller
 {
@@ -16,7 +22,7 @@ class ProfileController extends Controller
 	function __construct()
 	{
 		$this->middleware('auth');
-		$this->middleware('profileaccess');
+		$this->middleware('profileaccess', ['only' => ['show', 'edit', 'update']]);
 	}
 
 	/**
@@ -56,18 +62,24 @@ class ProfileController extends Controller
 	 */
 	public function edit(Staff $profile)
 	{
-		$department = DepartmentPivot::all()->pluck('department','id')->sortKeys()->toArray();
-		$gender = OptGender::all()->pluck('gender','id')->sortKeys()->toArray();
+		$gender = OptGender::all()->pluck('gender', 'id')->sortKeys()->toArray();
+		$nationality = OptCountry::all()->pluck('country', 'id')->sortKeys()->toArray();
+		$religion = OptReligion::all()->pluck('religion', 'id')->sortKeys()->toArray();
+		$race = OptRace::all()->pluck('race', 'id')->sortKeys()->toArray();
+		$marital_status = OptMaritalStatus::all()->pluck('marital_status', 'id')->sortKeys()->toArray();
 
-		return view('humanresources.profile.edit', compact('profile', 'department', 'gender'));
+		return view('humanresources.profile.edit', compact('profile', 'gender', 'nationality', 'religion', 'race', 'marital_status'));
 	}
 
 	/**
 	 * Update the specified resource in storage.
 	 */
-	public function update(Request $request, Staff $profile)
+	public function update(ProfileRequest $request, Staff $profile)
 	{
-		//
+
+
+		Session::flash('flash_message', 'Data successfully updated!');
+		return redirect(route('profile.show', $profile->id));
 	}
 
 	/**
