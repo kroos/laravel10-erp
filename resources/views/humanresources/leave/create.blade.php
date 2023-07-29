@@ -60,7 +60,10 @@
 @section('js')
 /////////////////////////////////////////////////////////////////////////////////////////
 $('#leave_id').select2({
-	placeholder: 'Please choose...............................',
+	placeholder: 'Please choose',
+	allowClear: true,
+	closeOnSelect: true,
+	width: '100%',
 	ajax: {
 		url: '{{ route('leaveType.leaveType') }}',
 		// data: { '_token': '{!! csrf_token() !!}' },
@@ -74,9 +77,6 @@ $('#leave_id').select2({
 			return data;
 		}
 	},
-	allowClear: true,
-	closeOnSelect: true,
-	width: '100%',
 });
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -155,7 +155,7 @@ var data3 = $.ajax({
 	}
 }).responseText;
 
-// this is how u cange from json to array type data
+// this is how u change from json to array type data
 var data4 = $.parseJSON( data3 );
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -164,7 +164,7 @@ $('#leave_id').on('change', function() {
 	$selection = $(this).find(':selected');
 	// console.log($selection.val());
 
-/////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// annual leave & UPL
 	if ($selection.val() == '1' || $selection.val() == '3') {
 
@@ -890,7 +890,6 @@ $oi = \Auth::user()->belongstostaff->hasmanyleavereplacement()->where('leave_bal
 						'</div>'
 					);
 				}
-
 			} else {
 				if( nrlbal != 0.5 ) {
 					$('#radio1').prop('checked', true);
@@ -970,8 +969,6 @@ $oi = \Auth::user()->belongstostaff->hasmanyleavereplacement()->where('leave_bal
 			closeOnSelect: true,
 		});
 
-
-
 		/////////////////////////////////////////////////////////////////////////////////////////
 		// enable datetime for the 1st one
 		$('#from').datetimepicker({
@@ -996,7 +993,6 @@ $oi = \Auth::user()->belongstostaff->hasmanyleavereplacement()->where('leave_bal
 			$('#form').bootstrapValidator('revalidateField', 'date_time_start');
 			var minDate = $('#from').val();
 			$('#to').datetimepicker('minDate', moment( minDate, 'YYYY-MM-DD').add(59, 'days').format('YYYY-MM-DD') );
-
 			$('#to').val( moment( minDate, 'YYYY-MM-DD').add(59, 'days').format('YYYY-MM-DD') );
 		});
 		
@@ -1025,12 +1021,10 @@ $oi = \Auth::user()->belongstostaff->hasmanyleavereplacement()->where('leave_bal
 			$('#from').datetimepicker('maxDate', moment( maxDate, 'YYYY-MM-DD').subtract(59, 'days').format('YYYY-MM-DD'));
 			$('#from').val( moment( maxDate, 'YYYY-MM-DD').subtract(59, 'days').format('YYYY-MM-DD') );
 		});
-		
-		/////////////////////////////////////////////////////////////////////////////////////////
 	}
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	if ($selection.val() == '5' || $selection.val() == '6') {
+	if ($selection.val() == '5' || $selection.val() == '6') {		// el-al and el-upl
 
 		$('#form').bootstrapValidator('removeField', $('.datetime').find('[name="date_time_start"]'));
 		$('#form').bootstrapValidator('removeField', $('.datetime').find('[name="date_time_end"]'));
@@ -1059,23 +1053,23 @@ $oi = \Auth::user()->belongstostaff->hasmanyleavereplacement()->where('leave_bal
 					'</div>' +
 				'</div>' +
 
-				'<div class="form-group row mb-3 {{ $errors->has('leave_type') ? 'has-error' : '' }}" id="wrapperday">' +
+				'<div class="form-group row mb-3 col-auto {{ $errors->has('leave_type') ? 'has-error' : '' }}" id="wrapperday">' +
 					'{{ Form::label('leave_type', 'Leave Category : ', ['class' => 'col-sm-2 col-form-label removehalfleave']) }}' +
 					'<div class="col-auto removehalfleave" id="halfleave">' +
 						'<div class="pretty p-default p-curve form-check form-check-inline removehalfleave" id="removeleavehalf">' +
 							'{{ Form::radio('leave_type', '1', true, ['id' => 'radio1', 'class' => 'form-check-input removehalfleave']) }}' +
 							'<div class="state p-success removehalfleave">' +
-								'{{ Form::label('radio1', 'Cuti Penuh', ['class' => 'form-check-label removehalfleave']) }}' +
+								'{{ Form::label('radio1', 'Full Day Off', ['class' => 'form-check-label removehalfleave']) }}' +
 							'</div>' +
 						'</div>' +
 						'<div class="pretty p-default p-curve form-check form-check-inline removehalfleave" id="appendleavehalf">' +
 							'{{ Form::radio('leave_type', '2', NULL, ['id' => 'radio2', 'class' => 'form-check-input removehalfleave']) }}' +
 							'<div class="state p-success removehalfleave">' +
-								'{{ Form::label('radio2', 'Cuti Separuh', ['class' => 'form-check-label removehalfleave']) }}' +
+								'{{ Form::label('radio2', 'Half Day Off', ['class' => 'form-check-label removehalfleave']) }}' +
 							'</div>' +
 						'</div>' +
 					'</div>' +
-					'<div class="form-group row col-auto offset-sm-2 {{ $errors->has('leave_half') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
+					'<div class="form-group col-auto offset-sm-2 {{ $errors->has('leave_half') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
 					'</div>' +
 				'</div>' +
 
@@ -1091,14 +1085,14 @@ $oi = \Auth::user()->belongstostaff->hasmanyleavereplacement()->where('leave_bal
 				@endif
 
 				'<div class="form-group row {{ $errors->has('document') ? 'has-error' : '' }}">' +
-					'{{ Form::label( 'doc', 'Supporting Document : ', ['class' => 'col-sm-2 col-form-label'] ) }}' +
+					'{{ Form::label( 'doc', 'Upload Supporting Document : ', ['class' => 'col-sm-2 col-form-label'] ) }}' +
 					'<div class="col-auto supportdoc">' +
 						'{{ Form::file( 'document', ['class' => 'form-control form-control-file', 'id' => 'doc', 'placeholder' => 'Supporting Document']) }}' +
 					'</div>' +
 				'</div>' +
 
 				'<div class="form-group row {{ $errors->has('akuan') ? 'has-error' : '' }}">' +
-					'{{ Form::label('suppdoc', 'Surat Sokongan : ', ['class' => 'col-sm-2 col-form-label']) }}' +
+					'{{ Form::label('suppdoc', 'Supporting Document : ', ['class' => 'col-sm-2 col-form-label']) }}' +
 					'<div class="col-auto form-check suppdoc">' +
 						'{{ Form::checkbox('documentsupport', 1, @$value, ['class' => 'form-check-input rounded', 'id' => 'suppdoc']) }}' +
 						'<label for="suppdoc" class="form-check-label p-1 mb-2 bg-warning text-danger rounded">Please ensure you will submit <strong>Supporting Document</strong> within a period of  <strong>3 Days</strong> upon return.</label>' +
@@ -1119,6 +1113,21 @@ $oi = \Auth::user()->belongstostaff->hasmanyleavereplacement()->where('leave_bal
 		$('#backupperson').select2({
 			placeholder: 'Please Choose',
 			width: '100%',
+			ajax: {
+				url: '{{ route('backupperson.backupperson') }}',
+				// data: { '_token': '{!! csrf_token() !!}' },
+				type: 'POST',
+				dataType: 'json',
+				data: function (params) {
+					var query = {
+						id: {{ \Auth::user()->belongstostaff->id }},
+						_token: '{!! csrf_token() !!}',
+					}
+					return query;
+				}
+			},
+			allowClear: true,
+			closeOnSelect: true,
 		});
 
 		/////////////////////////////////////////////////////////////////////////////////////////
@@ -1153,17 +1162,17 @@ $oi = \Auth::user()->belongstostaff->hasmanyleavereplacement()->where('leave_bal
 							'<div class="pretty p-default p-curve form-check form-check-inline removehalfleave" id="removeleavehalf">' +
 								'{{ Form::radio('leave_type', '1', true, ['id' => 'radio1', 'class' => 'form-check-input removehalfleave']) }}' +
 								'<div class="state p-success removehalfleave">' +
-									'{{ Form::label('radio1', 'Cuti Penuh', ['class' => 'form-check-label removehalfleave']) }}' +
+									'{{ Form::label('radio1', 'Full Day Off', ['class' => 'form-check-label removehalfleave']) }}' +
 								'</div>' +
 							'</div>' +
 							'<div class="pretty p-default p-curve form-check form-check-inline removehalfleave" id="appendleavehalf">' +
 								'{{ Form::radio('leave_type', '2', NULL, ['id' => 'radio2', 'class' => 'form-check-input removehalfleave']) }}' +
 								'<div class="state p-success removehalfleave">' +
-									'{{ Form::label('radio2', 'Cuti Separuh', ['class' => 'form-check-label removehalfleave']) }}' +
+									'{{ Form::label('radio2', 'Half Day Off', ['class' => 'form-check-label removehalfleave']) }}' +
 								'</div>' +
 							'</div>' +
 						'</div>' +
-						'<div class="form-group row col-auto offset-sm-2 {{ $errors->has('leave_half') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
+						'<div class="form-group col-auto offset-sm-2 {{ $errors->has('leave_half') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
 						'</div>'
 					);
 				}
@@ -1240,20 +1249,20 @@ $oi = \Auth::user()->belongstostaff->hasmanyleavereplacement()->where('leave_bal
 					$('#wrapperday').append(
 						'{{ Form::label('leave_type', 'Leave Category : ', ['class' => 'col-sm-2 col-form-label removehalfleave']) }}' +
 						'<div class="col-auto removehalfleave" id="halfleave">' +
-							'<div class="pretty p-default p-curve form-check removehalfleave" id="removeleavehalf">' +
+							'<div class="pretty p-default p-curve form-check form-check-inline removehalfleave" id="removeleavehalf">' +
 								'{{ Form::radio('leave_type', '1', true, ['id' => 'radio1', 'class' => ' removehalfleave']) }}' +
 								'<div class="state p-success removehalfleave">' +
-									'{{ Form::label('radio1', 'Cuti Penuh', ['class' => 'form-check-label removehalfleave']) }}' +
+									'{{ Form::label('radio1', 'Full Day Off', ['class' => 'form-check-label removehalfleave']) }}' +
 								'</div>' +
 							'</div>' +
-							'<div class="pretty p-default p-curve form-check removehalfleave" id="appendleavehalf">' +
+							'<div class="pretty p-default p-curve form-check form-check-inline removehalfleave" id="appendleavehalf">' +
 								'{{ Form::radio('leave_type', '2', NULL, ['id' => 'radio2', 'class' => ' removehalfleave']) }}' +
 								'<div class="state p-success removehalfleave">' +
-									'{{ Form::label('radio2', 'Cuti Separuh Hari', ['class' => 'form-check-label removehalfleave']) }}' +
+									'{{ Form::label('radio2', 'Half Day Off', ['class' => 'form-check-label removehalfleave']) }}' +
 								'</div>' +
 							'</div>' +
 						'</div>' +
-						'<div class="form-group row col-auto offset-sm-2 {{ $errors->has('leave_half') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
+						'<div class="form-group col-auto offset-sm-2 {{ $errors->has('leave_half') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
 						'</div>'
 					);
 				}
@@ -1262,18 +1271,18 @@ $oi = \Auth::user()->belongstostaff->hasmanyleavereplacement()->where('leave_bal
 				$('.removehalfleave').remove();
 			}
 		});
-		
+
 		/////////////////////////////////////////////////////////////////////////////////////////
 		// enable radio
 		$(document).on('change', '#appendleavehalf :radio', function () {
 			if (this.checked) {
 				var daynow = moment($('#from').val(), 'YYYY-MM-DD').format('dddd');
 				var datenow =$('#from').val();
-		
+
 				var data1 = $.ajax({
 					url: "{{ route('leavedate.timeleave') }}",
 					type: "POST",
-					data: {date: datenow, _token: '{!! csrf_token() !!}'},
+					data: {date: datenow, _token: '{!! csrf_token() !!}', id: {{ \Auth::user()->belongstostaff->id }} },
 					dataType: 'json',
 					global: false,
 					async:false,
@@ -1285,7 +1294,7 @@ $oi = \Auth::user()->belongstostaff->hasmanyleavereplacement()->where('leave_bal
 						console.log(textStatus, errorThrown);
 					}
 				}).responseText;
-				
+
 				// convert data1 into json
 				var obj = jQuery.parseJSON( data1 );
 
@@ -1652,11 +1661,682 @@ $oi = \Auth::user()->belongstostaff->hasmanyleavereplacement()->where('leave_bal
 			closeOnSelect: true,
 		});
 	}
-		/////////////////////////////////////////////////////////////////////////////////////////
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// el replacement leave
+<?php
+$oi = \Auth::user()->belongstostaff->hasmanyleavereplacement()->where('leave_balance', '<>', 0)->get();
+?>
+	if ($selection.val() == '10') {
+		$('#form').bootstrapValidator('removeField', $('.datetime').find('[name="date_time_start"]'));
+		$('#form').bootstrapValidator('removeField', $('.datetime').find('[name="date_time_end"]'));
+		$('#form').bootstrapValidator('removeField', $('.time').find('[name="time_start"]'));
+		$('#form').bootstrapValidator('removeField', $('.time').find('[name="time_end"]'));
+		$('#form').bootstrapValidator('removeField', $('.backup').find('[name="staff_id"]'));
+		$('#form').bootstrapValidator('removeField', $('.supportdoc').find('[name="document"]'));
+		$('#form').bootstrapValidator('removeField', $('.suppdoc').find('[name="documentsupport"]'));
+
+		$('#remove').remove();
+		$('#wrapper').append(
+			'<div id="remove">' +
+				'<div class="form-group row mb-3 {{ $errors->has('leave_replacement_id') ? 'has-error' : '' }}">' +
+					'{{ Form::label('nrla', 'Please Choose Your Replacement Leave : ', ['class' => 'col-sm-2 col-form-label']) }}' +
+					'<div class="col-auto nrl">' +
+						'<p>Total Replacement Leave = {{ $oi->sum('leave_balance') }} days</p>' +
+						'<select name="leave_replacement_id" id="nrla" class="form-control">' +
+							'<option value="">Please select</option>' +
+						@foreach( $oi as $po )
+							'<option value="{{ $po->id }}" data-nrlbalance="{{ $po->leave_balance }}">On ' + moment( '{{ $po->date_start }}', 'YYYY-MM-DD' ).format('ddd Do MMM YYYY') + ', your leave balance = {{ $po->leave_balance }} day</option>' +
+						@endforeach
+						'</select>' +
+					'</div>' +
+				'</div>' +
+
+				'<div class="form-group row mb-3 {{ $errors->has('date_time_start') ? 'has-error' : '' }}">' +
+					'{{ Form::label('from', 'From : ', ['class' => 'col-sm-2 col-form-label']) }}' +
+					'<div class="col-auto datetime" style="position: relative">' +
+						'{{ Form::text('date_time_start', @$value, ['class' => 'form-control', 'id' => 'from', 'placeholder' => 'From : ', 'autocomplete' => 'off']) }}' +
+					'</div>' +
+				'</div>' +
+				'<div class="form-group row mb-3 {{ $errors->has('date_time_end') ? 'has-error' : '' }}">' +
+					'{{ Form::label('to', 'To : ', ['class' => 'col-sm-2 col-form-label']) }}' +
+					'<div class="col-auto datetime" style="position: relative">' +
+						'{{ Form::text('date_time_end', @$value, ['class' => 'form-control', 'id' => 'to', 'placeholder' => 'To : ', 'autocomplete' => 'off']) }}' +
+					'</div>' +
+				'</div>' +
+
+				'<div class="form-group row mb-3 {{ $errors->has('leave_type') ? 'has-error' : '' }}" id="wrapperday">' +
+					'{{ Form::label('leave_type', 'Leave Category : ', ['class' => 'col-sm-2 col-form-label removehalfleave']) }}' +
+					'<div class="col-auto removehalfleave" id="halfleave">' +
+						'<div class="pretty p-default p-curve form-check form-check-inline removehalfleave" id="removeleavehalf">' +
+							'{{ Form::radio('leave_type', '1', true, ['id' => 'radio1', 'class' => ' removehalfleave']) }}' +
+							'<div class="state p-success removehalfleave">' +
+								'{{ Form::label('radio1', 'Full Day Off', ['class' => 'form-check-label removehalfleave']) }}' +
+							'</div>' +
+						'</div>' +
+						'<div class="pretty p-default p-curve form-check form-check-inline removehalfleave" id="appendleavehalf">' +
+							'{{ Form::radio('leave_type', '2', NULL, ['id' => 'radio2', 'class' => ' removehalfleave']) }}' +
+							'<div class="state p-success removehalfleave">' +
+								'{{ Form::label('radio2', 'Half Day Off', ['class' => 'form-check-label removehalfleave']) }}' +
+							'</div>' +
+						'</div>' +
+					'</div>' +
+					'<div class="form-group col-auto offset-sm-2 {{ $errors->has('leave_half') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
+					'</div>' +
+				'</div>' +
+				@if( $userneedbackup == 1 )
+				'<div id="backupwrapper">' +
+					'<div class="form-group row mb-3 {{ $errors->has('staff_id') ? 'has-error' : '' }}" id="backupremove">' +
+						'{{ Form::label('backupperson', 'Backup Person : ', ['class' => 'col-sm-2 col-form-label']) }}' +
+						'<div class="col-auto backup">' +
+							'<select name="staff_id" id="backupperson" class="form-control form-select form-select-sm " placeholder="Please choose" autocomplete="off"></select>' +
+						'</div>' +
+					'</div>' +
+				'</div>' +
+				@endif
+
+
+			'</div>'
+		);
+
+		/////////////////////////////////////////////////////////////////////////////////////////
+		// more option
+		$('#form').bootstrapValidator('addField', $('.datetime').find('[name="date_time_start"]'));
+		$('#form').bootstrapValidator('addField', $('.datetime').find('[name="date_time_end"]'));
+		$('#form').bootstrapValidator('addField', $('.nrl').find('[name="leave_replacement_id"]'));
+
+		/////////////////////////////////////////////////////////////////////////////////////////
+		// enable select2
+		$('#nrla').select2({ placeholder: 'Please select', 	width: '100%',
+		});
+
+		/////////////////////////////////////////////////////////////////////////////////////////
+		//enable select 2 for backup
+		$('#backupperson').select2({
+			placeholder: 'Please Choose',
+			width: '100%',
+			ajax: {
+				url: '{{ route('backupperson.backupperson') }}',
+				// data: { '_token': '{!! csrf_token() !!}' },
+				type: 'POST',
+				dataType: 'json',
+				data: function (params) {
+					var query = {
+						id: {{ \Auth::user()->belongstostaff->id }},
+						_token: '{!! csrf_token() !!}',
+					}
+					return query;
+				}
+			},
+			allowClear: true,
+			closeOnSelect: true,
+		});
+
+		/////////////////////////////////////////////////////////////////////////////////////////
+		// enable datetime for the 1st one
+		$('#from').datetimepicker({
+			icons: {
+				time: "fas fas-regular fa-clock fa-beat",
+				date: "fas fas-regular fa-calendar fa-beat",
+				up: "fas fas-regular fa-arrow-up fa-beat",
+				down: "fas fas-regular fa-arrow-down fa-beat",
+				previous: 'fas fas-regular fa-arrow-left fa-beat',
+				next: 'fas fas-regular fa-arrow-right fa-beat',
+				today: 'fas fas-regular fa-calenday-day fa-beat',
+				clear: 'fas fas-regular fa-broom-wide fa-beat',
+				close: 'fas fas-regular fa-rectangle-xmark fa-beat'
+			},
+			format:'YYYY-MM-DD',
+			useCurrent: false,
+			disabledDates: data4,
+			// minDate: moment().format('YYYY-MM-DD'),
+			// daysOfWeekDisabled: [0],
+			// minDate: data[1],
+		})
+		.on('dp.change dp.update', function(e) {
+			$('#form').bootstrapValidator('revalidateField', 'date_time_start');
+			var minDate = $('#from').val();
+			$('#to').datetimepicker('minDate', minDate);
+			if($('#from').val() === $('#to').val()) {
+				if( $('.removehalfleave').length === 0) {
+					$('#wrapperday').append(
+						'{{ Form::label('leave_type', 'Leave Category : ', ['class' => 'col-sm-2 col-form-label removehalfleave']) }}' +
+						'<div class="col-auto removehalfleave" id="halfleave">' +
+							'<div class="pretty p-default p-curve form-check form-check-inline removehalfleave" id="removeleavehalf">' +
+								'{{ Form::radio('leave_type', '1', true, ['id' => 'radio1', 'class' => ' removehalfleave']) }}' +
+								'<div class="state p-success removehalfleave">' +
+									'{{ Form::label('radio1', 'Full Day Off', ['class' => 'form-check-label removehalfleave']) }}' +
+								'</div>' +
+							'</div>' +
+							'<div class="pretty p-default p-curve form-check form-check-inline removehalfleave" id="appendleavehalf">' +
+								'{{ Form::radio('leave_type', '2', NULL, ['id' => 'radio2', 'class' => ' removehalfleave']) }}' +
+								'<div class="state p-success removehalfleave">' +
+									'{{ Form::label('radio2', 'Half Day Off', ['class' => 'form-check-label removehalfleave']) }}' +
+								'</div>' +
+							'</div>' +
+						'</div>' +
+						'<div class="form-group col-auto offset-sm-2 {{ $errors->has('leave_half') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
+						'</div>'
+					);
+				}
+			}
+			if($('#from').val() !== $('#to').val()) {
+				// $('.removehalfleave').remove();
+				$('#to').val( $('#from').val() );
+			}
+
+			// enable backup if date from is greater or equal than today.
+			//cari date now dulu
+			if( $('#from').val() >= moment().format('YYYY-MM-DD') ) {
+				// console.log( moment().add(1, 'days').format('YYYY-MM-DD') );
+				// console.log($( '#rembackup').children().length + ' <= rembackup length' );
+				if( $('#backupwrapper').children().length == 0 ) {
+					$('#backupwrapper').append(
+						'<div class="form-group row {{ $errors->has('staff_id') ? 'has-error' : '' }}">' +
+							'{{ Form::label('backupperson', 'Backup Person : ', ['class' => 'col-sm-2 col-form-label']) }}' +
+							'<div class="col-auto backup">' +
+								'<select name="staff_id" id="backupperson" class="form-control form-select form-select-sm" placeholder="Please choose" autocomplete="off"></select>' +
+							'</div>' +
+						'</div>'
+					);
+					$('#form').bootstrapValidator('addField', $('.backup').find('[name="staff_id"]'));
+					$('#backupperson').select2({
+						placeholder: 'Please Choose',
+						width: '100%',
+						ajax: {
+							url: '{{ route('backupperson.backupperson') }}',
+							// data: { '_token': '{!! csrf_token() !!}' },
+							type: 'POST',
+							dataType: 'json',
+							data: function (params) {
+								var query = {
+									id: {{ \Auth::user()->belongstostaff->id }},
+									_token: '{!! csrf_token() !!}',
+								}
+								return query;
+							}
+						},
+						allowClear: true,
+						closeOnSelect: true,
+					});
+				}
+			} else {
+				$('#form').bootstrapValidator('removeField', $('.backup').find('[name="staff_id"]'));
+				$('#backupwrapper').children().remove();
+			}
+		});
+		
+		$('#to').datetimepicker({
+			icons: {
+				time: "fas fas-regular fa-clock fa-beat",
+				date: "fas fas-regular fa-calendar fa-beat",
+				up: "fas fas-regular fa-arrow-up fa-beat",
+				down: "fas fas-regular fa-arrow-down fa-beat",
+				previous: 'fas fas-regular fa-arrow-left fa-beat',
+				next: 'fas fas-regular fa-arrow-right fa-beat',
+				today: 'fas fas-regular fa-calenday-day fa-beat',
+				clear: 'fas fas-regular fa-broom-wide fa-beat',
+				close: 'fas fas-regular fa-rectangle-xmark fa-beat'
+			},
+			format:'YYYY-MM-DD',
+			useCurrent: false,
+			disabledDates:data4,
+			// minDate: moment().format('YYYY-MM-DD'),
+			// daysOfWeekDisabled: [0],
+		})
+		.on('dp.change dp.update', function(e) {
+			$('#form').bootstrapValidator('revalidateField', 'date_time_end');
+			var maxDate = $('#to').val();
+			$('#from').datetimepicker('maxDate', maxDate);
+			if($('#from').val() === $('#to').val()) {
+				if( $('.removehalfleave').length === 0) {
+					$('#wrapperday').append(
+						'{{ Form::label('leave_type', 'Leave Category : ', ['class' => 'col-sm-2 col-form-label removehalfleave']) }}' +
+						'<div class="col-auto removehalfleave" id="halfleave">' +
+							'<div class="pretty p-default p-curve form-check form-check-inline removehalfleave" id="removeleavehalf">' +
+								'{{ Form::radio('leave_type', '1', true, ['id' => 'radio1', 'class' => ' removehalfleave']) }}' +
+								'<div class="state p-success removehalfleave">' +
+									'{{ Form::label('radio1', 'Full Day Off', ['class' => 'form-check-label removehalfleave']) }}' +
+								'</div>' +
+							'</div>' +
+							'<div class="pretty p-default p-curve form-check form-check-inline removehalfleave" id="appendleavehalf">' +
+								'{{ Form::radio('leave_type', '2', NULL, ['id' => 'radio2', 'class' => ' removehalfleave']) }}' +
+								'<div class="state p-success removehalfleave">' +
+									'{{ Form::label('radio2', 'Half Day Off', ['class' => 'form-check-label removehalfleave']) }}' +
+								'</div>' +
+							'</div>' +
+						'</div>' +
+						'<div class="form-group col-auto offset-sm-2 {{ $errors->has('leave_half') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
+						'</div>'
+					);
+				}
+			}
+			if($('#from').val() !== $('#to').val()) {
+				// $('.removehalfleave').remove();
+				$('#from').val( $('#to').val() );
+			}
+		});
+		
+		/////////////////////////////////////////////////////////////////////////////////////////
+		// enable radio
+		$(document).on('change', '#appendleavehalf :radio', function () {
+			if (this.checked) {
+				var daynow = moment($('#from').val(), 'YYYY-MM-DD').format('dddd');
+				var datenow =$('#from').val();
+		
+				var data1 = $.ajax({
+					url: "{{ route('leavedate.timeleave') }}",
+					type: "POST",
+					data: {date: datenow, _token: '{!! csrf_token() !!}', id: {{ \Auth::user()->belongstostaff->id }} },
+					dataType: 'json',
+					global: false,
+					async:false,
+					success: function (response) {
+						// you will get response from your php page (what you echo or print)
+						return response;
+					},
+					error: function(jqXHR, textStatus, errorThrown) {
+						console.log(textStatus, errorThrown);
+					}
+				}).responseText;
+
+				// convert data1 into json
+				var obj = $.parseJSON( data1 );
+
+				// checking so there is no double
+				if( $('.removetest').length == 0 ) {
+					$('#wrappertest').append(
+						'<div class="pretty p-default p-curve form-check form-check-inline removetest">' +
+							'<input type="radio" name="leave_half" value="' + obj.start_am + '/' + obj.end_am + '" id="am" checked="checked">' +
+							'<div class="state p-primary">' +
+								'<label for="am" class="form-check-label">' + moment(obj.start_am, 'HH:mm:ss').format('h:mm a') + ' to ' + moment(obj.end_am, 'HH:mm:ss').format('h:mm a') + '</label> ' +
+							'</div>' +
+						'</div>' +
+						'<div class="pretty p-default p-curve form-check form-check-inline removetest">' +
+							'<input type="radio" name="leave_half" value="' + obj.start_pm + '/' + obj.end_pm + '" id="pm">' +
+							'<div class="state p-primary">' +
+								'<label for="pm" class="form-check-label">' + moment(obj.start_pm, 'HH:mm:ss').format('h:mm a') + ' to ' + moment(obj.end_pm, 'HH:mm:ss').format('h:mm a') + '</label> ' +
+							'</div>' +
+						'</div>'
+					);
+				}
+			}
+		});
+		
+		//$(document).on('change', '#removeleavehalf :radio', function () {
+		$('#removeleavehalf :radio').change(function() {
+			if (this.checked) {
+
+				// console.log( $('#nrla option:selected').data('nrlbalance') );
+				if( $('#nrla option:selected').data('nrlbalance') == 0.5 ) {
+
+					// especially for select 2, if no select2, remove change()
+					$('#nrla option:selected').prop('selected', false).change();
+					// $('#nrla').val('').change();
+				}
+				$('.removetest').remove();
+			}
+		});
+
+		/////////////////////////////////////////////////////////////////////////////////////////
+		// checking for half day click but select for 1 full day
+		$('#nrla').change(function() {
+
+			selectedOption = $('option:selected', this);
+
+			$('#form').bootstrapValidator('revalidateField', 'leave_replacement_id');
+
+			var nrlbal = selectedOption.data('nrlbalance');
+
+			if (nrlbal == 0.5) {
+				$('#radio2').prop('checked', true);
+				// checking so there is no double
+
+				var daynow = moment($('#from').val(), 'YYYY-MM-DD').format('dddd');
+				var datenow =$('#from').val();
+		
+				var data1 = $.ajax({
+					url: "{{ route('leavedate.timeleave') }}",
+					type: "POST",
+					data: {date: datenow, _token: '{!! csrf_token() !!}', id: {{ \Auth::user()->belongstostaff->id }} },
+					dataType: 'json',
+					global: false,
+					async:false,
+					success: function (response) {
+						// you will get response from your php page (what you echo or print)
+						return response;
+					},
+					error: function(jqXHR, textStatus, errorThrown) {
+						console.log(textStatus, errorThrown);
+					}
+				}).responseText;
+
+				// convert data1 into json
+				var obj = $.parseJSON( data1 );
+
+				// checking so there is no double
+				if( $('.removetest').length == 0 ) {
+					$('#wrappertest').append(
+						'<div class="pretty p-default p-curve form-check form-check-inline removetest">' +
+							'<input type="radio" name="leave_half" value="' + obj.start_am + '/' + obj.end_am + '" id="am" checked="checked">' +
+							'<div class="state p-primary">' +
+								'<label for="am" class="form-check-label">' + moment(obj.start_am, 'HH:mm:ss').format('h:mm a') + ' to ' + moment(obj.end_am, 'HH:mm:ss').format('h:mm a') + '</label> ' +
+							'</div>' +
+						'</div>' +
+						'<div class="pretty p-default p-curve form-check form-check-inline removetest">' +
+							'<input type="radio" name="leave_half" value="' + obj.start_pm + '/' + obj.end_pm + '" id="pm">' +
+							'<div class="state p-primary">' +
+								'<label for="pm" class="form-check-label">' + moment(obj.start_pm, 'HH:mm:ss').format('h:mm a') + ' to ' + moment(obj.end_pm, 'HH:mm:ss').format('h:mm a') + '</label> ' +
+							'</div>' +
+						'</div>'
+					);
+				}
+			} else {
+				if( nrlbal != 0.5 ) {
+					$('#radio1').prop('checked', true);
+					$('.removetest').remove();
+				}
+			}
+		});
+	}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// annual leave & UPL
+	if ($selection.val() == '12') {
+
+		$('#form').bootstrapValidator('removeField', $('.datetime').find('[name="date_time_start"]'));
+		$('#form').bootstrapValidator('removeField', $('.datetime').find('[name="date_time_end"]'));
+		$('#form').bootstrapValidator('removeField', $('.time').find('[name="time_start"]'));
+		$('#form').bootstrapValidator('removeField', $('.time').find('[name="time_end"]'));
+		$('#form').bootstrapValidator('removeField', $('.backup').find('[name="staff_id"]'));
+		$('#form').bootstrapValidator('removeField', $('.supportdoc').find('[name="document"]'));
+		$('#form').bootstrapValidator('removeField', $('.suppdoc').find('[name="documentsupport"]'));
+
+		$('#remove').remove();
+		$('#wrapper').append(
+
+			'<div id="remove">' +
+				<!-- annual leave -->
+
+				'<div class="form-group row mb-3 {{ $errors->has('date_time_start') ? 'has-error' : '' }}">' +
+					'{{ Form::label('from', 'From : ', ['class' => 'col-sm-2 col-form-label']) }}' +
+					'<div class="col-auto datetime" style="position: relative">' +
+						'{{ Form::text('date_time_start', @$value, ['class' => 'form-control col-auto', 'id' => 'from', 'placeholder' => 'From : ', 'autocomplete' => 'off']) }}' +
+					'</div>' +
+				'</div>' +
+
+				'<div class="form-group row mb-3 {{ $errors->has('date_time_end') ? 'has-error' : '' }}">' +
+					'{{ Form::label('to', 'To : ', ['class' => 'col-sm-2 col-form-label']) }}' +
+					'<div class="col-auto datetime" style="position: relative">' +
+						'{{ Form::text('date_time_end', @$value, ['class' => 'form-control col-auto', 'id' => 'to', 'placeholder' => 'To : ', 'autocomplete' => 'off']) }}' +
+					'</div>' +
+				'</div>' +
+
+				'<div class="form-group row mb-3 {{ $errors->has('leave_type') ? 'has-error' : '' }}" id="wrapperday">' +
+					'{{ Form::label('leave_type', 'Leave Category : ', ['class' => 'col-sm-2 col-form-label removehalfleave']) }}' +
+					'<div class="col-auto removehalfleave" id="halfleave">' +
+						'<div class="pretty p-default p-curve form-check form-check-inline removehalfleave" id="removeleavehalf">' +
+							'{{ Form::radio('leave_type', '1', true, ['id' => 'radio1', 'class' => 'form-check-input removehalfleave']) }}' +
+							'<div class="state p-success removehalfleave">' +
+								'{{ Form::label('radio1', 'Full Day Off', ['class' => 'form-check-label removehalfleave']) }}' +
+							'</div>' +
+						'</div>' +
+						'<div class="pretty p-default p-curve form-check form-check-inline removehalfleave" id="appendleavehalf">' +
+							'{{ Form::radio('leave_type', '2', NULL, ['id' => 'radio2', 'class' => 'form-check-input removehalfleave']) }}' +
+							'<div class="state p-success removehalfleave">' +
+								'{{ Form::label('radio2', 'Half Day Off', ['class' => 'form-check-label removehalfleave']) }}' +
+							'</div>' +
+						'</div>' +
+					'</div>' +
+					'<div class="form-group col-auto offset-sm-2 {{ $errors->has('leave_half') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
+					'</div>' +
+				'</div>' +
+
+				'<div id="backupwrapper">' +
+					@if( $userneedbackup == 1 )
+					'<div class="form-group row mb-3 {{ $errors->has('staff_id') ? 'has-error' : '' }}">' +
+						'{{ Form::label('backupperson', 'Backup Person : ', ['class' => 'col-sm-2 col-form-label']) }}' +
+						'<div class="col-auto backup">' +
+							'<select name="staff_id" id="backupperson" class="form-control form-select form-select-sm " placeholder="Please choose" autocomplete="off"></select>' +
+						'</div>' +
+					'</div>' +
+					@endif
+				'</div>' +
+			'</div>'
+			);
+		/////////////////////////////////////////////////////////////////////////////////////////
+		// add more option
+		//add bootstrapvalidator
+		$('#form').bootstrapValidator('addField', $('.datetime').find('[name="date_time_start"]'));
+		$('#form').bootstrapValidator('addField', $('.datetime').find('[name="date_time_end"]'));
+		@if( $userneedbackup == 1 )
+		$('#form').bootstrapValidator('addField', $('.backup').find('[name="staff_id"]'));
+		@endif
+
+		/////////////////////////////////////////////////////////////////////////////////////////
+		//enable select 2 for backup
+		$('#backupperson').select2({
+			placeholder: 'Please Choose',
+			width: '100%',
+			allowClear: true,
+			closeOnSelect: true,
+			ajax: {
+				url: '{{ route('backupperson.backupperson') }}',
+				// data: { '_token': '{!! csrf_token() !!}' },
+				type: 'POST',
+				dataType: 'json',
+				data: function (params) {
+					var query = {
+						id: {{ \Auth::user()->belongstostaff->id }},
+						_token: '{!! csrf_token() !!}',
+					}
+					return query;
+				}
+			},
+		});
+
+		/////////////////////////////////////////////////////////////////////////////////////////
+		// start date
+		$('#from').datetimepicker({
+			icons: {
+				time: "fas fas-regular fa-clock fa-beat",
+				date: "fas fas-regular fa-calendar fa-beat",
+				up: "fa-regular fa-circle-up fa-beat",
+				down: "fa-regular fa-circle-down fa-beat",
+				previous: 'fas fas-regular fa-arrow-left fa-beat',
+				next: 'fas fas-regular fa-arrow-right fa-beat',
+				today: 'fas fas-regular fa-calenday-day fa-beat',
+				clear: 'fas fas-regular fa-broom-wide fa-beat',
+				close: 'fas fas-regular fa-rectangle-xmark fa-beat'
+			},
+			format:'YYYY-MM-DD',
+			useCurrent: false,
+			disabledDates: data4,
+			// minDate: moment().format('YYYY-MM-DD'),
+			// minDate: data[1],
+			// daysOfWeekDisabled: [0],
+		})
+		.on('dp.change dp.update', function(e) {
+			$('#form').bootstrapValidator('revalidateField', 'date_time_start');
+			var minDaten = $('#from').val();
+			console.log(minDaten);
+			$('#to').datetimepicker('minDate', minDaten);
+
+			if($('#from').val() === $('#to').val()) {
+				if( $('.removehalfleave').length === 0) {
+					$('#wrapperday').append(
+							'{{ Form::label('leave_type', 'Leave Category : ', ['class' => 'col-sm-2 col-form-label removehalfleave']) }}' +
+							'<div class="col-auto mb-3 removehalfleave " id="halfleave">' +
+								'<div class="pretty p-default p-curve form-check form-check-inline removehalfleave" id="removeleavehalf">' +
+									'{{ Form::radio('leave_type', '1', true, ['id' => 'radio1', 'class' => ' removehalfleave']) }}' +
+									'<div class="state p-success removehalfleave">' +
+										'{{ Form::label('radio1', 'Full Day Off', ['class' => 'form-check-label removehalfleave']) }}' +
+									'</div>' +
+								'</div>' +
+								'<div class="pretty p-default p-curve form-check form-check-inline removehalfleave" id="appendleavehalf">' +
+									'{{ Form::radio('leave_type', '2', NULL, ['id' => 'radio2', 'class' => ' removehalfleave']) }}' +
+									'<div class="state p-success removehalfleave">' +
+										'{{ Form::label('radio2', 'Half Day Off', ['class' => 'form-check-label removehalfleave']) }}' +
+									'</div>' +
+								'</div>' +
+							'</div>' +
+							'<div class="form-group col-auto offset-sm-2 {{ $errors->has('leave_half') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
+							'</div>'
+					);
+				}
+			}
+			if($('#from').val() !== $('#to').val()) {
+				$('.removehalfleave').remove();
+			}
+
+			// enable backup if date from is greater or equal than today.
+			//cari date now dulu
+			if( $('#from').val() >= moment().format('YYYY-MM-DD') ) {
+				// console.log( moment().add(1, 'days').format('YYYY-MM-DD') );
+				// console.log($( '#rembackup').children().length + ' <= rembackup length' );
+				if( $('#backupwrapper').children().length == 0 ) {
+					$('#backupwrapper').append(
+						'<div class="form-group row {{ $errors->has('staff_id') ? 'has-error' : '' }}">' +
+							'{{ Form::label('backupperson', 'Backup Person : ', ['class' => 'col-sm-2 col-form-label']) }}' +
+							'<div class="col-auto backup">' +
+								'<select name="staff_id" id="backupperson" class="form-control form-select form-select-sm" placeholder="Please choose" autocomplete="off"></select>' +
+							'</div>' +
+						'</div>'
+					);
+					$('#form').bootstrapValidator('addField', $('.backup').find('[name="staff_id"]'));
+					$('#backupperson').select2({
+						placeholder: 'Please Choose',
+						width: '100%',
+						ajax: {
+							url: '{{ route('backupperson.backupperson') }}',
+							// data: { '_token': '{!! csrf_token() !!}' },
+							type: 'POST',
+							dataType: 'json',
+							data: function (params) {
+								var query = {
+									id: {{ \Auth::user()->belongstostaff->id }},
+									_token: '{!! csrf_token() !!}',
+								}
+								return query;
+							}
+						},
+						allowClear: true,
+						closeOnSelect: true,
+					});
+				}
+			} else {
+				$('#form').bootstrapValidator('removeField', $('.backup').find('[name="staff_id"]'));
+				$('#backupwrapper').children().remove();
+			}
+		});
+
+		$('#to').datetimepicker({
+			icons: {
+				time: "fas fas-regular fa-clock fa-beat",
+				date: "fas fas-regular fa-calendar fa-beat",
+				up: "fas fas-regular fa-arrow-up fa-beat",
+				down: "fas fas-regular fa-arrow-down fa-beat",
+				previous: 'fas fas-regular fa-arrow-left fa-beat',
+				next: 'fas fas-regular fa-arrow-right fa-beat',
+				today: 'fas fas-regular fa-calenday-day fa-beat',
+				clear: 'fas fas-regular fa-broom-wide fa-beat',
+				close: 'fas fas-regular fa-rectangle-xmark fa-beat'
+			},
+			format:'YYYY-MM-DD',
+			useCurrent: false,
+			disabledDates:data4,
+			// minDate: moment().format('YYYY-MM-DD'),
+			// daysOfWeekDisabled: [0],
+		})
+		.on('dp.change dp.update', function(e) {
+			$('#form').bootstrapValidator('revalidateField', 'date_time_end');
+			var maxDate = $('#to').val();
+			$('#from').datetimepicker('maxDate', maxDate);
+			if($('#from').val() === $('#to').val()) {
+				if( $('.removehalfleave').length === 0) {
+					$('#wrapperday').append(
+							'{{ Form::label('leave_type', 'Leave Category : ', ['class' => 'col-sm-2 col-form-label removehalfleave']) }}' +
+							'<div class="col-auto mb-3 removehalfleave" id="halfleave">' +
+								'<div class="pretty p-default p-curve form-check form-check-inline removehalfleave" id="removeleavehalf">' +
+									'{{ Form::radio('leave_type', '1', true, ['id' => 'radio1', 'class' => ' removehalfleave']) }}' +
+									'<div class="state p-success removehalfleave">' +
+										'{{ Form::label('radio1', 'Full Day Off', ['class' => 'form-check-label removehalfleave']) }}' +
+									'</div>' +
+								'</div>' +
+								'<div class="pretty p-default p-curve form-check form-check-inline removehalfleave" id="appendleavehalf">' +
+									'{{ Form::radio('leave_type', '2', NULL, ['id' => 'radio2', 'class' => ' removehalfleave']) }}' +
+									'<div class="state p-success removehalfleave">' +
+										'{{ Form::label('radio2', 'Half Day Off', ['class' => 'form-check-label removehalfleave']) }}' +
+									'</div>' +
+								'</div>' +
+							'</div>' +
+							'<div class="form-group col-auto offset-sm-2 {{ $errors->has('leave_half') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
+							'</div>'
+					);
+				}
+			}
+			if($('#from').val() !== $('#to').val()) {
+				$('.removehalfleave').remove();
+			}
+		});
+		// end date
+
+		/////////////////////////////////////////////////////////////////////////////////////////
+		// enable radio
+		$(document).on('change', '#appendleavehalf :radio', function () {
+			if (this.checked) {
+				var daynow = moment($('#from').val(), 'YYYY-MM-DD').format('dddd');
+				var datenow =$('#from').val();
+		
+				var data1 = $.ajax({
+					url: "{{ route('leavedate.timeleave') }}",
+					type: "POST",
+					data: {date: datenow, _token: '{!! csrf_token() !!}', id: {{ \Auth::user()->belongstostaff->id }} },
+					dataType: 'json',
+					global: false,
+					async:false,
+					success: function (response) {
+						// you will get response from your php page (what you echo or print)
+						return response;
+					},
+					error: function(jqXHR, textStatus, errorThrown) {
+						console.log(textStatus, errorThrown);
+					}
+				}).responseText;
+
+				// convert data1 into json
+				var obj = $.parseJSON( data1 );
+
+				// checking so there is no double
+				if( $('.removetest').length == 0 ) {
+					$('#wrappertest').append(
+						'<div class="pretty p-default p-curve form-check form-check-inline removetest">' +
+							'<input type="radio" name="leave_half" value="' + obj.start_am + '/' + obj.end_am + '" id="am" checked="checked">' +
+							'<div class="state p-primary">' +
+								'<label for="am" class="form-check-label">' + moment(obj.start_am, 'HH:mm:ss').format('h:mm a') + ' to ' + moment(obj.end_am, 'HH:mm:ss').format('h:mm a') + '</label> ' +
+							'</div>' +
+						'</div>' +
+						'<div class="pretty p-default p-curve form-check form-check-inline removetest">' +
+							'<input type="radio" name="leave_half" value="' + obj.start_pm + '/' + obj.end_pm + '" id="pm">' +
+							'<div class="state p-primary">' +
+								'<label for="pm" class="form-check-label">' + moment(obj.start_pm, 'HH:mm:ss').format('h:mm a') + ' to ' + moment(obj.end_pm, 'HH:mm:ss').format('h:mm a') + '</label> ' +
+							'</div>' +
+						'</div>'
+					);
+				}
+			}
+		});
+
+		$(document).on('change', '#removeleavehalf :radio', function () {
+		//$('#removeleavehalf :radio').change(function() {
+			if (this.checked) {
+				$('.removetest').remove();
+			}
+		});
+	}
 });
 
-/////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // validator
 $(document).ready(function() {
 	$('#form').bootstrapValidator({
@@ -1666,7 +2346,7 @@ $(document).ready(function() {
 			validating: ''
 		},
 		fields: {
-			leave_id: {
+			leave_type_id: {
 				validators: {
 					notEmpty: {
 						message: 'Please choose'
