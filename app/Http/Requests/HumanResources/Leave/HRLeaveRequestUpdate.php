@@ -4,7 +4,7 @@ namespace App\Http\Requests\HumanResources\Leave;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class HRLeaveRequestStore extends FormRequest
+class HRLeaveRequestUpdate extends FormRequest
 {
 	/**
 	 * Determine if the user is authorized to make this request.
