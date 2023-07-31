@@ -4,7 +4,7 @@
 
 {!! Form::model($profile, ['route' => ['profile.update', $profile->id], 'method' => 'PATCH', 'id' => 'form', 'class' => 'form-horizontal', 'autocomplete' => 'off', 'files' => true]) !!}
 
-<div class="container rounded bg-white mt-5 mb-5">
+<div class="container rounded bg-white mt-2 mb-2">
   <div class="row">
     <div class="col-md-3 border-right">
       <div class="d-flex flex-column align-items-center text-center p-3 py-5">
@@ -120,7 +120,7 @@
     <div class="col-md-4 border-right">
       <div class="p-3 py-5">
 
-      <div class="d-flex justify-content-between align-items-center mb-3">
+        <div class="d-flex justify-content-between align-items-center mb-3">
           <h4 class="text-right">Emergency Contact</h4>
           <span class="border px-3 p-1 add-experience btn btn-sm btn-outline-secondary">
             <i class="fa fa-plus"></i>&nbsp;Contact
@@ -129,10 +129,14 @@
 
         @if ($emergencies->isNotEmpty())
         @foreach ($emergencies as $emergency)
+
+        <?php $contact_person = 'contact_person' . $emergency->id;
+        echo $contact_person ?>
+
         <div class="row mt-3">
           <div class="col-md-12">
             <label class="labels">NAME</label>
-            {{ Form::text( 'contact_person', @$emergency->contact_person, ['class' => 'form-control', 'id' => 'contact_person', 'placeholder' => 'Please Insert', 'autocomplete' => 'off'] ) }}
+            {{ Form::text( @$contact_person, @$emergency->contact_person, ['class' => 'form-control', 'id' => 'contact_person', 'placeholder' => 'Please Insert', 'autocomplete' => 'off'] ) }}
           </div>
         </div>
 
@@ -157,7 +161,7 @@
         <div class="row mt-4"></div>
         @endforeach
         @endif
-        
+
       </div>
     </div>
   </div>
