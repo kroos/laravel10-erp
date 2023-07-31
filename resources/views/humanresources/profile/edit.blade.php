@@ -2,17 +2,13 @@
 
 @section('content')
 
-<?php
-$emergencies = $profile->hasmanyemergency()->get();
-?>
-
 {!! Form::model($profile, ['route' => ['profile.update', $profile->id], 'method' => 'PATCH', 'id' => 'form', 'class' => 'form-horizontal', 'autocomplete' => 'off', 'files' => true]) !!}
 
 <div class="container rounded bg-white mt-5 mb-5">
   <div class="row">
     <div class="col-md-3 border-right">
       <div class="d-flex flex-column align-items-center text-center p-3 py-5">
-        <img class="rounded-circle mt-5" width="150px" src="{{ asset('storage/user_profile/' . $profile->image) }}">
+        <img class="rounded-5 mt-3" width="180px" src="{{ asset('storage/user_profile/' . $profile->image) }}">
         <span class="font-weight-bold">{{ $profile->name }}</span>
         <span class="font-weight-bold">{{ $profile->hasmanylogin()->where('active', 1)->first()->username }}</span>
         <span> </span>
@@ -118,28 +114,17 @@ $emergencies = $profile->hasmanyemergency()->get();
             <input type="text" class="form-control" placeholder="enter name" value="{{ \Carbon\Carbon::parse($profile->confirmed)->format('d F Y') }}" readonly>
           </div>
         </div>
-
-        <div class="mt-5 text-center">
-          {!! Form::button('Save', ['class' => 'btn btn-primary btn-block', 'type' => 'submit']) !!}
-        </div>
       </div>
     </div>
 
-
-
-
-
-
-    <div class="col-md-4">
+    <div class="col-md-4 border-right">
       <div class="p-3 py-5">
 
-        <div class="row mt-3">
-          <div class="d-flex justify-content-between align-items-center experience">
-            <span>Edit Emergency Contact</span>
-            <span class="border px-3 p-1 add-experience">
-              <i class="fa fa-plus"></i>&nbsp;Experience
-            </span>
-          </div>
+      <div class="d-flex justify-content-between align-items-center mb-3">
+          <h4 class="text-right">Emergency Contact</h4>
+          <span class="border px-3 p-1 add-experience btn btn-sm btn-outline-secondary">
+            <i class="fa fa-plus"></i>&nbsp;Contact
+          </span>
         </div>
 
         @if ($emergencies->isNotEmpty())
@@ -147,34 +132,40 @@ $emergencies = $profile->hasmanyemergency()->get();
         <div class="row mt-3">
           <div class="col-md-12">
             <label class="labels">NAME</label>
-            <input type="text" class="form-control" placeholder="experience" value="{{ $emergency->contact_person }}">
+            {{ Form::text( 'contact_person', @$emergency->contact_person, ['class' => 'form-control', 'id' => 'contact_person', 'placeholder' => 'Please Insert', 'autocomplete' => 'off'] ) }}
           </div>
         </div>
 
         <div class="row mt-3">
-          <div class="col-md-12">
+          <div class="col-md-6">
             <label class="labels">RELATIONSHIP</label>
-            <input type="text" class="form-control" placeholder="additional details" value="{{ $emergency->belongstorelationship->relationship}}">
+            {!! Form::select( 'relationship_id', $relationship, @$emergency->relationship_id, ['class' => 'form-control', 'id' => 'relationship_id', 'placeholder' => 'Please Select', 'autocomplete' => 'off'] ) !!}
+          </div>
+          <div class="col-md-6">
+            <label class="labels">PHONE NUMBER</label>
+            {{ Form::text( 'phone', @$emergency->phone, ['class' => 'form-control', 'id' => 'phone', 'placeholder' => 'Please Insert', 'autocomplete' => 'off'] ) }}
           </div>
         </div>
 
         <div class="row mt-3">
           <div class="col-md-12">
             <label class="labels">ADDRESS</label>
-            <input type="text" class="form-control" placeholder="experience" value="{{ $emergency->address }}">
+            {{ Form::text( 'emergency_address', @$emergency->address, ['class' => 'form-control', 'id' => 'address', 'placeholder' => 'Please Insert', 'autocomplete' => 'off'] ) }}
           </div>
         </div>
 
-        <div class="row mt-3">
-          <div class="col-md-12">
-            <label class="labels">PHONE</label>
-            <input type="text" class="form-control" placeholder="additional details" value="{{ $emergency->phone }}">
-          </div>
-        </div>
+        <div class="row mt-4"></div>
         @endforeach
         @endif
-
-        <button type="button" class="btn btn-sm btn-outline-secondary">UPDATE</button>
+        
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-3"></div>
+    <div class="col-md-9">
+      <div class="text-center">
+        {!! Form::button('Save', ['class' => 'btn btn-sm btn-outline-secondary', 'type' => 'submit']) !!}
       </div>
     </div>
   </div>
