@@ -4,6 +4,9 @@ namespace App\Http\Controllers\HumanResources\Profile;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Arr;
 
 // load models
 use App\Models\Staff;
@@ -72,21 +75,22 @@ class ProfileController extends Controller
     $marital_status = OptMaritalStatus::all()->pluck('marital_status', 'id')->sortKeys()->toArray();
     $relationship = OptRelationship::all()->pluck('relationship', 'id')->sortKeys()->toArray();
     $emergencies = $profile->hasmanyemergency()->get();
+    $loop = 1;
 
-    return view('humanresources.profile.edit', compact('profile', 'gender', 'nationality', 'religion', 'race', 'marital_status', 'relationship', 'emergencies'));
+    return view('humanresources.profile.edit', compact('profile', 'gender', 'nationality', 'religion', 'race', 'marital_status', 'relationship', 'emergencies', 'loop'));
   }
 
   /**
    * Update the specified resource in storage.
    */
-  public function update(ProfileRequestUpdate $request, Staff $profile)
+  public function update(ProfileRequestUpdate $request, Staff $profile)/*: RedirectResponse*/
   {
-    $Update = Staff::findOrFail($profile);
+    return $request;
 
-    $Update->update(['id' => $profile->id], array_add($request));
+    $profile->update($request->all());
 
     Session::flash('flash_message', 'Data successfully updated!');
-    return redirect(route('profile.show', $profile->id));
+    return Redirect::route('profile.show', $profile);
   }
 
   /**
