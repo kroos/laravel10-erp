@@ -23,7 +23,6 @@ use Session;
 
 class ProfileController extends Controller
 {
-	
 	function __construct()
 	{
 		$this->middleware('auth');
