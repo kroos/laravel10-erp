@@ -1,7 +1,6 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="d-flex justify-content-center align-items-center">
 	{!! Form::open(['route' => ['login'], 'class' => 'needs-validation','id' => 'form', 'autocomplete' => 'off', 'files' => true]) !!}
 	<div class="mb-3 row">
 		<div class="form-group row {{ $errors->has('username') ? 'has-error' : '' }}">
@@ -37,7 +36,6 @@
 		@endif
 	</div>
 	{!! Form::close(); !!}
-</div>
 @endsection
 
 @section('js')

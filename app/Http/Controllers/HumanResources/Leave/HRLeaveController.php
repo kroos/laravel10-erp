@@ -5,6 +5,12 @@ namespace App\Http\Controllers\HumanResources\Leave;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Redirect;
+
+// load validation
+use App\Http\Requests\HumanResources\Leave\HRLeaveRequestStore;
+
 // load models
 use App\Models\HRLeave;
 
@@ -34,9 +40,9 @@ class HRLeaveController extends Controller
 	/**
 	 * Store a newly created resource in storage.
 	 */
-	public function store(Request $request)
+	public function store(HRLeaveRequestStore $request)//: RedirectResponse
 	{
-		//
+		return $request->all();
 	}
 
 	/**
@@ -58,7 +64,7 @@ class HRLeaveController extends Controller
 	/**
 	 * Update the specified resource in storage.
 	 */
-	public function update(Request $request, HRLeave $hrleave)
+	public function update(HRLeaveRequestStore $request, HRLeave $hrleave)
 	{
 		//
 	}

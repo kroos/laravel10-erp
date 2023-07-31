@@ -146,7 +146,7 @@
 				</article>
 				@endif
 
-				<article class="blog-post">
+				<article class="blog-post d-flex justify-content-center align-items-center">
 					@yield('content')
 				</article>
 
