@@ -412,7 +412,7 @@ class AjaxController extends Controller
 		if(Setting::find(1)->active == 1) {
 			// block self leave
 			// make sure $request->id comes from table staff
-			$leaveday = \App\Models\HumanResources\HRLeave::where('staff_id', $request->id)->/*whereNull('leave_status_id')->*/whereIn('leave_status_id', [5,6,NULL])->whereRaw('"'.$d->copy()->year.'" BETWEEN YEAR(date_time_start) AND YEAR(date_time_end)')->orwhereRaw('"'.$d->copy()->addYear()->year.'" BETWEEN YEAR(date_time_start) AND YEAR(date_time_end)')->get();
+			$leaveday = \App\Models\HumanResources\HRLeave::where('staff_id', $request->id)->/*whereNull('leave_status_id')->*/whereIn('leave_status_id', [4,5,6,NULL])->whereRaw('"'.$d->copy()->year.'" BETWEEN YEAR(date_time_start) AND YEAR(date_time_end)')->orwhereRaw('"'.$d->copy()->addYear()->year.'" BETWEEN YEAR(date_time_start) AND YEAR(date_time_end)')->get();
 			// echo $leaveday;
 			// dd($leaveday);
 			if(!is_null($leaveday)) {

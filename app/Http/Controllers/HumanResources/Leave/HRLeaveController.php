@@ -14,6 +14,12 @@ use App\Http\Requests\HumanResources\Leave\HRLeaveRequestStore;
 // load models
 use App\Models\HRLeave;
 
+// load custom helper
+use App\Helpers\UnavailableDate;
+
+use \Carbon\Carbon;
+use \Carbon\CarbonPeriod;
+
 class HRLeaveController extends Controller
 {
 	function __construct()
@@ -42,7 +48,54 @@ class HRLeaveController extends Controller
 	 */
 	public function store(HRLeaveRequestStore $request)//: RedirectResponse
 	{
-		return $request->all();
+		// return $request->all();
+		// in time off, there only date_time_start so...
+		if( empty( $request->date_time_end ) ) {
+			$request->date_time_end = $request->date_time_start;
+		}
+
+		$period = \Carbon\CarbonPeriod::create($request->date_time_start, '1 days', $request->date_time_end);
+
+		$blockdate = UnavailableDate::blockDate(\Auth::user()->belongstostaff->id);
+
+		foreach ($blockdate as $val1) {
+			$va1 = Carbon::parse($val1)->format('Y-m-d');
+			foreach ($period as $val2) {
+				$va2 = Carbon::parse($val2)->format('Y-m-d');
+				if($va1->equalTo($va2)){
+					echo $va1;
+				}
+			}
+		}
+
+		// return $blockdate;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	}
 
 	/**
