@@ -23,26 +23,59 @@ class HRLeaveRequestStore extends FormRequest
 	{
 		return [
 			'leave_type_id' => 'required|integer',
-			'reason' => 'string',
+			'reason' => 'required|string',
+			'akuan' => 'accepted',
 			'date_time_start' => 'required|date',
-			'date_time_end' => 'sometimes|required|',
-			'akuan' => 'required|integer',
+			'date_time_end' => 'sometimes|required|date',
 
 			// sometimes it needs..
+			'leave_id' => 'sometimes|required|integer',
 			'staff_id' => 'sometimes|required|integer',
-
+			'time_start' => 'sometimes|required',
+			'time_end' => 'sometimes|required',
+			'leave_type' => 'sometimes|required',
+			'document' => 'sometimes|required|max:10000|mimes:jpg,bmp,png,png,doc,docx',
+			'documentsupport' => 'sometimes|accepted',
 		];
 	}
 
-	public function messages()
+	public function attributes(): array
 	{
 		return [
-			'leave_id.required' => 'Please choose your leave type',
-			'date_time_start' => 'Please choose date start leave',
-			'date_time_end' => 'Please choose date end leave',
-			'akuan.required' => 'Please check as your acknowledgement',
+			'leave_type_id' => 'Leave Type',
+			'reason' => 'Leave Reason',
+			'date_time_start' => 'Date From',
+			'date_time_end' => 'Date To',
+			'akuan' => 'Acknowledgement',
 
-			'staff_leave_replacement_id.required' => 'Please select your replacement leave',
+			// sometimes it needs..
+			'leave_id' => 'Replacement Leave',
+			'staff_id' => 'Replacement Person',
+			'time_start' => 'AM Time',
+			'time_end' => 'PM Time',
+			'leave_type' => 'Leave Category',
+			'document' => 'Upload Supporting Document',
+			'documentsupport' => 'Supporting Document Acknowledgement',
+		];
+	}
+
+	public function messages(): array
+	{
+		return [
+			// 'leave_type_id' => '',
+			// 'reason' => '',
+			// 'date_time_start' => '',
+			// 'date_time_end' => '',
+			// 'akuan' => '',
+
+			// // sometimes it needs..
+			// 'leave_id' => '',
+			// 'staff_id' => '',
+			// 'time_start' => '',
+			// 'time_end' => '',
+			// 'leave_type' => '',
+			// 'document' => '',
+			// 'documentsupport' => '',
 		];
 	}
 }
