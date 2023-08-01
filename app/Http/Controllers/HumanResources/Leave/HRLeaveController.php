@@ -14,6 +14,9 @@ use App\Http\Requests\HumanResources\Leave\HRLeaveRequestStore;
 // load models
 use App\Models\HRLeave;
 
+// load array helper
+use Illuminate\Support\Arr;
+
 // load custom helper
 use App\Helpers\UnavailableDate;
 
@@ -48,27 +51,118 @@ class HRLeaveController extends Controller
 	 */
 	public function store(HRLeaveRequestStore $request)//: RedirectResponse
 	{
-		// return $request->all();
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// in time off, there only date_time_start so...
 		if( empty( $request->date_time_end ) ) {
 			$request->date_time_end = $request->date_time_start;
 		}
 
-		$period = \Carbon\CarbonPeriod::create($request->date_time_start, '1 days', $request->date_time_end);
-
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		// if a user select more than 1 day and setting double date is on, we need to count the remaining day that is not overlapping
 		$blockdate = UnavailableDate::blockDate(\Auth::user()->belongstostaff->id);
+		$period = \Carbon\CarbonPeriod::create($request->date_time_start, '1 days', $request->date_time_end);
+		$lea = [];
+		foreach ($period as $value) {
+			$lea[] = Carbon::parse($value)->format('Y-m-d');
+		}
+		$totalday = count($lea);
 
+		$leav = [];
 		foreach ($blockdate as $val1) {
-			$va1 = Carbon::parse($val1)->format('Y-m-d');
+			$va1 = Carbon::parse($val1);
 			foreach ($period as $val2) {
-				$va2 = Carbon::parse($val2)->format('Y-m-d');
-				if($va1->equalTo($va2)){
-					echo $va1;
+				if(Carbon::parse($val1)->equalTo(Carbon::parse($val2))){
+					$leav[] = Carbon::parse($val1)->format('Y-m-d');
 				}
 			}
 		}
+		$filtered = array_diff($lea, $leav);			// get all the dates that is not in $blockdate
+		$totaldayfiltered = count($filtered);			// total days
 
-		// return $blockdate;
+		if($totalday == $totaldayfiltered){
+			$noOverlap = true;							// meaning we CAN take $request->date_time_end $request->date_time_start as is to be insert in database
+		} else {
+			$noOverlap = false;							// meaning we CANT take $request->date_time_end $request->date_time_start as is to be insert in database, instead we need to separate it row by row to be inserted into database.
+		}
+
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		// determining apporover (supervisor, HOD, director, HR)
+		$user = \Auth::user()->belongstostaff;
+
+		// determine $user branch/location
+		$branch = $user->belongstomanydepartment->branch_id;
+
+		// determine $user category
+		$branch = $user->belongstomanydepartment->category_id;
+
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		// check for backup
+		if($user->belongstoleaveapprovalflow->backup_approval == 1){
+
+		}
+
+		if($user->belongstoleaveapprovalflow->supervisor_approval == 1){
+
+		}
+
+		if($user->belongstoleaveapprovalflow->hod_approval == 1){
+
+		}
+
+		if($user->belongstoleaveapprovalflow->director_approval == 1){
+
+		}
+
+		if($user->belongstoleaveapprovalflow->hr_approval == 1){
+
+		}
+
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		// generate code for approver
+		$code = mt_rand(100000,999999);
+
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		// start insert into DB
+		// AL & EL-AL
+		if($request->leave_type_id == 1 || $request->leave_type_id == 5) {
+
+		}
+
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		// UPL & EL-UPL & MC-UPL
+		if($request->leave_type_id == 3 || $request->leave_type_id == 6 || $request->leave_type_id == 11) {
+
+		}
+
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		// MC
+		if($request->leave_type_id == 2) {
+
+		}
+
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		// NRL & EL-NRL
+		if($request->leave_type_id == 4 || $request->leave_type_id == 10) {
+
+		}
+
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		// ML
+		if($request->leave_type_id == 7) {
+
+		}
+
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		// TF
+		if($request->leave_type_id == 9) {
+
+		}
+
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		// S-UPL
+		if($request->leave_type_id == 12) {
+
+		}
 
 
 
