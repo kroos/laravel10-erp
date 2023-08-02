@@ -1,201 +1,176 @@
 @extends('layouts.app')
 
 @section('content')
-<style>
-  .table {
-    border-collapse: separate;
-    border-spacing: 0 10px;
-  }
-</style>
 
 <?php
 $emergencies = $profile->hasmanyemergency()->get();
 ?>
 
-<div class="col-auto table-responsive">
+<div class="container rounded bg-white mt-2 mb-2">
+  <div class="row">
+    <div class="col-md-3 border-right">
+      <div class="d-flex flex-column align-items-center text-center p-3 py-5">
+        <img class="rounded-5 mt-3" width="180px" src="{{ asset('storage/user_profile/' . $profile->image) }}">
+        <span class="font-weight-bold">{{ $profile->name }}</span>
+        <span class="font-weight-bold">{{ $profile->hasmanylogin()->where('active', 1)->first()->username }}</span>
+        <span> </span>
+      </div>
+    </div>
+    <div class="col-md-5 border-right">
+      <div class="p-3 py-5">
 
-  <img src="{{ asset('storage/user_profile/' . $profile->image) }}" class="rounded mx-auto d-block" width="220" height="250">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h4 class="text-right">Profile Update</h4>
+        </div>
 
-  <table class="table">
-    <tr class="my-2">
-      <td class="table-primary col-md-2">
-        NAME
-      </td>
-      <td class="col-md-5">
-        {{ $profile->name }}
-      </td>
-      <td class="table-primary col-md-2">
-        ID
-      </td>
-      <td>
-        {{ $profile->hasmanylogin()->where('active', 1)->first()->username }}
-      </td>
-    </tr>
-    <tr class="my-2">
-      <td class="table-primary col-md-2">
-        IC
-      </td>
-      <td class="col-md-5">
-        {{ $profile->ic }}
-      </td>
-      <td class="table-primary col-md-2">
-        PHONE NUMBER
-      </td>
-      <td>
-        {{ $profile->mobile }}
-      </td>
-    </tr>
-    <tr class="my-2">
-      <td class="table-primary col-md-2">
-        DEPARTMENT
-      </td>
-      <td class="col-md-5">
-        {{ $profile->belongstomanydepartment()->first()->department }}
-      </td>
-      <td class="table-primary col-md-2">
-        SATURDAY GROUPING
-      </td>
-      <td>
-        Group {{ $profile->restday_group_id }}
-      </td>
-    </tr>
-    <tr class="my-2">
-      <td class="table-primary col-md-2">
-        DATE OF BIRTH
-      </td>
-      <td class="col-md-5">
-        @if ($profile->dob != NULL)
-        {{ \Carbon\Carbon::parse($profile->dob)->format('d F Y') }}
-        @endif
-      </td>
-      <td class="table-primary col-md-2">
-        GENDER
-      </td>
-      <td>
-        {{ $profile->belongstogender->gender }}
-      </td>
-    </tr>
-    <tr class="my-2">
-      <td class="table-primary col-md-2">
-        EMAIL
-      </td>
-      <td class="col-md-5">
-        {{ $profile->email }}
-      </td>
-      <td class="table-primary col-md-2">
-        NATIONALITY
-      </td>
-      <td>
-        {{ $profile->belongstonationality->country }}
-      </td>
-    </tr>
-    <tr class="my-2">
-      <td class="table-primary col-md-2">
-        CATEGORY
-      </td>
-      <td class="col-md-5">
-        {{ $profile->belongstomanydepartment->first()->belongstocategory->category }}
-      </td>
-      <td class="table-primary col-md-2">
-        RELIGION
-      </td>
-      <td>
-        @if ($profile->religion_id != NULL)
-        {{ $profile->belongstoreligion->religion }}
-        @endif
-      </td>
-    </tr>
-    <tr class="my-2">
-      <td class="table-primary col-md-2">
-        RACE
-      </td>
-      <td class="col-md-5">
-        @if ($profile->race_id != NULL)
-        {{ $profile->belongstorace->race }}
-        @endif
-      </td>
-      <td class="table-primary col-md-2">
-        MARITAL STATUS
-      </td>
-      <td>
-        @if ($profile->marital_status_id != NULL)
-        {{ $profile->belongstomaritalstatus->marital_status }}
-        @endif
-      </td>
-    </tr>
-    <tr class="my-2">
-      <td class="table-primary col-md-2">
-        JOIN DATE
-      </td>
-      <td class="col-md-5">
-        @if ($profile->join != NULL)
-        {{ \Carbon\Carbon::parse($profile->join)->format('d F Y') }}
-        @endif
-      </td>
-      <td class="table-primary col-md-2">
-        CONFIRM DATE
-      </td>
-      <td>
-        @if ($profile->confirmed != NULL)
-        {{ \Carbon\Carbon::parse($profile->confirmed)->format('d F Y') }}
-        @endif
-      </td>
-    </tr>
-    <tr class="my-2">
-      <td class="table-primary col-md-2">
-        ADDRESS
-      </td>
-      <td colspan="3" class="col-md-5">
-        {{ $profile->address }}
-      </td>
-    </tr>
-  </table>
+        <div class="row mt-3">
+          <div class="col-md-12">
+            <label class="labels">Name</label>
+            <input type="text" class="form-control" value="{{ $profile->name }}" readonly>
+          </div>
+        </div>
 
-  @if ($emergencies->isNotEmpty())
-  <table class="table">
-    <tr>
-      <td class="table-success">
-        EMERGENCY CONTACT
-      </td>
-    </tr>
-    @foreach ($emergencies as $emergency)
-    <tr class="my-2">
-      <td class="table-primary col-md-2">
-        NAME
-      </td>
-      <td class="col-md-5">
-        {{ $emergency->contact_person }}
-      </td>
-      <td class="table-primary col-md-2">
-        RELATIONSHIP
-      </td>
-      <td>
-        {{ $emergency->belongstorelationship->relationship}}
-      </td>
-    </tr>
-    <tr class="my-2">
-      <td class="table-primary col-md-2">
-        ADDRESS
-      </td>
-      <td class="col-md-5">
-        {{ $emergency->address }}
-      </td>
-      <td class="table-primary col-md-2">
-        PHONE
-      </td>
-      <td>
-        {{ $emergency->phone }}
-      </td>
-    </tr>
-    @endforeach
-  </table>
-  @endif
+        <div class="row mt-3">
+          <div class="col-md-6">
+            <label class="labels">IC</label>
+            <input type="text" class="form-control" value="{{ $profile->ic }}" readonly>
+          </div>
+          <div class="col-md-6">
+            <label class="labels">PHONE NUMBER</label>
+            <input type="text" class="form-control" value="{{ $profile->mobile }}" readonly>
+          </div>
+        </div>
 
-  <div class="container d-flex justify-content-center align-items-center">
-    <div class="text-center">
-      <a href="{{ route('profile.edit', $profile->id) }}">
-        <button type="button" class="btn btn-sm btn-outline-secondary">EDIT</button>
-      </a>
+        <div class="row mt-3">
+          <div class="col-md-12">
+            <label class="labels">EMAIL</label>
+            <input type="text" class="form-control" value="{{ $profile->email }}" readonly>
+          </div>
+        </div>
+
+        <div class="row mt-3">
+          <div class="col-md-12">
+            <label class="labels">ADDRESS</label>
+            <input type="text" class="form-control" value="{{ $profile->address }}" readonly>
+          </div>
+        </div>
+
+        <div class="row mt-3">
+          <div class="col-md-12">
+            <label class="labels">DEPARTMENT</label>
+            <input type="text" class="form-control" value="{{ $profile->belongstomanydepartment()->first()->department }}" readonly>
+          </div>
+        </div>
+
+        <div class="row mt-3">
+          <div class="col-md-6">
+            <label class="labels">CATEGORY</label>
+            <input type="text" class="form-control" value="{{ $profile->belongstomanydepartment->first()->belongstocategory->category }}" readonly>
+          </div>
+          <div class="col-md-6">
+            <label class="labels">SATURDAY GROUPING</label>
+            <input type="text" class="form-control" value="Group {{ $profile->restday_group_id }}" readonly>
+          </div>
+        </div>
+
+        <div class="row mt-3">
+          <div class="col-md-6">
+            <label class="labels">DATE OF BIRTH</label>
+            <input type="text" class="form-control" value="{{ \Carbon\Carbon::parse($profile->dob)->format('d F Y') }}" readonly>
+
+          </div>
+          <div class="col-md-6">
+            <label class="labels">GENDER</label>
+            <input type="text" class="form-control" value="{{ $profile->belongstogender->gender }}" readonly>
+          </div>
+        </div>
+
+        <div class="row mt-3">
+          <div class="col-md-6">
+            <label class="labels">NATIONALITY</label>
+            <input type="text" class="form-control" value="{{ $profile->belongstonationality->country }}" readonly>
+          </div>
+          <div class="col-md-6">
+            <label class="labels">RACE</label>
+            <input type="text" class="form-control" value="{{ $profile->belongstorace->race }}" readonly>
+          </div>
+        </div>
+
+        <div class="row mt-3">
+          <div class="col-md-6">
+            <label class="labels">RELIGION</label>
+            <input type="text" class="form-control" value="{{ $profile->belongstoreligion->religion }}" readonly>
+          </div>
+          <div class="col-md-6">
+            <label class="labels">MARITAL STATUS</label>
+            <input type="text" class="form-control" value="{{ $profile->belongstomaritalstatus->marital_status }}" readonly>
+          </div>
+        </div>
+
+        <div class="row mt-3">
+          <div class="col-md-6">
+            <label class="labels">JOIN DATE</label>
+            <input type="text" class="form-control" value="{{ \Carbon\Carbon::parse($profile->join)->format('d F Y') }}" readonly>
+          </div>
+          <div class="col-md-6">
+            <label class="labels">CONFIRM DATE</label>
+            <input type="text" class="form-control" value="{{ \Carbon\Carbon::parse($profile->confirmed)->format('d F Y') }}" readonly>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4 border-right">
+      <div class="p-3 py-5">
+
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h4 class="text-right">Emergency Contact</h4>
+        </div>
+
+        @if ($emergencies->isNotEmpty())
+        @foreach ($emergencies as $emergency)
+
+        <div class="row mt-3">
+          <div class="col-md-12">
+            <label class="labels">NAME</label>
+            <input type="text" class="form-control" value="{{ $emergency->contact_person }}" readonly>
+          </div>
+        </div>
+
+        <div class="row mt-3">
+          <div class="col-md-6">
+            <label class="labels">RELATIONSHIP</label>
+            <input type="text" class="form-control" value="{{ $emergency->belongstorelationship->relationship}}" readonly>
+          </div>
+          <div class="col-md-6">
+            <label class="labels">PHONE NUMBER</label>
+            <input type="text" class="form-control" value="{{ $emergency->phone }}" readonly>
+          </div>
+        </div>
+
+        <div class="row mt-3">
+          <div class="col-md-12">
+            <label class="labels">ADDRESS</label>
+            <input type="text" class="form-control" value="{{ $emergency->address }}" readonly>
+          </div>
+        </div>
+
+        <div class="row mt-4"></div>
+        @endforeach
+        @endif
+
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-3"></div>
+    <div class="col-md-9">
+      <div class="text-center">
+        <a href="{{ route('profile.edit', $profile->id) }}">
+          <button type="button" class="btn btn-sm btn-outline-secondary">EDIT</button>
+        </a>
+      </div>
     </div>
   </div>
 
