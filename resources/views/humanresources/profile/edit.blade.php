@@ -144,25 +144,25 @@ $emergencies = $profile->hasmanyemergency()->get();
         <div class="row mt-3">
           <div class="col-md-12">
             <label class="labels">NAME</label>
-            {{ Form::text( 'name['.$i.'][contact_person]', @$emergency->contact_person, ['class' => 'form-control', 'id' => 'contact_person', 'placeholder' => 'Please Insert', 'autocomplete' => 'off'] ) }}
+            {{ Form::text( 'emer['.$i.'][contact_person]', @$emergency->contact_person, ['class' => 'form-control', 'id' => 'contact_person', 'placeholder' => 'Please Insert', 'autocomplete' => 'off'] ) }}
           </div>
         </div>
 
         <div class="row mt-3">
           <div class="col-md-6">
             <label class="labels">RELATIONSHIP</label>
-            {!! Form::select( 'rela['.$i.'][relationship_id]', $relationship, @$emergency->relationship_id, ['class' => 'form-control', 'id' => 'relationship_id', 'placeholder' => 'Please Select', 'autocomplete' => 'off'] ) !!}
+            {!! Form::select( 'emer['.$i.'][relationship_id]', $relationship, @$emergency->relationship_id, ['class' => 'form-control', 'id' => 'relationship_id', 'placeholder' => 'Please Select', 'autocomplete' => 'off'] ) !!}
           </div>
           <div class="col-md-6">
             <label class="labels">PHONE NUMBER</label>
-            {{ Form::text( 'phno['.$i.'][phone]', @$emergency->phone, ['class' => 'form-control', 'id' => 'phone', 'placeholder' => 'Please Insert', 'autocomplete' => 'off'] ) }}
+            {{ Form::text( 'emer['.$i.'][phone]', @$emergency->phone, ['class' => 'form-control', 'id' => 'phone', 'placeholder' => 'Please Insert', 'autocomplete' => 'off'] ) }}
           </div>
         </div>
 
         <div class="row mt-3">
           <div class="col-md-12">
             <label class="labels">ADDRESS</label>
-            {{ Form::text( 'addr['.$i.'][address]', @$emergency->address, ['class' => 'form-control', 'id' => 'emergency_address', 'placeholder' => 'Please Insert', 'autocomplete' => 'off'] ) }}
+            {{ Form::text( 'emer['.$i.'][address]', @$emergency->address, ['class' => 'form-control', 'id' => 'emergency_address', 'placeholder' => 'Please Insert', 'autocomplete' => 'off'] ) }}
           </div>
         </div>
 
@@ -182,6 +182,18 @@ $emergencies = $profile->hasmanyemergency()->get();
       </div>
     </div>
   </div>
+
+  <div class="row">
+    <div class="col-md-3"></div>
+    <div class="col-md-9">
+      <div class="text-center">
+        <a href="{{ route('redirect.back') }}">
+          <button class="btn btn-sm btn-outline-secondary">Back</button>
+        </a>
+      </div>
+    </div>
+  </div>
+
 </div>
 {{ Form::close() }}
 @endsection
