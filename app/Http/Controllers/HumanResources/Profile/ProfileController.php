@@ -73,11 +73,22 @@ class ProfileController extends Controller
     // return $request;
     // return \Carbon\Carbon::parse($request->dob)->format('Y-m-d');
 
-    $userupdate = $profile->update($request->all());
-    $emerupdate = $userupdate->hasmanyemergency()->get()->update($request->only(['contact_person', 'address', 'phone', 'relationship_id']));
-    if ($emerupdate) {
-      return 'success';
+    $profile->update($request->only(['ic', 'mobile', 'email', 'address', 'dob', 'gender_id', 'nationality_id', 'race_id', 'religion_id', 'marital_status_id']));
+
+    foreach ($request->emer as $value) {
+      // echo $value['contact_person']. '<br/>';
+      // echo $value['phone']. '<br/>';
+      // echo $value['address']. '<br/>';
+      // echo $value['relationship_id']. '<br/>';
+
+      $profile->hasmanyemergency()->update([
+        'contact_person' => $value['contact_person'],
+        'phone' => $value['phone'],
+        'address' => $value['address'],
+        'relationship_id' => $value['relationship_id']
+      ]);
     }
+
     Session::flash('flash_message', 'Data successfully updated!');
     return Redirect::route('profile.show', $profile);
   }
