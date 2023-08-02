@@ -2,6 +2,16 @@
 
 @section('content')
 
+<?php
+$gender = App\Models\HumanResources\OptGender::all()->pluck('gender', 'id')->sortKeys()->toArray();
+$nationality = App\Models\HumanResources\OptCountry::all()->pluck('country', 'id')->sortKeys()->toArray();
+$religion = App\Models\HumanResources\OptReligion::all()->pluck('religion', 'id')->sortKeys()->toArray();
+$race = App\Models\HumanResources\OptRace::all()->pluck('race', 'id')->sortKeys()->toArray();
+$marital_status = App\Models\HumanResources\OptMaritalStatus::all()->pluck('marital_status', 'id')->sortKeys()->toArray();
+$relationship = App\Models\HumanResources\OptRelationship::all()->pluck('relationship', 'id')->sortKeys()->toArray();
+$emergencies = $profile->hasmanyemergency()->get();
+?>
+
 {!! Form::model($profile, ['route' => ['profile.update', $profile->id], 'method' => 'PATCH', 'id' => 'form', 'class' => 'form-horizontal', 'autocomplete' => 'off', 'files' => true]) !!}
 
 <div class="container rounded bg-white mt-2 mb-2">
@@ -74,7 +84,7 @@
         <div class="row mt-3">
           <div class="col-md-6">
             <label class="labels">DATE OF BIRTH</label>
-            {!! Form::date( 'dob', @$value, ['class' => 'form-control', 'id' => 'dob', 'autocomplete' => 'off'] ) !!}
+            {!! Form::text( 'dob', @$value, ['class' => 'form-control', 'id' => 'dob', 'autocomplete' => 'off'] ) !!}
           </div>
           <div class="col-md-6">
             <label class="labels">GENDER</label>
@@ -127,38 +137,37 @@
           </span>
         </div>
 
+        <?php $i = 1; ?>
         @if ($emergencies->isNotEmpty())
         @foreach ($emergencies as $emergency)
-
-        <?php $contact_person = 'contact_person' . $emergency->id;
-        echo $contact_person ?>
 
         <div class="row mt-3">
           <div class="col-md-12">
             <label class="labels">NAME</label>
-            {{ Form::text( @$contact_person, @$emergency->contact_person, ['class' => 'form-control', 'id' => 'contact_person', 'placeholder' => 'Please Insert', 'autocomplete' => 'off'] ) }}
+            {{ Form::text( 'name['.$i.'][contact_person]', @$emergency->contact_person, ['class' => 'form-control', 'id' => 'contact_person', 'placeholder' => 'Please Insert', 'autocomplete' => 'off'] ) }}
           </div>
         </div>
 
         <div class="row mt-3">
           <div class="col-md-6">
             <label class="labels">RELATIONSHIP</label>
-            {!! Form::select( 'relationship_id', $relationship, @$emergency->relationship_id, ['class' => 'form-control', 'id' => 'relationship_id', 'placeholder' => 'Please Select', 'autocomplete' => 'off'] ) !!}
+            {!! Form::select( 'rela['.$i.'][relationship_id]', $relationship, @$emergency->relationship_id, ['class' => 'form-control', 'id' => 'relationship_id', 'placeholder' => 'Please Select', 'autocomplete' => 'off'] ) !!}
           </div>
           <div class="col-md-6">
             <label class="labels">PHONE NUMBER</label>
-            {{ Form::text( 'phone', @$emergency->phone, ['class' => 'form-control', 'id' => 'phone', 'placeholder' => 'Please Insert', 'autocomplete' => 'off'] ) }}
+            {{ Form::text( 'phno['.$i.'][phone]', @$emergency->phone, ['class' => 'form-control', 'id' => 'phone', 'placeholder' => 'Please Insert', 'autocomplete' => 'off'] ) }}
           </div>
         </div>
 
         <div class="row mt-3">
           <div class="col-md-12">
             <label class="labels">ADDRESS</label>
-            {{ Form::text( 'emergency_address', @$emergency->address, ['class' => 'form-control', 'id' => 'address', 'placeholder' => 'Please Insert', 'autocomplete' => 'off'] ) }}
+            {{ Form::text( 'addr['.$i.'][address]', @$emergency->address, ['class' => 'form-control', 'id' => 'emergency_address', 'placeholder' => 'Please Insert', 'autocomplete' => 'off'] ) }}
           </div>
         </div>
 
         <div class="row mt-4"></div>
+        <?php $i++; ?>
         @endforeach
         @endif
 
@@ -175,9 +184,30 @@
   </div>
 </div>
 {{ Form::close() }}
-
 @endsection
 
 @section('js')
+$('#dob').datetimepicker({
+icons: {
+time: "fas fas-regular fa-clock fa-beat",
+date: "fas fas-regular fa-calendar fa-beat",
+up: "fa-regular fa-circle-up fa-beat",
+down: "fa-regular fa-circle-down fa-beat",
+previous: 'fas fas-regular fa-arrow-left fa-beat',
+next: 'fas fas-regular fa-arrow-right fa-beat',
+today: 'fas fas-regular fa-calenday-day fa-beat',
+clear: 'fas fas-regular fa-broom-wide fa-beat',
+close: 'fas fas-regular fa-rectangle-xmark fa-beat'
+},
+format:'YYYY-MM-DD',
+useCurrent: false,
+});
 
+/////////////////////////////////////////////////////////////////////////////////////////
+$('#nationality_id').select2({
+placeholder: 'Please Select',
+width: '100%',
+allowClear: true,
+closeOnSelect: true,
+});
 @endsection
