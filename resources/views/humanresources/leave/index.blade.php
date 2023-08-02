@@ -193,35 +193,35 @@ $leaveALMC =  $us->hasmanyleaveentitlement()->where('year', date('Y'))->first();
 											<td>{{ $leav->hasoneleaveapprovalbackup()?->first()?->belongstoleavestatus?->status ?? 'Pending' }}</td>
 										</tr>
 									@endif
-	
+
 									@if($us->belongstoleaveapprovalflow->supervisor_approval == 1)
 										<tr>
 											<td>Supervisor {{ $leav->hasoneleaveapprovalsupervisor()?->first()?->belongstostaff?->name }}</td>
 											<td>{{ $leav->hasoneleaveapprovalsupervisor()?->first()?->belongstoleavestatus?->status ?? 'Pending' }}</td>
 										</tr>
 									@endif
-	
+
 									@if($us->belongstoleaveapprovalflow->hod_approval == 1)
 										<tr>
 											<td>HOD {{ $leav->hasoneleaveapprovalhod()?->first()?->belongstostaff?->name }}</td>
 											<td>{{ $leav->hasoneleaveapprovalhod()?->first()?->belongstoleavestatus?->status ?? 'Pending' }}</td>
 										</tr>
 									@endif
-	
+
 									@if($us->belongstoleaveapprovalflow->director_approval == 1)
 										<tr>
 											<td>Director {{ $leav->hasoneleaveapprovaldir()?->first()?->belongstostaff?->name }}</td>
 											<td>{{ $leav->hasoneleaveapprovaldir()?->first()?->belongstoleavestatus?->status ?? 'Pending' }}</td>
 										</tr>
 									@endif
-	
+
 									@if($us->belongstoleaveapprovalflow->hr_approval == 1)
 										<tr>
 											<td>HR {{ $leav->hasoneleaveapprovalhr()?->first()?->belongstostaff?->name }}</td>
 											<td>{{ $leav->hasoneleaveapprovalhr()?->first()?->belongstoleavestatus?->status ?? 'Pending' }}</td>
 										</tr>
 									@endif
-	
+
 								</tbody>
 							</table>
 						</td>
