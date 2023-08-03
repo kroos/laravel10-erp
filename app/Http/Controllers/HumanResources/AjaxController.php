@@ -16,6 +16,7 @@ use App\Models\HumanResources\HRLeaveEntitlement;
 use \Carbon\Carbon;
 use \Carbon\CarbonPeriod;
 use Illuminate\Support\Arr;
+use Illuminate\Database\Query\Builder;
 // use Session;
 
 class AjaxController extends Controller
@@ -412,8 +413,10 @@ class AjaxController extends Controller
 		if(Setting::find(1)->active == 1) {
 			// block self leave
 			// make sure $request->id comes from table staff
-			$leaveday1 = \App\Models\HumanResources\HRLeave::where('staff_id', $request->id)->whereIn('leave_status_id', [4,5,6,NULL])->whereRaw('"'.$d->copy()->year.'" BETWEEN YEAR(date_time_start) AND YEAR(date_time_end)')->orwhereRaw('"'.$d->copy()->addYear()->year.'" BETWEEN YEAR(date_time_start) AND YEAR(date_time_end)')->get();
+			$leaveday1 = \App\Models\HumanResources\HRLeave::where('staff_id', $request->id)->whereIn('leave_status_id', [4,5,6])->orWhereNull('leave_status_id')->whereRaw('"'.$d->copy()->year.'" BETWEEN YEAR(date_time_start) AND YEAR(date_time_end)')->orwhereRaw('"'.$d->copy()->addYear()->year.'" BETWEEN YEAR(date_time_start) AND YEAR(date_time_end)')->get();
 			// dd($leaveday1);
+			// return $leaveday1;
+			// exit;
 			$leavday = [];
 			if(!is_null($leaveday1)) {
 				foreach ($leaveday1 as $key) {
@@ -443,7 +446,7 @@ class AjaxController extends Controller
 		}
 
 		if($request->type == 1){
-			$unavailableleave = Arr::collapse([/*$holiday, $sundays,*/ $leavday/*, $saturdays, $nextyear, $lusa*/]);
+			$unavailableleave = Arr::collapse([$holiday, $sundays, $leavday, $saturdays, $nextyear, $lusa]);
 		} elseif($request->type == 2) {
 			$unavailableleave = Arr::collapse([$holiday, $sundays, $leavday, $saturdays, $nextyear]);
 		}
