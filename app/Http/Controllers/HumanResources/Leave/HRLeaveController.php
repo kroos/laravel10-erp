@@ -15,9 +15,6 @@ use App\Http\Requests\HumanResources\Leave\HRLeaveRequestStore;
 use App\Models\HumanResources\HRLeave;
 use App\Models\HumanResources\DepartmentPivot;
 
-// load array helper
-use Illuminate\Support\Arr;
-
 // load custom helper
 use App\Helpers\UnavailableDate;
 use Illuminate\Support\Arr;
@@ -56,12 +53,16 @@ class HRLeaveController extends Controller
 	 */
 	public function store(HRLeaveRequestStore $request)//: RedirectResponse
 	{
+		// $l[] = $request->only(['leave_type_id', 'reason', 'date_time_start', 'date_time_end']);
+		// $l += ['period_day' => 2];
+		// $l += ['verify_code' => 123456];
+		// return $l;
 		return $request->all();
+		exit;
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// initial setup for create a leave
 		$user = \Auth::user()->belongstostaff;								// for specific user
 		$daStart = Carbon::parse($request->date_time_start);				// date start : for manipulation
-
 
 		// in time off, there only date_time_start so...
 		if( empty( $request->date_time_end ) ) {
@@ -69,7 +70,7 @@ class HRLeaveController extends Controller
 		}
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		// if a user select more than 1 day and setting double date is on, we need to count the remaining day that is not overlapping
+		// preliminery check on date process
 		$blockdate = UnavailableDate::blockDate(\Auth::user()->belongstostaff->id);
 		$period = \Carbon\CarbonPeriod::create($request->date_time_start, '1 days', $request->date_time_end);
 		$lea = [];
@@ -78,6 +79,12 @@ class HRLeaveController extends Controller
 		}
 		$totalday = count($lea);
 
+		// checking for 1 day leave if it is full day off or half day off
+		if($request->date_time_start === $request->date_time_end && $totalday == 1){
+
+		}
+
+		// if a user select more than 1 day and setting double date is on, we need to count the remaining day that is not overlapping
 		$leav = [];
 		foreach ($blockdate as $val1) {
 			$va1 = Carbon::parse($val1);
@@ -105,17 +112,18 @@ class HRLeaveController extends Controller
 			}
 		}
 		$c = count($date);
-		// return $c;
+		return $c;
+		exit;
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// generate code for approver
 		$code = mt_rand(100000,999999);
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		// check if total leave day equals to or lower that entitlement based on year leave date
-		// $daStart;
-		// $entitlement = $user->hasmanyleaveentitlement()->where('year', $daStart->year)->first();
-		// $entitlement = $user->hasmanyleaveentitlement()->where('year', 2024)->first();
+		// check if file upload available
+		if ($request->hasFile('document')) {
+
+		}
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// start insert into DB
@@ -124,15 +132,27 @@ class HRLeaveController extends Controller
 			// check entitlement
 			$entitlement = $user->hasmanyleaveentitlement()->where('year', $daStart->year)->first();
 			if(!$entitlement) {								// kick him out if there is no entitlement been configured for entitlement
-			    Session::flash('flash_message', 'Please check your entitlement based on the date leave you applied');
-			    return redirect()->back();
+			    Session::flash('flash_message', 'Please check with your Human Resource department on your entitlement');
+			    return redirect()->back()->withInput();
+			}
+
+			// check on how many days user will apply for leave and compare it with user entitlement
+			if($entitlement->al_balance <= $totaldayfiltered){
+			    Session::flash('flash_message', 'Insufficient entitlement Annual Leave.');
+			    return redirect()->back()->withInput();
 			}
 
 			// check date as above
 			if ($noOverlap) {				// true: date choose not overlapping date with unavailable date
-				$l = $user->hasmanyleave()->insert($request->only(Arr::add(['leave_type_id', 'reason', 'date_time_start', 'date_time_end'], 'verify_code', $code)));
+				$l[] = $request->only(['leave_type_id', 'reason', 'date_time_start', 'date_time_end']);
+				$l += ['period_day' => 2];
+				$l += ['verify_code' => $code];
+				$j = $user->hasmanyleave()->insert($l);
 			} else {						// false: date choose overlapping date with unavailable date
-				
+				foreach($filtered as $d){
+					$date[] = ['date_time_start' => $d, 'date_time_end' => $d];
+
+				}
 			}
 		}
 
