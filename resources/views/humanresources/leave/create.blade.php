@@ -188,7 +188,7 @@ $('#leave_id').on('change', function() {
 				'</div>' +
 
 				'<div class="form-group row mb-3 {{ $errors->has('leave_type') ? 'has-error' : '' }}" id="wrapperday">' +
-					'<div class="form-group col-auto offset-sm-2 {{ $errors->has('leave_half') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
+					'<div class="form-group col-auto offset-sm-2 {{ $errors->has('half_type_id') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
 					'</div>' +
 				'</div>' +
 
@@ -276,7 +276,7 @@ $('#leave_id').on('change', function() {
 									'</div>' +
 								'</div>' +
 							'</div>' +
-							'<div class="form-group col-auto offset-sm-2 {{ $errors->has('leave_half') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
+							'<div class="form-group col-auto offset-sm-2 {{ $errors->has('half_type_id') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
 							'</div>'
 					);
 					$('#form').bootstrapValidator('addField', $('.time').find('[name="time_start"]'));
@@ -330,7 +330,7 @@ $('#leave_id').on('change', function() {
 									'</div>' +
 								'</div>' +
 							'</div>' +
-							'<div class="form-group col-auto offset-sm-2 {{ $errors->has('leave_half') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
+							'<div class="form-group col-auto offset-sm-2 {{ $errors->has('half_type_id') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
 							'</div>'
 					);
 					$('#form').bootstrapValidator('addField', $('.time').find('[name="time_start"]'));
@@ -375,13 +375,13 @@ $('#leave_id').on('change', function() {
 				if( $('.removetest').length == 0 ) {
 					$('#wrappertest').append(
 						'<div class="pretty p-default p-curve form-check form-check-inline removetest">' +
-							'<input type="radio" name="leave_half" value="' + obj.start_am + '/' + obj.end_am + '" id="am" checked="checked">' +
+							'<input type="radio" name="half_type_id" value="1" id="am" checked="checked">' +
 							'<div class="state p-primary">' +
 								'<label for="am" class="form-check-label">' + moment(obj.start_am, 'HH:mm:ss').format('h:mm a') + ' to ' + moment(obj.end_am, 'HH:mm:ss').format('h:mm a') + '</label> ' +
 							'</div>' +
 						'</div>' +
 						'<div class="pretty p-default p-curve form-check form-check-inline removetest">' +
-							'<input type="radio" name="leave_half" value="' + obj.start_pm + '/' + obj.end_pm + '" id="pm">' +
+							'<input type="radio" name="half_type_id" value="2" id="pm">' +
 							'<div class="state p-primary">' +
 								'<label for="pm" class="form-check-label">' + moment(obj.start_pm, 'HH:mm:ss').format('h:mm a') + ' to ' + moment(obj.end_pm, 'HH:mm:ss').format('h:mm a') + '</label> ' +
 							'</div>' +
@@ -426,7 +426,7 @@ $('#leave_id').on('change', function() {
 
 				@if($setHalfDayMC == 1)
 				'<div class="form-group row mb-3 {{ $errors->has('leave_type') ? 'has-error' : '' }}" id="wrapperday">' +
-					'<div class="form-group col-auto offset-sm-2 {{ $errors->has('leave_half') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
+					'<div class="form-group col-auto offset-sm-2 {{ $errors->has('half_type_id') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
 					'</div>' +
 				'</div>' +
 				@endif
@@ -534,7 +534,7 @@ $('#leave_id').on('change', function() {
 									'</div>' +
 								'</div>' +
 							'</div>' +
-							'<div class="form-group col-auto offset-sm-2 {{ $errors->has('leave_half') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
+							'<div class="form-group col-auto offset-sm-2 {{ $errors->has('half_type_id') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
 							'</div>'
 					);
 					$('#form').bootstrapValidator('addField', $('.time').find('[name="time_start"]'));
@@ -592,7 +592,7 @@ $('#leave_id').on('change', function() {
 									'</div>' +
 								'</div>' +
 							'</div>' +
-							'<div class="form-group col-auto offset-sm-2 {{ $errors->has('leave_half') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
+							'<div class="form-group col-auto offset-sm-2 {{ $errors->has('half_type_id') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
 							'</div>'
 					);
 					$('#form').bootstrapValidator('addField', $('.time').find('[name="time_start"]'));
@@ -639,13 +639,13 @@ $('#leave_id').on('change', function() {
 				if( $('.removetest').length == 0 ) {
 					$('#wrappertest').append(
 						'<div class="pretty p-default p-curve form-check form-check-inline removetest">' +
-							'<input type="radio" name="leave_half" value="' + obj.start_am + '/' + obj.end_am + '" id="am" checked="checked">' +
+							'<input type="radio" name="half_type_id" value="1" id="am" checked="checked">' +
 							'<div class="state p-primary">' +
 								'<label for="am" class="form-check-label">' + moment(obj.start_am, 'HH:mm:ss').format('h:mm a') + ' to ' + moment(obj.end_am, 'HH:mm:ss').format('h:mm a') + '</label> ' +
 							'</div>' +
 						'</div>' +
 						'<div class="pretty p-default p-curve form-check form-check-inline removetest">' +
-							'<input type="radio" name="leave_half" value="' + obj.start_pm + '/' + obj.end_pm + '" id="pm">' +
+							'<input type="radio" name="half_type_id" value="2" id="pm">' +
 							'<div class="state p-primary">' +
 								'<label for="pm" class="form-check-label">' + moment(obj.start_pm, 'HH:mm:ss').format('h:mm a') + ' to ' + moment(obj.end_pm, 'HH:mm:ss').format('h:mm a') + '</label> ' +
 							'</div>' +
@@ -704,7 +704,7 @@ $oi = \Auth::user()->belongstostaff->hasmanyleavereplacement()->where('leave_bal
 				'</div>' +
 
 				'<div class="form-group row mb-3 {{ $errors->has('leave_type') ? 'has-error' : '' }}" id="wrapperday">' +
-					'<div class="form-group col-auto offset-sm-2 {{ $errors->has('leave_half') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
+					'<div class="form-group col-auto offset-sm-2 {{ $errors->has('half_type_id') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
 					'</div>' +
 				'</div>' +
 
@@ -806,7 +806,7 @@ $oi = \Auth::user()->belongstostaff->hasmanyleavereplacement()->where('leave_bal
 									'</div>' +
 								'</div>' +
 							'</div>' +
-							'<div class="form-group col-auto offset-sm-2 {{ $errors->has('leave_half') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
+							'<div class="form-group col-auto offset-sm-2 {{ $errors->has('half_type_id') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
 							'</div>'
 					);
 					$('#form').bootstrapValidator('addField', $('.time').find('[name="time_start"]'));
@@ -860,7 +860,7 @@ $oi = \Auth::user()->belongstostaff->hasmanyleavereplacement()->where('leave_bal
 									'</div>' +
 								'</div>' +
 							'</div>' +
-							'<div class="form-group col-auto offset-sm-2 {{ $errors->has('leave_half') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
+							'<div class="form-group col-auto offset-sm-2 {{ $errors->has('half_type_id') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
 							'</div>'
 					);
 					$('#form').bootstrapValidator('addField', $('.time').find('[name="time_start"]'));
@@ -904,13 +904,13 @@ $oi = \Auth::user()->belongstostaff->hasmanyleavereplacement()->where('leave_bal
 				if( $('.removetest').length == 0 ) {
 					$('#wrappertest').append(
 						'<div class="pretty p-default p-curve form-check form-check-inline removetest">' +
-							'<input type="radio" name="leave_half" value="' + obj.start_am + '/' + obj.end_am + '" id="am" checked="checked">' +
+							'<input type="radio" name="half_type_id" value="1" id="am" checked="checked">' +
 							'<div class="state p-primary">' +
 								'<label for="am" class="form-check-label">' + moment(obj.start_am, 'HH:mm:ss').format('h:mm a') + ' to ' + moment(obj.end_am, 'HH:mm:ss').format('h:mm a') + '</label> ' +
 							'</div>' +
 						'</div>' +
 						'<div class="pretty p-default p-curve form-check form-check-inline removetest">' +
-							'<input type="radio" name="leave_half" value="' + obj.start_pm + '/' + obj.end_pm + '" id="pm">' +
+							'<input type="radio" name="half_type_id" value="2" id="pm">' +
 							'<div class="state p-primary">' +
 								'<label for="pm" class="form-check-label">' + moment(obj.start_pm, 'HH:mm:ss').format('h:mm a') + ' to ' + moment(obj.end_pm, 'HH:mm:ss').format('h:mm a') + '</label> ' +
 							'</div>' +
@@ -974,13 +974,13 @@ $oi = \Auth::user()->belongstostaff->hasmanyleavereplacement()->where('leave_bal
 				if( $('.removetest').length == 0 ) {
 					$('#wrappertest').append(
 						'<div class="pretty p-default p-curve form-check form-check-inline removetest">' +
-							'<input type="radio" name="leave_half" value="' + obj.start_am + '/' + obj.end_am + '" id="am" checked="checked">' +
+							'<input type="radio" name="half_type_id" value="1" id="am" checked="checked">' +
 							'<div class="state p-primary">' +
 								'<label for="am" class="form-check-label">' + moment(obj.start_am, 'HH:mm:ss').format('h:mm a') + ' to ' + moment(obj.end_am, 'HH:mm:ss').format('h:mm a') + '</label> ' +
 							'</div>' +
 						'</div>' +
 						'<div class="pretty p-default p-curve form-check form-check-inline removetest">' +
-							'<input type="radio" name="leave_half" value="' + obj.start_pm + '/' + obj.end_pm + '" id="pm">' +
+							'<input type="radio" name="half_type_id" value="2" id="pm">' +
 							'<div class="state p-primary">' +
 								'<label for="pm" class="form-check-label">' + moment(obj.start_pm, 'HH:mm:ss').format('h:mm a') + ' to ' + moment(obj.end_pm, 'HH:mm:ss').format('h:mm a') + '</label> ' +
 							'</div>' +
@@ -1144,7 +1144,7 @@ $oi = \Auth::user()->belongstostaff->hasmanyleavereplacement()->where('leave_bal
 					'{{ Form::label('leave_type', 'Leave Category : ', ['class' => 'col-sm-2 col-form-label removehalfleave']) }}' +
 					'<div class="col-auto removehalfleave" id="halfleave">' +
 					'</div>' +
-					'<div class="form-group col-auto offset-sm-2 {{ $errors->has('leave_half') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
+					'<div class="form-group col-auto offset-sm-2 {{ $errors->has('half_type_id') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
 					'</div>' +
 				'</div>' +
 
@@ -1254,7 +1254,7 @@ $oi = \Auth::user()->belongstostaff->hasmanyleavereplacement()->where('leave_bal
 									'</div>' +
 								'</div>' +
 							'</div>' +
-							'<div class="form-group col-auto offset-sm-2 {{ $errors->has('leave_half') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
+							'<div class="form-group col-auto offset-sm-2 {{ $errors->has('half_type_id') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
 							'</div>'
 					);
 					$('#form').bootstrapValidator('addField', $('.time').find('[name="time_start"]'));
@@ -1351,7 +1351,7 @@ $oi = \Auth::user()->belongstostaff->hasmanyleavereplacement()->where('leave_bal
 									'</div>' +
 								'</div>' +
 							'</div>' +
-							'<div class="form-group col-auto offset-sm-2 {{ $errors->has('leave_half') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
+							'<div class="form-group col-auto offset-sm-2 {{ $errors->has('half_type_id') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
 							'</div>'
 					);
 					$('#form').bootstrapValidator('addField', $('.time').find('[name="time_start"]'));
@@ -1395,13 +1395,13 @@ $oi = \Auth::user()->belongstostaff->hasmanyleavereplacement()->where('leave_bal
 				if( $('.removetest').length == 0 ) {
 					$('#wrappertest').append(
 						'<div class="pretty p-default p-curve form-check form-check-inline removetest">' +
-							'<input type="radio" name="leave_half" value="' + obj.start_am + '/' + obj.end_am + '" id="am" checked="checked">' +
+							'<input type="radio" name="half_type_id" value="1" id="am" checked="checked">' +
 							'<div class="state p-primary">' +
 								'<label for="am" class="form-check-label">' + moment(obj.start_am, 'HH:mm:ss').format('h:mm a') + ' to ' + moment(obj.end_am, 'HH:mm:ss').format('h:mm a') + '</label> ' +
 							'</div>' +
 						'</div>' +
 						'<div class="pretty p-default p-curve form-check form-check-inline removetest">' +
-							'<input type="radio" name="leave_half" value="' + obj.start_pm + '/' + obj.end_pm + '" id="pm">' +
+							'<input type="radio" name="half_type_id" value="2" id="pm">' +
 							'<div class="state p-primary">' +
 								'<label for="pm" class="form-check-label">' + moment(obj.start_pm, 'HH:mm:ss').format('h:mm a') + ' to ' + moment(obj.end_pm, 'HH:mm:ss').format('h:mm a') + '</label> ' +
 							'</div>' +
@@ -1717,7 +1717,7 @@ $oi = \Auth::user()->belongstostaff->hasmanyleavereplacement()->where('leave_bal
 									'</div>' +
 								'</div>' +
 							'</div>' +
-							'<div class="form-group col-auto offset-sm-2 {{ $errors->has('leave_half') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
+							'<div class="form-group col-auto offset-sm-2 {{ $errors->has('half_type_id') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
 							'</div>'
 					);
 					$('#form').bootstrapValidator('addField', $('.time').find('[name="time_start"]'));
@@ -1815,7 +1815,7 @@ $oi = \Auth::user()->belongstostaff->hasmanyleavereplacement()->where('leave_bal
 									'</div>' +
 								'</div>' +
 							'</div>' +
-							'<div class="form-group col-auto offset-sm-2 {{ $errors->has('leave_half') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
+							'<div class="form-group col-auto offset-sm-2 {{ $errors->has('half_type_id') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
 							'</div>'
 					);
 					$('#form').bootstrapValidator('addField', $('.time').find('[name="time_start"]'));
@@ -1892,7 +1892,7 @@ $oi = \Auth::user()->belongstostaff->hasmanyleavereplacement()->where('leave_bal
 				'</div>' +
 
 				'<div class="form-group row mb-3 {{ $errors->has('leave_type') ? 'has-error' : '' }}" id="wrapperday">' +
-					'<div class="form-group col-auto offset-sm-2 {{ $errors->has('leave_half') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
+					'<div class="form-group col-auto offset-sm-2 {{ $errors->has('half_type_id') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
 					'</div>' +
 				'</div>' +
 				@if( $userneedbackup == 1 )
@@ -2007,7 +2007,7 @@ $oi = \Auth::user()->belongstostaff->hasmanyleavereplacement()->where('leave_bal
 									'</div>' +
 								'</div>' +
 							'</div>' +
-							'<div class="form-group col-auto offset-sm-2 {{ $errors->has('leave_half') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
+							'<div class="form-group col-auto offset-sm-2 {{ $errors->has('half_type_id') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
 							'</div>'
 					);
 					$('#form').bootstrapValidator('addField', $('.time').find('[name="time_start"]'));
@@ -2104,7 +2104,7 @@ $oi = \Auth::user()->belongstostaff->hasmanyleavereplacement()->where('leave_bal
 									'</div>' +
 								'</div>' +
 							'</div>' +
-							'<div class="form-group col-auto offset-sm-2 {{ $errors->has('leave_half') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
+							'<div class="form-group col-auto offset-sm-2 {{ $errors->has('half_type_id') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
 							'</div>'
 					);
 					$('#form').bootstrapValidator('addField', $('.time').find('[name="time_start"]'));
@@ -2149,13 +2149,13 @@ $oi = \Auth::user()->belongstostaff->hasmanyleavereplacement()->where('leave_bal
 				if( $('.removetest').length == 0 ) {
 					$('#wrappertest').append(
 						'<div class="pretty p-default p-curve form-check form-check-inline removetest">' +
-							'<input type="radio" name="leave_half" value="' + obj.start_am + '/' + obj.end_am + '" id="am" checked="checked">' +
+							'<input type="radio" name="half_type_id" value="1" id="am" checked="checked">' +
 							'<div class="state p-primary">' +
 								'<label for="am" class="form-check-label">' + moment(obj.start_am, 'HH:mm:ss').format('h:mm a') + ' to ' + moment(obj.end_am, 'HH:mm:ss').format('h:mm a') + '</label> ' +
 							'</div>' +
 						'</div>' +
 						'<div class="pretty p-default p-curve form-check form-check-inline removetest">' +
-							'<input type="radio" name="leave_half" value="' + obj.start_pm + '/' + obj.end_pm + '" id="pm">' +
+							'<input type="radio" name="half_type_id" value="2" id="pm">' +
 							'<div class="state p-primary">' +
 								'<label for="pm" class="form-check-label">' + moment(obj.start_pm, 'HH:mm:ss').format('h:mm a') + ' to ' + moment(obj.end_pm, 'HH:mm:ss').format('h:mm a') + '</label> ' +
 							'</div>' +
@@ -2219,13 +2219,13 @@ $oi = \Auth::user()->belongstostaff->hasmanyleavereplacement()->where('leave_bal
 				if( $('.removetest').length == 0 ) {
 					$('#wrappertest').append(
 						'<div class="pretty p-default p-curve form-check form-check-inline removetest">' +
-							'<input type="radio" name="leave_half" value="' + obj.start_am + '/' + obj.end_am + '" id="am" checked="checked">' +
+							'<input type="radio" name="half_type_id" value="1" id="am" checked="checked">' +
 							'<div class="state p-primary">' +
 								'<label for="am" class="form-check-label">' + moment(obj.start_am, 'HH:mm:ss').format('h:mm a') + ' to ' + moment(obj.end_am, 'HH:mm:ss').format('h:mm a') + '</label> ' +
 							'</div>' +
 						'</div>' +
 						'<div class="pretty p-default p-curve form-check form-check-inline removetest">' +
-							'<input type="radio" name="leave_half" value="' + obj.start_pm + '/' + obj.end_pm + '" id="pm">' +
+							'<input type="radio" name="half_type_id" value="2" id="pm">' +
 							'<div class="state p-primary">' +
 								'<label for="pm" class="form-check-label">' + moment(obj.start_pm, 'HH:mm:ss').format('h:mm a') + ' to ' + moment(obj.end_pm, 'HH:mm:ss').format('h:mm a') + '</label> ' +
 							'</div>' +
@@ -2266,7 +2266,7 @@ $oi = \Auth::user()->belongstostaff->hasmanyleavereplacement()->where('leave_bal
 				'</div>' +
 
 				'<div class="form-group row mb-3 {{ $errors->has('leave_type') ? 'has-error' : '' }}" id="wrapperday">' +
-					'<div class="form-group col-auto offset-sm-2 {{ $errors->has('leave_half') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
+					'<div class="form-group col-auto offset-sm-2 {{ $errors->has('half_type_id') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
 					'</div>' +
 				'</div>' +
 
@@ -2377,7 +2377,7 @@ $oi = \Auth::user()->belongstostaff->hasmanyleavereplacement()->where('leave_bal
 									'</div>' +
 								'</div>' +
 							'</div>' +
-							'<div class="form-group col-auto offset-sm-2 {{ $errors->has('leave_half') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
+							'<div class="form-group col-auto offset-sm-2 {{ $errors->has('half_type_id') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
 							'</div>'
 					);
 					$('#form').bootstrapValidator('addField', $('.time').find('[name="time_start"]'));
@@ -2474,7 +2474,7 @@ $oi = \Auth::user()->belongstostaff->hasmanyleavereplacement()->where('leave_bal
 									'</div>' +
 								'</div>' +
 							'</div>' +
-							'<div class="form-group col-auto offset-sm-2 {{ $errors->has('leave_half') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
+							'<div class="form-group col-auto offset-sm-2 {{ $errors->has('half_type_id') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
 							'</div>'
 					);
 					$('#form').bootstrapValidator('addField', $('.time').find('[name="time_start"]'));
@@ -2519,13 +2519,13 @@ $oi = \Auth::user()->belongstostaff->hasmanyleavereplacement()->where('leave_bal
 				if( $('.removetest').length == 0 ) {
 					$('#wrappertest').append(
 						'<div class="pretty p-default p-curve form-check form-check-inline removetest">' +
-							'<input type="radio" name="leave_half" value="' + obj.start_am + '/' + obj.end_am + '" id="am" checked="checked">' +
+							'<input type="radio" name="half_type_id" value="1" id="am" checked="checked">' +
 							'<div class="state p-primary">' +
 								'<label for="am" class="form-check-label">' + moment(obj.start_am, 'HH:mm:ss').format('h:mm a') + ' to ' + moment(obj.end_am, 'HH:mm:ss').format('h:mm a') + '</label> ' +
 							'</div>' +
 						'</div>' +
 						'<div class="pretty p-default p-curve form-check form-check-inline removetest">' +
-							'<input type="radio" name="leave_half" value="' + obj.start_pm + '/' + obj.end_pm + '" id="pm">' +
+							'<input type="radio" name="half_type_id" value="2" id="pm">' +
 							'<div class="state p-primary">' +
 								'<label for="pm" class="form-check-label">' + moment(obj.start_pm, 'HH:mm:ss').format('h:mm a') + ' to ' + moment(obj.end_pm, 'HH:mm:ss').format('h:mm a') + '</label> ' +
 							'</div>' +
