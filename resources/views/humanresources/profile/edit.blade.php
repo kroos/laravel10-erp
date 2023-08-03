@@ -12,9 +12,12 @@ $relationship = App\Models\HumanResources\OptRelationship::all()->pluck('relatio
 $emergencies = $profile->hasmanyemergency()->get();
 ?>
 
+
 {!! Form::model($profile, ['route' => ['profile.update', $profile->id], 'method' => 'PATCH', 'id' => 'form', 'class' => 'form-horizontal', 'autocomplete' => 'off', 'files' => true]) !!}
 
 <div class="container rounded bg-white mt-2 mb-2">
+
+
   <div class="row">
     <div class="col-md-3 border-right">
       <div class="d-flex flex-column align-items-center text-center p-3 py-5">
@@ -174,28 +177,33 @@ $emergencies = $profile->hasmanyemergency()->get();
       </div>
     </div>
   </div>
+
   <div class="row">
     <div class="col-md-3"></div>
-    <div class="col-md-9">
+    <div class="col-md-9 container">
       <div class="text-center">
         {!! Form::button('Save', ['class' => 'btn btn-sm btn-outline-secondary', 'type' => 'submit']) !!}
       </div>
     </div>
   </div>
 
-  <div class="row">
+  
+
+  <!-- <div class="row mt-3">
     <div class="col-md-3"></div>
     <div class="col-md-9">
       <div class="text-center">
-        <a href="{{ route('redirect.back') }}">
+        <a href="{{ route('profile.show', $profile->id) }}">
+          return redirect()->back();
           <button class="btn btn-sm btn-outline-secondary">Back</button>
         </a>
       </div>
     </div>
-  </div>
+  </div> -->
 
 </div>
 {{ Form::close() }}
+
 @endsection
 
 @section('js')
