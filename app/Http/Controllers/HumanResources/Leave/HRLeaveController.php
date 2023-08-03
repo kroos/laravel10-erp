@@ -15,9 +15,11 @@ use App\Http\Requests\HumanResources\Leave\HRLeaveRequestStore;
 use App\Models\HumanResources\HRLeave;
 use App\Models\HumanResources\DepartmentPivot;
 
+// load array helper
+use Illuminate\Support\Arr;
+
 // load custom helper
 use App\Helpers\UnavailableDate;
-use Illuminate\Support\Arr;
 
 // load Carbon
 use \Carbon\Carbon;
@@ -53,52 +55,48 @@ class HRLeaveController extends Controller
 	 */
 	public function store(HRLeaveRequestStore $request)//: RedirectResponse
 	{
-		// $l[] = $request->only(['leave_type_id', 'reason', 'date_time_start', 'date_time_end']);
-		// $l += ['period_day' => 2];
-		// $l += ['verify_code' => 123456];
-		// return $l;
-		return $request->all();
-		exit;
+		// return $request->all();
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// initial setup for create a leave
 		$user = \Auth::user()->belongstostaff;								// for specific user
 		$daStart = Carbon::parse($request->date_time_start);				// date start : for manipulation
+
 
 		// in time off, there only date_time_start so...
 		if( empty( $request->date_time_end ) ) {
 			$request->date_time_end = $request->date_time_start;
 		}
 
+		// count rows for particular year based on $request->date_time_start
+		$row = HRLeave::whereYear('date_time_start', $request->date_time_start)->get()->count();
+		$ye = $daStart->format('y');						// strip down to 2 digits
+
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		// preliminery check on date process
-		$blockdate = UnavailableDate::blockDate(\Auth::user()->belongstostaff->id);
-		$period = \Carbon\CarbonPeriod::create($request->date_time_start, '1 days', $request->date_time_end);
-		$lea = [];
-		foreach ($period as $value) {
-			$lea[] = Carbon::parse($value)->format('Y-m-d');
-		}
-		$totalday = count($lea);
-
-		// checking for 1 day leave if it is full day off or half day off
-		if($request->date_time_start === $request->date_time_end && $totalday == 1){
-
-		}
-
 		// if a user select more than 1 day and setting double date is on, we need to count the remaining day that is not overlapping
-		$leav = [];
-		foreach ($blockdate as $val1) {
-			$va1 = Carbon::parse($val1);
-			foreach ($period as $val2) {
-				if(Carbon::parse($val1)->equalTo(Carbon::parse($val2))){
-					$leav[] = Carbon::parse($val1)->format('Y-m-d');
+			$blockdate = UnavailableDate::blockDate(\Auth::user()->belongstostaff->id);
+			$period = \Carbon\CarbonPeriod::create($request->date_time_start, '1 days', $request->date_time_end);
+			$lea = [];
+			foreach ($period as $value) {
+				$lea[] = Carbon::parse($value)->format('Y-m-d');
+			}
+			$totalday = count($lea);
+
+			$leav = [];
+			foreach ($blockdate as $val1) {
+				$va1 = Carbon::parse($val1);
+				foreach ($period as $val2) {
+					if(Carbon::parse($val1)->equalTo(Carbon::parse($val2))){
+						$leav[] = Carbon::parse($val1)->format('Y-m-d');
+					}
 				}
 			}
-		}
-		$filtered = array_diff($lea, $leav);			// get all the dates that is not in $blockdate
-		$totaldayfiltered = count($filtered);			// total days
+			$filtered = array_diff($lea, $leav);			// get all the dates that is not in $blockdate
+			$totaldayfiltered = count($filtered);			// total days
 
-		// return [$lea, $leav, $filtered];
+		// return $totaldayfiltered;
+		// exit;
 
+		$date = [];
 		if($totalday == $totaldayfiltered){
 			$noOverlap = true;							// meaning we CAN take $request->date_time_end $request->date_time_start as is to be insert in database
 			$dateStart = $request->date_time_start;
@@ -106,60 +104,73 @@ class HRLeaveController extends Controller
 		} else {
 			$noOverlap = false;							// meaning we CANT take $request->date_time_end $request->date_time_start as is to be insert in database, instead we need to separate it row by row to be inserted into database.
 			// we need to loop entire date which is available 1 by 1
-			$date = [];
 			foreach($filtered as $d){
 				$date[] = ['date_time_start' => $d, 'date_time_end' => $d];
 			}
 		}
 		$c = count($date);
-		return $c;
-		exit;
+		// return $c;
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// generate code for approver
 		$code = mt_rand(100000,999999);
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		// check if file upload available
-		if ($request->hasFile('document')) {
-
-		}
+		// check if total leave day equals to or lower that entitlement based on year leave date
+		// $daStart;
+		// $entitlement = $user->hasmanyleaveentitlement()->where('year', $daStart->year)->first();
+		// $entitlement = $user->hasmanyleaveentitlement()->where('year', 2024)->first();
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// start insert into DB
 		// AL & EL-AL
 		if($request->leave_type_id == 1 || $request->leave_type_id == 5) {
-			// check entitlement
+			// check entitlement if configured or not
 			$entitlement = $user->hasmanyleaveentitlement()->where('year', $daStart->year)->first();
-			if(!$entitlement) {								// kick him out if there is no entitlement been configured for entitlement
-			    Session::flash('flash_message', 'Please check with your Human Resource department on your entitlement');
-			    return redirect()->back()->withInput();
-			}
+			// if(!$entitlement) {								// kick him out if there is no entitlement been configured for entitlement
+			// 	Session::flash('flash_message', 'Please contact with your Human Resources Manager. Most probably, HR havent configured yet your entitlement.');
+			// 	return redirect()->back();
+			// }
 
-			// check on how many days user will apply for leave and compare it with user entitlement
-			if($entitlement->al_balance <= $totaldayfiltered){
-			    Session::flash('flash_message', 'Insufficient entitlement Annual Leave.');
-			    return redirect()->back()->withInput();
-			}
+			// if ($entitlement->al_balance >= $totaldayfiltered) {			// check also his entitlement
+				if ($request->has('leave_type')) {							// applied for 1 full day OR half day
+					if($request->leave_type == 2){							// half day
+						$data = $request->only(['leave_type_id', 'reason', 'date_time_start', 'date_time_end', 'half_type_id']);
+						$data += ['verify_code' => $code];
+						$data += ['period_day' => 0.5];
+						$data += ['leave_no' => ($row + 1)];
+						$data += ['leave_year' => $ye];
 
-			// check date as above
-			if ($noOverlap) {				// true: date choose not overlapping date with unavailable date
-				$l[] = $request->only(['leave_type_id', 'reason', 'date_time_start', 'date_time_end']);
-				$l += ['period_day' => 2];
-				$l += ['verify_code' => $code];
-				$j = $user->hasmanyleave()->insert($l);
-			} else {						// false: date choose overlapping date with unavailable date
-				foreach($filtered as $d){
-					$date[] = ['date_time_start' => $d, 'date_time_end' => $d];
+						$l = $user->hasmanyleave()->create($data);						// insert data into HRLeave
+						$user->hasmanyleaveentitlement()->where('year', $daStart->year)->update(['al_balance' => ($entitlement->al_balance - 0.5)]);						// substract al_balance
+					} elseif($request->leave_type == 1) {												// full 1 day
+						$data = $request->only(['leave_type_id', 'reason', 'date_time_start', 'date_time_end', 'half_type_id']);
+						$data += ['verify_code' => $code];
+						$data += ['period_day' => 1];
+						$data += ['leave_no' => ($row + 1)];
+						$data += ['leave_year' => $ye];
+
+						$l = $user->hasmanyleave()->create($data);						// insert data into HRLeave
+						$user->hasmanyleaveentitlement()->where('year', $daStart->year)->update(['al_balance' => ($entitlement->al_balance - 1)]);		// substract al_balance
+					}
+				} else {											// apply leave for 2 OR more days
 
 				}
-			}
+			// } else {
+			// 	Session::flash('flash_message', 'Please check your entitlement based on the date leave you applied');
+			// 	return redirect()->back();
+			// }
+				// check date as above
+				if ($noOverlap) {				// true: date choose not overlapping date with unavailable date
+					// $l = $user->hasmanyleave()->insert($request->only(Arr::add(['leave_type_id', 'reason', 'date_time_start', 'date_time_end'], 'verify_code', $code)));
+				} else {						// false: date choose overlapping date with unavailable date
+					
+				}
 		}
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// UPL & EL-UPL & MC-UPL
 		if($request->leave_type_id == 3 || $request->leave_type_id == 6 || $request->leave_type_id == 11) {
-			// solve date part
 
 		}
 
@@ -197,152 +208,36 @@ class HRLeaveController extends Controller
 		}
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		// determining apporover (supervisor, HOD, director, HR)
-		// determine $user branch/location
-		$branch = $user->belongstomanydepartment->where('pivot.main', 1)->first()->branch_id;
-
-		// determine $user category
-		$category = $user->belongstomanydepartment->where('pivot.main', 1)->first()->category_id;
+		// insert leave id into these table apporover (supervisor, HOD, director, HR)
+		if($user->belongstoleaveapprovalflow->backup_approval == 1){
+			$l->hasoneleaveapprovalbackup()->create($request->only(['staff_id']));
+		}
 
 		//////////////////////////////////////////////////////////////////////////////
 		// this section need to be look once there is more branch and category
 		if($user->belongstoleaveapprovalflow->supervisor_approval == 1){				//supervisor: div_id = 4
-			// search supervisor div_id = 4
-			if ($branch == 1){							// IPMA A
-				if ($category == 1) {					// Office
-					$r = DepartmentPivot::where([['branch_id', 1],['category_id', 1]])->get();
-					$t = [];
-					foreach($r as $x){
-						$t[] = $x->belongstomanystaff()->where([['active', 1],['div_id', 4]])->get();
-					}
-				} else {								// Production
-					$r = DepartmentPivot::where([['branch_id', 1],['category_id', 2]])->get();
-					$t = [];
-					foreach($r as $x){
-						$t[] = $x->belongstomanystaff()->where([['active', 1],['div_id', 4]])->get();
-					}
-				}
-			} else {									// IPMA B
-				if ($category == 1) {					// Office
-					$r = DepartmentPivot::where([['branch_id', 2],['category_id', 1]])->get();
-					$t = [];
-					foreach($r as $x){
-						$t[] = $x->belongstomanystaff()->where([['active', 1],['div_id', 4]])->get();
-					}
-				} else {								// Production
-					$r = DepartmentPivot::where([['branch_id', 2],['category_id', 2]])->get();
-					$t = [];
-					foreach($r as $x){
-						$t[] = $x->belongstomanystaff()->where([['active', 1],['div_id', 4]])->get();
-					}
-				}
-			}
+			$l->hasoneleaveapprovalsupervisor()->create();
 		}
 
 		//////////////////////////////////////////////////////////////////////////////
 		if($user->belongstoleaveapprovalflow->hod_approval == 1){
 			// search hod div_id = 4
-			if ($branch == 1){							// IPMA A
-				if ($category == 1) {					// Office
-					$r = DepartmentPivot::where([['branch_id', 1],['category_id', 1]])->get();
-					$t = [];
-					foreach($r as $x){
-						$t[] = $x->belongstomanystaff()->where([['active', 1],['div_id', 1]])->get();
-					}
-				} else {								// Production
-					$r = DepartmentPivot::where([['branch_id', 1],['category_id', 2]])->get();
-					$t = [];
-					foreach($r as $x){
-						$t[] = $x->belongstomanystaff()->where([['active', 1],['div_id', 1]])->get();
-					}
-				}
-			} else {									// IPMA B
-				if ($category == 1) {					// Office
-					$r = DepartmentPivot::where([['branch_id', 2],['category_id', 1]])->get();
-					$t = [];
-					foreach($r as $x){
-						$t[] = $x->belongstomanystaff()->where([['active', 1],['div_id', 1]])->get();
-					}
-				} else {								// Production
-					$r = DepartmentPivot::where([['branch_id', 2],['category_id', 2]])->get();
-					$t = [];
-					foreach($r as $x){
-						$t[] = $x->belongstomanystaff()->where([['active', 1],['div_id', 1]])->get();
-					}
-				}
-			}
+			$l->hasoneleaveapprovalhod()->create();
 		}
 
 		//////////////////////////////////////////////////////////////////////////////
 		if($user->belongstoleaveapprovalflow->director_approval == 1){
-			// search director div_id = 2
-			if ($branch == 1){							// IPMA A
-				if ($category == 1) {					// Office
-					$r = DepartmentPivot::where([['branch_id', 1],['category_id', 1]])->get();
-					$t = [];
-					foreach($r as $x){
-						$t[] = $x->belongstomanystaff()->where([['active', 1],['div_id', 2]])->get();
-					}
-				} else {								// Production
-					$r = DepartmentPivot::where([['branch_id', 1],['category_id', 2]])->get();
-					$t = [];
-					foreach($r as $x){
-						$t[] = $x->belongstomanystaff()->where([['active', 1],['div_id', 2]])->get();
-					}
-				}
-			} else {									// IPMA B
-				if ($category == 1) {					// Office
-					$r = DepartmentPivot::where([['branch_id', 2],['category_id', 1]])->get();
-					$t = [];
-					foreach($r as $x){
-						$t[] = $x->belongstomanystaff()->where([['active', 1],['div_id', 2]])->get();
-					}
-				} else {								// Production
-					$r = DepartmentPivot::where([['branch_id', 2],['category_id', 2]])->get();
-					$t = [];
-					foreach($r as $x){
-						$t[] = $x->belongstomanystaff()->where([['active', 1],['div_id', 2]])->get();
-					}
-				}
-			}
+			$l->hasoneleaveapprovaldir()->create();
 		}
 
 		//////////////////////////////////////////////////////////////////////////////
 		if($user->belongstoleaveapprovalflow->hr_approval == 1){
-			// search hr div_id = 3
-			if ($branch == 1){							// IPMA A
-				if ($category == 1) {					// Office
-					$r = DepartmentPivot::where([['branch_id', 1],['category_id', 1]])->get();
-					$t = [];
-					foreach($r as $x){
-						$t[] = $x->belongstomanystaff()->where([['active', 1],['div_id', 3]])->get();
-					}
-				} else {								// Production
-					$r = DepartmentPivot::where([['branch_id', 1],['category_id', 2]])->get();
-					$t = [];
-					foreach($r as $x){
-						$t[] = $x->belongstomanystaff()->where([['active', 1],['div_id', 3]])->get();
-					}
-				}
-			} else {									// IPMA B
-				if ($category == 1) {					// Office
-					$r = DepartmentPivot::where([['branch_id', 2],['category_id', 1]])->get();
-					$t = [];
-					foreach($r as $x){
-						$t[] = $x->belongstomanystaff()->where([['active', 1],['div_id', 3]])->get();
-					}
-				} else {								// Production
-					$r = DepartmentPivot::where([['branch_id', 2],['category_id', 2]])->get();
-					$t = [];
-					foreach($r as $x){
-						$t[] = $x->belongstomanystaff()->where([['active', 1],['div_id', 3]])->get();
-					}
-				}
-			}
+			$l->hasoneleaveapprovalhr()->create();
 		}
 		//end section
 		//////////////////////////////////////////////////////////////////////////////
-		// return $t;
+		Session::flash('flash_message', 'Successfully Applied Leave.');
+		return redirect()->back();
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
