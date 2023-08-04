@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends ('layouts.app')
 
 @section('content')
 
@@ -12,18 +12,16 @@ $relationship = App\Models\HumanResources\OptRelationship::all()->pluck('relatio
 $emergencies = $profile->hasmanyemergency()->get();
 ?>
 
-
-{!! Form::model($profile, ['route' => ['profile.update', $profile->id], 'method' => 'PATCH', 'id' => 'form', 'class' => 'form-horizontal', 'autocomplete' => 'off', 'files' => true]) !!}
-
 <div class="container rounded bg-white mt-2 mb-2">
 
+  {!!Form::model($profile, ['route' => ['profile.update', $profile->id], 'method' => 'PATCH', 'id' => 'form', 'class' => 'form-horizontal', 'autocomplete' => 'off', 'files' => true]) !!}
 
   <div class="row">
     <div class="col-md-3 border-right">
       <div class="d-flex flex-column align-items-center text-center p-3 py-5">
         <img class="rounded-5 mt-3" width="180px" src="{{ asset('storage/user_profile/' . $profile->image) }}">
-        <span class="font-weight-bold">{{ $profile->name }}</span>
-        <span class="font-weight-bold">{{ $profile->hasmanylogin()->where('active', 1)->first()->username }}</span>
+        <span class="font-weight-bold">{{ $profile-> name}}</span>
+        <span class="font-weight-bold">{{ $profile-> hasmanylogin() -> where('active', 1) -> first() -> username}}</span>
         <span> </span>
       </div>
     </div>
@@ -87,33 +85,33 @@ $emergencies = $profile->hasmanyemergency()->get();
         <div class="row mt-3">
           <div class="col-md-6">
             <label class="labels">DATE OF BIRTH</label>
-            {!! Form::text( 'dob', @$value, ['class' => 'form-control', 'id' => 'dob', 'autocomplete' => 'off'] ) !!}
+            {!!Form::text( 'dob', @$value, ['class' => 'form-control', 'id' => 'dob', 'autocomplete' => 'off'] ) !!}
           </div>
           <div class="col-md-6">
             <label class="labels">GENDER</label>
-            {!! Form::select( 'gender_id', $gender, @$value, ['class' => 'form-control', 'id' => 'gender_id', 'placeholder' => 'Please Select', 'autocomplete' => 'off'] ) !!}
+            {!!Form::select( 'gender_id', $gender, @$value, ['class' => 'form-control', 'id' => 'gender_id', 'placeholder' => 'Please Select', 'autocomplete' => 'off'] ) !!}
           </div>
         </div>
 
         <div class="row mt-3">
           <div class="col-md-6">
             <label class="labels">NATIONALITY</label>
-            {!! Form::select( 'nationality_id', $nationality, @$value, ['class' => 'form-control', 'id' => 'nationality_id', 'placeholder' => 'Please Select', 'autocomplete' => 'off'] ) !!}
+            {!!Form::select( 'nationality_id', $nationality, @$value, ['class' => 'form-control', 'id' => 'nationality_id', 'placeholder' => 'Please Select', 'autocomplete' => 'off'] ) !!}
           </div>
           <div class="col-md-6">
             <label class="labels">RACE</label>
-            {!! Form::select( 'race_id', $race, @$value, ['class' => 'form-control', 'id' => 'race_id', 'placeholder' => 'Please Select', 'autocomplete' => 'off'] ) !!}
+            {!!Form::select( 'race_id', $race, @$value, ['class' => 'form-control', 'id' => 'race_id', 'placeholder' => 'Please Select', 'autocomplete' => 'off'] ) !!}
           </div>
         </div>
 
         <div class="row mt-3">
           <div class="col-md-6">
             <label class="labels">RELIGION</label>
-            {!! Form::select( 'religion_id', $religion, @$value, ['class' => 'form-control', 'id' => 'religion_id', 'placeholder' => 'Please Select', 'autocomplete' => 'off'] ) !!}
+            {!!Form::select( 'religion_id', $religion, @$value, ['class' => 'form-control', 'id' => 'religion_id', 'placeholder' => 'Please Select', 'autocomplete' => 'off'] ) !!}
           </div>
           <div class="col-md-6">
             <label class="labels">MARITAL STATUS</label>
-            {!! Form::select( 'marital_status_id', $marital_status, @$value, ['class' => 'form-control', 'id' => 'marital_status_id', 'placeholder' => 'Please Select', 'autocomplete' => 'off'] ) !!}
+            {!!Form::select( 'marital_status_id', $marital_status, @$value, ['class' => 'form-control', 'id' => 'marital_status_id', 'placeholder' => 'Please Select', 'autocomplete' => 'off'] ) !!}
           </div>
         </div>
 
@@ -144,28 +142,30 @@ $emergencies = $profile->hasmanyemergency()->get();
         @if ($emergencies->isNotEmpty())
         @foreach ($emergencies as $emergency)
 
+        <input type="hidden" name="emer[{{ $i }}][id]" value="{{ $emergency->id }}">
+
         <div class="row mt-3">
           <div class="col-md-12">
             <label class="labels">NAME</label>
-            {{ Form::text( 'emer['.$i.'][contact_person]', @$emergency->contact_person, ['class' => 'form-control', 'id' => 'contact_person', 'placeholder' => 'Please Insert', 'autocomplete' => 'off'] ) }}
+            {{ Form::text( "emer[$i][contact_person]", @$emergency->contact_person, ['class' => 'form-control', 'id' => 'contact_person', 'placeholder' => 'Please Insert', 'autocomplete' => 'off'] ) }}
           </div>
         </div>
 
         <div class="row mt-3">
           <div class="col-md-6">
             <label class="labels">RELATIONSHIP</label>
-            {!! Form::select( 'emer['.$i.'][relationship_id]', $relationship, @$emergency->relationship_id, ['class' => 'form-control', 'id' => 'relationship_id', 'placeholder' => 'Please Select', 'autocomplete' => 'off'] ) !!}
+            {!!Form::select( "emer[$i][relationship_id]", $relationship, @$emergency->relationship_id, ['class' => 'form-control', 'id' => 'relationship_id', 'placeholder' => 'Please Select', 'autocomplete' => 'off'] ) !!}
           </div>
           <div class="col-md-6">
             <label class="labels">PHONE NUMBER</label>
-            {{ Form::text( 'emer['.$i.'][phone]', @$emergency->phone, ['class' => 'form-control', 'id' => 'phone', 'placeholder' => 'Please Insert', 'autocomplete' => 'off'] ) }}
+            {{ Form::text( "emer[$i][phone]", @$emergency->phone, ['class' => 'form-control', 'id' => 'phone', 'placeholder' => 'Please Insert', 'autocomplete' => 'off'] ) }}
           </div>
         </div>
 
         <div class="row mt-3">
           <div class="col-md-12">
             <label class="labels">ADDRESS</label>
-            {{ Form::text( 'emer['.$i.'][address]', @$emergency->address, ['class' => 'form-control', 'id' => 'emergency_address', 'placeholder' => 'Please Insert', 'autocomplete' => 'off'] ) }}
+            {{ Form::text( "emer[$i][address]", @$emergency->address, ['class' => 'form-control', 'id' => 'emergency_address', 'placeholder' => 'Please Insert', 'autocomplete' => 'off'] ) }}
           </div>
         </div>
 
@@ -182,27 +182,25 @@ $emergencies = $profile->hasmanyemergency()->get();
     <div class="col-md-3"></div>
     <div class="col-md-9 container">
       <div class="text-center">
-        {!! Form::button('Save', ['class' => 'btn btn-sm btn-outline-secondary', 'type' => 'submit']) !!}
+        {!!Form::button('Save', ['class' => 'btn btn-sm btn-outline-secondary', 'type' => 'submit']) !!}
       </div>
     </div>
   </div>
 
-  
+  {{ Form::close() }}
 
-  <!-- <div class="row mt-3">
+  <div class="row mt-3">
     <div class="col-md-3"></div>
     <div class="col-md-9">
       <div class="text-center">
-        <a href="{{ route('profile.show', $profile->id) }}">
-          return redirect()->back();
+        <a href="{{ url()->previous() }}">
           <button class="btn btn-sm btn-outline-secondary">Back</button>
         </a>
       </div>
     </div>
-  </div> -->
+  </div>
 
 </div>
-{{ Form::close() }}
 
 @endsection
 
@@ -219,7 +217,7 @@ today: 'fas fas-regular fa-calenday-day fa-beat',
 clear: 'fas fas-regular fa-broom-wide fa-beat',
 close: 'fas fas-regular fa-rectangle-xmark fa-beat'
 },
-format:'YYYY-MM-DD',
+format: 'YYYY-MM-DD',
 useCurrent: false,
 });
 
