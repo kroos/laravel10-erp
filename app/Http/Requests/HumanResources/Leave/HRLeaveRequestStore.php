@@ -34,7 +34,7 @@ class HRLeaveRequestStore extends FormRequest
 			'time_start' => 'sometimes|required',
 			'time_end' => 'sometimes|required',
 			'leave_type' => 'sometimes|required',
-			'document' => 'sometimes|required|max:10000|mimes:jpg,bmp,png,png,doc,docx',
+			'document' => 'sometimes|file|max:5120|mimes:jpeg,jpg,png,bmp,pdf,doc,docx',
 			'documentsupport' => 'sometimes|accepted',
 		];
 	}
