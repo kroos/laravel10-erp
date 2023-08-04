@@ -135,6 +135,7 @@ $leaveALMC =  $us->hasmanyleaveentitlement()->where('year', date('Y'))->first();
 						<th rowspan="2">Reason</th>
 						<th colspan="2" >Date/Time Leave</th>
 						<th rowspan="2">Period</th>
+						<th rowspan="2">Code</th>
 						<th rowspan="2">Approval, Remarks and Updated At</th>
 						<th rowspan="2">Leave Status</th>
 					</tr>
@@ -159,19 +160,21 @@ $leaveALMC =  $us->hasmanyleaveentitlement()->where('year', date('Y'))->first();
 							HR9-{{ str_pad( $leav->leave_no, 5, "0", STR_PAD_LEFT ) }}/{{ $arr[1] }}
 						</td>
 	<?php
-	if ( ($leav->leave_type_id == 9) || ($leav->leave_type_id != 9 && $leav->half_type_id == 2) ) {
+	if ( ($leav->leave_type_id == 9) || ($leav->leave_type_id != 9 && $leav->half_type_id == 2) || ($leav->leave_type_id != 9 && $leav->half_type_id == 1) ) {
 		$dts = \Carbon\Carbon::parse($leav->date_time_start)->format('j M Y g:i a');
 		$dte = \Carbon\Carbon::parse($leav->date_time_end)->format('j M Y g:i a');
-		if( ($leav->leave_type_id != 9 && $leav->half_type_id == 2 && $leav->active == 1) ) {
-			if ($leav->leave_type_id != 9 && $leav->half_type_id == 2 && $leav->active != 1) {
-				$dper = '0 Day';
-			} else {
-				$dper = 'Half Day';
+
+		if ($leav->leave_type_id != 9) {
+			if ($leav->half_type_id == 2) {
+				$dper = $leav->period_day.' Day';
+			} elseif($leav->half_type_id == 1) {
+				$dper = $leav->period_day.' Day';
 			}
-		} else {
+		}elseif ($leav->leave_type_id == 9) {
 			$i = \Carbon\Carbon::parse($leav->period_time);
 			$dper = $i->hour.' hour, '.$i->minute.' minutes';
 		}
+
 	} else {
 		$dts = \Carbon\Carbon::parse($leav->date_time_start)->format('j M Y ');
 		$dte = \Carbon\Carbon::parse($leav->date_time_end)->format('j M Y ');
@@ -180,48 +183,48 @@ $leaveALMC =  $us->hasmanyleaveentitlement()->where('year', date('Y'))->first();
 	?>
 						<td>{{ \Carbon\Carbon::parse($leav->created_at)->format('j M Y') }}</td>
 						<td>{{ $leav->belongstooptleavetype->leave_type_code }}</td>
-						<td>{{ Str::of($leav->reason)->words(3, ' >') }}</td>
+						<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="{{ $leav->reason }}">{{ Str::of($leav->reason)->words(3, ' >') }}</td>
 						<td>{{ $dts }}</td>
 						<td>{{ $dte }}</td>
 						<td>{{ $dper }}</td>
+						<td>{{ $leav->verify_code }}</td>
 						<td>
 							<table class="table table-hover table-sm">
 								<tbody>
-									@if($us->belongstoleaveapprovalflow->backup_approval == 1)
+									@if($leav->hasoneleaveapprovalbackup()->get()->isNotEmpty())
 										<tr>
-											<td>Backup <?=$leav->hasoneleaveapprovalbackup()?->first()?->belongstostaff?->name ?></td>
-											<td>{{ $leav->hasoneleaveapprovalbackup()?->first()?->belongstoleavestatus?->status ?? 'Pending' }}</td>
+											<td>Backup {{ $leav->hasoneleaveapprovalbackup()->first()->belongstostaff?->name }}</td>
+											<td>{{ $leav->hasoneleaveapprovalbackup()->first()->belongstoleavestatus?->status ?? 'Pending' }}</td>
 										</tr>
 									@endif
 
-									@if($us->belongstoleaveapprovalflow->supervisor_approval == 1)
+									@if($leav->hasoneleaveapprovalsupervisor()->get()->isNotEmpty())
 										<tr>
-											<td>Supervisor {{ $leav->hasoneleaveapprovalsupervisor()?->first()?->belongstostaff?->name }}</td>
-											<td>{{ $leav->hasoneleaveapprovalsupervisor()?->first()?->belongstoleavestatus?->status ?? 'Pending' }}</td>
+											<td>Supervisor {{ $leav->hasoneleaveapprovalsupervisor()->first()->belongstostaff?->name }}</td>
+											<td>{{ $leav->hasoneleaveapprovalsupervisor()->first()->belongstoleavestatus?->status ?? 'Pending' }}</td>
 										</tr>
 									@endif
 
-									@if($us->belongstoleaveapprovalflow->hod_approval == 1)
+									@if($leav->hasoneleaveapprovalhod()->get()->isNotEmpty())
 										<tr>
-											<td>HOD {{ $leav->hasoneleaveapprovalhod()?->first()?->belongstostaff?->name }}</td>
-											<td>{{ $leav->hasoneleaveapprovalhod()?->first()?->belongstoleavestatus?->status ?? 'Pending' }}</td>
+											<td>HOD {{ $leav->hasoneleaveapprovalhod()->first()->belongstostaff?->name }}</td>
+											<td>{{ $leav->hasoneleaveapprovalhod()->first()->belongstoleavestatus?->status ?? 'Pending' }}</td>
 										</tr>
 									@endif
 
-									@if($us->belongstoleaveapprovalflow->director_approval == 1)
+									@if($leav->hasoneleaveapprovaldir()->get()->isNotEmpty())
 										<tr>
-											<td>Director {{ $leav->hasoneleaveapprovaldir()?->first()?->belongstostaff?->name }}</td>
-											<td>{{ $leav->hasoneleaveapprovaldir()?->first()?->belongstoleavestatus?->status ?? 'Pending' }}</td>
+											<td>Director {{ $leav->hasoneleaveapprovaldir()->first()->belongstostaff?->name }}</td>
+											<td>{{ $leav->hasoneleaveapprovaldir()->first()->belongstoleavestatus?->status ?? 'Pending' }}</td>
 										</tr>
 									@endif
 
-									@if($us->belongstoleaveapprovalflow->hr_approval == 1)
+									@if($leav->hasoneleaveapprovalhr()->get()->isNotEmpty())
 										<tr>
-											<td>HR {{ $leav->hasoneleaveapprovalhr()?->first()?->belongstostaff?->name }}</td>
-											<td>{{ $leav->hasoneleaveapprovalhr()?->first()?->belongstoleavestatus?->status ?? 'Pending' }}</td>
+											<td>HR {{ $leav->hasoneleaveapprovalhr()->first()->belongstostaff?->name }}</td>
+											<td>{{ $leav->hasoneleaveapprovalhr()->first()->belongstoleavestatus?->status ?? 'Pending' }}</td>
 										</tr>
 									@endif
-
 								</tbody>
 							</table>
 						</td>
@@ -263,6 +266,12 @@ $leaveALMC =  $us->hasmanyleaveentitlement()->where('year', date('Y'))->first();
 @endsection
 
 @section('js')
+/////////////////////////////////////////////////////////////////////////////////////////
+// tooltip on reason
+$(document).ready(function(){
+	$('[data-bs-toggle="tooltip"]').tooltip();   
+});
+
 /////////////////////////////////////////////////////////////////////////////////////////
 // datatables
 $.fn.dataTable.moment( 'D MMM YYYY' );
