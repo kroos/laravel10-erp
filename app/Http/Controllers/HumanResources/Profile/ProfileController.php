@@ -6,10 +6,10 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Arr;
 
 // load models
 use App\Models\Staff;
+use App\Models\HumanResources\HREmergency;
 
 // load validation
 use App\Http\Requests\HumanResources\Profile\ProfileRequestUpdate;
@@ -68,38 +68,25 @@ class ProfileController extends Controller
   /**
    * Update the specified resource in storage.
    */
-  public function update(Request $request, Staff $profile)/* : RedirectResponse */
+  public function update(ProfileRequestUpdate $request, Staff $profile): RedirectResponse
   {
-    // return $request->only(['ic', 'mobile', 'email', 'address', 'dob', 'gender_id', 'nationality_id', 'race_id', 'religion_id', 'marital_status_id']);
+    // return $request->emer;
+
     // return \Carbon\Carbon::parse($request->dob)->format('Y-m-d');
 
-    // $profile->update($request->only(['ic', 'mobile', 'email', 'address', 'dob', 'gender_id', 'nationality_id', 'race_id', 'religion_id', 'marital_status_id']));
+    $profile->update($request->only(['ic', 'mobile', 'email', 'address', 'dob', 'gender_id', 'nationality_id', 'race_id', 'religion_id', 'marital_status_id']));
 
-    // foreach ($request->emer as $value) {
-    //   // echo $value['contact_person']. '<br/>';
-    //   // echo $value['phone']. '<br/>';
-    //   // echo $value['address']. '<br/>';
-    //   // echo $value['relationship_id']. '<br/>';
+    foreach ($request->emer as $value) {
+      $HREmergency = HREmergency::findOrFail($value['id']);
+      $HREmergency->contact_person = $value['contact_person'];
+      $HREmergency->phone = $value['phone'];
+      $HREmergency->address = $value['address'];
+      $HREmergency->relationship_id = $value['relationship_id'];
+      $HREmergency->update();
+    }
 
-    //   $profile->hasmanyemergency()->update([
-    //     'contact_person' => $value['contact_person'],
-    //     'phone' => $value['phone'],
-    //     'address' => $value['address'],
-    //     'relationship_id' => $value['relationship_id']
-    //   ]);
-    // }
-
-    // return $request->ic;
-
-    $l = $profile->update([
-      'ic' => $request->ic
-    ]);
-
-    dd($profile);
-
-    
-    // Session::flash('flash_message', 'Data successfully updated!');
-    // return Redirect::route('profile.show', $profile);
+    Session::flash('flash_message', 'Data successfully updated!');
+    return Redirect::route('profile.show', $profile);
   }
 
   /**
