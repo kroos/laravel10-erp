@@ -169,45 +169,100 @@ $('#leave_id').on('change', function() {
 	// annual leave & UPL
 	if ($selection.val() == '1' || $selection.val() == '3') {
 		$('#remove').remove();
-		$('#wrapper').append(
-			'<div id="remove">' +
-				<!-- annual leave -->
+		if($selection.val() == '3') {
+			$('#wrapper').append(
+				'<div id="remove">' +
+					<!-- annual leave -->
 
-				'<div class="form-group row mb-3 {{ $errors->has('date_time_start') ? 'has-error' : '' }}">' +
-					'{{ Form::label('from', 'From : ', ['class' => 'col-sm-2 col-form-label']) }}' +
-					'<div class="col-auto datetime" style="position: relative">' +
-						'{{ Form::text('date_time_start', @$value, ['class' => 'form-control col-auto', 'id' => 'from', 'placeholder' => 'From : ', 'autocomplete' => 'off']) }}' +
+					'<div class="form-group row mb-3 {{ $errors->has('date_time_start') ? 'has-error' : '' }}">' +
+						'{{ Form::label('from', 'From : ', ['class' => 'col-sm-2 col-form-label']) }}' +
+						'<div class="col-auto datetime" style="position: relative">' +
+							'{{ Form::text('date_time_start', @$value, ['class' => 'form-control col-auto', 'id' => 'from', 'placeholder' => 'From : ', 'autocomplete' => 'off']) }}' +
+						'</div>' +
 					'</div>' +
-				'</div>' +
 
-				'<div class="form-group row mb-3 {{ $errors->has('date_time_end') ? 'has-error' : '' }}">' +
-					'{{ Form::label('to', 'To : ', ['class' => 'col-sm-2 col-form-label']) }}' +
-					'<div class="col-auto datetime" style="position: relative">' +
-						'{{ Form::text('date_time_end', @$value, ['class' => 'form-control col-auto', 'id' => 'to', 'placeholder' => 'To : ', 'autocomplete' => 'off']) }}' +
+					'<div class="form-group row mb-3 {{ $errors->has('date_time_end') ? 'has-error' : '' }}">' +
+						'{{ Form::label('to', 'To : ', ['class' => 'col-sm-2 col-form-label']) }}' +
+						'<div class="col-auto datetime" style="position: relative">' +
+							'{{ Form::text('date_time_end', @$value, ['class' => 'form-control col-auto', 'id' => 'to', 'placeholder' => 'To : ', 'autocomplete' => 'off']) }}' +
+						'</div>' +
 					'</div>' +
-				'</div>' +
 
-				'<div class="form-group row mb-3 {{ $errors->has('leave_type') ? 'has-error' : '' }}" id="wrapperday">' +
-					'<div class="form-group col-auto offset-sm-2 {{ $errors->has('half_type_id') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
+					'<div class="form-group row mb-3 {{ $errors->has('leave_type') ? 'has-error' : '' }}" id="wrapperday">' +
+						'<div class="form-group col-auto offset-sm-2 {{ $errors->has('half_type_id') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
+						'</div>' +
 					'</div>' +
-				'</div>' +
 
-				@if( $userneedbackup == 1 )
-				'<div class="form-group row mb-3 {{ $errors->has('staff_id') ? 'has-error' : '' }}">' +
-					'{{ Form::label('backupperson', 'Replacement : ', ['class' => 'col-sm-2 col-form-label']) }}' +
-					'<div class="col-auto backup">' +
-						'<select name="staff_id" id="backupperson" class="form-control form-select form-select-sm " placeholder="Please choose" autocomplete="off"></select>' +
+					@if( $userneedbackup == 1 )
+					'<div class="form-group row mb-3 {{ $errors->has('staff_id') ? 'has-error' : '' }}">' +
+						'{{ Form::label('backupperson', 'Replacement : ', ['class' => 'col-sm-2 col-form-label']) }}' +
+						'<div class="col-auto backup">' +
+							'<select name="staff_id" id="backupperson" class="form-control form-select form-select-sm " placeholder="Please choose" autocomplete="off"></select>' +
+						'</div>' +
 					'</div>' +
-				'</div>' +
-				@endif
-			'</div>'
-		);
+					@endif
+
+					'<div class="form-group row mb-3 {{ $errors->has('document') ? 'has-error' : '' }}">' +
+						'{{ Form::label( 'doc', 'Upload Supporting Document : ', ['class' => 'col-sm-2 col-form-label'] ) }}' +
+						'<div class="col-auto supportdoc">' +
+							'{{ Form::file( 'document', ['class' => 'form-control form-control-file', 'id' => 'doc', 'placeholder' => 'Supporting Document']) }}' +
+						'</div>' +
+					'</div>' +
+
+					'<div class="form-group row mb-3 {{ $errors->has('documentsupport') ? 'has-error' : '' }}">' +
+						'<div class="offset-sm-2 col-auto form-check suppdoc">' +
+							'{{ Form::checkbox('documentsupport', 1, @$value, ['class' => 'form-check-input ', 'id' => 'suppdoc']) }}' +
+							'<label for="suppdoc" class="form-check-label p-3 mb-2 bg-warning text-danger rounded">Please ensure you will submit <strong>Supporting Documents</strong> within <strong>3 Days</strong> after date leave.</label>' +
+						'</div>' +
+					'</div>' +
+
+				'</div>'
+			);
+		} else {
+			$('#wrapper').append(
+				'<div id="remove">' +
+					<!-- annual leave -->
+
+					'<div class="form-group row mb-3 {{ $errors->has('date_time_start') ? 'has-error' : '' }}">' +
+						'{{ Form::label('from', 'From : ', ['class' => 'col-sm-2 col-form-label']) }}' +
+						'<div class="col-auto datetime" style="position: relative">' +
+							'{{ Form::text('date_time_start', @$value, ['class' => 'form-control col-auto', 'id' => 'from', 'placeholder' => 'From : ', 'autocomplete' => 'off']) }}' +
+						'</div>' +
+					'</div>' +
+
+					'<div class="form-group row mb-3 {{ $errors->has('date_time_end') ? 'has-error' : '' }}">' +
+						'{{ Form::label('to', 'To : ', ['class' => 'col-sm-2 col-form-label']) }}' +
+						'<div class="col-auto datetime" style="position: relative">' +
+							'{{ Form::text('date_time_end', @$value, ['class' => 'form-control col-auto', 'id' => 'to', 'placeholder' => 'To : ', 'autocomplete' => 'off']) }}' +
+						'</div>' +
+					'</div>' +
+
+					'<div class="form-group row mb-3 {{ $errors->has('leave_type') ? 'has-error' : '' }}" id="wrapperday">' +
+						'<div class="form-group col-auto offset-sm-2 {{ $errors->has('half_type_id') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
+						'</div>' +
+					'</div>' +
+
+					@if( $userneedbackup == 1 )
+					'<div class="form-group row mb-3 {{ $errors->has('staff_id') ? 'has-error' : '' }}">' +
+						'{{ Form::label('backupperson', 'Replacement : ', ['class' => 'col-sm-2 col-form-label']) }}' +
+						'<div class="col-auto backup">' +
+							'<select name="staff_id" id="backupperson" class="form-control form-select form-select-sm " placeholder="Please choose" autocomplete="off"></select>' +
+						'</div>' +
+					'</div>' +
+					@endif
+				'</div>'
+			);
+		}
 
 		@if( $userneedbackup == 1 )
 		$('#form').bootstrapValidator('addField', $('.backup').find('[name="staff_id"]'));
 		@endif
 		$('#form').bootstrapValidator('addField', $('.datetime').find('[name="date_time_start"]'));
 		$('#form').bootstrapValidator('addField', $('.datetime').find('[name="date_time_end"]'));
+		if($selection.val() == '3') {
+			$('#form').bootstrapValidator('addField', $('.supportdoc').find('[name="document"]'));
+			$('#form').bootstrapValidator('addField', $('.suppdoc').find('[name="documentsupport"]'));
+		}
 
 		/////////////////////////////////////////////////////////////////////////////////////////
 		//enable select 2 for backup
@@ -375,13 +430,13 @@ $('#leave_id').on('change', function() {
 				if( $('.removetest').length == 0 ) {
 					$('#wrappertest').append(
 						'<div class="pretty p-default p-curve form-check form-check-inline removetest">' +
-							'<input type="radio" name="half_type_id" value="1" id="am" checked="checked">' +
+							'<input type="radio" name="half_type_id" value="1/' + obj.start_am + '/' + obj.end_am + '" id="am" checked="checked">' +
 							'<div class="state p-primary">' +
 								'<label for="am" class="form-check-label">' + moment(obj.start_am, 'HH:mm:ss').format('h:mm a') + ' to ' + moment(obj.end_am, 'HH:mm:ss').format('h:mm a') + '</label> ' +
 							'</div>' +
 						'</div>' +
 						'<div class="pretty p-default p-curve form-check form-check-inline removetest">' +
-							'<input type="radio" name="half_type_id" value="2" id="pm">' +
+							'<input type="radio" name="half_type_id" value="2/' + obj.start_pm + '/' + obj.end_pm + '" id="pm">' +
 							'<div class="state p-primary">' +
 								'<label for="pm" class="form-check-label">' + moment(obj.start_pm, 'HH:mm:ss').format('h:mm a') + ' to ' + moment(obj.end_pm, 'HH:mm:ss').format('h:mm a') + '</label> ' +
 							'</div>' +
@@ -639,13 +694,13 @@ $('#leave_id').on('change', function() {
 				if( $('.removetest').length == 0 ) {
 					$('#wrappertest').append(
 						'<div class="pretty p-default p-curve form-check form-check-inline removetest">' +
-							'<input type="radio" name="half_type_id" value="1" id="am" checked="checked">' +
+							'<input type="radio" name="half_type_id" value="1/' + obj.start_am + '/' + obj.end_am + '" id="am" checked="checked">' +
 							'<div class="state p-primary">' +
 								'<label for="am" class="form-check-label">' + moment(obj.start_am, 'HH:mm:ss').format('h:mm a') + ' to ' + moment(obj.end_am, 'HH:mm:ss').format('h:mm a') + '</label> ' +
 							'</div>' +
 						'</div>' +
 						'<div class="pretty p-default p-curve form-check form-check-inline removetest">' +
-							'<input type="radio" name="half_type_id" value="2" id="pm">' +
+							'<input type="radio" name="half_type_id" value="2/' + obj.start_pm + '/' + obj.end_pm + '" id="pm">' +
 							'<div class="state p-primary">' +
 								'<label for="pm" class="form-check-label">' + moment(obj.start_pm, 'HH:mm:ss').format('h:mm a') + ' to ' + moment(obj.end_pm, 'HH:mm:ss').format('h:mm a') + '</label> ' +
 							'</div>' +
@@ -904,13 +959,13 @@ $oi = \Auth::user()->belongstostaff->hasmanyleavereplacement()->where('leave_bal
 				if( $('.removetest').length == 0 ) {
 					$('#wrappertest').append(
 						'<div class="pretty p-default p-curve form-check form-check-inline removetest">' +
-							'<input type="radio" name="half_type_id" value="1" id="am" checked="checked">' +
+							'<input type="radio" name="half_type_id" value="1/' + obj.start_am + '/' + obj.end_am + '" id="am" checked="checked">' +
 							'<div class="state p-primary">' +
 								'<label for="am" class="form-check-label">' + moment(obj.start_am, 'HH:mm:ss').format('h:mm a') + ' to ' + moment(obj.end_am, 'HH:mm:ss').format('h:mm a') + '</label> ' +
 							'</div>' +
 						'</div>' +
 						'<div class="pretty p-default p-curve form-check form-check-inline removetest">' +
-							'<input type="radio" name="half_type_id" value="2" id="pm">' +
+							'<input type="radio" name="half_type_id" value="2/' + obj.start_pm + '/' + obj.end_pm + '" id="pm">' +
 							'<div class="state p-primary">' +
 								'<label for="pm" class="form-check-label">' + moment(obj.start_pm, 'HH:mm:ss').format('h:mm a') + ' to ' + moment(obj.end_pm, 'HH:mm:ss').format('h:mm a') + '</label> ' +
 							'</div>' +
@@ -974,13 +1029,13 @@ $oi = \Auth::user()->belongstostaff->hasmanyleavereplacement()->where('leave_bal
 				if( $('.removetest').length == 0 ) {
 					$('#wrappertest').append(
 						'<div class="pretty p-default p-curve form-check form-check-inline removetest">' +
-							'<input type="radio" name="half_type_id" value="1" id="am" checked="checked">' +
+							'<input type="radio" name="half_type_id" value="1/' + obj.start_am + '/' + obj.end_am + '" id="am" checked="checked">' +
 							'<div class="state p-primary">' +
 								'<label for="am" class="form-check-label">' + moment(obj.start_am, 'HH:mm:ss').format('h:mm a') + ' to ' + moment(obj.end_am, 'HH:mm:ss').format('h:mm a') + '</label> ' +
 							'</div>' +
 						'</div>' +
 						'<div class="pretty p-default p-curve form-check form-check-inline removetest">' +
-							'<input type="radio" name="half_type_id" value="2" id="pm">' +
+							'<input type="radio" name="half_type_id" value="2/' + obj.start_pm + '/' + obj.end_pm + '" id="pm">' +
 							'<div class="state p-primary">' +
 								'<label for="pm" class="form-check-label">' + moment(obj.start_pm, 'HH:mm:ss').format('h:mm a') + ' to ' + moment(obj.end_pm, 'HH:mm:ss').format('h:mm a') + '</label> ' +
 							'</div>' +
@@ -1395,13 +1450,13 @@ $oi = \Auth::user()->belongstostaff->hasmanyleavereplacement()->where('leave_bal
 				if( $('.removetest').length == 0 ) {
 					$('#wrappertest').append(
 						'<div class="pretty p-default p-curve form-check form-check-inline removetest">' +
-							'<input type="radio" name="half_type_id" value="1" id="am" checked="checked">' +
+							'<input type="radio" name="half_type_id" value="1/' + obj.start_am + '/' + obj.end_am + '" id="am" checked="checked">' +
 							'<div class="state p-primary">' +
 								'<label for="am" class="form-check-label">' + moment(obj.start_am, 'HH:mm:ss').format('h:mm a') + ' to ' + moment(obj.end_am, 'HH:mm:ss').format('h:mm a') + '</label> ' +
 							'</div>' +
 						'</div>' +
 						'<div class="pretty p-default p-curve form-check form-check-inline removetest">' +
-							'<input type="radio" name="half_type_id" value="2" id="pm">' +
+							'<input type="radio" name="half_type_id" value="2/' + obj.start_pm + '/' + obj.end_pm + '" id="pm">' +
 							'<div class="state p-primary">' +
 								'<label for="pm" class="form-check-label">' + moment(obj.start_pm, 'HH:mm:ss').format('h:mm a') + ' to ' + moment(obj.end_pm, 'HH:mm:ss').format('h:mm a') + '</label> ' +
 							'</div>' +
@@ -2149,13 +2204,13 @@ $oi = \Auth::user()->belongstostaff->hasmanyleavereplacement()->where('leave_bal
 				if( $('.removetest').length == 0 ) {
 					$('#wrappertest').append(
 						'<div class="pretty p-default p-curve form-check form-check-inline removetest">' +
-							'<input type="radio" name="half_type_id" value="1" id="am" checked="checked">' +
+							'<input type="radio" name="half_type_id" value="1/' + obj.start_am + '/' + obj.end_am + '" id="am" checked="checked">' +
 							'<div class="state p-primary">' +
 								'<label for="am" class="form-check-label">' + moment(obj.start_am, 'HH:mm:ss').format('h:mm a') + ' to ' + moment(obj.end_am, 'HH:mm:ss').format('h:mm a') + '</label> ' +
 							'</div>' +
 						'</div>' +
 						'<div class="pretty p-default p-curve form-check form-check-inline removetest">' +
-							'<input type="radio" name="half_type_id" value="2" id="pm">' +
+							'<input type="radio" name="half_type_id" value="2/' + obj.start_pm + '/' + obj.end_pm + '" id="pm">' +
 							'<div class="state p-primary">' +
 								'<label for="pm" class="form-check-label">' + moment(obj.start_pm, 'HH:mm:ss').format('h:mm a') + ' to ' + moment(obj.end_pm, 'HH:mm:ss').format('h:mm a') + '</label> ' +
 							'</div>' +
@@ -2219,13 +2274,13 @@ $oi = \Auth::user()->belongstostaff->hasmanyleavereplacement()->where('leave_bal
 				if( $('.removetest').length == 0 ) {
 					$('#wrappertest').append(
 						'<div class="pretty p-default p-curve form-check form-check-inline removetest">' +
-							'<input type="radio" name="half_type_id" value="1" id="am" checked="checked">' +
+							'<input type="radio" name="half_type_id" value="1/' + obj.start_am + '/' + obj.end_am + '" id="am" checked="checked">' +
 							'<div class="state p-primary">' +
 								'<label for="am" class="form-check-label">' + moment(obj.start_am, 'HH:mm:ss').format('h:mm a') + ' to ' + moment(obj.end_am, 'HH:mm:ss').format('h:mm a') + '</label> ' +
 							'</div>' +
 						'</div>' +
 						'<div class="pretty p-default p-curve form-check form-check-inline removetest">' +
-							'<input type="radio" name="half_type_id" value="2" id="pm">' +
+							'<input type="radio" name="half_type_id" value="2/' + obj.start_pm + '/' + obj.end_pm + '" id="pm">' +
 							'<div class="state p-primary">' +
 								'<label for="pm" class="form-check-label">' + moment(obj.start_pm, 'HH:mm:ss').format('h:mm a') + ' to ' + moment(obj.end_pm, 'HH:mm:ss').format('h:mm a') + '</label> ' +
 							'</div>' +
@@ -2519,13 +2574,13 @@ $oi = \Auth::user()->belongstostaff->hasmanyleavereplacement()->where('leave_bal
 				if( $('.removetest').length == 0 ) {
 					$('#wrappertest').append(
 						'<div class="pretty p-default p-curve form-check form-check-inline removetest">' +
-							'<input type="radio" name="half_type_id" value="1" id="am" checked="checked">' +
+							'<input type="radio" name="half_type_id" value="1/' + obj.start_am + '/' + obj.end_am + '" id="am" checked="checked">' +
 							'<div class="state p-primary">' +
 								'<label for="am" class="form-check-label">' + moment(obj.start_am, 'HH:mm:ss').format('h:mm a') + ' to ' + moment(obj.end_am, 'HH:mm:ss').format('h:mm a') + '</label> ' +
 							'</div>' +
 						'</div>' +
 						'<div class="pretty p-default p-curve form-check form-check-inline removetest">' +
-							'<input type="radio" name="half_type_id" value="2" id="pm">' +
+							'<input type="radio" name="half_type_id" value="2/' + obj.start_pm + '/' + obj.end_pm + '" id="pm">' +
 							'<div class="state p-primary">' +
 								'<label for="pm" class="form-check-label">' + moment(obj.start_pm, 'HH:mm:ss').format('h:mm a') + ' to ' + moment(obj.end_pm, 'HH:mm:ss').format('h:mm a') + '</label> ' +
 							'</div>' +
@@ -2644,8 +2699,8 @@ $(document).ready(function() {
 			document: {
 				validators: {
 					file: {
-						extension: 'jpeg,jpg,png,bmp,pdf,doc',											// no space
-						type: 'image/jpeg,image/png,image/bmp,application/pdf,application/msword',		// no space
+						extension: 'jpeg,jpg,png,bmp,pdf,doc,docx',											// no space
+						type: 'image/jpeg,image/png,image/bmp,application/pdf,application/msword',			// no space
 						maxSize: 5242880,	// 5120 * 1024,
 						message: 'The selected file is not valid. Please use jpeg, jpg, png, bmp, pdf or doc and the file is below than 5MB. '
 					},
