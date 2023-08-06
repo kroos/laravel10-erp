@@ -8,6 +8,9 @@ use App\Models\HumanResources\OptWorkingHour;
 use App\Models\Staff;
 use App\Models\Setting;
 
+// use Illuminate\Database\Query\Builder;
+use Illuminate\Database\Eloquent\Builder;
+
 use \Carbon\Carbon;
 use \Carbon\CarbonPeriod;
 use Illuminate\Support\Arr;
@@ -81,7 +84,20 @@ class UnavailableDate
 		if(Setting::find(1)->active == 1) {		// double date checking
 			// block self leave
 			// make sure $request->id comes from table staff
-			$leaveday = HRLeave::where('staff_id', $id)->/*whereNull('leave_status_id')->*/whereIn('leave_status_id', [4,5,6,NULL])->whereRaw('"'.$d->copy()->year.'" BETWEEN YEAR(date_time_start) AND YEAR(date_time_end)')->orwhereRaw('"'.$d->copy()->addYear()->year.'" BETWEEN YEAR(date_time_start) AND YEAR(date_time_end)')->get();
+			// $leaveday = HRLeave::where('staff_id', $id)->whereIn('leave_status_id', [4,5,6])->whereNull('leave_status_id')->whereRaw('"'.$d->copy()->year.'" BETWEEN YEAR(date_time_start) AND YEAR(date_time_end)')->orwhereRaw('"'.$d->copy()->addYear()->year.'" BETWEEN YEAR(date_time_start) AND YEAR(date_time_end)')->get();
+			$leaveday = HRLeave::where('staff_id', $id)->where(function (Builder $query){
+				$query->whereIn('leave_status_id', [4,5,6])->orwhereNull('leave_status_id');
+			})
+			->where(function (Builder $query) use ($d){
+				$query->whereYear('date_time_start', '<=', $d->copy()->year)
+				->whereYear('date_time_end', '>=', $d->copy()->year);
+			})
+			->orwhere(function (Builder $query) use ($d){
+				$query->whereYear('date_time_start', '<=', $d->copy()->addYear()->year)
+				->whereYear('date_time_end', '>=', $d->copy()->addYear()->year);
+			})
+			// ->ddRawSql();
+			->get();
 			// echo $leaveday;
 			// dd($leaveday);
 			if(!is_null($leaveday)) {
