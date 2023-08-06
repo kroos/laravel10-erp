@@ -11,7 +11,9 @@ $emer = $us->hasmanyemergency()->get();
 // check email
 $email = $us->email;
 $e =  $us->hasmanyemergency()->get();
-$leaveALMC =  $us->hasmanyleaveentitlement()->where('year', date('Y'))->first();
+$leaveAL =  $us->hasmanyleaveannual()->where('year', date('Y'))->first();
+$leaveMC =  $us->hasmanyleavemc()->where('year', date('Y'))->first();
+$leaveMa =  $us->hasmanyleavematernity()->where('year', date('Y'))->first();
 // $leaveALMC =  $us->hasmanyleaveentitlements()->whereFirst('year', date('Y'));
 // dd($leaveALMC);
 ?>
@@ -34,30 +36,30 @@ $leaveALMC =  $us->hasmanyleaveentitlement()->where('year', date('Y'))->first();
 			<tr>
 				<th rowspan="2">Annual Leave :</th>
 				<td>Initialize :</td>
-				<td>{{ $leaveALMC->al_initialise + $leaveALMC->al_adjustment }} days</td>
+				<td>{{ $leaveAL->annual_leave + $leaveAL->annual_leave_adjustment }} days</td>
 			</tr>
 			<tr>
 				<td>Balance:</td>
-				<td><span class=" {{ ($leaveALMC->al_balance < 4)?'text-danger font-weight-bold':'' }}">{{ $leaveALMC->al_balance }} days</span></td>
+				<td><span class=" {{ ($leaveAL->annual_leave_balance < 4)?'text-danger font-weight-bold':'' }}">{{ $leaveAL->annual_leave_balance }} days</span></td>
 			</tr>
 			<tr>
 				<th rowspan="2">Medical Certificate Leave :</th>
 				<td>Initialize :</td>
-				<td>{{ $leaveALMC->mc_initialise + $leaveALMC->mc_adjustment }} days</td>
+				<td>{{ $leaveMC->mc_leave + $leaveMC->mc_adjustment }} days</td>
 			</tr>
 			<tr>
 				<td>Balance :</td>
-				<td><span class=" {{ ($leaveALMC->medical_leave_balance < 4)?'text-danger font-weight-bold':'' }}">{{ $leaveALMC->mc_balance }} days</span></td>
+				<td><span class=" {{ ($leaveMC->mc_leave_balance < 4)?'text-danger font-weight-bold':'' }}">{{ $leaveMC->mc_leave_balance }} days</span></td>
 			</tr>
 			@if( $us->gender_id == 2 )
 			<tr>
 				<th rowspan="2">Maternity Leave :</th>
 				<td>Initialize :</td>
-				<td>{{ $leaveALMC->maternity_initialise + $leaveALMC->maternity_adjustment }} days</td>
+				<td>{{ $leaveMa->maternity_leave + $leaveMa->maternity_leave_adjustment }} days</td>
 			</tr>
 			<tr>
 				<td>Balance :</td>
-				<td><span class=" {{ ($leaveALMC->maternity_balance < 4)?'text-danger font-weight-bold':'' }}">{{ $leaveALMC->maternity_balance }} days</span></td>
+				<td><span class=" {{ ($leaveMa->maternity_leave_balance < 4)?'text-danger font-weight-bold':'' }}">{{ $leaveMa->maternity_leave_balance }} days</span></td>
 			</tr>
 			@endif
 			<tr>
@@ -193,35 +195,40 @@ $leaveALMC =  $us->hasmanyleaveentitlement()->where('year', date('Y'))->first();
 								<tbody>
 									@if($leav->hasoneleaveapprovalbackup()->get()->isNotEmpty())
 										<tr>
-											<td>Backup {{ $leav->hasoneleaveapprovalbackup()->first()->belongstostaff?->name }}</td>
+											<!-- <td>Backup {{ $leav->hasoneleaveapprovalbackup()->first()->belongstostaff?->name }}</td> -->
+											<td>Backup</td>
 											<td>{{ $leav->hasoneleaveapprovalbackup()->first()->belongstoleavestatus?->status ?? 'Pending' }}</td>
 										</tr>
 									@endif
 
 									@if($leav->hasoneleaveapprovalsupervisor()->get()->isNotEmpty())
 										<tr>
-											<td>Supervisor {{ $leav->hasoneleaveapprovalsupervisor()->first()->belongstostaff?->name }}</td>
+											<!-- <td>Supervisor {{ $leav->hasoneleaveapprovalsupervisor()->first()->belongstostaff?->name }}</td> -->
+											<td>Supervisor</td>
 											<td>{{ $leav->hasoneleaveapprovalsupervisor()->first()->belongstoleavestatus?->status ?? 'Pending' }}</td>
 										</tr>
 									@endif
 
 									@if($leav->hasoneleaveapprovalhod()->get()->isNotEmpty())
 										<tr>
-											<td>HOD {{ $leav->hasoneleaveapprovalhod()->first()->belongstostaff?->name }}</td>
+											<!-- <td>HOD {{ $leav->hasoneleaveapprovalhod()->first()->belongstostaff?->name }}</td> -->
+											<td>HOD</td>
 											<td>{{ $leav->hasoneleaveapprovalhod()->first()->belongstoleavestatus?->status ?? 'Pending' }}</td>
 										</tr>
 									@endif
 
 									@if($leav->hasoneleaveapprovaldir()->get()->isNotEmpty())
 										<tr>
-											<td>Director {{ $leav->hasoneleaveapprovaldir()->first()->belongstostaff?->name }}</td>
+											<!-- <td>Director {{ $leav->hasoneleaveapprovaldir()->first()->belongstostaff?->name }}</td> -->
+											<td>Director</td>
 											<td>{{ $leav->hasoneleaveapprovaldir()->first()->belongstoleavestatus?->status ?? 'Pending' }}</td>
 										</tr>
 									@endif
 
 									@if($leav->hasoneleaveapprovalhr()->get()->isNotEmpty())
 										<tr>
-											<td>HR {{ $leav->hasoneleaveapprovalhr()->first()->belongstostaff?->name }}</td>
+											<!-- <td>HR {{ $leav->hasoneleaveapprovalhr()->first()->belongstostaff?->name }}</td> -->
+											<td>HR</td>
 											<td>{{ $leav->hasoneleaveapprovalhr()->first()->belongstoleavestatus?->status ?? 'Pending' }}</td>
 										</tr>
 									@endif

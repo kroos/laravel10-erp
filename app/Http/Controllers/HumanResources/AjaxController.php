@@ -13,10 +13,11 @@ use App\Models\Setting;
 use App\Models\HumanResources\OptWorkingHour;
 use App\Models\HumanResources\HRLeaveEntitlement;
 
+// load custom helper
+use App\Helpers\UnavailableDate;
 use \Carbon\Carbon;
 use \Carbon\CarbonPeriod;
 use Illuminate\Support\Arr;
-use Illuminate\Database\Query\Builder;
 // use Session;
 
 class AjaxController extends Controller
@@ -63,11 +64,9 @@ class AjaxController extends Controller
 				]);
 				// update period, status leave of the applicant. status close by HOD/supervisor
 				$n->update(['period_day' => 0, 'leave_status_id' => 3, 'remarks' => 'Cancelled By '.\Auth::user()->belongstostaff->name]);
-
-				// update also for approver part
 			}
 
-			if( $n->leave_type_id == 2 || $n->leave_type_id == 11 ) { // leave deduct from MC or MC-UPL
+			if( $n->leave_type_id == 2 ) { // leave deduct from MC
 				// sama lebih kurang AL mcm kat atas. so....
 				$addl = $n->period_day + $n->belongstostaff->hasmanyleaveentitlement()->where('year', $dts->format('Y'))->first()->mc_balance;
 				// update the mc balance
@@ -79,7 +78,7 @@ class AjaxController extends Controller
 				$n->update(['period_day' => 0, 'leave_status_id' => 3, 'remarks' => 'Cancelled By '.\Auth::user()->belongstostaff->name]);
 			}
 
-			if( $n->leave_type_id == 3 || $n->leave_type_id == 6 ) { // leave deduct from UPL or EL-UPL
+			if( $n->leave_type_id == 3 || $n->leave_type_id == 6 || $n->leave_type_id == 11  || $n->leave_type_id == 12 ) { // leave deduct from UPL, EL-UPL, MC-UPL & S-UPL
 				// echo 'leave deduct from UPL<br />';
 
 				// process a bit different from al and mc
@@ -128,7 +127,7 @@ class AjaxController extends Controller
 				// cari al dari applicant, year yg sama dgn date apply cuti.
 				// echo $n->belongstostaff->hasmanyleaveentitlement()->where('year', $dts->format('Y'))->first()->maternity_leave_balance.' applicant maternity leave balance<br />';
 
-				$addl = $n->period + $n->belongstostaff->hasmanyleaveentitlement()->where('year', $dts->format('Y'))->first()->maternity_balance;
+				$addl = $n->period_day + $n->belongstostaff->hasmanyleaveentitlement()->where('year', $dts->format('Y'))->first()->maternity_balance;
 				// echo $addl.' masukkan dalam annual balance<br />';
 
 				// find all approval
@@ -207,132 +206,198 @@ class AjaxController extends Controller
 		$user = \App\Models\Staff::find($request->id);
 		// checking for annual leave, mc, nrl and maternity
 		// hati-hati dgn yg ni sbb melibatkan masa
-		$leaveALMC = $user->hasmanyleaveentitlement()->where('year', date('Y'))->first();
+		$leaveAL =  $user->hasmanyleaveannual()->where('year', date('Y'))->first();
+		$leaveMC =  $user->hasmanyleavemc()->where('year', date('Y'))->first();
+		$leaveMa =  $user->hasmanyleavematernity()->where('year', date('Y'))->first();
 		// cari kalau ada replacement leave
 		$oi = $user->hasmanyleavereplacement()->where('leave_balance', '<>', 0)->whereYear('date_start', date('Y'))->get();
 
 		// dd($oi->sum('leave_balance'));
 
-		if(Setting::where('id', 3)->first()->active == 1){				// special unpaid leave activated
-			if($user->gender_id == 1){									// laki
-				if($oi->sum('leave_balance') < 0.5){						// laki | no nrl
-					if($leaveALMC->al_balance < 0.5){						// laki | no nrl | no al
-						if($leaveALMC->mc_balance < 0.5){					// laki | no nrl | no al | no mc
+		if(Setting::where('id', 3)->first()->active == 1){																		// special unpaid leave activated
+			if($user->gender_id == 1){																							// laki
+				if($oi->sum('leave_balance') < 0.5){																			// laki | no nrl
+					if($leaveAL->annual_leave_balance < 0.5){																	// laki | no nrl | no al
+						if($leaveMC->mc_leave_balance < 0.5){																	// laki | no nrl | no al | no mc
 							$er = OptLeaveType::whereIn('id', [3,6,9,11,12])->get()->sortBy('sorting');
-						} else {										// laki | no nrl | no al | mc
+						} else {																								// laki | no nrl | no al | mc
 							$er = OptLeaveType::whereIn('id', [2,3,6,9,12])->get()->sortBy('sorting');
 						}
-					} else {											// laki | no nrl | al
-						if($leaveALMC->mc_balance < 0.5){					// laki | no nrl | al | no mc
+					} else {																									// laki | no nrl | al
+						if($leaveMC->mc_leave_balance < 0.5){																	// laki | no nrl | al | no mc
 							$er = OptLeaveType::whereIn('id', [1,5,9,11,12])->get()->sortBy('sorting');
-						} else {										// laki | no nrl | al | mc
+						} else {																								// laki | no nrl | al | mc
 							$er = OptLeaveType::whereIn('id', [1,2,5,9,12])->get()->sortBy('sorting');
 						}
 					}
-				} else {												// laki | nrl
-					if($leaveALMC->al_balance < 0.5){						// laki | nrl | no al
-						if($leaveALMC->mc_balance < 0.5){					// laki | nrl | no al | no mc
+				} else {																										// laki | nrl
+					if($leaveAL->annual_leave_balance < 0.5){																	// laki | nrl | no al
+						if($leaveMC->mc_leave_balance < 0.5){																	// laki | nrl | no al | no mc
 							$er = OptLeaveType::whereIn('id', [3,4,6,9,10,11,12])->get()->sortBy('sorting');
-						} else {										// laki | nrl | no al | mc
+						} else {																								// laki | nrl | no al | mc
 							$er = OptLeaveType::whereIn('id', [2,3,4,6,9,10,12])->get()->sortBy('sorting');
 						}
-					} else {											// laki | nrl | al
-						if($leaveALMC->mc_balance < 0.5){					// laki | nrl | al | no mc
+					} else {																									// laki | nrl | al
+						if($leaveMC->mc_leave_balance < 0.5){																	// laki | nrl | al | no mc
 							$er = OptLeaveType::whereIn('id', [1,4,5,9,10,11,12])->get()->sortBy('sorting');
-						} else {										// laki | nrl | al | mc
+						} else {																								// laki | nrl | al | mc
 							$er = OptLeaveType::whereIn('id', [1,2,4,5,9,10,12])->get()->sortBy('sorting');
 						}
 					}
 				}
-			} else {													// pempuan
-				if($oi->sum('leave_balance') < 0.5){						// pempuan | no nrl
-					if($leaveALMC->al_balance < 0.5){						// pempuan | no nrl | no al
-						if($leaveALMC->mc_balance < 0.5){					// pempuan | no nrl | no al | no mc
-							$er = OptLeaveType::whereIn('id', [3,6,7,9,11,12])->get()->sortBy('sorting');
-						} else {										// pempuan | no nrl | no al | mc
-							$er = OptLeaveType::whereIn('id', [2,3,6,7,9,12])->get()->sortBy('sorting');
+			} else {																											// pempuan
+				if($oi->sum('leave_balance') < 0.5){																			// pempuan | no nrl
+					if($leaveAL->annual_leave_balance < 0.5){																	// pempuan | no nrl | no al
+						if($leaveMC->mc_leave_balance < 0.5){																	// pempuan | no nrl | no al | no mc
+							if($leaveMa->maternity_leave_balance < 0.5){														// pempuan | no nrl | no al |  no mc | no maternity
+								$er = OptLeaveType::whereIn('id', [3,6,9,11,12])->get()->sortBy('sorting');
+							} else {																							// pempuan | no nrl | no al |  no mc | maternity
+								$er = OptLeaveType::whereIn('id', [3,6,7,9,11,12])->get()->sortBy('sorting');
+							}
+						} else {																								// pempuan | no nrl | no al | mc
+							if($leaveMa->maternity_leave_balance < 0.5){														// pempuan | no nrl | no al | mc | no maternity
+								$er = OptLeaveType::whereIn('id', [2,3,6,9,12])->get()->sortBy('sorting');
+							} else {																							// pempuan | no nrl | no al | mc | maternity
+								$er = OptLeaveType::whereIn('id', [2,3,6,7,9,12])->get()->sortBy('sorting');
+							}
 						}
-					} else {											// pempuan | no nrl | al
-						if($leaveALMC->mc_balance < 0.5){					// pempuan | no nrl | al | no mc
-							$er = OptLeaveType::whereIn('id', [1,5,7,9,11,12])->get()->sortBy('sorting');
-						} else {										// pempuan | no nrl | al | mc
-							$er = OptLeaveType::whereIn('id', [1,2,5,7,9,12])->get()->sortBy('sorting');
+					} else {																									// pempuan | no nrl | al
+						if($leaveMC->mc_leave_balance < 0.5){																	// pempuan | no nrl | al | no mc
+							if($leaveMa->maternity_leave_balance < 0.5){														// pempuan | no nrl | al | no mc | no maternity
+								$er = OptLeaveType::whereIn('id', [1,5,9,11,12])->get()->sortBy('sorting');
+							} else {																							// pempuan | no nrl | al | no mc | maternity
+								$er = OptLeaveType::whereIn('id', [1,5,7,9,11,12])->get()->sortBy('sorting');
+							}
+						} else {																								// pempuan | no nrl | al | mc
+							if($leaveMa->maternity_leave_balance < 0.5){														// pempuan | no nrl | al | mc | no maternity
+								$er = OptLeaveType::whereIn('id', [1,2,5,9,12])->get()->sortBy('sorting');
+							} else {																							// pempuan | no nrl | al | mc | maternity
+								$er = OptLeaveType::whereIn('id', [1,2,5,7,9,12])->get()->sortBy('sorting');
+							}
 						}
 					}
-				} else {												// pempuan | nrl
-					if($leaveALMC->al_balance < 0.5){						// pempuan | nrl | no al
-						if($leaveALMC->mc_balance < 0.5){					// pempuan | nrl | no al | no mc
-							$er = OptLeaveType::whereIn('id', [3,4,6,7,9,10,11,12])->get()->sortBy('sorting');
-						} else {										// pempuan | nrl | no al | mc
-							$er = OptLeaveType::whereIn('id', [2,3,4,6,7,9,10,12])->get()->sortBy('sorting');
+				} else {																										// pempuan | nrl
+					if($leaveAL->annual_leave_balance < 0.5){																	// pempuan | nrl | no al
+						if($leaveMC->mc_leave_balance < 0.5){																	// pempuan | nrl | no al | no mc
+							if($leaveMa->maternity_leave_balance < 0.5){														// pempuan | nrl | no al | no mc | no maternity
+								$er = OptLeaveType::whereIn('id', [3,4,6,7,9,10,11,12])->get()->sortBy('sorting');
+							} else {																							// pempuan | nrl | no al | no mc | maternity
+								$er = OptLeaveType::whereIn('id', [3,4,6,7,9,10,11,12])->get()->sortBy('sorting');
+							}
+						} else {																								// pempuan | nrl | no al | mc
+							if($leaveMa->maternity_leave_balance < 0.5){														// pempuan | nrl | no al | mc | no maternity
+								$er = OptLeaveType::whereIn('id', [2,3,4,6,9,10,12])->get()->sortBy('sorting');
+							} else {																							// pempuan | nrl | no al | mc | maternity
+								$er = OptLeaveType::whereIn('id', [2,3,4,6,7,9,10,12])->get()->sortBy('sorting');
+							}
 						}
-					} else {											// pempuan | nrl | al
-						if($leaveALMC->mc_balance < 0.5){					// pempuan | nrl | al | no mc
-							$er = OptLeaveType::whereIn('id', [1,4,5,7,9,10,11,12])->get()->sortBy('sorting');
-						} else {										// pempuan | nrl | al | mc
-							$er = OptLeaveType::whereIn('id', [1,2,4,5,7,9,10,12])->get()->sortBy('sorting');
+					} else {																									// pempuan | nrl | al
+						if($leaveMC->mc_leave_balance < 0.5){																	// pempuan | nrl | al | no mc
+							if($leaveMa->maternity_leave_balance < 0.5){														// pempuan | nrl | al | no mc | no maternity
+								$er = OptLeaveType::whereIn('id', [1,4,5,9,10,11,12])->get()->sortBy('sorting');
+							} else {																							// pempuan | nrl | al | no mc | maternity
+								$er = OptLeaveType::whereIn('id', [1,4,5,7,9,10,11,12])->get()->sortBy('sorting');
+							}
+						} else {																								// pempuan | nrl | al | mc
+							if($leaveMa->maternity_leave_balance < 0.5){														// pempuan | nrl | al | mc | no maternity
+								$er = OptLeaveType::whereIn('id', [1,2,4,5,9,10,12])->get()->sortBy('sorting');
+							} else {																							// pempuan | nrl | al | mc | maternity
+								$er = OptLeaveType::whereIn('id', [1,2,4,5,7,9,10,12])->get()->sortBy('sorting');
+							}
 						}
 					}
 				}
 			}
-		} else {														// special unpaid leave deactivated
-			if($user->gender_id == 1){									// laki
-				if($oi->sum('leave_balance') < 0.5){						// laki | no nrl
-					if($leaveALMC->al_balance < 0.5){						// laki | no nrl | no al
-						if($leaveALMC->mc_balance < 0.5){					// laki | no nrl | no al | no mc
+		} else {																												// special unpaid leave deactivated
+			if($user->gender_id == 1){																							// laki
+				if($oi->sum('leave_balance') < 0.5){																			// laki | no nrl
+					if($leaveAL->annual_leave_balance < 0.5){																	// laki | no nrl | no al
+						if($leaveMC->mc_leave_balance < 0.5){																	// laki | no nrl | no al | no mc
 							$er = OptLeaveType::whereIn('id', [3,6,9,11])->get()->sortBy('sorting');
-						} else {										// laki | no nrl | no al | mc
+						} else {																								// laki | no nrl | no al | mc
 							$er = OptLeaveType::whereIn('id', [2,3,6,9])->get()->sortBy('sorting');
 						}
-					} else {											// laki | no nrl | al
-						if($leaveALMC->mc_balance < 0.5){					// laki | no nrl | al | no mc
+					} else {																									// laki | no nrl | al
+						if($leaveMC->mc_leave_balance < 0.5){																	// laki | no nrl | al | no mc
 							$er = OptLeaveType::whereIn('id', [1,5,9,11])->get()->sortBy('sorting');
-						} else {										// laki | no nrl | al | mc
+						} else {																								// laki | no nrl | al | mc
 							$er = OptLeaveType::whereIn('id', [1,2,5,9])->get()->sortBy('sorting');
 						}
 					}
-				} else {												// laki | nrl
-					if($leaveALMC->al_balance < 0.5){						// laki | nrl | no al
-						if($leaveALMC->mc_balance < 0.5){					// laki | nrl | no al | no mc
+				} else {																										// laki | nrl
+					if($leaveAL->annual_leave_balance < 0.5){																	// laki | nrl | no al
+						if($leaveMC->mc_leave_balance < 0.5){																	// laki | nrl | no al | no mc
 							$er = OptLeaveType::whereIn('id', [3,4,6,9,10,11])->get()->sortBy('sorting');
-						} else {										// laki | nrl | no al | mc
+						} else {																								// laki | nrl | no al | mc
 							$er = OptLeaveType::whereIn('id', [2,3,4,6,9,10])->get()->sortBy('sorting');
 						}
-					} else {											// laki | nrl | al
-						if($leaveALMC->mc_balance < 0.5){					// laki | nrl | al | no mc
+					} else {																									// laki | nrl | al
+						if($leaveMC->mc_leave_balance < 0.5){																	// laki | nrl | al | no mc
 							$er = OptLeaveType::whereIn('id', [1,4,5,9,10,11])->get()->sortBy('sorting');
-						} else {										// laki | nrl | al | mc
+						} else {																								// laki | nrl | al | mc
 							$er = OptLeaveType::whereIn('id', [1,2,4,5,9,10])->get()->sortBy('sorting');
 						}
 					}
 				}
-			} else {													// pempuan
-				if($oi->sum('leave_balance') < 0.5){						// pempuan | no nrl
-					if($leaveALMC->al_balance < 0.5){						// pempuan | no nrl | no al
-						if($leaveALMC->mc_balance < 0.5){					// pempuan | no nrl | no al | no mc
-							$er = OptLeaveType::whereIn('id', [3,6,7,9,11])->get()->sortBy('sorting');
-						} else {										// pempuan | no nrl | no al | mc
-							$er = OptLeaveType::whereIn('id', [2,3,6,7,9])->get()->sortBy('sorting');
+			} else {																											// pempuan
+				if($oi->sum('leave_balance') < 0.5){																			// pempuan | no nrl
+					if($leaveAL->annual_leave_balance < 0.5){																	// pempuan | no nrl | no al
+						if($leaveMC->mc_leave_balance < 0.5){																	// pempuan | no nrl | no al | no mc
+							if($leaveMa->maternity_leave_balance < 0.5){														// pempuan | nrl | al | mc | no maternity
+								$er = OptLeaveType::whereIn('id', [3,6,9,11])->get()->sortBy('sorting');
+							} else {																							// pempuan | nrl | al | mc | maternity
+								$er = OptLeaveType::whereIn('id', [3,6,7,9,11])->get()->sortBy('sorting');
+							}
+						} else {																								// pempuan | no nrl | no al | mc
+							if($leaveMa->maternity_leave_balance < 0.5){														// pempuan | no nrl | no al | mc | no maternity
+								$er = OptLeaveType::whereIn('id', [2,3,6,9])->get()->sortBy('sorting');
+							} else {																							// pempuan | no nrl | no al | mc | maternity
+								$er = OptLeaveType::whereIn('id', [2,3,6,7,9])->get()->sortBy('sorting');
+							}
 						}
-					} else {											// pempuan | no nrl | al
-						if($leaveALMC->mc_balance < 0.5){					// pempuan | no nrl | al | no mc
-							$er = OptLeaveType::whereIn('id', [1,5,7,9,11])->get()->sortBy('sorting');
-						} else {										// pempuan | no nrl | al | mc
-							$er = OptLeaveType::whereIn('id', [1,2,5,7,9])->get()->sortBy('sorting');
+					} else {																									// pempuan | no nrl | al
+						if($leaveMC->mc_leave_balance < 0.5){																	// pempuan | no nrl | al | no mc
+							if($leaveMa->maternity_leave_balance < 0.5){														// pempuan | no nrl | al | no mc | no maternity
+								$er = OptLeaveType::whereIn('id', [1,5,7,9,11])->get()->sortBy('sorting');
+							} else {																							// pempuan | no nrl | al | no mc | maternity
+								$er = OptLeaveType::whereIn('id', [1,5,7,9,11])->get()->sortBy('sorting');
+							}
+						} else {																								// pempuan | no nrl | al | mc
+							if($leaveMa->maternity_leave_balance < 0.5){														// pempuan | no nrl | al | mc | no maternity
+								$er = OptLeaveType::whereIn('id', [1,2,5,9])->get()->sortBy('sorting');
+							} else {																							// pempuan | no nrl | al | mc | maternity
+								$er = OptLeaveType::whereIn('id', [1,2,5,7,9])->get()->sortBy('sorting');
+							}
 						}
 					}
-				} else {												// pempuan | nrl
-					if($leaveALMC->al_balance < 0.5){						// pempuan | nrl | no al
-						if($leaveALMC->mc_balance < 0.5){					// pempuan | nrl | no al | no mc
-							$er = OptLeaveType::whereIn('id', [3,4,6,7,9,10,11])->get()->sortBy('sorting');
-						} else {										// pempuan | nrl | no al | mc
-							$er = OptLeaveType::whereIn('id', [2,3,4,6,7,9,10])->get()->sortBy('sorting');
+				} else {																										// pempuan | nrl
+					if($leaveAL->annual_leave_balance < 0.5){																	// pempuan | nrl | no al
+						if($leaveMC->mc_leave_balance < 0.5){																	// pempuan | nrl | no al | no mc
+							if($leaveMa->maternity_leave_balance < 0.5){														// pempuan | nrl | no al | no mc | no maternity
+								$er = OptLeaveType::whereIn('id', [3,4,6,9,10,11])->get()->sortBy('sorting');
+							} else {																							// pempuan | nrl | no al | no mc | maternity
+								$er = OptLeaveType::whereIn('id', [3,4,6,7,9,10,11])->get()->sortBy('sorting');
+							}
+						} else {																								// pempuan | nrl | no al | mc
+							if($leaveMa->maternity_leave_balance < 0.5){														// pempuan | nrl | no al | mc | no maternity
+								$er = OptLeaveType::whereIn('id', [2,3,4,6,9,10])->get()->sortBy('sorting');
+							} else {																							// pempuan | nrl | no al | mc | maternity
+								$er = OptLeaveType::whereIn('id', [2,3,4,6,7,9,10])->get()->sortBy('sorting');
+							}
 						}
-					} else {											// pempuan | nrl | al
-						if($leaveALMC->mc_balance < 0.5){					// pempuan | nrl | al | no mc
-							$er = OptLeaveType::whereIn('id', [1,4,5,7,9,10,11])->get()->sortBy('sorting');
-						} else {										// pempuan | nrl | al | mc
-							$er = OptLeaveType::whereIn('id', [1,2,4,5,7,9,10])->get()->sortBy('sorting');
+					} else {																									// pempuan | nrl | al
+						if($leaveMC->mc_leave_balance < 0.5){																	// pempuan | nrl | al | no mc
+							if($leaveMa->maternity_leave_balance < 0.5){														// pempuan | nrl | al | no mc | no maternity
+								$er = OptLeaveType::whereIn('id', [1,4,5,9,10,11])->get()->sortBy('sorting');
+							} else {																							// pempuan | nrl | al | no mc | maternity
+								$er = OptLeaveType::whereIn('id', [1,4,5,7,9,10,11])->get()->sortBy('sorting');
+							}
+						} else {																								// pempuan | nrl | al | mc
+							if($leaveMa->maternity_leave_balance < 0.5){														// pempuan | nrl | al | no mc | no maternity
+								$er = OptLeaveType::whereIn('id', [1,2,4,5,9,10])->get()->sortBy('sorting');
+							} else {																							// pempuan | nrl | al | no mc | maternity
+								$er = OptLeaveType::whereIn('id', [1,2,4,5,7,9,10])->get()->sortBy('sorting');
+							}
 						}
 					}
 				}
@@ -352,87 +417,7 @@ class AjaxController extends Controller
 
 	public function unavailabledate(Request $request)
 	{
-		// globally mark date for weekend and holiday as unavailable to choose
-		// 1st, check what year is now and disable every public holiday on that year
-		$d = Carbon::now(config('app.timezone'));
-		// echo $d->year;					// this year
-		// echo $d->addYear()->year;		// next year
-
-		// block every sunday
-		$today = Carbon::now();
-		$start_date = Carbon::create($today->year, 1, 1);
-		$end_date = Carbon::create($today->year + 1, 1, 1);
-		$sundays = [];
-		foreach ($start_date->daysUntil($end_date) as $date) {
-			if ($date->dayOfWeek === Carbon::SUNDAY) {
-				$sundays[] = $date->format('Y-m-d');
-			}
-		}
-
-		// block next year date till entitlement and working hour were generate
-		$nystart_date = $start_date->copy()->addYear();
-		$nyend_date = $end_date->copy()->addYears(5)->subDay();
-		// block next year if entitlements and working hours not set
-		$entit = HRLeaveEntitlement::where('year', $nystart_date->copy()->year)->get();
-		$wh = OptWorkingHour::where('year', $nystart_date->copy()->year)->get();
-		// dd([empty($entit->count()), empty($wh->count()), $entit->count()]);
-		$nextyear = [];
-		if(empty($entit->count()) || empty($wh->count())){
-			foreach ($nystart_date->daysUntil($nyend_date) as $nydate) {
-				$nextyear[] = $nydate->format('Y-m-d');
-			}
-		}
-
-		// list all holiday date based on this year and next year
-		$hdate = HRHolidayCalendar::whereRaw( '"'.$d->copy()->year.'" BETWEEN YEAR(date_start) AND YEAR(date_end)' )->orwhereRaw( '"'.$d->copy()->addYear()->year.'" BETWEEN YEAR(date_start) AND YEAR(date_end)' )->get();
-		// dd($hdate);
-		$holiday = [];
-		foreach ($hdate as $nda) {
-			$period = \Carbon\CarbonPeriod::create($nda->date_start, '1 days', $nda->date_end);
-			foreach ($period as $key) {
-				// echo 'moment("'.$key->format('Y-m-d').'"),';
-				$holiday[] = $key->format('Y-m-d');
-			}
-		}
-
-		// block saturday according to group
-		// make sure $request->id comes from table staff
-		// ->whereYear('saturday_date', $d->copy()->year)->whereYear('saturday_date', $d->copy()->addYear()->year)->get()
-		$sat = \App\Models\Staff::find($request->id)?->belongstorestdaygroup()->first()->hasmanyrestdaycalendar()->whereRaw('(YEAR (`saturday_date`) = '.$d->copy()->year.' Or YEAR ( `saturday_date` ) = '.$d->copy()->addYear()->year.')')->get();
-		// dd($sat);
-		if(!is_null($sat)) {
-			$saturdays = [];
-			foreach ($sat as $key) {
-				$saturdays[] = $key->saturday_date;
-			}
-		} else {
-			$saturdays = [];
-		}
-
-		// double date checking
-		if(Setting::find(1)->active == 1) {
-			// block self leave
-			// make sure $request->id comes from table staff
-			$leaveday1 = \App\Models\HumanResources\HRLeave::where('staff_id', $request->id)->whereIn('leave_status_id', [4,5,6])->orWhereNull('leave_status_id')->whereRaw('"'.$d->copy()->year.'" BETWEEN YEAR(date_time_start) AND YEAR(date_time_end)')->orwhereRaw('"'.$d->copy()->addYear()->year.'" BETWEEN YEAR(date_time_start) AND YEAR(date_time_end)')->get();
-			// dd($leaveday1);
-			// return $leaveday1;
-			// exit;
-			$leavday = [];
-			if(!is_null($leaveday1)) {
-				foreach ($leaveday1 as $key) {
-					$period1 = \Carbon\CarbonPeriod::create(\Carbon\Carbon::parse($key->date_time_start)->format('Y-m-d'), '1 days', \Carbon\Carbon::parse($key->date_time_end)->format('Y-m-d'));
-					// dd($period1);
-					foreach ($period1 as $key1) {
-						$leavday[] = $key1->format('Y-m-d');
-						// dump($leavday);
-					}
-				}
-			} else {
-				$leavday = [];
-			}
-		} else {
-			$leavday = [];
-		}
+		$blockdate = UnavailableDate::blockDate(\Auth::user()->belongstostaff->id);
 
 		if(\App\Models\Setting::find(4)->first()->active == 1){		// 3days checking
 			$lusa1 = Carbon::now()->addDays(\App\Models\Setting::find(5)->first()->active + 1)->format('Y-m-d');
@@ -446,9 +431,9 @@ class AjaxController extends Controller
 		}
 
 		if($request->type == 1){
-			$unavailableleave = Arr::collapse([$holiday, $sundays, $leavday, $saturdays, $nextyear, $lusa]);
+			$unavailableleave = Arr::collapse([$blockdate, $lusa]);
 		} elseif($request->type == 2) {
-			$unavailableleave = Arr::collapse([$holiday, $sundays, $leavday, $saturdays, $nextyear]);
+			$unavailableleave = $blockdate;
 		}
 		return response()->json($unavailableleave);
 	}

@@ -59,9 +59,24 @@ class Staff extends Authenticatable
 		return $this->hasMany(\App\Models\HumanResources\HRLeave::class, 'staff_id');
 	}
 
-	public function hasmanyleaveentitlement(): HasMany
+	// public function hasmanyleaveentitlement(): HasMany
+	// {
+	// 	return $this->hasMany(\App\Models\HumanResources\HRLeaveEntitlement::class, 'staff_id');
+	// }
+
+	public function hasmanyleaveannual(): HasMany
 	{
-		return $this->hasMany(\App\Models\HumanResources\HRLeaveEntitlement::class, 'staff_id');
+		return $this->hasMany(\App\Models\HumanResources\HRLeaveAnnual::class, 'staff_id');
+	}
+
+	public function hasmanyleavemc(): HasMany
+	{
+		return $this->hasMany(\App\Models\HumanResources\HRLeaveMC::class, 'staff_id');
+	}
+
+	public function hasmanyleavematernity(): HasMany
+	{
+		return $this->hasMany(\App\Models\HumanResources\HRLeaveMaternity::class, 'staff_id');
 	}
 
 	public function hasmanyleavereplacement(): HasMany
