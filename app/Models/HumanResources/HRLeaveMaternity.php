@@ -15,12 +15,12 @@ use App\Models\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-class HRLeaveReplacement extends Model
+class HRLeaveMaternity extends Model
 {
 	use HasFactory;
 
 	// protected $connection = 'mysql';
-	protected $table = 'hr_leave_replacements';
+	protected $table = 'hr_leave_maternities';
 
 	/////////////////////////////////////////////////////////////////////////////////////////
 	// hasmany relationship
@@ -29,7 +29,7 @@ class HRLeaveReplacement extends Model
 	// db relation belongsToMany
 	public function belongstomanyleave(): BelongsToMany
 	{
-		return $this->belongsToMany(\App\Models\HumanResources\HRLeave::class, 'pivot_leave_replacements', 'leave_replacement_id', 'leave_id')->withTimestamps();
+		return $this->belongsToMany(\App\Models\HumanResources\HRLeave::class, 'pivot_leave_maternities', 'leave_maternity_id', 'leave_id')->withTimestamps();
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////
@@ -39,3 +39,4 @@ class HRLeaveReplacement extends Model
 		return $this->belongsTo(\App\Models\Staff::class, 'staff_id');
 	}
 }
+

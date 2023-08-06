@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 // use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-// use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class HRLeave extends Model
 {
@@ -29,10 +29,10 @@ class HRLeave extends Model
 		return $this->hasMany(\App\Models\HumanResources\HRLeaveAmend::class, 'leave_id')->withDefault();
 	}
 
-	public function hasmanyleavereplacement(): HasMany
-	{
-		return $this->hasMany(\App\Models\HumanResources\HRLeaveReplacement::class, 'leave_id')->withDefault();
-	}
+	// public function hasmanyleavereplacement(): HasMany
+	// {
+	// 	return $this->hasMany(\App\Models\HumanResources\HRLeaveReplacement::class, 'leave_id')->withDefault();
+	// }
 
 	public function hasoneleaveapprovalbackup(): HasOne
 	{
@@ -59,7 +59,29 @@ class HRLeave extends Model
 		return $this->hasOne(\App\Models\HumanResources\HRLeaveApprovalHR::class, 'leave_id')->withDefault();
 	}
 
-	/////////////////////////////////////////////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////////////////////////////////////////
+	// db relation belongsToMany
+	public function belongstomanyleaveannual(): BelongsToMany
+	{
+		return $this->belongsToMany(\App\Models\HumanResources\HRLeaveAnnual::class, 'pivot_leave_annuals', 'leave_id', 'leave_annual_id')->withTimestamps();
+	}
+
+	public function belongstomanyleavemc(): BelongsToMany
+	{
+		return $this->belongsToMany(\App\Models\HumanResources\HRLeaveMC::class, 'pivot_leave_mc', 'leave_id', 'leave_mc_id')->withTimestamps();
+	}
+
+	public function belongstomanyleavematernity(): BelongsToMany
+	{
+		return $this->belongsToMany(\App\Models\HumanResources\HRLeaveMaternity::class, 'pivot_leave_maternities', 'leave_id', 'leave_maternity_id')->withTimestamps();
+	}
+
+	public function belongstomanyleavereplacement(): BelongsToMany
+	{
+		return $this->belongsToMany(\App\Models\HumanResources\HRLeaveReplacement::class, 'pivot_leave_replacements', 'leave_id', 'leave_replacement_id')->withTimestamps();
+	}
+
+	/////////////////////////////////////////////////////////////////////////////////////////////////////
 	//belongsto relationship
 	public function belongstostaff(): BelongsTo
 	{
