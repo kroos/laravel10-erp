@@ -45,7 +45,7 @@ $leaveMa =  $us->hasmanyleavematernity()->where('year', date('Y'))->first();
 			<tr>
 				<th rowspan="2">Medical Certificate Leave :</th>
 				<td>Initialize :</td>
-				<td>{{ $leaveMC->mc_leave + $leaveMC->mc_adjustment }} days</td>
+				<td>{{ $leaveMC->mc_leave + $leaveMC->mc_leave_adjustment }} days</td>
 			</tr>
 			<tr>
 				<td>Balance :</td>
