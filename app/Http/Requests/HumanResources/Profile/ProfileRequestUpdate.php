@@ -54,12 +54,11 @@ class ProfileRequestUpdate extends FormRequest
       'address.required' => 'Please insert address.',
       'dob.required' => 'Please insert date of birth.',
       'dob.date_format' => 'Please insert date of birth in correct date format.',
-      'gender_id.required' => 'Please insert ic.',
-      'gender_id.integer' => 'Please insert valid ic.',
-      'nationality_id' => 'required|integer',
-      'race_id' => 'required|integer',
-      'religion_id' => 'required|integer',
-      'marital_status_id' => 'required|integer',
+      'gender_id.required' => 'Please insert gender.',
+      'nationality_id.required' => 'Please insert nationality.',
+      'race_id.required' => 'Please insert races.',
+      'religion_id.required' => 'Please insert religion.',
+      'marital_status_id.required' => 'Please insert marital status.',
     ];
   }
 
@@ -78,3 +77,5 @@ class ProfileRequestUpdate extends FormRequest
     ];
   }
 }
+
+safasfasf
