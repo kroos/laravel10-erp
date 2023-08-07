@@ -35,8 +35,8 @@ class ProfileRequestUpdate extends FormRequest
       'emer.*.contact_person' => 'required',
       'emer.*.relationship_id' => 'required|integer',
       'emer.*.phone' => 'required|numeric',
-      'emer.*.emergency_address' => 'required',
-      ['id'],
+      'emer.*.address' => 'required'
+      // ['id'],
     ];
   }
 
@@ -54,11 +54,11 @@ class ProfileRequestUpdate extends FormRequest
       'address.required' => 'Please insert address.',
       'dob.required' => 'Please insert date of birth.',
       'dob.date_format' => 'Please insert date of birth in correct date format.',
-      'gender_id.required' => 'Please insert gender.',
-      'nationality_id.required' => 'Please insert nationality.',
-      'race_id.required' => 'Please insert races.',
-      'religion_id.required' => 'Please insert religion.',
-      'marital_status_id.required' => 'Please insert marital status.',
+      'gender_id.required' => 'Please select gender.',
+      'nationality_id.required' => 'Please select nationality.',
+      'race_id.required' => 'Please select races.',
+      'religion_id.required' => 'Please select religion.',
+      'marital_status_id.required' => 'Please select marital status.',
     ];
   }
 
@@ -73,9 +73,7 @@ class ProfileRequestUpdate extends FormRequest
       'emer.*.contact_person' => 'emergency contact person',
       'emer.*.relationship_id' => 'emergency contact relationship',
       'emer.*.phone' => 'emergency contact phone number',
-      'emer.*.emergency_address' => 'emergency contact address',
+      'emer.*.address' => 'emergency contact address',
     ];
   }
 }
-
-safasfasf
