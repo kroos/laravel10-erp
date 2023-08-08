@@ -14,7 +14,7 @@ $emergencies = $profile->hasmanyemergency()->get();
 
 <div class="container rounded bg-white mt-2 mb-2">
 
-  {!!Form::model($profile, ['route' => ['profile.update', $profile->id], 'method' => 'PATCH', 'id' => 'form', 'class' => 'form-horizontal', 'autocomplete' => 'off', 'files' => true]) !!}
+  {!! Form::model($profile, ['route' => ['profile.update', $profile->id], 'method' => 'PATCH', 'id' => 'form', 'class' => 'form-horizontal', 'autocomplete' => 'off', 'files' => true]) !!}
 
   <div class="row">
     <div class="col-md-3 border-right">
@@ -40,27 +40,27 @@ $emergencies = $profile->hasmanyemergency()->get();
         </div>
 
         <div class="row mt-3">
-          <div class="col-md-6">
+          <div class="col-md-6 {{ $errors->has('ic') ? 'has-error' : '' }}">
             <label class="labels">IC</label>
-            {{ Form::text( 'ic', @$value, ['class' => 'form-control', 'id' => 'ic', 'placeholder' => 'Please Insert', 'autocomplete' => 'off'] ) }}
+            {!! Form::text( 'ic', @$value, ['class' => 'form-control', 'id' => 'ic', 'placeholder' => 'Please Insert', 'autocomplete' => 'off'] ) !!}
           </div>
-          <div class="col-md-6">
+          <div class="col-md-6 {{ $errors->has('mobile') ? 'has-error' : '' }}">
             <label class="labels">PHONE NUMBER</label>
-            {{ Form::text( 'mobile', @$value, ['class' => 'form-control', 'id' => 'mobile', 'placeholder' => 'Please Insert', 'autocomplete' => 'off'] ) }}
+            {!! Form::text( 'mobile', @$value, ['class' => 'form-control', 'id' => 'mobile', 'placeholder' => 'Please Insert', 'autocomplete' => 'off'] ) !!}
           </div>
         </div>
 
         <div class="row mt-3">
-          <div class="col-md-12">
+          <div class="col-md-12 {{ $errors->has('email') ? 'has-error' : '' }}">
             <label class="labels">EMAIL</label>
-            {{ Form::text( 'email', @$value, ['class' => 'form-control', 'id' => 'email', 'placeholder' => 'Please Insert', 'autocomplete' => 'off'] ) }}
+            {!! Form::text( 'email', @$value, ['class' => 'form-control', 'id' => 'email', 'placeholder' => 'Please Insert', 'autocomplete' => 'off'] ) !!}
           </div>
         </div>
 
         <div class="row mt-3">
-          <div class="col-md-12">
+          <div class="col-md-12 {{ $errors->has('address') ? 'has-error' : '' }}">
             <label class="labels">ADDRESS</label>
-            {{ Form::text( 'address', @$value, ['class' => 'form-control', 'id' => 'address', 'placeholder' => 'Please Insert', 'autocomplete' => 'off'] ) }}
+            {!! Form::text( 'address', @$value, ['class' => 'form-control', 'id' => 'address', 'placeholder' => 'Please Insert', 'autocomplete' => 'off'] ) !!}
           </div>
         </div>
 
@@ -83,35 +83,35 @@ $emergencies = $profile->hasmanyemergency()->get();
         </div>
 
         <div class="row mt-3">
-          <div class="col-md-6">
+          <div class="col-md-6 {{ $errors->has('dob') ? 'has-error' : '' }}">
             <label class="labels">DATE OF BIRTH</label>
-            {!!Form::text( 'dob', @$value, ['class' => 'form-control', 'id' => 'dob', 'autocomplete' => 'off'] ) !!}
+            {!! Form::text( 'dob', @$value, ['class' => 'form-control', 'id' => 'dob', 'autocomplete' => 'off'] ) !!}
           </div>
-          <div class="col-md-6">
+          <div class="col-md-6 {{ $errors->has('gender_id') ? 'has-error' : '' }}">
             <label class="labels">GENDER</label>
-            {!!Form::select( 'gender_id', $gender, @$value, ['class' => 'form-control', 'id' => 'gender_id', 'placeholder' => 'Please Select', 'autocomplete' => 'off'] ) !!}
+            {!! Form::select( 'gender_id', $gender, @$value, ['class' => 'form-control', 'id' => 'gender_id', 'placeholder' => 'Please Select', 'autocomplete' => 'off'] ) !!}
           </div>
         </div>
 
         <div class="row mt-3">
-          <div class="col-md-6">
+          <div class="col-md-6 {{ $errors->has('nationality_id') ? 'has-error' : '' }}">
             <label class="labels">NATIONALITY</label>
-            {!!Form::select( 'nationality_id', $nationality, @$value, ['class' => 'form-control', 'id' => 'nationality_id', 'placeholder' => 'Please Select', 'autocomplete' => 'off'] ) !!}
+            {!! Form::select( 'nationality_id', $nationality, @$value, ['class' => 'form-control', 'id' => 'nationality_id', 'placeholder' => 'Please Select', 'autocomplete' => 'off'] ) !!}
           </div>
-          <div class="col-md-6">
+          <div class="col-md-6 {{ $errors->has('race_id') ? 'has-error' : '' }}">
             <label class="labels">RACE</label>
-            {!!Form::select( 'race_id', $race, @$value, ['class' => 'form-control', 'id' => 'race_id', 'placeholder' => 'Please Select', 'autocomplete' => 'off'] ) !!}
+            {!! Form::select( 'race_id', $race, @$value, ['class' => 'form-control', 'id' => 'race_id', 'placeholder' => 'Please Select', 'autocomplete' => 'off'] ) !!}
           </div>
         </div>
 
         <div class="row mt-3">
-          <div class="col-md-6">
+          <div class="col-md-6 {{ $errors->has('religion_id') ? 'has-error' : '' }}">
             <label class="labels">RELIGION</label>
-            {!!Form::select( 'religion_id', $religion, @$value, ['class' => 'form-control', 'id' => 'religion_id', 'placeholder' => 'Please Select', 'autocomplete' => 'off'] ) !!}
+            {!! Form::select( 'religion_id', $religion, @$value, ['class' => 'form-control', 'id' => 'religion_id', 'placeholder' => 'Please Select', 'autocomplete' => 'off'] ) !!}
           </div>
-          <div class="col-md-6">
+          <div class="col-md-6 {{ $errors->has('marital_status_id') ? 'has-error' : '' }}">
             <label class="labels">MARITAL STATUS</label>
-            {!!Form::select( 'marital_status_id', $marital_status, @$value, ['class' => 'form-control', 'id' => 'marital_status_id', 'placeholder' => 'Please Select', 'autocomplete' => 'off'] ) !!}
+            {!! Form::select( 'marital_status_id', $marital_status, @$value, ['class' => 'form-control', 'id' => 'marital_status_id', 'placeholder' => 'Please Select', 'autocomplete' => 'off'] ) !!}
           </div>
         </div>
 
@@ -145,27 +145,27 @@ $emergencies = $profile->hasmanyemergency()->get();
         <input type="hidden" name="emer[{{ $i }}][id]" value="{{ $emergency->id }}">
 
         <div class="row mt-3">
-          <div class="col-md-12">
+          <div class="col-md-12 {{ $errors->has('emer.'.$i.'.contact_person') ? 'has-error' : '' }}">
             <label class="labels">NAME</label>
-            {{ Form::text( "emer[$i][contact_person]", @$emergency->contact_person, ['class' => 'form-control', 'id' => 'contact_person', 'placeholder' => 'Please Insert', 'autocomplete' => 'off'] ) }}
+            {!! Form::text( "emer[$i][contact_person]", @$emergency->contact_person, ['class' => 'form-control', 'id' => 'contact_person', 'placeholder' => 'Please Insert', 'autocomplete' => 'off'] ) !!}
           </div>
         </div>
 
         <div class="row mt-3">
-          <div class="col-md-6">
+          <div class="col-md-6 {{ $errors->has('emer[$i][relationship_id]') ? 'has-error' : '' }}">
             <label class="labels">RELATIONSHIP</label>
-            {!!Form::select( "emer[$i][relationship_id]", $relationship, @$emergency->relationship_id, ['class' => 'form-control', 'id' => 'relationship_id', 'placeholder' => 'Please Select', 'autocomplete' => 'off'] ) !!}
+            {!! Form::select( "emer[$i][relationship_id]", $relationship, @$emergency->relationship_id, ['class' => 'form-control', 'id' => 'relationship_id', 'placeholder' => 'Please Select', 'autocomplete' => 'off'] ) !!}
           </div>
-          <div class="col-md-6">
+          <div class="col-md-6 {{ $errors->has('emer[$i][phone]') ? 'has-error' : '' }}">
             <label class="labels">PHONE NUMBER</label>
-            {{ Form::text( "emer[$i][phone]", @$emergency->phone, ['class' => 'form-control', 'id' => 'phone', 'placeholder' => 'Please Insert', 'autocomplete' => 'off'] ) }}
+            {!! Form::text( "emer[$i][phone]", @$emergency->phone, ['class' => 'form-control', 'id' => 'phone', 'placeholder' => 'Please Insert', 'autocomplete' => 'off'] ) !!}
           </div>
         </div>
 
         <div class="row mt-3">
-          <div class="col-md-12">
+          <div class="col-md-12 {{ $errors->has('emer[$i][address]') ? 'has-error' : '' }}">
             <label class="labels">ADDRESS</label>
-            {{ Form::text( "emer[$i][address]", @$emergency->address, ['class' => 'form-control', 'id' => 'emergency_address', 'placeholder' => 'Please Insert', 'autocomplete' => 'off'] ) }}
+            {!! Form::text( "emer[$i][address]", @$emergency->address, ['class' => 'form-control', 'id' => 'emergency_address', 'placeholder' => 'Please Insert', 'autocomplete' => 'off'] ) !!}
           </div>
         </div>
 
@@ -182,12 +182,12 @@ $emergencies = $profile->hasmanyemergency()->get();
     <div class="col-md-3"></div>
     <div class="col-md-9 container">
       <div class="text-center">
-        {!!Form::button('Save', ['class' => 'btn btn-sm btn-outline-secondary', 'type' => 'submit']) !!}
+        {!! Form::button('Save', ['class' => 'btn btn-sm btn-outline-secondary', 'type' => 'submit']) !!}
       </div>
     </div>
   </div>
 
-  {{ Form::close() }}
+  {!! Form::close() !!}
 
   <div class="row mt-3">
     <div class="col-md-3"></div>
@@ -205,27 +205,170 @@ $emergencies = $profile->hasmanyemergency()->get();
 @endsection
 
 @section('js')
-$('#dob').datetimepicker({
-icons: {
-time: "fas fas-regular fa-clock fa-beat",
-date: "fas fas-regular fa-calendar fa-beat",
-up: "fa-regular fa-circle-up fa-beat",
-down: "fa-regular fa-circle-down fa-beat",
-previous: 'fas fas-regular fa-arrow-left fa-beat',
-next: 'fas fas-regular fa-arrow-right fa-beat',
-today: 'fas fas-regular fa-calenday-day fa-beat',
-clear: 'fas fas-regular fa-broom-wide fa-beat',
-close: 'fas fas-regular fa-rectangle-xmark fa-beat'
-},
-format: 'YYYY-MM-DD',
-useCurrent: false,
-});
+  /////////////////////////////////////////////////////////////////////////////////////////
+  $('#dob').datetimepicker({
+    icons: {
+      time: "fas fas-regular fa-clock fa-beat",
+      date: "fas fas-regular fa-calendar fa-beat",
+      up: "fa-regular fa-circle-up fa-beat",
+      down: "fa-regular fa-circle-down fa-beat",
+      previous: 'fas fas-regular fa-arrow-left fa-beat',
+      next: 'fas fas-regular fa-arrow-right fa-beat',
+      today: 'fas fas-regular fa-calenday-day fa-beat',
+      clear: 'fas fas-regular fa-broom-wide fa-beat',
+      close: 'fas fas-regular fa-rectangle-xmark fa-beat'
+    },
+    format: 'YYYY-MM-DD',
+    useCurrent: false,
+  });
 
-/////////////////////////////////////////////////////////////////////////////////////////
-$('#nationality_id').select2({
-placeholder: 'Please Select',
-width: '100%',
-allowClear: true,
-closeOnSelect: true,
-});
+  /////////////////////////////////////////////////////////////////////////////////////////
+  $('#nationality_id').select2({
+    placeholder: 'Please Select',
+    width: '100%',
+    allowClear: true,
+    closeOnSelect: true,
+  });
+
+  /////////////////////////////////////////////////////////////////////////////////////////
+  // VALIDATOR
+  $(document).ready(function() {
+    $('#form').bootstrapValidator({
+      feedbackIcons: {
+        valid: '',
+        invalid: '',
+        validating: ''
+      },
+      fields: {
+        ic: {
+          validators: {
+            notEmpty: {
+              message: 'Please insert ic.'
+            },
+            numeric: {
+              message: 'The value is not an numeric'
+            }
+          }
+        },
+
+        mobile: {
+          validators: {
+            notEmpty: {
+              message: 'Please insert mobile number.'
+            },
+            numeric: {
+              message: 'The value is not an numeric'
+            }
+          }
+        },
+
+        email: {
+          validators: {
+            notEmpty: {
+              message: 'Please insert email.'
+            },
+            emailAddress: {
+              message: 'The value is not a valid email.'
+            }
+          }
+        },
+
+        address: {
+          validators: {
+            notEmpty: {
+              message: 'Please insert address.'
+            }
+          }
+        },
+
+        dob: {
+          validators: {
+            notEmpty: {
+              message: 'Please insert date of birth.'
+            }
+          }
+        },
+
+        gender_id: {
+          validators: {
+            notEmpty: {
+              message: 'Please select a gender.'
+            }
+          }
+        },
+
+        nationality_id: {
+          validators: {
+            notEmpty: {
+              message: 'Please select a nationality.'
+            }
+          }
+        },
+
+        race_id: {
+          validators: {
+            notEmpty: {
+              message: 'Please select a race.'
+            }
+          }
+        },
+
+        religion_id: {
+          validators: {
+            notEmpty: {
+              message: 'Please select a religion.'
+            }
+          }
+        },
+
+        marital_status_id: {
+          validators: {
+            notEmpty: {
+              message: 'Please select a marital status.'
+            }
+          }
+        },
+
+        <?php $i = 1; ?>
+        <?php foreach ($emergencies as $emergency) { ?> 
+          'emer[{{ $i }}][contact_person]': {
+            validators: {
+              notEmpty: {
+                message: 'Please insert contact person.'
+              }
+            }
+          },
+
+          'emer[{{ $i }}][relationship_id]': {
+            validators: {
+              notEmpty: {
+                message: 'Please select a relationship.'
+              }
+            }
+          },
+
+          'emer[{{ $i }}][phone]': {
+            validators: {
+              notEmpty: {
+                message: 'Please insert phone number.'
+              },
+              numeric: {
+                message: 'The value is not an numeric'
+              }
+            }
+          },
+
+          'emer[{{ $i }}][address]': {
+            validators: {
+              notEmpty: {
+                message: 'Please insert address.'
+              }
+            }
+          },
+          <?php $i++; ?>
+        <?php } ?>
+
+      }
+    })
+  });
 @endsection
