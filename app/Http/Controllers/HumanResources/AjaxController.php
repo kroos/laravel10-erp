@@ -12,9 +12,10 @@ use App\Models\HumanResources\HRHolidayCalendar;;
 use App\Models\Setting;
 use App\Models\HumanResources\OptWorkingHour;
 use App\Models\HumanResources\HRLeaveEntitlement;
+use App\Models\HumanResources\HRLeaveApprovalBackup;
 
 // load custom helper
-use App\Helpers\UnavailableDate;
+use App\Helpers\UnavailableDateTime;
 use \Carbon\Carbon;
 use \Carbon\CarbonPeriod;
 use Illuminate\Support\Arr;
@@ -28,7 +29,7 @@ class AjaxController extends Controller
 	}
 
 	// cancel leave
-	public function update(Request $request, HRLeave $hrleave)
+	public function leavecancel(Request $request, HRLeave $hrleave)
 	{
 		if($request->cancel == 3)
 		{
@@ -46,20 +47,22 @@ class AjaxController extends Controller
 			// leave deduct from AL or EL-AL
 			// make sure to cancel at the approver also #####################################################################
 			if ( $n->leave_type_id == 1 || $n->leave_type_id == 5 ) {
-				// cari al dari staffleave dan tambah balik masuk dalam hasmanyleaveentitlement
+				// cari al dari staffleave dan tambah balik masuk dalam hasmanyleaveannual
 
 				// cari period cuti
 				// echo $n->period_day.' period cuti<br />';
 
 				// cari al dari staff, year yg sama dgn date apply cuti.
-				// echo $n->belongstostaff->hasmanyleaveentitlement()->where('year', $dts->format('Y'))->first()->al_balance.' applicant annual leave balance<br />';
+				// echo $n->belongstostaff->hasmanyleaveannual()->where('year', $dts->format('Y'))->first()->annual_leave_balance.' applicant annual leave balance<br />';
 
-				$addl = $n->period_day + $n->belongstostaff->hasmanyleaveentitlement()->where('year', $dts->format('Y'))->first()->al_balance;
+				$addl = $n->period_day + $n->belongstostaff->hasmanyleaveannual()->where('year', $dts->format('Y'))->first()->annual_leave_balance;
+				$addu = $n->belongstostaff->hasmanyleaveannual()->where('year', $dts->format('Y'))->first()->annual_leave_utilize - $n->period_day;
 				// echo $addl.' masukkan dalam annual balance<br />';
 
 				// update the al balance
-				$n->belongstostaff->hasmanyleaveentitlement()->where('year', $dts->format('Y'))->update([
-					'al_balance' => $addl,
+				$n->belongstostaff->hasmanyleaveannual()->where('year', $dts->format('Y'))->update([
+					'annual_leave_balance' => $addl,
+					'annual_leave_utilize' => $addu,
 					'remarks' => 'Cancelled By '.\Auth::user()->belongstostaff->name.' reference hr_leaves.id'.$request->id
 				]);
 				// update period, status leave of the applicant. status close by HOD/supervisor
@@ -68,10 +71,12 @@ class AjaxController extends Controller
 
 			if( $n->leave_type_id == 2 ) { // leave deduct from MC
 				// sama lebih kurang AL mcm kat atas. so....
-				$addl = $n->period_day + $n->belongstostaff->hasmanyleaveentitlement()->where('year', $dts->format('Y'))->first()->mc_balance;
+				$addl = $n->period_day + $n->belongstostaff->hasmanyleavemc()->where('year', $dts->format('Y'))->first()->mc_leave_balance;
+				$addu = $n->belongstostaff->hasmanyleavemc()->where('year', $dts->format('Y'))->first()->mc_leave_utilize - $n->period_day;
 				// update the mc balance
-				$n->belongstostaff->hasmanyleaveentitlement()->where('year', $dts->format('Y'))->update([
-					'mc_balance' => $addl,
+				$n->belongstostaff->hasmanyleavemc()->where('year', $dts->format('Y'))->update([
+					'mc_leave_balance' => $addl,
+					'mc_leave_utilize' => $addu,
 					'remarks' => 'Cancelled By '.\Auth::user()->belongstostaff->name
 				]);
 				// update period, status leave of the applicant. status close by HOD/supervisor
@@ -103,14 +108,15 @@ class AjaxController extends Controller
 				// echo $n->hasmanyleavereplacement()->first()->leave_total.' leave total<br />';
 
 				// untuk update di column leave_balance
-				$addr = $n->hasmanyleavereplacement()->first()->leave_total - $n->period_day;
+				$addr = $n->belongstomanyleavereplacement()->first()->leave_balance + $n->period_day;
+				$addru = $n->belongstomanyleavereplacement()->first()->leave_utilize - $n->period_day;
 				// echo $addr.' untuk update kat column staff_leave_replacement.leave_utilize<br />';
 
 				// update di table staffleavereplacement. remarks kata sapa reject
-				$n->hasmanyleavereplacement()->update([
-					'leave_type_id' => NULL,
-					'leave_balance' => $n->period_day,
-					'leave_utilize' => $addr,
+				$n->belongstomanyleavereplacement()->first()->update([
+					// 'leave_type_id' => NULL,
+					'leave_balance' => $addr,
+					'leave_utilize' => $addru,
 					'remarks' => 'Cancelled by '.\Auth::user()->belongstostaff->name
 				]);
 				// update di table staff leave pulokk staffleave
@@ -125,9 +131,9 @@ class AjaxController extends Controller
 				// echo $n->period.' period cuti<br />';
 
 				// cari al dari applicant, year yg sama dgn date apply cuti.
-				// echo $n->belongstostaff->hasmanyleaveentitlement()->where('year', $dts->format('Y'))->first()->maternity_leave_balance.' applicant maternity leave balance<br />';
+				// echo $n->belongstostaff->hasmanyleavematernity()->where('year', $dts->format('Y'))->first()->maternity_leave_balance.' applicant maternity leave balance<br />';
 
-				$addl = $n->period_day + $n->belongstostaff->hasmanyleaveentitlement()->where('year', $dts->format('Y'))->first()->maternity_balance;
+				$addl = $n->period_day + $n->belongstostaff->hasmanyleavematernity()->where('year', $dts->format('Y'))->first()->maternity_balance;
 				// echo $addl.' masukkan dalam annual balance<br />';
 
 				// find all approval
@@ -137,7 +143,7 @@ class AjaxController extends Controller
 				// echo \Auth::user()->belongstostaff->name.' position <br />';
 
 				// update the al balance
-				$n->belongstostaff->hasmanyleaveentitlement()->where('year', $dts->format('Y'))->update([
+				$n->belongstostaff->hasmanyleavematernity()->where('year', $dts->format('Y'))->update([
 					'maternity_balance' => $addl,
 					'remarks' => 'Cancelled By '.\Auth::user()->belongstostaff->name
 				]);
@@ -417,7 +423,7 @@ class AjaxController extends Controller
 
 	public function unavailabledate(Request $request)
 	{
-		$blockdate = UnavailableDate::blockDate(\Auth::user()->belongstostaff->id);
+		$blockdate = UnavailableDateTime::blockDate(\Auth::user()->belongstostaff->id);
 
 		if(\App\Models\Setting::find(4)->first()->active == 1){		// 3days checking
 			$lusa1 = Carbon::now()->addDays(\App\Models\Setting::find(5)->first()->active + 1)->format('Y-m-d');
@@ -478,54 +484,26 @@ class AjaxController extends Controller
 
 	public function timeleave(Request $request)
 	{
-		// get year from leave date
-		$dt = \Carbon\Carbon::parse($request->date);
-		// echo $dt->year;
-		// echo $dt->dayOfWeek;	// if = 5, meaning its friday so need to look at category 3
-
-		$dty = $dt->copy()->year;
-
-		// get group working hour from department
-		$gwh = \App\Models\Staff::find($request->id)->belongstomanydepartment()->first()->wh_group_id;
-
-		// pls be remind, this is for leave application, so if maintenance (group=1/$gwh=1) apply leave, we should give user category 8
-
-		if($dt->copy()->dayOfWeek == 5) {				// friday
-			if($gwh == 1){								// friday | geng maintenance
-				if($dty == date('Y')){					// friday | geng maintenance | in same year
-					$time = OptWorkingHour::whereRaw('"'.$request->date.'" BETWEEN effective_date_start AND effective_date_end')->where(['year' => $dty, 'group' => $gwh, 'category' => 8])->get();
-				} else {								// friday | geng maintenance | not in same year
-					$time = OptWorkingHour::whereRaw('"'.$request->date.'" BETWEEN effective_date_start AND effective_date_end')->where(['year' => $dty, 'group' => $gwh, 'category' => 8])->get();
-				}
-			} else {									// not geng maintenance
-				if($dty == date('Y')){					// friday | not geng maintenance | in same year
-					$time = OptWorkingHour::whereRaw('"'.$request->date.'" BETWEEN effective_date_start AND effective_date_end')->where(['year' => $dty, 'group' => $gwh, 'category' => 3])->get();
-				} else {								// friday | not geng maintenance | not in same year
-					$time = OptWorkingHour::whereRaw('"'.$request->date.'" BETWEEN effective_date_start AND effective_date_end')->where(['year' => $dty, 'group' => $gwh, 'category' => 3])->get();
-				}
-			}
-		} else {										// not on friday
-			if($gwh == 1){								// not on friday | geng maintenance
-				if($dty == date('Y')){					// not on friday | geng maintenance | in same year
-					$time = OptWorkingHour::whereRaw('"'.$request->date.'" BETWEEN effective_date_start AND effective_date_end')->where(['year' => $dty, 'group' => $gwh, 'category' => 8])->get();
-				} else {								// not on friday | geng maintenance | not in same year
-					$time = OptWorkingHour::whereRaw('"'.$request->date.'" BETWEEN effective_date_start AND effective_date_end')->where(['year' => $dty, 'group' => $gwh, 'category' => 8])->get();
-				}
-			} else {									// not on friday | not geng maintenance
-				if($dty == date('Y')){					// not on friday | not geng maintenance | in same year
-					$time = OptWorkingHour::whereRaw('"'.$request->date.'" BETWEEN effective_date_start AND effective_date_end')->where(['year' => $dty, 'group' => $gwh])->whereIn('category', [1,2,4])->get();
-				} else {								// not on friday | not geng maintenance | not in same year
-					$time = OptWorkingHour::whereRaw('"'.$request->date.'" BETWEEN effective_date_start AND effective_date_end')->where(['year' => $dty, 'group' => $gwh])->whereIn('category', [1,2,4])->get();
-
-				}
-			}
-		}
-
-		return response()->json([
-			'start_am' => $time->first()->time_start_am,
-			'end_am' => $time->first()->time_end_am,
-			'start_pm' => $time->first()->time_start_pm,
-			'end_pm' => $time->first()->time_end_pm,
-		]);
+		$whtime = UnavailableDateTime::workinghourtime($request->date, $request->id);
+		return response()->json($whtime->first());
 	}
+
+	public function leaverapprove(HRLeaveApprovalBackup $hrleaveapprovalbackup)
+	{
+		$hrleaveapprovalbackup->update(['leave_status_id' => 5]);
+			return response()->json([
+				'status' => 'success',
+				'message' => 'Your colleague leave has been approved... and he/she says thank you.',
+			]);
+	}
+
+	public function leavesapprove(Request $request, HRLeaveApprovalSupervisor $hrleaveapprovalsupervisor)
+	{
+		$hrleaveapprovalsupervisor->update(['leave_status_id' => $request->id]);
+			return response()->json([
+				'status' => 'success',
+				'message' => 'Leave has been approved.',
+			]);
+	}
+
 }
