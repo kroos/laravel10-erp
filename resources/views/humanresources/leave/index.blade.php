@@ -3,6 +3,7 @@
 @section('content')
 <?php
 use Illuminate\Support\Str;
+use \App\Models\HumanResources\HRLeaveApprovalSupervisor;
 // 1st sekali check profile. checking utk email & emergency person. lock kat sini smpi user isi baru buleh apply cuti.
 
 // check emergency person
@@ -256,11 +257,10 @@ $leaveMa =  $us->hasmanyleavematernity()->where('year', date('Y'))->first();
 
 	<?php
 	$x = \Auth::user()->belongstostaff->hasmanyleaveapprovalbackup()->whereNull('leave_status_id')->get();	// user is a backup for some1 else
-	$s1 = \Auth::user()->belongstostaff()->where('div_id', 4)->first();	// user is a supervisor
-	$h1 = \Auth::user()->belongstostaff->where('div_id', 1)->first();	// user is a HOD
-	$d1 = \Auth::user()->belongstostaff->where('div_id', 2)->first();	// user is a director
+	$s1 = \Auth::user()->belongstostaff()->whereIn('div_id', [4, 3])->first();	// user is a supervisor
+	$h1 = \Auth::user()->belongstostaff->whereIn('div_id', [1, 3])->first();	// user is a HOD
+	$d1 = \Auth::user()->belongstostaff->whereIn('div_id', [2, 3])->first();	// user is a director
 	$r1 = \Auth::user()->belongstostaff->where('div_id', 3)->first();	// user is a HR
-	// dd($s1);
 	?>
 
 	<p>&nbsp;</p>
@@ -333,70 +333,79 @@ $leaveMa =  $us->hasmanyleavematernity()->where('year', date('Y'))->first();
 
 	<p>&nbsp;</p>
 
-	<?php // dd($s1) ?>
 	@if($s1)
-	@if(\App\Models\HumanResources\HRLeaveApprovalSupervisor::whereNull('leave_status_id')->get()->count())
-	<div class="col-auto table-responsive">
-		<h4>Supervisor Approver</h4>
-		<table class="table table-hover table-sm" id="approver" style="font-size:12px">
-			<thead>
-				<tr>
-					<th></th>
-				</tr>
-			</thead>
-			<tbody>
-				@foreach($s1->hasmanyleaveapprovalsupervisor()->whereNull('leave_status_id')->get() as $a)
-				<?php
-				$ul = $a->belongstostaffleave->belongstostaff->belongstomanydepartment->wherePivot('main', 1)->first()->branch_id;			//get user leave branch_id
-				$us = \Auth::user()->belongstostaff->belongstomanydepartment->wherePivot('main', 1)->first()->branch_id;					//get user supervisor branch_id
-				if ($ul == $us){
-					if ( ($a->belongstostaffleave->leave_type_id == 9) || ($a->belongstostaffleave->leave_type_id != 9 && $a->belongstostaffleave->half_type_id == 2) || ($a->belongstostaffleave->leave_type_id != 9 && $a->belongstostaffleave->half_type_id == 1) ) {
-						$dts = \Carbon\Carbon::parse($a->belongstostaffleave->date_time_start)->format('j M Y g:i a');
-						$dte = \Carbon\Carbon::parse($a->belongstostaffleave->date_time_end)->format('j M Y g:i a');
+		@if(HRLeaveApprovalSupervisor::whereNull('leave_status_id')->get()->count())
+			<div class="col-auto table-responsive">
+				<h4>Supervisor Approver</h4>
+				<table class="table table-hover table-sm" id="approver" style="font-size:12px">
+					<thead>
+						<tr>
+							<th rowspan="2">Name</th>
+							<th rowspan="2">Leave</th>
+							<th rowspan="2">Reason</th>
+							<th colspan="2">Date/Time Leave</th>
+							<th rowspan="2">Period</th>
+							<th rowspan="2">Leave Status</th>
+						</tr>
+						<tr>
+							<th>From</th>
+							<th>To</th>
+						</tr>
+					</thead>
+					<tbody>
+						@foreach(HRLeaveApprovalSupervisor::whereNull('leave_status_id')->get() as $a)
+						<?php
+						dd($a->belongstostaffleave);
+						$ul = $a->belongstostaffleave->belongstostaff->belongstomanydepartment->wherePivot('main', 1)->first()->branch_id;			//get user leave branch_id
+						$us = \Auth::user()->belongstostaff->belongstomanydepartment->wherePivot('main', 1)->first()->branch_id;					//get user supervisor branch_id
 
-						if ($a->belongstostaffleave->leave_type_id != 9) {
-							if ($a->belongstostaffleave->half_type_id == 2) {
-								$dper = $a->belongstostaffleave->period_day.' Day';
-							} elseif($a->belongstostaffleave->half_type_id == 1) {
-								$dper = $a->belongstostaffleave->period_day.' Day';
+							if ( ($a->belongstostaffleave->leave_type_id == 9) || ($a->belongstostaffleave->leave_type_id != 9 && $a->belongstostaffleave->half_type_id == 2) || ($a->belongstostaffleave->leave_type_id != 9 && $a->belongstostaffleave->half_type_id == 1) ) {
+								$dts = \Carbon\Carbon::parse($a->belongstostaffleave->date_time_start)->format('j M Y g:i a');
+								$dte = \Carbon\Carbon::parse($a->belongstostaffleave->date_time_end)->format('j M Y g:i a');
+
+								if ($a->belongstostaffleave->leave_type_id != 9) {
+									if ($a->belongstostaffleave->half_type_id == 2) {
+										$dper = $a->belongstostaffleave->period_day.' Day';
+									} elseif($a->belongstostaffleave->half_type_id == 1) {
+										$dper = $a->belongstostaffleave->period_day.' Day';
+									}
+								}elseif ($a->belongstostaffleave->leave_type_id == 9) {
+									$i = \Carbon\Carbon::parse($a->belongstostaffleave->period_time);
+									$dper = $i->hour.' hour, '.$i->minute.' minutes';
+								}
+
+							} else {
+								$dts = \Carbon\Carbon::parse($a->belongstostaffleave->date_time_start)->format('j M Y ');
+								$dte = \Carbon\Carbon::parse($a->belongstostaffleave->date_time_end)->format('j M Y ');
+								$dper = $a->belongstostaffleave->period_day.' day/s';
 							}
-						}elseif ($a->belongstostaffleave->leave_type_id == 9) {
-							$i = \Carbon\Carbon::parse($a->belongstostaffleave->period_time);
-							$dper = $i->hour.' hour, '.$i->minute.' minutes';
-						}
+							$z = \Carbon\Carbon::parse(now())->daysUntil($a->belongstostaffleave->date_time_start, 1)->count();
+							if(3 <= $z && $z >= 1){
+								$u = 'table-warning';
+							} elseif($z < 1){
+								$u = 'table-danger';
+							} elseif($z > 3){
+								$u = NULL;
+							}
+						?>
+						<tr class="{{ $u }}" >
+							<td>{{ $a->belongstostaffleave->belongstostaff->name }}</td>
+							<td>{{ $a->belongstostaffleave->belongstooptleavetype->leave_type_code }}</td>
+							<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="{{ $a->belongstostaffleave->reason }}">{{ str($a->belongstostaffleave->reason)->words(3, ' >') }}</td>
+							<td>{{ $dts }}</td>
+							<td>{{ $dte }}</td>
+							<td>{{ $dper }}</td>
+							<td>
+								<a href="{{ __('route') }}" class="btn btn-sm btn-outline-secondary rapprover_btn" id="rapprover_btn_{{ $a->id }}" data-id="{{ $a->id }}" alt="Replacement Approver" title="Replacement Approver"><i class="bi bi-box-arrow-in-down"></i></a>
+							</td>
+						</tr>
+						@endforeach
+					</tbody>
+				</table>
+			</div>
+		@endif
+	@endif
 
-					} else {
-						$dts = \Carbon\Carbon::parse($a->belongstostaffleave->date_time_start)->format('j M Y ');
-						$dte = \Carbon\Carbon::parse($a->belongstostaffleave->date_time_end)->format('j M Y ');
-						$dper = $a->belongstostaffleave->period_day.' day/s';
-					}
-					$z = \Carbon\Carbon::parse(now())->daysUntil($a->belongstostaffleave->date_time_start, 1)->count();
-					if(3 <= $z && $z >= 1){
-						$u = 'table-warning';
-					} elseif($z < 1){
-						$u = 'table-danger';
-					} elseif($z > 3){
-						$u = NULL;
-					}
-				?>
-				<tr class="{{ $u }}" >
-					<td>{{ $a->belongstostaffleave->belongstostaff->name }}</td>
-					<td>{{ $a->belongstostaffleave->belongstooptleavetype->leave_type_code }}</td>
-					<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="{{ $a->belongstostaffleave->reason }}">{{ str($a->belongstostaffleave->reason)->words(3, ' >') }}</td>
-					<td>{{ $dts }}</td>
-					<td>{{ $dte }}</td>
-					<td>{{ $dper }}</td>
-					<td>
-						<a href="{{ __('route') }}" class="btn btn-sm btn-outline-secondary rapprover_btn" id="rapprover_btn_{{ $a->id }}" data-id="{{ $a->id }}" alt="Replacement Approver" title="Replacement Approver"><i class="bi bi-box-arrow-in-down"></i></a>
-					</td>
-				</tr>
-				<?php } ?>
-				@endforeach
-			</tbody>
-		</table>
-	</div>
-	@endif
-	@endif
 
 	<p>&nbsp;</p>
 	@if($h1?->hasmanyleaveapprovalhod()->whereNull('leave_status_id')->get()->isNotEmpty())
