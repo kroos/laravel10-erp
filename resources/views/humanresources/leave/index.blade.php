@@ -102,7 +102,7 @@ $leaveMa =  $us->hasmanyleavematernity()->where('year', date('Y'))->first();
 						<?php
 						$crossbacku = $us->crossbackupto()?->wherePivot('active', 1)->get();
 						?>
-						@if($crossbacku)
+						@if($crossbacku->isNotEmpty())
 							<li>
 								<ol>
 								@foreach($crossbacku as $key)
@@ -193,43 +193,43 @@ $leaveMa =  $us->hasmanyleavematernity()->where('year', date('Y'))->first();
 						<td>
 							<table class="table table-hover table-sm">
 								<tbody>
-									@if($leav->hasoneleaveapprovalbackup()->get()->isNotEmpty())
+									@if($leav->hasmanyleaveapprovalbackup()->get()->isNotEmpty())
 										<tr>
-											<!-- <td>Backup {{ $leav->hasoneleaveapprovalbackup()->first()->belongstostaff?->name }}</td> -->
+											<!-- <td>Backup {{ $leav->hasmanyleaveapprovalbackup()->first()->belongstostaff?->name }}</td> -->
 											<td>Backup</td>
-											<td>{{ $leav->hasoneleaveapprovalbackup()->first()->belongstoleavestatus?->status ?? 'Pending' }}</td>
+											<td>{{ $leav->hasmanyleaveapprovalbackup()->first()->belongstoleavestatus?->status ?? 'Pending' }}</td>
 										</tr>
 									@endif
 
-									@if($leav->hasoneleaveapprovalsupervisor()->get()->isNotEmpty())
+									@if($leav->hasmanyleaveapprovalsupervisor()->get()->isNotEmpty())
 										<tr>
-											<!-- <td>Supervisor {{ $leav->hasoneleaveapprovalsupervisor()->first()->belongstostaff?->name }}</td> -->
+											<!-- <td>Supervisor {{ $leav->hasmanyleaveapprovalsupervisor()->first()->belongstostaff?->name }}</td> -->
 											<td>Supervisor</td>
-											<td>{{ $leav->hasoneleaveapprovalsupervisor()->first()->belongstoleavestatus?->status ?? 'Pending' }}</td>
+											<td>{{ $leav->hasmanyleaveapprovalsupervisor()->first()->belongstoleavestatus?->status ?? 'Pending' }}</td>
 										</tr>
 									@endif
 
-									@if($leav->hasoneleaveapprovalhod()->get()->isNotEmpty())
+									@if($leav->hasmanyleaveapprovalhod()->get()->isNotEmpty())
 										<tr>
-											<!-- <td>HOD {{ $leav->hasoneleaveapprovalhod()->first()->belongstostaff?->name }}</td> -->
+											<!-- <td>HOD {{ $leav->hasmanyleaveapprovalhod()->first()->belongstostaff?->name }}</td> -->
 											<td>HOD</td>
-											<td>{{ $leav->hasoneleaveapprovalhod()->first()->belongstoleavestatus?->status ?? 'Pending' }}</td>
+											<td>{{ $leav->hasmanyleaveapprovalhod()->first()->belongstoleavestatus?->status ?? 'Pending' }}</td>
 										</tr>
 									@endif
 
-									@if($leav->hasoneleaveapprovaldir()->get()->isNotEmpty())
+									@if($leav->hasmanyleaveapprovaldir()->get()->isNotEmpty())
 										<tr>
-											<!-- <td>Director {{ $leav->hasoneleaveapprovaldir()->first()->belongstostaff?->name }}</td> -->
+											<!-- <td>Director {{ $leav->hasmanyleaveapprovaldir()->first()->belongstostaff?->name }}</td> -->
 											<td>Director</td>
-											<td>{{ $leav->hasoneleaveapprovaldir()->first()->belongstoleavestatus?->status ?? 'Pending' }}</td>
+											<td>{{ $leav->hasmanyleaveapprovaldir()->first()->belongstoleavestatus?->status ?? 'Pending' }}</td>
 										</tr>
 									@endif
 
-									@if($leav->hasoneleaveapprovalhr()->get()->isNotEmpty())
+									@if($leav->hasmanyleaveapprovalhr()->get()->isNotEmpty())
 										<tr>
-											<!-- <td>HR {{ $leav->hasoneleaveapprovalhr()->first()->belongstostaff?->name }}</td> -->
+											<!-- <td>HR {{ $leav->hasmanyleaveapprovalhr()->first()->belongstostaff?->name }}</td> -->
 											<td>HR</td>
-											<td>{{ $leav->hasoneleaveapprovalhr()->first()->belongstoleavestatus?->status ?? 'Pending' }}</td>
+											<td>{{ $leav->hasmanyleaveapprovalhr()->first()->belongstoleavestatus?->status ?? 'Pending' }}</td>
 										</tr>
 									@endif
 								</tbody>
@@ -253,9 +253,155 @@ $leaveMa =  $us->hasmanyleavematernity()->where('year', date('Y'))->first();
 	@else
 			<p class="card-text text-justify text-lead">No record for your leave. Click on "Leave Application" to apply a leave.</p>
 	@endif
+
+	<?php
+	$x = \Auth::user()->belongstostaff->hasmanyleaveapprovalbackup()->whereNull('leave_status_id')->get();	// user is a backup for some1 else
+	$s1 = \Auth::user()->belongstostaff()->where('div_id', 4)->first();	// user is a supervisor
+	$h1 = \Auth::user()->belongstostaff->where('div_id', 1)->first();	// user is a HOD
+	$d1 = \Auth::user()->belongstostaff->where('div_id', 2)->first();	// user is a director
+	$r1 = \Auth::user()->belongstostaff->where('div_id', 3)->first();	// user is a HR
+	// dd($s1);
+	?>
+
 	<p>&nbsp;</p>
+	@if($x->isNotEmpty())
 	<div class="col-auto table-responsive">
-		<h4>Approver</h4>
+		<h4>Replacement Approver</h4>
+		<table class="table table-hover table-sm" id="bapprover" style="font-size:12px">
+			<thead>
+				<tr>
+					<th rowspan="2">Name</th>
+					<th rowspan="2">Leave</th>
+					<th rowspan="2">Reason</th>
+					<th colspan="2">Date/Time Leave</th>
+					<th rowspan="2">Period</th>
+					<th rowspan="2">Leave Status</th>
+				</tr>
+				<tr>
+					<th>From</th>
+					<th>To</th>
+				</tr>
+			</thead>
+			<tbody>
+				@foreach($x as $a)
+				<?php
+				if ( ($a->belongstostaffleave->leave_type_id == 9) || ($a->belongstostaffleave->leave_type_id != 9 && $a->belongstostaffleave->half_type_id == 2) || ($a->belongstostaffleave->leave_type_id != 9 && $a->belongstostaffleave->half_type_id == 1) ) {
+					$dts = \Carbon\Carbon::parse($a->belongstostaffleave->date_time_start)->format('j M Y g:i a');
+					$dte = \Carbon\Carbon::parse($a->belongstostaffleave->date_time_end)->format('j M Y g:i a');
+
+					if ($a->belongstostaffleave->leave_type_id != 9) {
+						if ($a->belongstostaffleave->half_type_id == 2) {
+							$dper = $a->belongstostaffleave->period_day.' Day';
+						} elseif($a->belongstostaffleave->half_type_id == 1) {
+							$dper = $a->belongstostaffleave->period_day.' Day';
+						}
+					}elseif ($a->belongstostaffleave->leave_type_id == 9) {
+						$i = \Carbon\Carbon::parse($a->belongstostaffleave->period_time);
+						$dper = $i->hour.' hour, '.$i->minute.' minutes';
+					}
+
+				} else {
+					$dts = \Carbon\Carbon::parse($a->belongstostaffleave->date_time_start)->format('j M Y ');
+					$dte = \Carbon\Carbon::parse($a->belongstostaffleave->date_time_end)->format('j M Y ');
+					$dper = $a->belongstostaffleave->period_day.' day/s';
+				}
+				$z = \Carbon\Carbon::parse(now())->daysUntil($a->belongstostaffleave->date_time_start, 1)->count();
+				if(3 <= $z && $z >= 1){
+					$u = 'table-warning';
+				} elseif($z < 1){
+					$u = 'table-danger';
+				} elseif($z > 3){
+					$u = NULL;
+				}
+				?>
+				<tr class="{{ $u }}" >
+					<td>{{ $a->belongstostaffleave->belongstostaff->name }}</td>
+					<td>{{ $a->belongstostaffleave->belongstooptleavetype->leave_type_code }}</td>
+					<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="{{ $a->belongstostaffleave->reason }}">{{ str($a->belongstostaffleave->reason)->words(3, ' >') }}</td>
+					<td>{{ $dts }}</td>
+					<td>{{ $dte }}</td>
+					<td>{{ $dper }}</td>
+					<td>
+						<a href="{{ __('route') }}" class="btn btn-sm btn-outline-secondary rapprover_btn" id="rapprover_btn_{{ $a->id }}" data-id="{{ $a->id }}" alt="Replacement Approver" title="Replacement Approver"><i class="bi bi-box-arrow-in-down"></i></a>
+					</td>
+				</tr>
+				@endforeach
+			</tbody>
+		</table>
+	</div>
+	@endif
+
+	<p>&nbsp;</p>
+
+	<?php // dd($s1) ?>
+	@if($s1)
+	@if(\App\Models\HumanResources\HRLeaveApprovalSupervisor::whereNull('leave_status_id')->get()->count())
+	<div class="col-auto table-responsive">
+		<h4>Supervisor Approver</h4>
+		<table class="table table-hover table-sm" id="approver" style="font-size:12px">
+			<thead>
+				<tr>
+					<th></th>
+				</tr>
+			</thead>
+			<tbody>
+				@foreach($s1->hasmanyleaveapprovalsupervisor()->whereNull('leave_status_id')->get() as $a)
+				<?php
+				$ul = $a->belongstostaffleave->belongstostaff->belongstomanydepartment->wherePivot('main', 1)->first()->branch_id;			//get user leave branch_id
+				$us = \Auth::user()->belongstostaff->belongstomanydepartment->wherePivot('main', 1)->first()->branch_id;					//get user supervisor branch_id
+				if ($ul == $us){
+					if ( ($a->belongstostaffleave->leave_type_id == 9) || ($a->belongstostaffleave->leave_type_id != 9 && $a->belongstostaffleave->half_type_id == 2) || ($a->belongstostaffleave->leave_type_id != 9 && $a->belongstostaffleave->half_type_id == 1) ) {
+						$dts = \Carbon\Carbon::parse($a->belongstostaffleave->date_time_start)->format('j M Y g:i a');
+						$dte = \Carbon\Carbon::parse($a->belongstostaffleave->date_time_end)->format('j M Y g:i a');
+
+						if ($a->belongstostaffleave->leave_type_id != 9) {
+							if ($a->belongstostaffleave->half_type_id == 2) {
+								$dper = $a->belongstostaffleave->period_day.' Day';
+							} elseif($a->belongstostaffleave->half_type_id == 1) {
+								$dper = $a->belongstostaffleave->period_day.' Day';
+							}
+						}elseif ($a->belongstostaffleave->leave_type_id == 9) {
+							$i = \Carbon\Carbon::parse($a->belongstostaffleave->period_time);
+							$dper = $i->hour.' hour, '.$i->minute.' minutes';
+						}
+
+					} else {
+						$dts = \Carbon\Carbon::parse($a->belongstostaffleave->date_time_start)->format('j M Y ');
+						$dte = \Carbon\Carbon::parse($a->belongstostaffleave->date_time_end)->format('j M Y ');
+						$dper = $a->belongstostaffleave->period_day.' day/s';
+					}
+					$z = \Carbon\Carbon::parse(now())->daysUntil($a->belongstostaffleave->date_time_start, 1)->count();
+					if(3 <= $z && $z >= 1){
+						$u = 'table-warning';
+					} elseif($z < 1){
+						$u = 'table-danger';
+					} elseif($z > 3){
+						$u = NULL;
+					}
+				?>
+				<tr class="{{ $u }}" >
+					<td>{{ $a->belongstostaffleave->belongstostaff->name }}</td>
+					<td>{{ $a->belongstostaffleave->belongstooptleavetype->leave_type_code }}</td>
+					<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="{{ $a->belongstostaffleave->reason }}">{{ str($a->belongstostaffleave->reason)->words(3, ' >') }}</td>
+					<td>{{ $dts }}</td>
+					<td>{{ $dte }}</td>
+					<td>{{ $dper }}</td>
+					<td>
+						<a href="{{ __('route') }}" class="btn btn-sm btn-outline-secondary rapprover_btn" id="rapprover_btn_{{ $a->id }}" data-id="{{ $a->id }}" alt="Replacement Approver" title="Replacement Approver"><i class="bi bi-box-arrow-in-down"></i></a>
+					</td>
+				</tr>
+				<?php } ?>
+				@endforeach
+			</tbody>
+		</table>
+	</div>
+	@endif
+	@endif
+
+	<p>&nbsp;</p>
+	@if($h1?->hasmanyleaveapprovalhod()->whereNull('leave_status_id')->get()->isNotEmpty())
+	<div class="col-auto table-responsive">
+		<h4>Head Of Department Approver</h4>
 		<table class="table table-hover table-sm" id="approver" style="font-size:12px">
 			<thead>
 				<tr>
@@ -269,6 +415,46 @@ $leaveMa =  $us->hasmanyleavematernity()->where('year', date('Y'))->first();
 			</tbody>
 		</table>
 	</div>
+	@endif
+
+	<p>&nbsp;</p>
+	@if($d1?->hasmanyleaveapprovaldir()->whereNull('leave_status_id')->get()->isNotEmpty())
+	<div class="col-auto table-responsive">
+		<h4>Director Approver</h4>
+		<table class="table table-hover table-sm" id="approver" style="font-size:12px">
+			<thead>
+				<tr>
+					<th></th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	@endif
+
+	<p>&nbsp;</p>
+	@if($r1?->hasmanyleaveapprovalhr()->get()->isNotEmpty())
+	<div class="col-auto table-responsive">
+		<h4>Human Resource Approver</h4>
+		<table class="table table-hover table-sm" id="approver" style="font-size:12px">
+			<thead>
+				<tr>
+					<th></th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	@endif
+
 </div>
 @endsection
 
@@ -286,6 +472,12 @@ $.fn.dataTable.moment( 'D MMM YYYY h:mm a' );
 $('#leaves').DataTable({
 	"lengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "All"] ],
 	"order": [[0, "desc" ]],	// sorting the 6th column descending
+	responsive: true
+});
+
+$('#bapprover').DataTable({
+	"lengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "All"] ],
+	"order": [[3, "desc" ]],	// sorting the 6th column descending
 	responsive: true
 });
 
@@ -313,6 +505,64 @@ function SwalDelete(ackID){
 			return new Promise(function(resolve) {
 				$.ajax({
 					url: '{{ url('leavecancel') }}' + '/' + ackID,
+					type: 'PATCH',
+					dataType: 'json',
+					data: {
+							id: ackID,
+							cancel: 3,
+							_token : $('meta[name=csrf-token]').attr('content')
+					},
+				})
+				.done(function(response){
+					swal.fire('Accept', response.message, response.status)
+					.then(function(){
+						window.location.reload(true);
+					});
+					// $('#cancel_btn_' + ackID).parent().parent().remove();
+				})
+				.fail(function(){
+					swal.fire('Oops...', 'Something went wrong with ajax !', 'error');
+				})
+			});
+		},
+		allowOutsideClick: false			  
+	})
+	.then((result) => {
+		if (result.dismiss === swal.DismissReason.cancel) {
+			swal.fire('Cancel Action', 'Leave is still active.', 'info')
+		}
+	});
+}
+//auto refresh right after clicking OK button
+$(document).on('click', '.swal2-confirm', function(e){
+	window.location.reload(true);
+});
+
+
+/////////////////////////////////////////////////////////////////////////////////////////
+// replacement approve leave
+$(document).on('click', '.rapprover_btn', function(e){
+	var ackID = $(this).data('id');
+	SwalDelete(ackID);
+	e.preventDefault();
+});
+
+function SwalDelete(ackID){
+	swal.fire({
+		title: 'Approve Leave',
+		text: 'Are you sure to approve this leave?',
+		icon: 'info',
+		showCancelButton: true,
+		confirmButtonColor: '#3085d6',
+		cancelButtonColor: '#d33',
+		cancelButtonText: 'Cancel',
+		confirmButtonText: 'Yes',
+		showLoaderOnConfirm: true,
+
+		preConfirm: function() {
+			return new Promise(function(resolve) {
+				$.ajax({
+					url: '{{ url('leaverapprove') }}' + '/' + ackID,
 					type: 'PATCH',
 					dataType: 'json',
 					data: {

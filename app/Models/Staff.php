@@ -9,7 +9,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 // db relation class to load
-use Illuminate\Database\Eloquent\Relations\HasOne;
+// use Illuminate\Database\Eloquent\Relations\HasOne;
 // use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 // use Illuminate\Database\Eloquent\Relations\HasOneOrMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -28,7 +28,7 @@ class Staff extends Authenticatable
 	protected $dates = ['deleted_at'];
 
 	protected $fillable = [
-		'ic', 'nationality_id', 'status_id', 'image', 'name', 'email', 'id_card_passport', 'location_id', 'leave_need_backup', 'religion_id', 'gender_id', 'race_id', 'address', 'place_of_birth', 'country_id', 'marital_status_id', 'mobile', 'phone', 'dob', 'cimb_account', 'epf_no', 'income_tax_no', 'active', 'join_at', 'confirmed_at', 'resignation_letter_at', 'resign_at', 'remarks'
+		'id', 'status_id', 'name', 'ic', 'authorise_id', 'restday_group_id', 'religion_id', 'gender_id', 'race_id', 'nationality_id', 'marital_status_id', 'leave_flow_id', 'div_id', 'email', 'address', 'place_of_birth', 'mobile', 'phone', 'dob', 'cimb_account', 'epf_account', 'income_tax_no', 'socso_no', 'weight', 'height', 'active', 'join', 'confirmed', 'remarks', 'image'
 	];
 
 	// public function getEmailForPasswordReset()
@@ -59,11 +59,6 @@ class Staff extends Authenticatable
 		return $this->hasMany(\App\Models\HumanResources\HRLeave::class, 'staff_id');
 	}
 
-	// public function hasmanyleaveentitlement(): HasMany
-	// {
-	// 	return $this->hasMany(\App\Models\HumanResources\HRLeaveEntitlement::class, 'staff_id');
-	// }
-
 	public function hasmanyleaveannual(): HasMany
 	{
 		return $this->hasMany(\App\Models\HumanResources\HRLeaveAnnual::class, 'staff_id');
@@ -84,29 +79,29 @@ class Staff extends Authenticatable
 		return $this->hasMany(\App\Models\HumanResources\HRLeaveReplacement::class, 'staff_id');
 	}
 
-	public function hasoneleaveapprovalbackup(): HasOne
+	public function hasmanyleaveapprovalbackup(): HasMany
 	{
-		return $this->hasOne(\App\Models\HumanResources\HRLeaveApprovalBackup::class, 'staff_id');
+		return $this->hasMany(\App\Models\HumanResources\HRLeaveApprovalBackup::class, 'staff_id');
 	}
 
-	public function hasoneleaveapprovalsupervisor(): HasOne
+	public function hasmanyleaveapprovalsupervisor(): HasMany
 	{
-		return $this->hasOne(\App\Models\HumanResources\HRLeaveApprovalSupervisor::class, 'staff_id');
+		return $this->hasMany(\App\Models\HumanResources\HRLeaveApprovalSupervisor::class, 'staff_id');
 	}
 
-	public function hasoneleaveapprovalhod(): HasOne
+	public function hasmanyleaveapprovalhod(): HasMany
 	{
-		return $this->hasOne(\App\Models\HumanResources\HRLeaveApprovalHOD::class, 'staff_id');
+		return $this->hasMany(\App\Models\HumanResources\HRLeaveApprovalHOD::class, 'staff_id');
 	}
 
-	public function hasoneleaveapprovaldir(): HasOne
+	public function hasmanyleaveapprovaldir(): HasMany
 	{
-		return $this->hasOne(\App\Models\HumanResources\HRLeaveApprovalDirector::class, 'staff_id');
+		return $this->hasMany(\App\Models\HumanResources\HRLeaveApprovalDirector::class, 'staff_id');
 	}
 
-	public function hasoneleaveapprovalhr(): HasOne
+	public function hasmanyleaveapprovalhr(): HasMany
 	{
-		return $this->hasOne(\App\Models\HumanResources\HRLeaveApprovalHR::class, 'staff_id');
+		return $this->hasMany(\App\Models\HumanResources\HRLeaveApprovalHR::class, 'staff_id');
 	}
 
 	public function hasmanyleaveamend(): HasMany

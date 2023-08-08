@@ -212,7 +212,7 @@ $('#leave_id').on('change', function() {
 					'<div class="form-group row mb-3 {{ $errors->has('documentsupport') ? 'has-error' : '' }}">' +
 						'<div class="offset-sm-2 col-auto form-check suppdoc">' +
 							'{{ Form::checkbox('documentsupport', 1, @$value, ['class' => 'form-check-input ', 'id' => 'suppdoc']) }}' +
-							'<label for="suppdoc" class="form-check-label p-3 mb-2 bg-warning text-danger rounded">Please ensure you will submit <strong>Supporting Documents</strong> within <strong>3 Days</strong> after date leave.</label>' +
+							'<label for="suppdoc" class="form-check-label p-1 bg-warning text-danger rounded">Please ensure you will submit <strong>Supporting Documents</strong> within <strong>3 Days</strong> after date leave.</label>' +
 						'</div>' +
 					'</div>' +
 
@@ -507,7 +507,7 @@ $('#leave_id').on('change', function() {
 				'<div class="form-group row mb-3 {{ $errors->has('documentsupport') ? 'has-error' : '' }}">' +
 					'<div class="offset-sm-2 col-auto form-check suppdoc">' +
 						'{{ Form::checkbox('documentsupport', 1, @$value, ['class' => 'form-check-input ', 'id' => 'suppdoc']) }}' +
-						'<label for="suppdoc" class="form-check-label p-3 mb-2 bg-warning text-danger rounded">Please ensure you will submit <strong>Supporting Documents</strong> within <strong>3 Days</strong> after date leave.</label>' +
+						'<label for="suppdoc" class="form-check-label p-1 bg-warning text-danger rounded">Please ensure you will submit <strong>Supporting Documents</strong> within <strong>3 Days</strong> after date leave.</label>' +
 					'</div>' +
 				'</div>' +
 
@@ -694,9 +694,9 @@ $('#leave_id').on('change', function() {
 				if( $('.removetest').length == 0 ) {
 					$('#wrappertest').append(
 						'<div class="pretty p-default p-curve form-check form-check-inline removetest">' +
-							'<input type="radio" name="half_type_id" value="1/' + obj.start_am + '/' + obj.time_end_am + '" id="am" checked="checked">' +
+							'<input type="radio" name="half_type_id" value="1/' + obj.time_start_am + '/' + obj.time_end_am + '" id="am" checked="checked">' +
 							'<div class="state p-primary">' +
-								'<label for="am" class="form-check-label">' + moment(obj.start_am, 'HH:mm:ss').format('h:mm a') + ' to ' + moment(obj.time_end_am, 'HH:mm:ss').format('h:mm a') + '</label> ' +
+								'<label for="am" class="form-check-label">' + moment(obj.time_start_am, 'HH:mm:ss').format('h:mm a') + ' to ' + moment(obj.time_end_am, 'HH:mm:ss').format('h:mm a') + '</label> ' +
 							'</div>' +
 						'</div>' +
 						'<div class="pretty p-default p-curve form-check form-check-inline removetest">' +
@@ -959,9 +959,9 @@ $oi = \Auth::user()->belongstostaff->hasmanyleavereplacement()->where('leave_bal
 				if( $('.removetest').length == 0 ) {
 					$('#wrappertest').append(
 						'<div class="pretty p-default p-curve form-check form-check-inline removetest">' +
-							'<input type="radio" name="half_type_id" value="1/' + obj.start_am + '/' + obj.time_end_am + '" id="am" checked="checked">' +
+							'<input type="radio" name="half_type_id" value="1/' + obj.time_start_am + '/' + obj.time_end_am + '" id="am" checked="checked">' +
 							'<div class="state p-primary">' +
-								'<label for="am" class="form-check-label">' + moment(obj.start_am, 'HH:mm:ss').format('h:mm a') + ' to ' + moment(obj.time_end_am, 'HH:mm:ss').format('h:mm a') + '</label> ' +
+								'<label for="am" class="form-check-label">' + moment(obj.time_start_am, 'HH:mm:ss').format('h:mm a') + ' to ' + moment(obj.time_end_am, 'HH:mm:ss').format('h:mm a') + '</label> ' +
 							'</div>' +
 						'</div>' +
 						'<div class="pretty p-default p-curve form-check form-check-inline removetest">' +
@@ -1029,9 +1029,9 @@ $oi = \Auth::user()->belongstostaff->hasmanyleavereplacement()->where('leave_bal
 				if( $('.removetest').length == 0 ) {
 					$('#wrappertest').append(
 						'<div class="pretty p-default p-curve form-check form-check-inline removetest">' +
-							'<input type="radio" name="half_type_id" value="1/' + obj.start_am + '/' + obj.time_end_am + '" id="am" checked="checked">' +
+							'<input type="radio" name="half_type_id" value="1/' + obj.time_start_am + '/' + obj.time_end_am + '" id="am" checked="checked">' +
 							'<div class="state p-primary">' +
-								'<label for="am" class="form-check-label">' + moment(obj.start_am, 'HH:mm:ss').format('h:mm a') + ' to ' + moment(obj.time_end_am, 'HH:mm:ss').format('h:mm a') + '</label> ' +
+								'<label for="am" class="form-check-label">' + moment(obj.time_start_am, 'HH:mm:ss').format('h:mm a') + ' to ' + moment(obj.time_end_am, 'HH:mm:ss').format('h:mm a') + '</label> ' +
 							'</div>' +
 						'</div>' +
 						'<div class="pretty p-default p-curve form-check form-check-inline removetest">' +
@@ -1225,7 +1225,7 @@ $oi = \Auth::user()->belongstostaff->hasmanyleavereplacement()->where('leave_bal
 					'{{ Form::label('suppdoc', 'Supporting Document : ', ['class' => 'col-sm-2 col-form-label']) }}' +
 					'<div class="col-auto form-check suppdoc">' +
 						'{{ Form::checkbox('documentsupport', 1, @$value, ['class' => 'form-check-input rounded', 'id' => 'suppdoc']) }}' +
-						'<label for="suppdoc" class="form-check-label p-1 mb-2 bg-warning text-danger rounded">Please ensure you will submit <strong>Supporting Document</strong> within a period of  <strong>3 Days</strong> upon return.</label>' +
+						'<label for="suppdoc" class="form-check-label p-1 bg-warning text-danger rounded">Please ensure you will submit <strong>Supporting Document</strong> within a period of  <strong>3 Days</strong> upon return.</label>' +
 					'</div>' +
 				'</div>' +
 			'</div>'
@@ -1450,9 +1450,9 @@ $oi = \Auth::user()->belongstostaff->hasmanyleavereplacement()->where('leave_bal
 				if( $('.removetest').length == 0 ) {
 					$('#wrappertest').append(
 						'<div class="pretty p-default p-curve form-check form-check-inline removetest">' +
-							'<input type="radio" name="half_type_id" value="1/' + obj.start_am + '/' + obj.time_end_am + '" id="am" checked="checked">' +
+							'<input type="radio" name="half_type_id" value="1/' + obj.time_start_am + '/' + obj.time_end_am + '" id="am" checked="checked">' +
 							'<div class="state p-primary">' +
-								'<label for="am" class="form-check-label">' + moment(obj.start_am, 'HH:mm:ss').format('h:mm a') + ' to ' + moment(obj.time_end_am, 'HH:mm:ss').format('h:mm a') + '</label> ' +
+								'<label for="am" class="form-check-label">' + moment(obj.time_start_am, 'HH:mm:ss').format('h:mm a') + ' to ' + moment(obj.time_end_am, 'HH:mm:ss').format('h:mm a') + '</label> ' +
 							'</div>' +
 						'</div>' +
 						'<div class="pretty p-default p-curve form-check form-check-inline removetest">' +
@@ -1522,7 +1522,7 @@ $oi = \Auth::user()->belongstostaff->hasmanyleavereplacement()->where('leave_bal
 					'{{ Form::label('suppdoc', 'Supporting Documents : ', ['class' => 'col-sm-2 col-form-label']) }}' +
 					'<div class="col-auto form-check suppdoc">' +
 						'{{ Form::checkbox('documentsupport', 1, @$value, ['class' => 'form-check-input rounded', 'id' => 'suppdoc']) }}' +
-						'<label for="suppdoc" class="form-check-label p-1 mb-2 bg-warning text-danger rounded">Please ensure you will submit <strong>Supporting Document</strong> within a period of  <strong>3 Days</strong> upon return.</label>' +
+						'<label for="suppdoc" class="form-check-label p-1 bg-warning text-danger rounded">Please ensure you will submit <strong>Supporting Document</strong> within a period of  <strong>3 Days</strong> upon return.</label>' +
 					'</div>' +
 				'</div>' +
 
@@ -1632,7 +1632,7 @@ $oi = \Auth::user()->belongstostaff->hasmanyleavereplacement()->where('leave_bal
 		// time start
 		// need to get working hour for each user
 // lazy to implement this 1. :P
-// moment(obj.start_am, 'HH:mm:ss').format('h:mm a')
+// moment(obj.time_start_am, 'HH:mm:ss').format('h:mm a')
 // moment(obj.time_end_am, 'HH:mm:ss').format('h:mm a')
 // moment(obj.time_start_pm, 'HH:mm:ss').format('h:mm a')
 // moment(obj.time_end_pm, 'HH:mm:ss').format('h:mm a')
@@ -1721,7 +1721,7 @@ $oi = \Auth::user()->belongstostaff->hasmanyleavereplacement()->where('leave_bal
 					'{{ Form::label('suppdoc', 'Supporting Document : ', ['class' => 'col-sm-2 col-form-label']) }}' +
 					'<div class="col-auto form-check suppdoc">' +
 						'{{ Form::checkbox('documentsupport', 1, @$value, ['class' => 'form-check-input rounded', 'id' => 'suppdoc']) }}' +
-						'<label for="suppdoc" class="form-check-label p-1 mb-2 bg-warning text-danger rounded">Please ensure you will submit <strong>Supporting Document</strong> within a period of  <strong>3 Days</strong> upon return.</label>' +
+						'<label for="suppdoc" class="form-check-label p-1 bg-warning text-danger rounded">Please ensure you will submit <strong>Supporting Document</strong> within a period of  <strong>3 Days</strong> upon return.</label>' +
 					'</div>' +
 				'</div>' +
 
@@ -1981,7 +1981,7 @@ $oi = \Auth::user()->belongstostaff->hasmanyleavereplacement()->where('leave_bal
 					'{{ Form::label('suppdoc', 'Supporting Document : ', ['class' => 'col-sm-2 col-form-label']) }}' +
 					'<div class="col-auto form-check suppdoc">' +
 						'{{ Form::checkbox('documentsupport', 1, @$value, ['class' => 'form-check-input rounded', 'id' => 'suppdoc']) }}' +
-						'<label for="suppdoc" class="form-check-label p-1 mb-2 bg-warning text-danger rounded">Please ensure you will submit <strong>Supporting Document</strong> within a period of  <strong>3 Days</strong> upon return.</label>' +
+						'<label for="suppdoc" class="form-check-label p-1 bg-warning text-danger rounded">Please ensure you will submit <strong>Supporting Document</strong> within a period of  <strong>3 Days</strong> upon return.</label>' +
 					'</div>' +
 				'</div>' +
 			'</div>'
@@ -2213,9 +2213,9 @@ $oi = \Auth::user()->belongstostaff->hasmanyleavereplacement()->where('leave_bal
 				if( $('.removetest').length == 0 ) {
 					$('#wrappertest').append(
 						'<div class="pretty p-default p-curve form-check form-check-inline removetest">' +
-							'<input type="radio" name="half_type_id" value="1/' + obj.start_am + '/' + obj.time_end_am + '" id="am" checked="checked">' +
+							'<input type="radio" name="half_type_id" value="1/' + obj.time_start_am + '/' + obj.time_end_am + '" id="am" checked="checked">' +
 							'<div class="state p-primary">' +
-								'<label for="am" class="form-check-label">' + moment(obj.start_am, 'HH:mm:ss').format('h:mm a') + ' to ' + moment(obj.time_end_am, 'HH:mm:ss').format('h:mm a') + '</label> ' +
+								'<label for="am" class="form-check-label">' + moment(obj.time_start_am, 'HH:mm:ss').format('h:mm a') + ' to ' + moment(obj.time_end_am, 'HH:mm:ss').format('h:mm a') + '</label> ' +
 							'</div>' +
 						'</div>' +
 						'<div class="pretty p-default p-curve form-check form-check-inline removetest">' +
@@ -2283,9 +2283,9 @@ $oi = \Auth::user()->belongstostaff->hasmanyleavereplacement()->where('leave_bal
 				if( $('.removetest').length == 0 ) {
 					$('#wrappertest').append(
 						'<div class="pretty p-default p-curve form-check form-check-inline removetest">' +
-							'<input type="radio" name="half_type_id" value="1/' + obj.start_am + '/' + obj.time_end_am + '" id="am" checked="checked">' +
+							'<input type="radio" name="half_type_id" value="1/' + obj.time_start_am + '/' + obj.time_end_am + '" id="am" checked="checked">' +
 							'<div class="state p-primary">' +
-								'<label for="am" class="form-check-label">' + moment(obj.start_am, 'HH:mm:ss').format('h:mm a') + ' to ' + moment(obj.time_end_am, 'HH:mm:ss').format('h:mm a') + '</label> ' +
+								'<label for="am" class="form-check-label">' + moment(obj.time_start_am, 'HH:mm:ss').format('h:mm a') + ' to ' + moment(obj.time_end_am, 'HH:mm:ss').format('h:mm a') + '</label> ' +
 							'</div>' +
 						'</div>' +
 						'<div class="pretty p-default p-curve form-check form-check-inline removetest">' +
@@ -2356,7 +2356,7 @@ $oi = \Auth::user()->belongstostaff->hasmanyleavereplacement()->where('leave_bal
 					'{{ Form::label('suppdoc', 'Supporting Document : ', ['class' => 'col-sm-2 col-form-label']) }}' +
 					'<div class="col-auto form-check suppdoc">' +
 						'{{ Form::checkbox('documentsupport', 1, @$value, ['class' => 'form-check-input rounded', 'id' => 'suppdoc']) }}' +
-						'<label for="suppdoc" class="form-check-label p-1 mb-2 bg-warning text-danger rounded">Please ensure you will submit <strong>Supporting Document</strong> within a period of  <strong>3 Days</strong> upon return.</label>' +
+						'<label for="suppdoc" class="form-check-label p-1 bg-warning text-danger rounded">Please ensure you will submit <strong>Supporting Document</strong> within a period of  <strong>3 Days</strong> upon return.</label>' +
 					'</div>' +
 				'</div>' +
 
@@ -2583,9 +2583,9 @@ $oi = \Auth::user()->belongstostaff->hasmanyleavereplacement()->where('leave_bal
 				if( $('.removetest').length == 0 ) {
 					$('#wrappertest').append(
 						'<div class="pretty p-default p-curve form-check form-check-inline removetest">' +
-							'<input type="radio" name="half_type_id" value="1/' + obj.start_am + '/' + obj.time_end_am + '" id="am" checked="checked">' +
+							'<input type="radio" name="half_type_id" value="1/' + obj.time_start_am + '/' + obj.time_end_am + '" id="am" checked="checked">' +
 							'<div class="state p-primary">' +
-								'<label for="am" class="form-check-label">' + moment(obj.start_am, 'HH:mm:ss').format('h:mm a') + ' to ' + moment(obj.time_end_am, 'HH:mm:ss').format('h:mm a') + '</label> ' +
+								'<label for="am" class="form-check-label">' + moment(obj.time_start_am, 'HH:mm:ss').format('h:mm a') + ' to ' + moment(obj.time_end_am, 'HH:mm:ss').format('h:mm a') + '</label> ' +
 							'</div>' +
 						'</div>' +
 						'<div class="pretty p-default p-curve form-check form-check-inline removetest">' +
