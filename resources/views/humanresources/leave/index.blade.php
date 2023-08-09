@@ -261,6 +261,7 @@ $leaveMa =  $us->hasmanyleavematernity()->where('year', date('Y'))->first();
 	$h1 = \Auth::user()->belongstostaff->whereIn('div_id', [1, 3])->first();	// user is a HOD
 	$d1 = \Auth::user()->belongstostaff->whereIn('div_id', [2, 3])->first();	// user is a director
 	$r1 = \Auth::user()->belongstostaff->where('div_id', 3)->first();	// user is a HR
+	// dump($s1);
 	?>
 
 	<p>&nbsp;</p>
@@ -285,27 +286,27 @@ $leaveMa =  $us->hasmanyleavematernity()->where('year', date('Y'))->first();
 			<tbody>
 				@foreach($x as $a)
 				<?php
-				if ( ($a->belongstostaffleave->leave_type_id == 9) || ($a->belongstostaffleave->leave_type_id != 9 && $a->belongstostaffleave->half_type_id == 2) || ($a->belongstostaffleave->leave_type_id != 9 && $a->belongstostaffleave->half_type_id == 1) ) {
-					$dts = \Carbon\Carbon::parse($a->belongstostaffleave->date_time_start)->format('j M Y g:i a');
-					$dte = \Carbon\Carbon::parse($a->belongstostaffleave->date_time_end)->format('j M Y g:i a');
+				if ( ($a->belongstoleave->leave_type_id == 9) || ($a->belongstoleave->leave_type_id != 9 && $a->belongstoleave->half_type_id == 2) || ($a->belongstoleave->leave_type_id != 9 && $a->belongstoleave->half_type_id == 1) ) {
+					$dts = \Carbon\Carbon::parse($a->belongstoleave->date_time_start)->format('j M Y g:i a');
+					$dte = \Carbon\Carbon::parse($a->belongstoleave->date_time_end)->format('j M Y g:i a');
 
-					if ($a->belongstostaffleave->leave_type_id != 9) {
-						if ($a->belongstostaffleave->half_type_id == 2) {
-							$dper = $a->belongstostaffleave->period_day.' Day';
-						} elseif($a->belongstostaffleave->half_type_id == 1) {
-							$dper = $a->belongstostaffleave->period_day.' Day';
+					if ($a->belongstoleave->leave_type_id != 9) {
+						if ($a->belongstoleave->half_type_id == 2) {
+							$dper = $a->belongstoleave->period_day.' Day';
+						} elseif($a->belongstoleave->half_type_id == 1) {
+							$dper = $a->belongstoleave->period_day.' Day';
 						}
-					}elseif ($a->belongstostaffleave->leave_type_id == 9) {
-						$i = \Carbon\Carbon::parse($a->belongstostaffleave->period_time);
+					}elseif ($a->belongstoleave->leave_type_id == 9) {
+						$i = \Carbon\Carbon::parse($a->belongstoleave->period_time);
 						$dper = $i->hour.' hour, '.$i->minute.' minutes';
 					}
 
 				} else {
-					$dts = \Carbon\Carbon::parse($a->belongstostaffleave->date_time_start)->format('j M Y ');
-					$dte = \Carbon\Carbon::parse($a->belongstostaffleave->date_time_end)->format('j M Y ');
-					$dper = $a->belongstostaffleave->period_day.' day/s';
+					$dts = \Carbon\Carbon::parse($a->belongstoleave->date_time_start)->format('j M Y ');
+					$dte = \Carbon\Carbon::parse($a->belongstoleave->date_time_end)->format('j M Y ');
+					$dper = $a->belongstoleave->period_day.' day/s';
 				}
-				$z = \Carbon\Carbon::parse(now())->daysUntil($a->belongstostaffleave->date_time_start, 1)->count();
+				$z = \Carbon\Carbon::parse(now())->daysUntil($a->belongstoleave->date_time_start, 1)->count();
 				if(3 <= $z && $z >= 1){
 					$u = 'table-warning';
 				} elseif($z < 1){
@@ -315,9 +316,9 @@ $leaveMa =  $us->hasmanyleavematernity()->where('year', date('Y'))->first();
 				}
 				?>
 				<tr class="{{ $u }}" >
-					<td>{{ $a->belongstostaffleave->belongstostaff->name }}</td>
-					<td>{{ $a->belongstostaffleave->belongstooptleavetype->leave_type_code }}</td>
-					<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="{{ $a->belongstostaffleave->reason }}">{{ str($a->belongstostaffleave->reason)->words(3, ' >') }}</td>
+					<td>{{ $a->belongstoleave->belongstostaff->name }}</td>
+					<td>{{ $a->belongstoleave->belongstooptleavetype->leave_type_code }}</td>
+					<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="{{ $a->belongstoleave->reason }}">{{ str($a->belongstoleave->reason)->words(3, ' >') }}</td>
 					<td>{{ $dts }}</td>
 					<td>{{ $dte }}</td>
 					<td>{{ $dper }}</td>
@@ -354,51 +355,97 @@ $leaveMa =  $us->hasmanyleavematernity()->where('year', date('Y'))->first();
 					</thead>
 					<tbody>
 						@foreach(HRLeaveApprovalSupervisor::whereNull('leave_status_id')->get() as $a)
-						<?php
-						dd($a->belongstostaffleave);
-						$ul = $a->belongstostaffleave->belongstostaff->belongstomanydepartment->wherePivot('main', 1)->first()->branch_id;			//get user leave branch_id
-						$us = \Auth::user()->belongstostaff->belongstomanydepartment->wherePivot('main', 1)->first()->branch_id;					//get user supervisor branch_id
+							<?php
+							$ul = $a->belongstoleave->belongstostaff->belongstomanydepartment->first()->branch_id;				//get user leave branch_id
+							$us = \Auth::user()->belongstostaff->belongstomanydepartment->first()->branch_id;					//get user supervisor branch_id
+							// echo $ul.' | '.$us;
 
-							if ( ($a->belongstostaffleave->leave_type_id == 9) || ($a->belongstostaffleave->leave_type_id != 9 && $a->belongstostaffleave->half_type_id == 2) || ($a->belongstostaffleave->leave_type_id != 9 && $a->belongstostaffleave->half_type_id == 1) ) {
-								$dts = \Carbon\Carbon::parse($a->belongstostaffleave->date_time_start)->format('j M Y g:i a');
-								$dte = \Carbon\Carbon::parse($a->belongstostaffleave->date_time_end)->format('j M Y g:i a');
+								if ( ($a->belongstoleave->leave_type_id == 9) || ($a->belongstoleave->leave_type_id != 9 && $a->belongstoleave->half_type_id == 2) || ($a->belongstoleave->leave_type_id != 9 && $a->belongstoleave->half_type_id == 1) ) {
+									$dts = \Carbon\Carbon::parse($a->belongstoleave->date_time_start)->format('j M Y g:i a');
+									$dte = \Carbon\Carbon::parse($a->belongstoleave->date_time_end)->format('j M Y g:i a');
 
-								if ($a->belongstostaffleave->leave_type_id != 9) {
-									if ($a->belongstostaffleave->half_type_id == 2) {
-										$dper = $a->belongstostaffleave->period_day.' Day';
-									} elseif($a->belongstostaffleave->half_type_id == 1) {
-										$dper = $a->belongstostaffleave->period_day.' Day';
+									if ($a->belongstoleave->leave_type_id != 9) {
+										if ($a->belongstoleave->half_type_id == 2) {
+											$dper = $a->belongstoleave->period_day.' Day';
+										} elseif($a->belongstoleave->half_type_id == 1) {
+											$dper = $a->belongstoleave->period_day.' Day';
+										}
+									}elseif ($a->belongstoleave->leave_type_id == 9) {
+										$i = \Carbon\Carbon::parse($a->belongstoleave->period_time);
+										$dper = $i->hour.' hour, '.$i->minute.' minutes';
 									}
-								}elseif ($a->belongstostaffleave->leave_type_id == 9) {
-									$i = \Carbon\Carbon::parse($a->belongstostaffleave->period_time);
-									$dper = $i->hour.' hour, '.$i->minute.' minutes';
-								}
 
-							} else {
-								$dts = \Carbon\Carbon::parse($a->belongstostaffleave->date_time_start)->format('j M Y ');
-								$dte = \Carbon\Carbon::parse($a->belongstostaffleave->date_time_end)->format('j M Y ');
-								$dper = $a->belongstostaffleave->period_day.' day/s';
-							}
-							$z = \Carbon\Carbon::parse(now())->daysUntil($a->belongstostaffleave->date_time_start, 1)->count();
-							if(3 <= $z && $z >= 1){
-								$u = 'table-warning';
-							} elseif($z < 1){
-								$u = 'table-danger';
-							} elseif($z > 3){
-								$u = NULL;
-							}
-						?>
-						<tr class="{{ $u }}" >
-							<td>{{ $a->belongstostaffleave->belongstostaff->name }}</td>
-							<td>{{ $a->belongstostaffleave->belongstooptleavetype->leave_type_code }}</td>
-							<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="{{ $a->belongstostaffleave->reason }}">{{ str($a->belongstostaffleave->reason)->words(3, ' >') }}</td>
-							<td>{{ $dts }}</td>
-							<td>{{ $dte }}</td>
-							<td>{{ $dper }}</td>
-							<td>
-								<a href="{{ __('route') }}" class="btn btn-sm btn-outline-secondary rapprover_btn" id="rapprover_btn_{{ $a->id }}" data-id="{{ $a->id }}" alt="Replacement Approver" title="Replacement Approver"><i class="bi bi-box-arrow-in-down"></i></a>
-							</td>
-						</tr>
+								} else {
+									$dts = \Carbon\Carbon::parse($a->belongstoleave->date_time_start)->format('j M Y ');
+									$dte = \Carbon\Carbon::parse($a->belongstoleave->date_time_end)->format('j M Y ');
+									$dper = $a->belongstoleave->period_day.' day/s';
+								}
+								$z = \Carbon\Carbon::parse(now())->daysUntil($a->belongstoleave->date_time_start, 1)->count();
+								if(3 >= $z && $z >= 1){
+									$u = 'table-warning';
+								} elseif($z < 1){
+									$u = 'table-danger';
+								} else {
+									$u = NULL;
+								}
+							?>
+							@if($ul == $us)
+								<tr class="{{ $u }}" >
+									<td>{{ $a->belongstoleave->belongstostaff?->name }}</td>
+									<td>{{ $a->belongstoleave->belongstooptleavetype?->leave_type_code }}</td>
+									<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="{{ $a->belongstoleave->reason }}">{{ str($a->belongstoleave->reason)->words(3, ' >') }}</td>
+									<td>{{ $dts }}</td>
+									<td>{{ $dte }}</td>
+									<td>{{ $dper }}</td>
+									<td>
+										<!-- <a href="{{ __('route') }}" class="btn btn-sm btn-outline-secondary sapprover_btn" id="sapprover_btn_{{ $a->id }}" data-id="{{ $a->id }}" alt="Supervisor Approver" title="Supervisor Approver"><i class="bi bi-box-arrow-in-down"></i></a> -->
+										<!-- Button trigger modal -->
+										<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#sapproval" data-id="{{ $a->id }}">
+											<i class="bi bi-box-arrow-in-down"></i>Supervisor Approval
+										</button>
+
+										<!-- Modal for supervisor approval-->
+										<div class="modal fade" id="sapproval" aria-labelledby="exampleModalLabel" aria-hidden="true">
+										<!-- <div class="modal fade" id="sapproval" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false"> -->
+											<div class="modal-dialog modal-dialog-centered">
+												<div class="modal-content">
+													<div class="modal-header">
+														<h1 class="modal-title fs-5" id="exampleModalLabel">Supervisor Approval</h1>
+														<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+													</div>
+													<div class="modal-body">
+														{{ Form::open(['route' => ['leavestatus.supervisorstatus'], 'method' => 'patch', 'id' => 'form', 'autocomplete' => 'off', 'files' => true,  'data-toggle' => 'validator']) }}
+														{{ Form::hidden('id', $a->id) }}
+														<div class="mb-3 row">
+															<div class="form-group row {{ $errors->has('username') ? 'has-error' : '' }}">
+																<label for="code" class="col-auto col-form-label col-form-label-sm">Verify Code :</label>
+																<div class="col-auto">
+																	<input type="text" name="verify_code" value="{{ @$value }}" id="code" class="form-control form-control-sm" placeholder="Verify Code" required>
+																</div>
+															</div>
+														</div>
+
+														<div class="mb-3 row">
+															<div class="form-group row {{ $errors->has('username') ? 'has-error' : '' }}">
+																<label for="status" class="col-auto col-form-label col-form-label-sm">Status :</label>
+																<div class="col-auto">
+																	<select name="leave_status_id" id="status" class="form-control form-control-sm"></select>
+																</div>
+															</div>
+														</div>
+													</div>
+													<div class="modal-footer">
+														<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+														{{ Form::submit('Submit', ['class' => 'btn btn-sm btn-outline-secondary']) }}
+													</div>
+														{{ Form::close() }}
+												</div>
+											</div>
+										</div>
+
+									</td>
+								</tr>
+							@endif
 						@endforeach
 					</tbody>
 				</table>
@@ -552,11 +599,11 @@ $(document).on('click', '.swal2-confirm', function(e){
 // replacement approve leave
 $(document).on('click', '.rapprover_btn', function(e){
 	var ackID = $(this).data('id');
-	SwalDelete(ackID);
+	SwalDeleteR(ackID);
 	e.preventDefault();
 });
 
-function SwalDelete(ackID){
+function SwalDeleteR(ackID){
 	swal.fire({
 		title: 'Approve Leave',
 		text: 'Are you sure to approve this leave?',
@@ -605,6 +652,28 @@ $(document).on('click', '.swal2-confirm', function(e){
 	window.location.reload(true);
 });
 
+/////////////////////////////////////////////////////////////////////////////////////////
+// supervisor approve leave
+// get data from ajax
+
+$('#status').select2({
+	placeholder: 'Please choose',
+	allowClear: true,
+	closeOnSelect: true,
+	dropdownParent: $('#sapproval .modal-body'),
+	width: '100%',
+	ajax: {
+		url: '{{ route('leavestatus.leavestatus') }}',
+		type: 'POST',
+		dataType: 'json',
+		data: function () {
+			var data = {
+				_token: '{!! csrf_token() !!}',
+			}
+			return data;
+		}
+	},
+});
 
 /////////////////////////////////////////////////////////////////////////////////////////
 @endsection

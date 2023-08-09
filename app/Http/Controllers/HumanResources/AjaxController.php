@@ -13,13 +13,15 @@ use App\Models\Setting;
 use App\Models\HumanResources\OptWorkingHour;
 use App\Models\HumanResources\HRLeaveEntitlement;
 use App\Models\HumanResources\HRLeaveApprovalBackup;
+use App\Models\HumanResources\HRLeaveApprovalSupervisor;
+use App\Models\HumanResources\OptLeaveStatus;
 
 // load custom helper
 use App\Helpers\UnavailableDateTime;
 use \Carbon\Carbon;
 use \Carbon\CarbonPeriod;
 use Illuminate\Support\Arr;
-// use Session;
+use Session;
 
 class AjaxController extends Controller
 {
@@ -506,4 +508,55 @@ class AjaxController extends Controller
 			]);
 	}
 
+	public function leavestatus(Request $request)
+	{
+		
+		// $ls['results'] = [];
+		if(\Auth::user()->belongstostaff->div_id != 2) {
+			$c = OptLeaveStatus::where('id', '<>', 6)->where('id', '<>', 3)->get();
+		} else {
+			$c = OptLeaveStatus::where('id', '<>', 3)->get();
+		}
+		foreach ($c as $v) {
+			$ls['results'][] = ['id' => $v->id, 'text' => $v->status];
+		}
+		return response()->json($ls);
+	}
+
+	public function supervisorstatus(Request $request)
+	{
+		// return $request->all();
+		// exit;
+		$validated = $request->validate([
+			'verify_code' => 'required|numeric',
+			'leave_status_id' => 'required',
+		]);
+
+		// get verify code
+		$sa = HRLeaveApprovalSupervisor::find($request->id);
+		$vc = $sa->belongstoleave->verify_code;
+		// dd($vc);
+		if($vc == $request->verify_code) {
+			if( $request->leave_status_id == 5 ) {									// leave approve
+				$sa->update([
+					'staff_id' => \Auth::user()->belongstostaff->id,
+					'leave_status_id' => $request->leave_status_id
+				]);
+			} elseif($request->leave_status_id == 4) {								// leave rejected
+				$saly = $sa->belongstoleave->leave_type_id;									// need to find out leave type
+				if ($saly == 1 || $saly == 5) {										// annual leave
+
+				} elseif($saly == 4 || $saly == 10) {								// replacement leave
+
+				} elseif($saly == 2) {
+
+				} elseif($saly == 2) {
+			}
+		} else {
+			Session::flash('flash_message', 'Verification Code was incorrect');
+			return redirect()->route('leave.index')->withInput();
+		}
+		Session::flash('flash_message', 'Successfully make an approval for user.');
+		return redirect()->route('leave.index')->withInput();
+	}
 }
