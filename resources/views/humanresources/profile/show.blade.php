@@ -121,6 +121,7 @@ $emergencies = $profile->hasmanyemergency()->get();
     </div>
 
     <div class="col-md-4 border-right">
+
       <div class="p-3 py-5">
 
         <div class="d-flex justify-content-between align-items-center mb-3">
@@ -130,32 +131,34 @@ $emergencies = $profile->hasmanyemergency()->get();
         @if ($emergencies->isNotEmpty())
         @foreach ($emergencies as $emergency)
 
-        <div class="row mt-3">
-          <div class="col-md-12">
-            <label class="labels">NAME</label>
-            <input type="text" class="form-control" value="{{ $emergency->contact_person }}" readonly>
+        <div>
+          <div class="row mt-3">
+            <div class="col-md-12">
+              <label class="labels">NAME</label>
+              <input type="text" class="form-control" value="{{ $emergency->contact_person }}" readonly>
+            </div>
           </div>
-        </div>
 
-        <div class="row mt-3">
-          <div class="col-md-6">
-            <label class="labels">RELATIONSHIP</label>
-            <input type="text" class="form-control" value="{{ $emergency->belongstorelationship->relationship}}" readonly>
+          <div class="row mt-3">
+            <div class="col-md-6">
+              <label class="labels">RELATIONSHIP</label>
+              <input type="text" class="form-control" value="{{ $emergency->belongstorelationship->relationship}}" readonly>
+            </div>
+            <div class="col-md-6">
+              <label class="labels">PHONE NUMBER</label>
+              <input type="text" class="form-control" value="{{ $emergency->phone }}" readonly>
+            </div>
           </div>
-          <div class="col-md-6">
-            <label class="labels">PHONE NUMBER</label>
-            <input type="text" class="form-control" value="{{ $emergency->phone }}" readonly>
-          </div>
-        </div>
 
-        <div class="row mt-3">
-          <div class="col-md-12">
-            <label class="labels">ADDRESS</label>
-            <input type="text" class="form-control" value="{{ $emergency->address }}" readonly>
+          <div class="row mt-3">
+            <div class="col-md-12">
+              <label class="labels">ADDRESS</label>
+              <input type="text" class="form-control" value="{{ $emergency->address }}" readonly>
+            </div>
           </div>
-        </div>
 
-        <div class="row mt-4"></div>
+          <div class="row mt-4"></div>
+        </div>
         @endforeach
         @endif
 

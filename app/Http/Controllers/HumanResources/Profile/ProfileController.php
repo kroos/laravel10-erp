@@ -77,12 +77,24 @@ class ProfileController extends Controller
     $profile->update($request->only(['ic', 'mobile', 'email', 'address', 'dob', 'gender_id', 'nationality_id', 'race_id', 'religion_id', 'marital_status_id']));
 
     foreach ($request->emer as $value) {
-      $HREmergency = HREmergency::findOrFail($value['id']);
-      $HREmergency->contact_person = $value['contact_person'];
-      $HREmergency->phone = $value['phone'];
-      $HREmergency->address = $value['address'];
-      $HREmergency->relationship_id = $value['relationship_id'];
-      $HREmergency->update();
+      // $HREmergency = HREmergency::findOrFail($value['id']);
+      // $HREmergency->contact_person = $value['contact_person'];
+      // $HREmergency->phone = $value['phone'];
+      // $HREmergency->address = $value['address'];
+      // $HREmergency->relationship_id = $value['relationship_id'];
+      // $HREmergency->update();
+
+      $HREmergency = HREmergency::updateOrCreate(
+        [
+          'id' => $value['id']
+        ],
+        [
+          'contact_person' => $value['contact_person'],
+          'phone' => $value['phone'],
+          'address' => $value['address'],
+          'relationship_id' => $value['relationship_id'],
+        ]
+      );
     }
 
     Session::flash('flash_message', 'Data successfully updated!');
