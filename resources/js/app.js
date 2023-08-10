@@ -35,6 +35,8 @@ try {
     require('select2');
 	window.moment = require('moment');
     moment().format();
+
+    const Swal = require('sweetalert2');
 	window.swal = require ('sweetalert2');
 
 	require ('./bootstrapValidator4/js/bootstrapValidator');
