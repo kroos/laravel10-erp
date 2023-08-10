@@ -1,6 +1,14 @@
 @extends ('layouts.app')
 
 @section('content')
+<style>
+  .btn-sm-custom {
+    padding: 0px;
+    border-radius: 8px;
+    height: 25px;
+    width: 40px;
+  }
+</style>
 
 <?php
 $gender = App\Models\HumanResources\OptGender::all()->pluck('gender', 'id')->sortKeys()->toArray();
@@ -35,7 +43,7 @@ $totalRows = $emergencies->count()
 
         <div class="row mt-3">
           <div class="col-md-12">
-            <label class="labels">Name</label>
+            <label class="labels">NAME</label>
             <input type="text" class="form-control" value="{{ $profile->name }}" readonly>
           </div>
         </div>
@@ -134,9 +142,10 @@ $totalRows = $emergencies->count()
 
         <div class="d-flex justify-content-between align-items-center mb-3">
           <h4 class="text-right">Emergency Contact</h4>
-          <button class="border px-3 p-1 add-experience btn btn-sm btn-outline-secondary add_emergency" type="button">
-            <i class="bi-plus"></i>&nbsp;Contact
-          </button>
+          @if ($totalRows < 3) <button class="border px-3 p-1 add-experience btn btn-sm btn-outline-secondary add_emergency" type="button">
+            <i class="bi-plus" aria-hidden="true"></i>&nbsp;Contact
+            </button>
+            @endif
         </div>
 
         <?php $i = 1; ?>
@@ -145,10 +154,13 @@ $totalRows = $emergencies->count()
 
         <div class="table_emergency">
           <input type="hidden" name="emer[{{ $i }}][id]" value="{{ $emergency->id }}">
+          <input type="hidden" name="emer[{{ $i }}][staff_id]" value="{{ $profile-> id}}">
 
           <div class="row mt-3">
             <div class="col-md-12 {{ $errors->has('emer.'.$i.'.contact_person') ? 'has-error' : '' }}">
-              <label class="labels">NAME</label>
+              <label class="labels">
+                NAME
+              </label>
               {!! Form::text( "emer[$i][contact_person]", @$emergency->contact_person, ['class' => 'form-control', 'id' => 'contact_person', 'placeholder' => 'Please Insert', 'autocomplete' => 'off'] ) !!}
             </div>
           </div>
@@ -171,12 +183,17 @@ $totalRows = $emergencies->count()
             </div>
           </div>
 
-          <div class="row mt-4"></div>
+          <div class="mt-1 d-flex flex-row justify-content-end">
+            <a href="#" data-url="{{ route('profile.destroy', '151') }}" class="delete_emergency">
+              <button class="btn btn-outline-secondary btn-sm-custom bi bi-dash-lg"></button>
+            </a>
+          </div>
+
           <?php $i++; ?>
         </div>
         @endforeach
         @endif
-        
+
       </div>
     </div>
   </div>
@@ -191,6 +208,17 @@ $totalRows = $emergencies->count()
   </div>
 
   {!! Form::close() !!}
+
+
+
+
+  {!! Form::model($profile, ['route' => ['profile.destroy', '151'], 'method' => 'DELETE', 'id' => 'form', 'class' => 'form-horizontal', 'autocomplete' => 'off', 'files' => true]) !!}
+    {!! Form::button('delete', ['class' => 'btn btn-sm btn-outline-secondary', 'type' => 'submit']) !!}
+    {!! Form::close() !!}
+
+
+
+
 
   <div class="row mt-3">
     <div class="col-md-3"></div>
@@ -209,214 +237,147 @@ $totalRows = $emergencies->count()
 
 @section('js')
 /////////////////////////////////////////////////////////////////////////////////////////
-// ADD EMERGENCY
+$(document).ready(function () {
+$('.delete_emergency').click(function (event) {
+event.preventDefault();
+var url = $(this).data('url');
 
+if (confirm('Are you sure you want to delete this?')) {
+$.ajax({
+url: url,
+type: 'DELETE',
+success: function (data) {
+alert(data.message);
+// You can update the UI or perform other actions here
+},
+error: function (error) {
+console.error('Error:', error);
+}
+});
+}
+});
+});
+
+/////////////////////////////////////////////////////////////////////////////////////////
+// ADD EMERGENCY
 var max_emergency = 3;
 var totalRows = {{ $totalRows }};
 
 $(".add_emergency").click(function() {
 
-  if(totalRows < max_emergency) {
-    totalRows++;
-	  $(".wrap_emergency").append(
+if(totalRows < max_emergency) { totalRows++; $(".wrap_emergency").append( '<div class="table_emergency">' + '<input type="hidden" name="emer[' + totalRows +'][id]" value="">' +
+  '<input type="hidden" name="emer['+ totalRows +'][staff_id]" value="{{ $profile-> id}}">' +
 
-      '<div class="table_emergency">' +
-        '<input type="hidden" name="emer['+ totalRows +'][id]" id="id" class="form-control" autocomplete="off" value="{{ @$value }}">' +
+  '<div class="row mt-3">' +
+    '<div class="col-md-12 {{ $errors->has('emer.*.contact_person') ? 'has-error' : '' }}">' +
+      '<label class="labels">NAME</label>' +
+      '{!! Form::text( "emer[$i][contact_person]", @$value, ['class' => 'form-control', 'id' => 'contact_person', 'placeholder' => 'Please Insert', 'autocomplete' => 'off'] ) !!}' +
+      '</div>' +
+    '</div>' +
 
-        '<div class="row mt-3">' +
-          '<div class="col-md-12 {{ $errors->has('emer.*.contact_person') ? 'has-error' : '' }}">' +
-            '<label class="labels">NAME</label>' +
-            '{!! Form::text( "emer[$i][contact_person]", @$value, ['class' => 'form-control', 'id' => 'contact_person', 'placeholder' => 'Please Insert', 'autocomplete' => 'off'] ) !!}' +
-          '</div>' +
-        '</div>' +
+  '<div class="row mt-3">' +
+    '<div class="col-md-6 {{ $errors->has('emer.*.relationship_id') ? 'has-error' : '' }}">' +
+      '<label class="labels">RELATIONSHIP</label>' +
+      '{!! Form::select( "emer[$i][relationship_id]", $relationship, @$value, ['class' => 'form-control', 'id' => 'relationship_id', 'placeholder' => 'Please Select', 'autocomplete' => 'off'] ) !!}' +
+      '</div>' +
+    '<div class="col-md-6 {{ $errors->has('emer.*.phone') ? 'has-error' : '' }}">' +
+      '<label class="labels">PHONE NUMBER</label>' +
+      '{!! Form::text( "emer[$i][phone]", @$value, ['class' => 'form-control', 'id' => 'phone', 'placeholder' => 'Please Insert', 'autocomplete' => 'off'] ) !!}' +
+      '</div>' +
+    '</div>' +
 
-        '<div class="row mt-3">' +
-          '<div class="col-md-6 {{ $errors->has('emer.*.relationship_id') ? 'has-error' : '' }}">' +
-            '<label class="labels">RELATIONSHIP</label>' +
-            '{!! Form::select( "emer[$i][relationship_id]", $relationship, @$value, ['class' => 'form-control', 'id' => 'relationship_id', 'placeholder' => 'Please Select', 'autocomplete' => 'off'] ) !!}' +
-          '</div>' +
-          '<div class="col-md-6 {{ $errors->has('emer.*.phone') ? 'has-error' : '' }}">' +
-            '<label class="labels">PHONE NUMBER</label>' +
-            '{!! Form::text( "emer[$i][phone]", @$value, ['class' => 'form-control', 'id' => 'phone', 'placeholder' => 'Please Insert', 'autocomplete' => 'off'] ) !!}' +
-          '</div>' +
-        '</div>' +
+  '<div class="row mt-3">' +
+    '<div class="col-md-12 {{ $errors->has('emer.*.address') ? 'has-error' : '' }}">' +
+      '<label class="labels">ADDRESS</label>' +
+      '{!! Form::text( "emer[$i][address]", @$value, ['class' => 'form-control', 'id' => 'emergency_address', 'placeholder' => 'Please Insert', 'autocomplete' => 'off'] ) !!}' +
+      '</div>' +
+    '</div>' +
 
-        '<div class="row mt-3">' +
-          '<div class="col-md-12 {{ $errors->has('emer.*.address') ? 'has-error' : '' }}">' +
-            '<label class="labels">ADDRESS</label>' +
-            '{!! Form::text( "emer[$i][address]", @$value, ['class' => 'form-control', 'id' => 'emergency_address', 'placeholder' => 'Please Insert', 'autocomplete' => 'off'] ) !!}' +
-          '</div>' +
-        '</div>' +
+  '<div class="mt-1 d-flex flex-row justify-content-end">' +
+    '<button class="btn btn-outline-secondary btn-sm-custom bi bi-dash-lg remove_emergency"></button>' +
+    '</div>' +
+  '</div>'
 
-        '<div class="row mt-4"></div>' +
-      '</div>'
-  
-    );
+  );
 
-    $('#form').bootstrapValidator('addField',	$('.table_emergency')	.find('[name="emer['+ totalRows +'][id]"]'));
-    $('#form').bootstrapValidator('addField',	$('.table_emergency')	.find('[name="emer['+ totalRows +'][contact_person]"]'));
-    $('#form').bootstrapValidator('addField',	$('.table_emergency')	.find('[name="emer['+ totalRows +'][relationship_id]"]'));
-    $('#form').bootstrapValidator('addField',	$('.table_emergency')	.find('[name="emer['+ totalRows +'][phone]"]'));
-    $('#form').bootstrapValidator('addField',	$('.table_emergency')	.find('[name="emer['+ totalRows +'][address]"]'));
+  $('#form').bootstrapValidator('addField', $('.table_emergency') .find('[name="emer['+ totalRows +'][id]"]'));
+  $('#form').bootstrapValidator('addField', $('.table_emergency') .find('[name="emer['+ totalRows +'][staff_id]"]'));
+  $('#form').bootstrapValidator('addField', $('.table_emergency') .find('[name="emer['+ totalRows +'][contact_person]"]'));
+  $('#form').bootstrapValidator('addField', $('.table_emergency') .find('[name="emer['+ totalRows +'][relationship_id]"]'));
+  $('#form').bootstrapValidator('addField', $('.table_emergency') .find('[name="emer['+ totalRows +'][phone]"]'));
+  $('#form').bootstrapValidator('addField', $('.table_emergency') .find('[name="emer['+ totalRows +'][address]"]'));
   }
-})
+  })
 
+  $(".wrap_emergency").on("click",".remove_emergency", function(e){
+  e.preventDefault();
+  var $row = $(this).parent().parent();
+  var $option1 = $row.find('[name="emer['+ totalRows +'][id]"]');
+  var $option2 = $row.find('[name="emer['+ totalRows +'][staff_id]"]');
+  var $option3 = $row.find('[name="emer['+ totalRows +'][contact_person]"]');
+  var $option4 = $row.find('[name="emer['+ totalRows +'][relationship_id]"]');
+  var $option5 = $row.find('[name="emer['+ totalRows +'][phone]"]');
+  var $option6 = $row.find('[name="emer['+ totalRows +'][address]"]');
+  $row.remove();
 
+  $('#form').bootstrapValidator('removeField', $option1);
+  $('#form').bootstrapValidator('removeField', $option2);
+  $('#form').bootstrapValidator('removeField', $option3);
+  $('#form').bootstrapValidator('removeField', $option4);
+  $('#form').bootstrapValidator('removeField', $option5);
+  $('#form').bootstrapValidator('removeField', $option6);
+  console.log();
+  totalRows--;
+  })
 
-
-
-
-
-
-
-/////////////////////////////////////////////////////////////////////////////////////////
-// DATE PICKER
-$('#dob').datetimepicker({
-icons: {
-time: "fas fas-regular fa-clock fa-beat",
-date: "fas fas-regular fa-calendar fa-beat",
-up: "fa-regular fa-circle-up fa-beat",
-down: "fa-regular fa-circle-down fa-beat",
-previous: 'fas fas-regular fa-arrow-left fa-beat',
-next: 'fas fas-regular fa-arrow-right fa-beat',
-today: 'fas fas-regular fa-calenday-day fa-beat',
-clear: 'fas fas-regular fa-broom-wide fa-beat',
-close: 'fas fas-regular fa-rectangle-xmark fa-beat'
-},
-format: 'YYYY-MM-DD',
-useCurrent: false,
-});
-
-/////////////////////////////////////////////////////////////////////////////////////////
-// SELECTION
-$('#nationality_id').select2({
-placeholder: 'Please Select',
-width: '100%',
-allowClear: true,
-closeOnSelect: true,
-});
-
-/////////////////////////////////////////////////////////////////////////////////////////
-// VALIDATOR
-$(document).ready(function() {
-$('#form').bootstrapValidator({
-feedbackIcons: {
-valid: '',
-invalid: '',
-validating: ''
-},
-fields: {
-ic: {
-validators: {
-notEmpty: {
-message: 'Please insert ic.'
-},
-numeric: {
-message: 'The value is not an numeric'
-}
-}
-},
-
-mobile: {
-validators: {
-notEmpty: {
-message: 'Please insert mobile number.'
-},
-numeric: {
-message: 'The value is not an numeric'
-}
-}
-},
-
-email: {
-validators: {
-notEmpty: {
-message: 'Please insert email.'
-},
-emailAddress: {
-message: 'The value is not a valid email.'
-}
-}
-},
-
-address: {
-validators: {
-notEmpty: {
-message: 'Please insert address.'
-}
-}
-},
-
-dob: {
-validators: {
-notEmpty: {
-message: 'Please insert date of birth.'
-}
-}
-},
-
-gender_id: {
-validators: {
-notEmpty: {
-message: 'Please select a gender.'
-}
-}
-},
-
-nationality_id: {
-validators: {
-notEmpty: {
-message: 'Please select a nationality.'
-}
-}
-},
-
-race_id: {
-validators: {
-notEmpty: {
-message: 'Please select a race.'
-}
-}
-},
-
-religion_id: {
-validators: {
-notEmpty: {
-message: 'Please select a religion.'
-}
-}
-},
-
-marital_status_id: {
-validators: {
-notEmpty: {
-message: 'Please select a marital status.'
-}
-}
-},
-
-<?php $k = 1; ?>
-<?php foreach ($emergencies as $emergency) { ?>
-  'emer[{{ $k }}][contact_person]': {
-  validators: {
-  notEmpty: {
-  message: 'Please insert contact person.'
-  }
-  }
+  /////////////////////////////////////////////////////////////////////////////////////////
+  // DATE PICKER
+  $('#dob').datetimepicker({
+  icons: {
+  time: "fas fas-regular fa-clock fa-beat",
+  date: "fas fas-regular fa-calendar fa-beat",
+  up: "fa-regular fa-circle-up fa-beat",
+  down: "fa-regular fa-circle-down fa-beat",
+  previous: 'fas fas-regular fa-arrow-left fa-beat',
+  next: 'fas fas-regular fa-arrow-right fa-beat',
+  today: 'fas fas-regular fa-calenday-day fa-beat',
+  clear: 'fas fas-regular fa-broom-wide fa-beat',
+  close: 'fas fas-regular fa-rectangle-xmark fa-beat'
   },
+  format: 'YYYY-MM-DD',
+  useCurrent: false,
+  });
 
-  'emer[{{ $k }}][relationship_id]': {
-  validators: {
-  notEmpty: {
-  message: 'Please select a relationship.'
-  }
-  }
+  /////////////////////////////////////////////////////////////////////////////////////////
+  // SELECTION
+  $('#nationality_id').select2({
+  placeholder: 'Please Select',
+  width: '100%',
+  allowClear: true,
+  closeOnSelect: true,
+  });
+
+  $('#race_id').select2({
+  placeholder: 'Please Select',
+  width: '100%',
+  allowClear: true,
+  closeOnSelect: true,
+  });
+
+  /////////////////////////////////////////////////////////////////////////////////////////
+  // VALIDATOR
+  $(document).ready(function() {
+  $('#form').bootstrapValidator({
+  feedbackIcons: {
+  valid: '',
+  invalid: '',
+  validating: ''
   },
-
-  'emer[{{ $k }}][phone]': {
+  fields: {
+  ic: {
   validators: {
   notEmpty: {
-  message: 'Please insert phone number.'
+  message: 'Please insert ic.'
   },
   numeric: {
   message: 'The value is not an numeric'
@@ -424,17 +385,124 @@ message: 'Please select a marital status.'
   }
   },
 
-  'emer[{{ $k }}][address]': {
+  mobile: {
+  validators: {
+  notEmpty: {
+  message: 'Please insert mobile number.'
+  },
+  numeric: {
+  message: 'The value is not an numeric'
+  }
+  }
+  },
+
+  email: {
+  validators: {
+  notEmpty: {
+  message: 'Please insert email.'
+  },
+  emailAddress: {
+  message: 'The value is not a valid email.'
+  }
+  }
+  },
+
+  address: {
   validators: {
   notEmpty: {
   message: 'Please insert address.'
   }
   }
   },
-  <?php $k++; ?>
-<?php } ?>
 
-}
-})
-});
-@endsection
+  dob: {
+  validators: {
+  notEmpty: {
+  message: 'Please insert date of birth.'
+  }
+  }
+  },
+
+  gender_id: {
+  validators: {
+  notEmpty: {
+  message: 'Please select a gender.'
+  }
+  }
+  },
+
+  nationality_id: {
+  validators: {
+  notEmpty: {
+  message: 'Please select a nationality.'
+  }
+  }
+  },
+
+  race_id: {
+  validators: {
+  notEmpty: {
+  message: 'Please select a race.'
+  }
+  }
+  },
+
+  religion_id: {
+  validators: {
+  notEmpty: {
+  message: 'Please select a religion.'
+  }
+  }
+  },
+
+  marital_status_id: {
+  validators: {
+  notEmpty: {
+  message: 'Please select a marital status.'
+  }
+  }
+  },
+
+  <?php $k = 1; ?>
+  <?php foreach ($emergencies as $emergency) { ?>
+    'emer[{{ $k }}][contact_person]': {
+    validators: {
+    notEmpty: {
+    message: 'Please insert contact person.'
+    }
+    }
+    },
+
+    'emer[{{ $k }}][relationship_id]': {
+    validators: {
+    notEmpty: {
+    message: 'Please select a relationship.'
+    }
+    }
+    },
+
+    'emer[{{ $k }}][phone]': {
+    validators: {
+    notEmpty: {
+    message: 'Please insert phone number.'
+    },
+    numeric: {
+    message: 'The value is not an numeric'
+    }
+    }
+    },
+
+    'emer[{{ $k }}][address]': {
+    validators: {
+    notEmpty: {
+    message: 'Please insert address.'
+    }
+    }
+    },
+    <?php $k++; ?>
+  <?php } ?>
+
+  }
+  })
+  });
+  @endsection
