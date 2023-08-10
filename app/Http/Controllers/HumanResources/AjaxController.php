@@ -764,6 +764,8 @@ class AjaxController extends Controller
 			if($sauser->belongstoleaveapprovalflow->hr_approval == 1){																	// update on hr
 				$sal->hasmanyleaveapprovalhr()->update([/*'staff_id' => \Auth::user()->belongstostaff->id,*/ 'leave_status_id' => $request->leave_status_id, 'remarks' => 'Rejected by Director ('.\Auth::user()->belongstostaff->name.') on '.\Carbon\Carbon::now()->format('j M Y g:i a')]);
 			}
+		} elseif($request->leave_status_id == 6) {								// leave waived, so need to put back all leave period.
+
 		}
 		Session::flash('flash_message', 'Successfully make an approval for user.');
 		return redirect()->route('leave.index');
