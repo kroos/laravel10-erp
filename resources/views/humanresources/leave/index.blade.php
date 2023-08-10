@@ -26,7 +26,7 @@ $leaveMa =  $us->hasmanyleavematernity()->where('year', date('Y'))->first();
 // $ls['results'] = [];
 if(\Auth::user()->belongstostaff->div_id != 2) {									// not director approval: supervisor, hod, hr
 	$c = OptLeaveStatus::whereIn('id', [4,5])->get();								// only rejected and approve
-} elseif(\Auth::user()->belongstostaff->div_id == 2) {																			// only director
+} elseif(\Auth::user()->belongstostaff->div_id == 2) {								// only director
 	$c = OptLeaveStatus::whereIn('id', [4,5,6])->get();								// only rejected, approve and waived
 }
 foreach ($c as $v) {
@@ -279,11 +279,11 @@ foreach ($c as $v) {
 
 	<?php
 	$x = \Auth::user()->belongstostaff->hasmanyleaveapprovalbackup()->whereNull('leave_status_id')->get();	// user is a backup for some1 else
-	$s1 = \Auth::user()->belongstostaff()->whereIn('div_id', [4, 3])->first();	// user is a supervisor and HR
-	$h1 = \Auth::user()->belongstostaff->whereIn('div_id', [1, 3])->first();	// user is a HOD and HR
-	$d1 = \Auth::user()->belongstostaff->whereIn('div_id', [2, 3])->first();	// user is a director and HR
-	$r1 = \Auth::user()->belongstostaff->where('div_id', 3)->first();			// user is a HR
-	// dd($x);
+	$s1 = \Auth::user()->belongstostaff()->whereIn('div_id', [4, 3])->get()->count();		// user is a supervisor and HR
+	$h1 = \Auth::user()->belongstostaff()->whereIn('div_id', [1, 3])->get()->count();			// user is a HOD and HR
+	$d1 = \Auth::user()->belongstostaff()->whereIn('div_id', [2, 3])->get()->count();			// user is a director and HR
+	$r1 = \Auth::user()->belongstostaff()->where('div_id', 3)->get()->count();				// user is a HR
+	// dd($h1);
 	?>
 
 	<p>&nbsp;</p>
@@ -439,8 +439,8 @@ foreach ($c as $v) {
 
 														@foreach($ls as $k => $val)
 														<div class="form-check form-check-inline">
-															<input type="radio" name="leave_status_id" value="{{ $val['id'] }}" id="supstatus{{ $val['id'] }}" class="form-check-input">
-															<label class="form-check-label" for="supstatus{{ $val['id'] }}">{{ $val['text'] }}</label>
+															<input type="radio" name="leave_status_id" value="{{ $val['id'] }}" id="supstatus{{ $a->id.$val['id'] }}" class="form-check-input">
+															<label class="form-check-label" for="supstatus{{ $a->id.$val['id'] }}">{{ $val['text'] }}</label>
 														</div>
 														@endforeach
 
@@ -554,8 +554,8 @@ foreach ($c as $v) {
 														{{ Form::hidden('id', $a->id) }}
 														@foreach($ls as $k => $val)
 														<div class="form-check form-check-inline {{ $errors->has('leave_status_id') ? 'has-error' : '' }}">
-															<input type="radio" name="leave_status_id" value="{{ $val['id'] }}" id="hodstatus{{ $val['id'] }}" class="form-check-input">
-															<label class="form-check-label" for="hodstatus{{ $val['id'] }}">{{ $val['text'] }}</label>
+															<input type="radio" name="leave_status_id" value="{{ $val['id'] }}" id="hodstatus{{ $a->id.$val['id'] }}" class="form-check-input">
+															<label class="form-check-label" for="hodstatus{{ $a->id.$val['id'] }}">{{ $val['text'] }}</label>
 														</div>
 														@endforeach
 														<div class="mb-3 row">
@@ -667,8 +667,8 @@ foreach ($c as $v) {
 													{{ Form::hidden('id', $a->id) }}
 													@foreach($ls as $k => $val)
 													<div class="form-check form-check-inline {{ $errors->has('leave_status_id') ? 'has-error' : '' }}">
-														<input type="radio" name="leave_status_id" value="{{ $val['id'] }}" id="dirstatus{{ $val['id'] }}" class="form-check-input">
-														<label class="form-check-label" for="dirstatus{{ $val['id'] }}">{{ $val['text'] }}</label>
+														<input type="radio" name="leave_status_id" value="{{ $val['id'] }}" id="dirstatus{{ $a->id.$val['id'] }}" class="form-check-input">
+														<label class="form-check-label" for="dirstatus{{ $a->id.$val['id'] }}">{{ $val['text'] }}</label>
 													</div>
 													@endforeach
 													<div class="mb-3 row">
@@ -698,9 +698,9 @@ foreach ($c as $v) {
 	@endif
 
 	<p>&nbsp;</p>
-	@if($r1?->hasmanyleaveapprovalhr()->get()->isNotEmpty())
+	@if($r1)
 	<div class="col-auto table-responsive">
-		<h4>Human Resource Approver</h4>
+		<h4>Human Resource Approval</h4>
 		<table class="table table-hover table-sm" id="hrapprover" style="font-size:12px">
 			<thead>
 				<tr>
@@ -732,13 +732,13 @@ $.fn.dataTable.moment( 'D MMM YYYY' );
 $.fn.dataTable.moment( 'D MMM YYYY h:mm a' );
 $('#leaves').DataTable({
 	"lengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "All"] ],
-	"order": [[0, "desc" ]],	// sorting the 6th column descending
+	"order": [[0, "asc" ]],	// sorting the 6th column descending
 	responsive: true
 });
 
 $('#bapprover, #sapprover, #hodapprover, #dirapprover, #hrapprover').DataTable({
 	"lengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "All"] ],
-	"order": [[3, "desc" ]],	// sorting the 6th column descending
+	"order": [[3, "asc" ]],	// sorting the 4th column descending
 	responsive: true
 });
 

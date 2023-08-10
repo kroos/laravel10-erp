@@ -41,7 +41,7 @@
 		<div id="wrapper"></div>
 	
 		<div class="form-group row mb-3 {{ $errors->has('akuan') ? 'has-error' : '' }}">
-			<div class="offset-sm-2 col-auto form-check">
+			<div class="offset-sm-2 col-auto">
 				{{ Form::checkbox('akuan', 1, @$value, ['class' => 'form-check-input ', 'id' => 'akuan1']) }}
 					<label for="akuan1" class="form-check-label p-1 bg-warning text-danger rounded"><p>I hereby confirmed that all details and information filled in are <strong>CORRECT</strong> and <strong>CHECKED</strong> before sending.</p></label>
 			</div>
