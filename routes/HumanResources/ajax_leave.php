@@ -12,6 +12,8 @@ Route::post('/unavailabledate', [AjaxController::class, 'unavailabledate'])->nam
 Route::post('/timeleave', [AjaxController::class, 'timeleave'])->name('leavedate.timeleave');
 Route::post('/leavestatus', [AjaxController::class, 'leavestatus'])->name('leavestatus.leavestatus');
 Route::patch('/supervisorstatus', [AjaxController::class, 'supervisorstatus'])->name('leavestatus.supervisorstatus');
+Route::patch('/hodstatus', [AjaxController::class, 'hodstatus'])->name('leavestatus.hodstatus');
+Route::patch('/dirstatus', [AjaxController::class, 'dirstatus'])->name('leavestatus.dirstatus');
 
 // Route::get('/login/{login}', [
 // 	'as' => 'login.edit',

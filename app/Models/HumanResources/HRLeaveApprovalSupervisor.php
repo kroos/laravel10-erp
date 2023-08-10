@@ -34,7 +34,7 @@ class HRLeaveApprovalSupervisor extends Model
         ]);
     }
 
-    public function belongstoleave(): BelongsTo
+    public function belongstostaffleave(): BelongsTo
     {
         return $this->belongsTo(\App\Models\HumanResources\HRLeave::class, 'leave_id')->withDefault([
             'name' => 'No data'
