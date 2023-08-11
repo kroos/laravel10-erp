@@ -17,7 +17,8 @@ class RedirectIfNotHR
 	 */
 	public function handle(Request $request, Closure $next): Response
 	{
-		if ( ! $request->user()->isHR() ) {
+		// dd($request->user()->isHRnAdmin());
+		if ( !$request->user()->isHRnAdmin() ) {
 			return redirect()->back();
 		}
 		return $next($request);
