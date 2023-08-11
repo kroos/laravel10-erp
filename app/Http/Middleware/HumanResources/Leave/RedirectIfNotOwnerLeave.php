@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Middleware\Leave;
+namespace App\Http\Middleware\HumanResources\Leave;
 
 use Closure;
 

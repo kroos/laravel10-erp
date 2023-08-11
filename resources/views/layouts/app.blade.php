@@ -62,7 +62,8 @@
 			</div>
 		</header>
 
-		<div class="nav-scroller py-1 mb-3 border-bottom">
+		<!-- <div class="nav-scroller py-1 mb-3 border-bottom"> -->
+		<div class="py-1 mb-3 border-bottom">
 			@include('layouts.nav')
 		</div>
 	</div>

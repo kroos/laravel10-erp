@@ -152,19 +152,19 @@ class Login extends Authenticatable // implements MustVerifyEmail
 		}
 	}
 
-	public function isHR() {
+	public function isHRnAdmin() {
 		$uadmin = auth()->user()->belongstostaff()->where('authorise_id', 1)->get();					// user is admin
 		$uhoa = auth()->user()->belongstostaff->whereIn('authorise_id', [2, 3])->get();					// user is hod or asst. hod
 		$u = auth()->user()->belongstostaff->belongstomanydepartment()->wherePivot('main', 1)->firstOrFail();
 		// dd($u->id);
 		if ($u->id == 14) {
-			if ($uhoa) {
+			if ($uhoa->isNotEmpty()) {
 				return true;
 			} else {
 				return false;				
 			}
 		} else {
-			if($uadmin) {
+			if($uadmin->isNotEmpty()) {
 				return true;
 			} else {
 				return false;
