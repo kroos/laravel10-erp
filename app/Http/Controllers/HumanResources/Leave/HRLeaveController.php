@@ -35,6 +35,7 @@ class HRLeaveController extends Controller
 		$this->middleware('auth');
 		$this->middleware('leaveaccess', ['only' => ['show', 'edit', 'update']]);
 	}
+
 	/**
 	 * Display a listing of the resource.
 	 */

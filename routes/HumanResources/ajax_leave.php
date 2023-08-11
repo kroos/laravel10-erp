@@ -14,6 +14,7 @@ Route::post('/leavestatus', [AjaxController::class, 'leavestatus'])->name('leave
 Route::patch('/supervisorstatus', [AjaxController::class, 'supervisorstatus'])->name('leavestatus.supervisorstatus');
 Route::patch('/hodstatus', [AjaxController::class, 'hodstatus'])->name('leavestatus.hodstatus');
 Route::patch('/dirstatus', [AjaxController::class, 'dirstatus'])->name('leavestatus.dirstatus');
+Route::patch('/hrstatus', [AjaxController::class, 'hrstatus'])->name('leavestatus.hrstatus');
 
 // Route::get('/login/{login}', [
 // 	'as' => 'login.edit',
