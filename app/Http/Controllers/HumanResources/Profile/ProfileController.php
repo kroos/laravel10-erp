@@ -106,7 +106,9 @@ class ProfileController extends Controller
       ]
     );
 
-    Session::flash('flash_message', 'Data successfully deleted!');
-    return Redirect::route('profile.show', $profile);
+    return response()->json([
+      'status' => 'success',
+      'message' => 'Your emergency contact has been deleted.',
+    ]);
   }
 }
