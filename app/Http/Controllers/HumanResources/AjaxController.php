@@ -528,14 +528,23 @@ class AjaxController extends Controller
 		// return $request->all();
 		// exit;
 		$validated = $request->validate([
-			'leave_status_id' => 'required',
-			'verify_code' => 'required_if:leave_status_id,5|numeric|nullable',		// required if only leave_status_id 
-		]);
+				'leave_status_id' => 'required',
+				'verify_code' => 'required_if:leave_status_id,5|numeric|nullable',		// required if only leave_status_id is 5 (Approved)
+			],
+			[
+				'leave__status_id.required' => 'Please choose your approval',
+				'verify_code.required_if' => 'Please insert :attribute to approve leave, otherwise it wont be necessary for leave application reject',
+			],
+			[
+				'leave_status_id' => 'Approval Status',
+				'verify_code' => 'Verification Code'
+			]
+		);
 
 		// get verify code
 		$sa = HRLeaveApprovalSupervisor::find($request->id);
-		$sal = $sa->belongstoleave;													// this supervisor approval belongs to leave
-		$sauser = $sal->belongstostaff;												// leave belongs to user, not authuser anymore
+		$sal = $sa->belongstostaffleave;										// this supervisor approval belongs to leave
+		$sauser = $sal->belongstostaff;											// leave belongs to user, not authuser anymore
 		// dd($sauser);
 		$vc = $sal->verify_code;
 		// dd($sal);
@@ -610,14 +619,23 @@ class AjaxController extends Controller
 		// return $request->all();
 		// exit;
 		$validated = $request->validate([
-			'leave_status_id' => 'required',
-			'verify_code' => 'required_if:leave_status_id,5|numeric|nullable',		// required if only leave_status_id is 5 (Approved)
-		]);
+				'leave_status_id' => 'required',
+				'verify_code' => 'required_if:leave_status_id,5|numeric|nullable',		// required if only leave_status_id is 5 (Approved)
+			],
+			[
+				'leave__status_id.required' => 'Please choose your approval',
+				'verify_code.required_if' => 'Please insert :attribute to approve leave, otherwise it wont be necessary for leave application reject',
+			],
+			[
+				'leave_status_id' => 'Approval Status',
+				'verify_code' => 'Verification Code'
+			]
+		);
 
 		// get verify code
 		$sa = HRLeaveApprovalHOD::find($request->id);
-		$sal = $sa->belongstoleave;													// this hod approval belongs to leave
-		$sauser = $sal->belongstostaff;												// leave belongs to user, not authuser anymore
+		$sal = $sa->belongstostaffleave;										// this hod approval belongs to leave
+		$sauser = $sal->belongstostaff;											// leave belongs to user, not authuser anymore
 		// dd($sauser);
 		$vc = $sal->verify_code;
 		// dd($sal);
@@ -692,13 +710,164 @@ class AjaxController extends Controller
 		// return $request->all();
 		// exit;
 		$validated = $request->validate([
-			'leave_status_id' => 'required',
-			'verify_code' => 'required_if:leave_status_id,5|numeric|nullable',		// required if only leave_status_id is 5 (Approved)
-		]);
+				'leave_status_id' => 'required',
+				'verify_code' => 'required_if:leave_status_id,5|numeric|nullable',		// required if only leave_status_id is 5 (Approved)
+			],
+			[
+				'leave__status_id.required' => 'Please choose your approval',
+				'verify_code.required_if' => 'Please insert :attribute to approve leave, otherwise it wont be necessary for leave application reject',
+			],
+			[
+				'leave_status_id' => 'Approval Status',
+				'verify_code' => 'Verification Code'
+			]
+		);
 
 		// get verify code
 		$sa = HRLeaveApprovalDirector::find($request->id);
-		$sal = $sa->belongstoleave;													// this hod approval belongs to leave
+		$sal = $sa->belongstostaffleave;													// this hod approval belongs to leave
+		$sauser = $sal->belongstostaff;												// leave belongs to user, not authuser anymore
+		// dd($sauser);
+		$vc = $sal->verify_code;
+		// dd($sal);
+		if( $request->leave_status_id == 5 ) {									// leave approve
+			if($vc == $request->verify_code) {
+				$sa->update([
+					'staff_id' => \Auth::user()->belongstostaff->id,
+					'leave_status_id' => $request->leave_status_id
+				]);
+			} else {
+				Session::flash('flash_message', 'Verification Code was incorrect');
+				return redirect()->route('leave.index')->withInput();
+			}
+		} elseif($request->leave_status_id == 4) {								// leave rejected
+			$saly = $sal->leave_type_id;										// need to find out leave type
+			if ($saly == 1 || $saly == 5) {										// annual leave: put period leave to annual leave entitlement
+				$pd = $sal->period_day;											// get period day
+				$sala = $sal->belongstomanyleaveannual->first();				// get annual leave
+				$albal = $sala->annual_leave_balance + $pd;						// annual leave balance
+				$aluti = $sala->annual_leave_utilize - $pd;						// annual leave utilize
+				$sala->update(['annual_leave_balance' => $albal, 'annual_leave_utilize' => $aluti]);
+				$sal->update(['period_day' => 0, 'leave_status_id' => $request->leave_status_id]);
+			} elseif($saly == 4 || $saly == 10) {								// replacement leave
+				$pd = $sal->period_day;											// get period day
+				$sala = $sal->belongstomanyleavereplacement->first();			// get replacement leave
+				$albal = $sala->leave_balance + $pd;							// replacement leave balance
+				$aluti = $sala->leave_utilize - $pd;							// replacement leave utilize
+				$sala->update(['leave_balance' => $albal, 'leave_utilize' => $aluti]);
+				$sal->update(['period_day' => 0, 'leave_status_id' => $request->leave_status_id]);
+			} elseif($saly == 2) {												// mc leave
+				$pd = $sal->period_day;											// get period day
+				$sala = $sal->belongstomanyleavemc->first();					// get mc leave
+				$albal = $sala->mc_leave_balance + $pd;							// mc leave balance
+				$aluti = $sala->mc_leave_utilize - $pd;							// mc leave utilize
+				$sala->update(['leave_balance' => $albal, 'leave_utilize' => $aluti]);
+				$sal->update(['period_day' => 0, 'leave_status_id' => $request->leave_status_id]);
+			} elseif($saly == 7) {
+				$pd = $sal->period_day;											// get period day
+				$sala = $sal->belongstomanyleavematernity->first();				// get maternity leave
+				$albal = $sala->maternity_leave_balance + $pd;					// maternity leave balance
+				$aluti = $sala->maternity_leave_utilize - $pd;					// maternity leave utilize
+				$sala->update(['leave_balance' => $albal, 'leave_utilize' => $aluti]);
+				$sal->update(['period_day' => 0, 'leave_status_id' => $request->leave_status_id]);
+			} elseif($saly == 3 || $saly == 6 || $saly == 11 || $saly == 12) {
+				$sal->update(['period_day' => 0, 'leave_status_id' => $request->leave_status_id]);
+			} elseif($saly == 9) {
+				$sal->update(['period_time' => 0, 'leave_status_id' => $request->leave_status_id]);
+			}
+
+			if($sauser->belongstoleaveapprovalflow->backup_approval == 1){																// update on backup
+				$sal->hasmanyleaveapprovalbackup()->update([/*'staff_id' => \Auth::user()->belongstostaff->id,*/ 'leave_status_id' => $request->leave_status_id, 'remarks' => 'Rejected by Director ('.\Auth::user()->belongstostaff->name.') on '.\Carbon\Carbon::now()->format('j M Y g:i a')]);
+			}
+			if($sauser->belongstoleaveapprovalflow->supervisor_approval == 1){															// update on supervisor
+				$sal->hasmanyleaveapprovalsupervisor()->update(['staff_id' => \Auth::user()->belongstostaff->id, 'leave_status_id' => $request->leave_status_id, 'remarks' => 'Rejected by Director ('.\Auth::user()->belongstostaff->name.') on '.\Carbon\Carbon::now()->format('j M Y g:i a')]);
+			}
+			if($sauser->belongstoleaveapprovalflow->hod_approval == 1){																	// update on hod
+				$sal->hasmanyleaveapprovalhod()->update([/*'staff_id' => \Auth::user()->belongstostaff->id,*/ 'leave_status_id' => $request->leave_status_id, 'remarks' => 'Rejected by Director ('.\Auth::user()->belongstostaff->name.') on '.\Carbon\Carbon::now()->format('j M Y g:i a')]);
+			}
+			if($sauser->belongstoleaveapprovalflow->director_approval == 1){															// update on director
+				$sal->hasmanyleaveapprovaldir()->update([/*'staff_id' => \Auth::user()->belongstostaff->id,*/ 'leave_status_id' => $request->leave_status_id, 'remarks' => 'Rejected by Director ('.\Auth::user()->belongstostaff->name.') on '.\Carbon\Carbon::now()->format('j M Y g:i a')]);
+			}
+			if($sauser->belongstoleaveapprovalflow->hr_approval == 1){																	// update on hr
+				$sal->hasmanyleaveapprovalhr()->update([/*'staff_id' => \Auth::user()->belongstostaff->id,*/ 'leave_status_id' => $request->leave_status_id, 'remarks' => 'Rejected by Director ('.\Auth::user()->belongstostaff->name.') on '.\Carbon\Carbon::now()->format('j M Y g:i a')]);
+			}
+		} elseif($request->leave_status_id == 6) {								// leave waived, so need to put back all leave period.
+			$saly = $sal->leave_type_id;										// need to find out leave type
+			if ($saly == 1 || $saly == 5) {										// annual leave: put period leave to annual leave entitlement
+				$pd = $sal->period_day;											// get period day
+				$sala = $sal->belongstomanyleaveannual->first();				// get annual leave
+				$albal = $sala->annual_leave_balance + $pd;						// annual leave balance
+				$aluti = $sala->annual_leave_utilize - $pd;						// annual leave utilize
+				$sala->update(['annual_leave_balance' => $albal, 'annual_leave_utilize' => $aluti]);
+				$sal->update(['leave_status_id' => $request->leave_status_id]);
+			} elseif($saly == 4 || $saly == 10) {								// replacement leave
+				$pd = $sal->period_day;											// get period day
+				$sala = $sal->belongstomanyleavereplacement->first();			// get replacement leave
+				$albal = $sala->leave_balance + $pd;							// replacement leave balance
+				$aluti = $sala->leave_utilize - $pd;							// replacement leave utilize
+				$sala->update(['leave_balance' => $albal, 'leave_utilize' => $aluti]);
+				$sal->update(['leave_status_id' => $request->leave_status_id]);
+			} elseif($saly == 2) {												// mc leave
+				$pd = $sal->period_day;											// get period day
+				$sala = $sal->belongstomanyleavemc->first();					// get mc leave
+				$albal = $sala->mc_leave_balance + $pd;							// mc leave balance
+				$aluti = $sala->mc_leave_utilize - $pd;							// mc leave utilize
+				$sala->update(['leave_balance' => $albal, 'leave_utilize' => $aluti]);
+				$sal->update(['leave_status_id' => $request->leave_status_id]);
+			} elseif($saly == 7) {
+				$pd = $sal->period_day;											// get period day
+				$sala = $sal->belongstomanyleavematernity->first();				// get maternity leave
+				$albal = $sala->maternity_leave_balance + $pd;					// maternity leave balance
+				$aluti = $sala->maternity_leave_utilize - $pd;					// maternity leave utilize
+				$sala->update(['leave_balance' => $albal, 'leave_utilize' => $aluti]);
+				$sal->update(['period_day' => 0, 'leave_status_id' => $request->leave_status_id]);
+			} elseif($saly == 3 || $saly == 6 || $saly == 11 || $saly == 12) {
+				$sal->update(['leave_status_id' => $request->leave_status_id]);
+			} elseif($saly == 9) {
+				$sal->update(['leave_status_id' => $request->leave_status_id]);
+			}
+
+			if($sauser->belongstoleaveapprovalflow->backup_approval == 1){																// update on backup
+				$sal->hasmanyleaveapprovalbackup()->update([/*'staff_id' => \Auth::user()->belongstostaff->id,*/ 'leave_status_id' => $request->leave_status_id, 'remarks' => 'Rejected by Director ('.\Auth::user()->belongstostaff->name.') on '.\Carbon\Carbon::now()->format('j M Y g:i a')]);
+			}
+			if($sauser->belongstoleaveapprovalflow->supervisor_approval == 1){															// update on supervisor
+				$sal->hasmanyleaveapprovalsupervisor()->update(['staff_id' => \Auth::user()->belongstostaff->id, 'leave_status_id' => $request->leave_status_id, 'remarks' => 'Rejected by Director ('.\Auth::user()->belongstostaff->name.') on '.\Carbon\Carbon::now()->format('j M Y g:i a')]);
+			}
+			if($sauser->belongstoleaveapprovalflow->hod_approval == 1){																	// update on hod
+				$sal->hasmanyleaveapprovalhod()->update([/*'staff_id' => \Auth::user()->belongstostaff->id,*/ 'leave_status_id' => $request->leave_status_id, 'remarks' => 'Rejected by Director ('.\Auth::user()->belongstostaff->name.') on '.\Carbon\Carbon::now()->format('j M Y g:i a')]);
+			}
+			if($sauser->belongstoleaveapprovalflow->director_approval == 1){															// update on director
+				$sal->hasmanyleaveapprovaldir()->update([/*'staff_id' => \Auth::user()->belongstostaff->id,*/ 'leave_status_id' => $request->leave_status_id, 'remarks' => 'Rejected by Director ('.\Auth::user()->belongstostaff->name.') on '.\Carbon\Carbon::now()->format('j M Y g:i a')]);
+			}
+			if($sauser->belongstoleaveapprovalflow->hr_approval == 1){																	// update on hr
+				$sal->hasmanyleaveapprovalhr()->update([/*'staff_id' => \Auth::user()->belongstostaff->id,*/ 'leave_status_id' => $request->leave_status_id, 'remarks' => 'Rejected by Director ('.\Auth::user()->belongstostaff->name.') on '.\Carbon\Carbon::now()->format('j M Y g:i a')]);
+			}
+		}
+		Session::flash('flash_message', 'Successfully make an approval for user.');
+		return redirect()->route('leave.index');
+	}
+
+	public function hrstatus(Request $request)
+	{
+		// return $request->all();
+		// exit;
+		$validated = $request->validate([
+				'leave_status_id' => 'required',
+				'verify_code' => 'required_if:leave_status_id,5|numeric|nullable',		// required if only leave_status_id is 5 (Approved)
+			],
+			[
+				'leave__status_id.required' => 'Please choose your approval',
+				'verify_code.required_if' => 'Please insert :attribute to approve leave, otherwise it wont be necessary for leave application reject',
+			],
+			[
+				'leave_status_id' => 'Approval Status',
+				'verify_code' => 'Verification Code'
+			]
+		);
+
+		// get verify code
+		$sa = HRLeaveApprovalHR::find($request->id);
+		$sal = $sa->belongstostaffleave;											// this hr approval belongs to leave
 		$sauser = $sal->belongstostaff;												// leave belongs to user, not authuser anymore
 		// dd($sauser);
 		$vc = $sal->verify_code;
