@@ -66,7 +66,8 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
 
         ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        'leaveaccess' => \App\Http\Middleware\Leave\RedirectIfNotOwnerLeave::class,
+        'leaveaccess' => \App\Http\Middleware\HumanResources\Leave\RedirectIfNotOwnerLeave::class,
         'profileaccess' => \App\Http\Middleware\HumanResources\Profile\RedirectIfNotOwnerProfile::class,
+        'hraccess' => \App\Http\Middleware\HumanResources\HRDept\RedirectIfNotHR::class,
     ];
 }
