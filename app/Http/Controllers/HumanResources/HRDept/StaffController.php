@@ -7,8 +7,21 @@ use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
 
+// load validation
+use App\Http\Requests\HumanResources\Leave\HRLeaveRequestStore;
 
-class HRDeptController extends Controller
+// load models
+use App\Models\Staff;
+
+// load array helper
+use Illuminate\Support\Arr;
+
+// load Carbon
+use \Carbon\Carbon;
+use \Carbon\CarbonPeriod;
+use \Carbon\CarbonInterval;
+
+class StaffController extends Controller
 {
 	function __construct()
 	{
@@ -21,7 +34,7 @@ class HRDeptController extends Controller
 	 */
 	public function index()
 	{
-		return view('humanresources.hrdept.index');
+		return view('humanresources.hrdept.staff.index');
 	}
 
 	/**
