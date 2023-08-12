@@ -140,7 +140,7 @@ foreach ($c as $v) {
 			@endif
 		</table>
 	</div>
-	
+
 	<div class="col-auto table-responsive">
 		<h4>Leave</h4>
 	<!-- list of leaves -->
@@ -208,7 +208,7 @@ foreach ($c as $v) {
 	?>
 						<td>{{ \Carbon\Carbon::parse($leav->created_at)->format('j M Y') }}</td>
 						<td>{{ $leav->belongstooptleavetype->leave_type_code }}</td>
-						<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="{{ $leav->reason }}">{{ Str::of($leav->reason)->words(3, ' >') }}</td>
+						<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-html="true" data-bs-title="{{ $leav->reason }}">{{ Str::of($leav->reason)->words(3, ' >') }}</td>
 						<td>{{ $dts }}</td>
 						<td>{{ $dte }}</td>
 						<td>{{ $dper }}</td>
@@ -815,7 +815,7 @@ foreach ($c as $v) {
 /////////////////////////////////////////////////////////////////////////////////////////
 // tooltip on reason
 $(document).ready(function(){
-	$('[data-bs-toggle="tooltip"]').tooltip();   
+	$('[data-bs-toggle="tooltip"]').tooltip();
 });
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -878,7 +878,7 @@ function SwalDelete(ackID){
 				})
 			});
 		},
-		allowOutsideClick: false			  
+		allowOutsideClick: false
 	})
 	.then((result) => {
 		if (result.dismiss === swal.DismissReason.cancel) {
@@ -936,7 +936,7 @@ function SwalDeleteR(ackID){
 				})
 			});
 		},
-		allowOutsideClick: false			  
+		allowOutsideClick: false
 	})
 	.then((result) => {
 		if (result.dismiss === swal.DismissReason.cancel) {
