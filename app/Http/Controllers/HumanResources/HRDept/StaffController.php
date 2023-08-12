@@ -57,7 +57,7 @@ class StaffController extends Controller
 	 */
 	public function show(Staff $staff)
 	{
-		//
+		return view('humanresources.hrdept.staff.show');
 	}
 
 	/**
