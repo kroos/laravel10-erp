@@ -21,7 +21,6 @@ class HRAttendance extends Model
 
 	// protected $connection = 'mysql';
 	protected $table = 'hr_attendances';
-
 	/////////////////////////////////////////////////////////////////////////////////////////
 	// hasmany relationship
 	public function hasmanyovertime(): HasMany
@@ -32,13 +31,17 @@ class HRAttendance extends Model
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
 	// db relation belongsToMany
 
-
-	/////////////////////////////////////////////////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////////////////////////////////////////
 	//belongsto relationship
 	public function belongstostaff(): BelongsTo
 	{
 		return $this->belongsTo(\App\Models\Staff::class, 'staff_id');
 	}
+
+
+	public function belongstoopttcms(): BelongsTo
+	{
+		return $this->belongsTo(\App\Models\HumanResources\OptTcms::class, 'attendance_type_id');
 
 	public function belongstodaytype(): BelongsTo
 	{
