@@ -1,8 +1,8 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="col justify-content-center row">
-	@include('humanresources.hrdept.navhr')
+<div class="col-sm-12 row">
+@include('humanresources.hrdept.navhr')
 	<h4 class="align-items-center">Add Staff</h4>
 	{{ Form::open(['route' => ['staff.store'], 'id' => 'form', 'class' => 'form-horizontal', 'autocomplete' => 'off', 'files' => true]) }}
 	<div class="col-sm-6 row">
