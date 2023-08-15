@@ -163,6 +163,17 @@ class Staff extends Authenticatable
 	{
 		return $this->belongsTo(\App\Models\HumanResources\OptMaritalStatus::class, 'marital_status_id');
 	}
+
+	public function belongstoauthorised(): BelongsTo
+	{
+		return $this->belongsTo(\App\Models\HumanResources\OptAuthorise::class, 'authorise_id');
+	}
+
+	public function belongstodivision(): BelongsTo
+	{
+		return $this->belongsTo(\App\Models\HumanResources\OptDivision::class, 'div_id');
+	}
+
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
 }
 

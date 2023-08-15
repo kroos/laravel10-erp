@@ -25,8 +25,8 @@ class StaffController extends Controller
 {
 	function __construct()
 	{
-		$this->middleware('auth');
-		$this->middleware('hraccess'/*, ['only' => ['show', 'edit', 'update']]*/);
+		$this->middleware(['auth', 'hraccess']);
+		// $this->middleware('hraccess'/*, ['only' => ['show', 'edit', 'update']]*/);
 	}
 
 	/**
@@ -57,7 +57,7 @@ class StaffController extends Controller
 	 */
 	public function show(Staff $staff)
 	{
-		return view('humanresources.hrdept.staff.show');
+		return view('humanresources.hrdept.staff.show', compact(['staff']));
 	}
 
 	/**

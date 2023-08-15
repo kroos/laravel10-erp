@@ -8,7 +8,6 @@ use App\Models\Staff;
 <div class="col table-responsive">
 	@include('humanresources.hrdept.navhr')
 	<h2>Staffs</h2>
-	<a href="{{ route('staff.create') }}" class="btn btn-sm btn-outline-secondary"><i class="bi bi-person-add"></i>Add Staff</a>
 	<table id="staff" class="table table-hover table-sm align-middle" style="font-size:12px">
 		<thead>
 			<tr>

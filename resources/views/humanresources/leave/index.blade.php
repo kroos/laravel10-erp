@@ -36,9 +36,6 @@ foreach ($c as $v) {
 // exit;
 
 
-
-
-
 ?>
 <div class="col-sm-12">
 	<div class="col-auto table-responsive">
