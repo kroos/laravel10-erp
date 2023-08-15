@@ -7,43 +7,32 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Models\Model;
 
 // db relation class to load
-use Illuminate\Database\Eloquent\Relations\HasOne;
+// use Illuminate\Database\Eloquent\Relations\HasOne;
 // use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 // use Illuminate\Database\Eloquent\Relations\HasOneOrMany;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+// use Illuminate\Database\Eloquent\Relations\HasMany;
 // use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+// use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-class HRAttendance extends Model
+class HRStaffSpouse extends Model
 {
 	use HasFactory;
-
 	// protected $connection = 'mysql';
-	protected $table = 'hr_attendances';
+	protected $table = 'hr_spouses';
 
-	/////////////////////////////////////////////////////////////////////////////////////////
-	// hasmany relationship
-	public function hasmanyovertime(): HasMany
-	{
-		return $this->hasMany(\App\Models\HumanResources\HROvertime::class, 'attendance_id');
-	}
+	/////////////////////////////////////////////////////////////////////////////////////////////////////
+	// db relation hasMany/hasOne
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
 	// db relation belongsToMany
 
-
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
-	//belongsto relationship
+	// db relation BelongsTo
 	public function belongstostaff(): BelongsTo
 	{
 		return $this->belongsTo(\App\Models\Staff::class, 'staff_id');
 	}
 
-	public function belongstodaytype(): BelongsTo
-	{
-		return $this->belongsTo(\App\Models\HumanResources\OptDayType::class, 'daytype_id');
-	}
 }
-
 
