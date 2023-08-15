@@ -21,7 +21,7 @@ use \Carbon\Carbon;
 use \Carbon\CarbonPeriod;
 use \Carbon\CarbonInterval;
 
-class StaffController extends Controller
+class AttendanceController extends Controller
 {
 	function __construct()
 	{
@@ -34,7 +34,7 @@ class StaffController extends Controller
 	 */
 	public function index()
 	{
-		return view('humanresources.hrdept.staff.index');
+		return view('humanresources.hrdept.attendance.index');
 	}
 
 	/**
@@ -42,7 +42,6 @@ class StaffController extends Controller
 	 */
 	public function create()
 	{
-		return view('humanresources.hrdept.staff.create');
 	}
 
 	/**
@@ -58,7 +57,7 @@ class StaffController extends Controller
 	 */
 	public function show(Staff $staff)
 	{
-		return view('humanresources.hrdept.staff.show', compact(['staff']));
+		return view('humanresources.hrdept.attendance.show', compact(['staff']));
 	}
 
 	/**
