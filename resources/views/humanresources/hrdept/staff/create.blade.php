@@ -3,18 +3,38 @@
 @section('content')
 <div class="col justify-content-center row">
 	@include('humanresources.hrdept.navhr')
-	<h4 class="align-items-center">Profile {{ $staff->name }} <a href="{{ route('staff.edit', $staff->id) }}" class="btn btn-sm btn-outline-secondary"><i class="bi bi-person-lines-fill"></i> Edit</a></h4>
-	<div class="d-flex flex-column align-items-center text-center p-3 py-5">
-		<img class="rounded-5 mt-3" width="180px" src="{{ asset('storage/user_profile/' . $staff->image) }}">
-		<span class="font-weight-bold">{{ $staff->name }}</span>
-		<span class="font-weight-bold">{{ $staff->hasmanylogin()->where('active', 1)->first()->username }}</span>
-		<span> </span>
-	</div>
+	<h4 class="align-items-center">Add Staff</h4>
+	{{ Form::open(['route' => ['staff.store'], 'id' => 'form', 'class' => 'form-horizontal', 'autocomplete' => 'off', 'files' => true]) }}
 	<div class="col-sm-6 row">
-		<div class="col-5">Name :</div>
-		<div class="col-7">{{ $staff->name }}</div>
-		<div class="col-5">Identity Card/Passport :</div>
-		<div class="col-7">{{ $staff->ic }}</div>
+
+		<div class="form-group row mb-3 {{ $errors->has('reason') ? 'has-error' : '' }}">
+			{{ Form::label( 'name', 'Name : ', ['class' => 'col-sm-5 col-form-label'] ) }}
+			<div class="col-auto">
+				{{ Form::text('name', @$value, ['class' => 'form-control col-auto', 'id' => 'reason', 'placeholder' => 'Name', 'autocomplete' => 'off']) }}
+			</div>
+		</div>
+
+		<div class="form-group row mb-3 {{ $errors->has('reason') ? 'has-error' : '' }}">
+			{{ Form::label( 'ic', 'Identity Card/Passport : ', ['class' => 'col-sm-5 col-form-label'] ) }}
+			<div class="col-auto">
+				{{ Form::text('ic', @$value, ['class' => 'form-control col-auto', 'id' => 'ic', 'placeholder' => 'Identity Card/Passport', 'autocomplete' => 'off']) }}
+			</div>
+		</div>
+
+		<div class="form-group row mb-3 {{ $errors->has('reason') ? 'has-error' : '' }}">
+			{{ Form::label( 'ic', 'Religion : ', ['class' => 'col-sm-5 col-form-label'] ) }}
+			<div class="col-auto">
+				{{ Form::text('religion_id', @$value, ['class' => 'form-control col-auto', 'id' => 'ic', 'placeholder' => 'Religion', 'autocomplete' => 'off']) }}
+			</div>
+		</div>
+
+
+
+
+
+
+
+<?php $staff = \App\Models\Staff::findOrFail(37) ?>
 		<div class="col-5">Religion :</div>
 		<div class="col-7">{{ $staff->belongstoreligion?->religion }}</div>
 		<div class="col-5">Gender :</div>
@@ -157,6 +177,8 @@ $cbf = $staff->crossbackupfrom()->get();
 			@endif
 		</div>
 	</div>
+	{!! Form::submit('Save', ['class' => 'btn btn-sm btn-outline-secondary']) !!}
+	{{ Form::close() }}
 </div>
 @endsection
 
