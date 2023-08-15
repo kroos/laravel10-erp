@@ -107,7 +107,7 @@ class Staff extends Authenticatable
 	public function hasmanyhrattendance(): HasMany
 	{
 		return $this->hasMany(\App\Models\HumanResources\HRAttendance::class, 'staff_id');
-  }
+	}
 
 	public function hasmanyspouse(): HasMany
 	{
@@ -122,7 +122,6 @@ class Staff extends Authenticatable
 	public function hasmanyemergency(): HasMany
 	{
 		return $this->hasMany(\App\Models\HumanResources\HREmergency::class, 'staff_id');
-
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////

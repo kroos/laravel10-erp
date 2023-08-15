@@ -15,12 +15,12 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-class HRAttendance extends Model
+class HROvertimeRange extends Model
 {
 	use HasFactory;
 
 	// protected $connection = 'mysql';
-	protected $table = 'hr_attendances';
+	protected $table = 'hr_overtime_ranges';
 	/////////////////////////////////////////////////////////////////////////////////////////
 	// hasmany relationship
 	public function hasmanyovertime(): HasMany
@@ -31,21 +31,8 @@ class HRAttendance extends Model
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
 	// db relation belongsToMany
 
-  /////////////////////////////////////////////////////////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////////////////////////////////////////
 	//belongsto relationship
-	public function belongstostaff(): BelongsTo
-	{
-		return $this->belongsTo(\App\Models\Staff::class, 'staff_id');
-	}
-
-	public function belongstoopttcms(): BelongsTo
-	{
-		return $this->belongsTo(\App\Models\HumanResources\OptTcms::class, 'attendance_type_id');
-
-	public function belongstodaytype(): BelongsTo
-	{
-		return $this->belongsTo(\App\Models\HumanResources\OptDayType::class, 'daytype_id');
-	}
 }
 
 
