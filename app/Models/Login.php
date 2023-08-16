@@ -17,7 +17,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 // use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-// custom email reset password in 
+// custom email reset password in
 // https://laracasts.com/discuss/channels/laravel/how-to-override-the-tomail-function-in-illuminateauthnotificationsresetpasswordphp
 use App\Notifications\ResetPassword;
 
@@ -81,9 +81,9 @@ class Login extends Authenticatable // implements MustVerifyEmail
 	{
 		return $this->belongsTo(\App\Models\Staff::class, 'staff_id');
 	}
-	
+
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
-	// custom email reset password in 
+	// custom email reset password in
 	// https://laracasts.com/discuss/channels/laravel/how-to-override-the-tomail-function-in-illuminateauthnotificationsresetpasswordphp
 	// public function sendPasswordResetNotification($token)
 	// {
@@ -111,7 +111,7 @@ class Login extends Authenticatable // implements MustVerifyEmail
 		// return $this->belongtouser->email;
 		return [$this->belongstostaff->email => $this->belongstostaff->name];
 	}
-	
+
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
 	// used for mustVerifyEmail
 	/**
@@ -152,6 +152,7 @@ class Login extends Authenticatable // implements MustVerifyEmail
 		}
 	}
 
+	// make sure admin and HR personnel can access human resource dept
 	public function isHRnAdmin() {
 		$uadmin = auth()->user()->belongstostaff()->where('authorise_id', 1)->get();					// user is admin
 		$uhoa = auth()->user()->belongstostaff->whereIn('authorise_id', [2, 3])->get();					// user is hod or asst. hod
@@ -161,7 +162,7 @@ class Login extends Authenticatable // implements MustVerifyEmail
 			if ($uhoa->isNotEmpty()) {
 				return true;
 			} else {
-				return false;				
+				return false;
 			}
 		} else {
 			if($uadmin->isNotEmpty()) {
@@ -172,6 +173,19 @@ class Login extends Authenticatable // implements MustVerifyEmail
 		}
 	}
 
+	// let supervisor and HOD accessing some part of human resources dept
+	public function isSupervisorHOD()
+	{
+		$g = auth()->user()->belongstostaff()->whereIn('div_id', [1,4])->first();
+		if()
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
 }

@@ -69,5 +69,6 @@ class Kernel extends HttpKernel
         'leaveaccess' => \App\Http\Middleware\HumanResources\Leave\RedirectIfNotOwnerLeave::class,
         'profileaccess' => \App\Http\Middleware\HumanResources\Profile\RedirectIfNotOwnerProfile::class,
         'hraccess' => \App\Http\Middleware\HumanResources\HRDept\RedirectIfNotHR::class,
+        'supervisorHODaccess' => \App\Http\Middleware\HumanResources\HRDept\RedirectIfNotSupervisorHOD::class,
     ];
 }

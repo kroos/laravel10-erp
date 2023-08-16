@@ -7,21 +7,21 @@
 	{{ Form::open(['route' => ['staff.store'], 'id' => 'form', 'class' => 'form-horizontal', 'autocomplete' => 'off', 'files' => true]) }}
 	<div class="col-sm-6 row">
 
-		<div class="form-group row mb-3 {{ $errors->has('reason') ? 'has-error' : '' }}">
+		<div class="form-group row mb-3 {{ $errors->has('name') ? 'has-error' : '' }}">
 			{{ Form::label( 'name', 'Name : ', ['class' => 'col-sm-5 col-form-label'] ) }}
 			<div class="col-auto">
 				{{ Form::text('name', @$value, ['class' => 'form-control col-auto', 'id' => 'reason', 'placeholder' => 'Name', 'autocomplete' => 'off']) }}
 			</div>
 		</div>
 
-		<div class="form-group row mb-3 {{ $errors->has('reason') ? 'has-error' : '' }}">
+		<div class="form-group row mb-3 {{ $errors->has('ic') ? 'has-error' : '' }}">
 			{{ Form::label( 'ic', 'Identity Card/Passport : ', ['class' => 'col-sm-5 col-form-label'] ) }}
 			<div class="col-auto">
 				{{ Form::text('ic', @$value, ['class' => 'form-control col-auto', 'id' => 'ic', 'placeholder' => 'Identity Card/Passport', 'autocomplete' => 'off']) }}
 			</div>
 		</div>
 
-		<div class="form-group row mb-3 {{ $errors->has('reason') ? 'has-error' : '' }}">
+		<div class="form-group row mb-3 {{ $errors->has('religion_id') ? 'has-error' : '' }}">
 			{{ Form::label( 'ic', 'Religion : ', ['class' => 'col-sm-5 col-form-label'] ) }}
 			<div class="col-auto">
 				{{ Form::text('religion_id', @$value, ['class' => 'form-control col-auto', 'id' => 'ic', 'placeholder' => 'Religion', 'autocomplete' => 'off']) }}
