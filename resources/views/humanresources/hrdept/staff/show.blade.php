@@ -1,8 +1,8 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="col justify-content-center row">
-	@include('humanresources.hrdept.navhr')
+<div class="col-sm-12 row">
+@include('humanresources.hrdept.navhr')
 	<h4 class="align-items-center">Profile {{ $staff->name }} <a href="{{ route('staff.edit', $staff->id) }}" class="btn btn-sm btn-outline-secondary"><i class="bi bi-person-lines-fill"></i> Edit</a></h4>
 	<div class="d-flex flex-column align-items-center text-center p-3 py-5">
 		<img class="rounded-5 mt-3" width="180px" src="{{ asset('storage/user_profile/' . $staff->image) }}">

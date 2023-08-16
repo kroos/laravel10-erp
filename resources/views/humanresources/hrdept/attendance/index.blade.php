@@ -1,10 +1,9 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="col table-responsive row">
-	@include('humanresources.hrdept.navhr')
+<div class="col-sm-12 row">
+@include('humanresources.hrdept.navhr')
 	<h4>Attendance</h4>
-
 </div>
 @endsection
 

@@ -5,8 +5,8 @@
 use App\Models\Staff;
 
 ?>
-<div class="col table-responsive">
-	@include('humanresources.hrdept.navhr')
+<div class="col-sm-12 row">
+@include('humanresources.hrdept.navhr')
 	<h2>Staffs</h2>
 	<table id="staff" class="table table-hover table-sm align-middle" style="font-size:12px">
 		<thead>
