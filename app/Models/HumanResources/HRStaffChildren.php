@@ -39,6 +39,11 @@ class HRStaffChildren extends Model
 		return $this->belongsTo(\App\Models\HumanResources\OptGender::class, 'gender_id');
 	}
 
+	public function belongstohealthstatus(): BelongsTo
+	{
+		return $this->belongsTo(\App\Models\HumanResources\OptHealthStatus::class, 'health_status_id');
+	}
+
 	public function belongstoeducationlevel(): BelongsTo
 	{
 		return $this->belongsTo(\App\Models\HumanResources\OptEducationLevel::class, 'education_level_id');
