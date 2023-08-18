@@ -152,38 +152,35 @@ class Login extends Authenticatable // implements MustVerifyEmail
 		}
 	}
 
+	// access for admin of the system
+	public function isAdmin()
+	{
+		$admin = auth()->user()->belongstostaff()->where('authorise_id', 1)->get();					// user is admin
+		if ($admin->isNotEmpty()) {
+			return true;
+		}
+	}
+
+	// high management
+	public function isHighManagement(array $hm)
+	{
+		$g = auth()->user()->belongstostaff()->whereIn('div_id', $hm);
+		// dd($g->ddRawSql());
+		foreach($g->get() as $t) {
+			if($t->get()->isNotEmpty()) {
+				return true;
+			}
+		}
+	}
+
 	// make sure admin and HR personnel can access human resource dept
-	public function isHRnAdmin() {
-		$uadmin = auth()->user()->belongstostaff()->where('authorise_id', 1)->get();					// user is admin
-		$uhoa = auth()->user()->belongstostaff->whereIn('authorise_id', [2, 3])->get();					// user is hod or asst. hod
+	public function isHRDept() {
 		$u = auth()->user()->belongstostaff->belongstomanydepartment()->wherePivot('main', 1)->firstOrFail();
 		// dd($u->id);
 		if ($u->id == 14) {
 			if ($uhoa->isNotEmpty()) {
 				return true;
-			} else {
-				return false;
 			}
-		} else {
-			if($uadmin->isNotEmpty()) {
-				return true;
-			} else {
-				return false;
-			}
-		}
-	}
-
-	// let supervisor and HOD accessing some part of human resources dept
-	public function isSupervisorHOD()
-	{
-		$g = auth()->user()->belongstostaff()->whereIn('div_id', [1,4])->first();
-		if()
-		{
-			return true;
-		}
-		else
-		{
-			return false;
 		}
 	}
 

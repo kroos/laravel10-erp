@@ -26,7 +26,7 @@ class AttendanceController extends Controller
 	function __construct()
 	{
 		$this->middleware(['auth', 'hraccess']);
-		// $this->middleware('hraccess'/*, ['only' => ['show', 'edit', 'update']]*/);
+		$this->middleware('supervisorHODaccess', ['only' => ['index']]);
 	}
 
 	/**

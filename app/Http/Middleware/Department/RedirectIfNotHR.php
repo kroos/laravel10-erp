@@ -1,12 +1,12 @@
 <?php
-namespace App\Http\Middleware\HumanResources\HRDept;
+namespace App\Http\Middleware\Department;
 
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 
-class RedirectIfNotSupervisorHOD
+class RedirectIfNotHR
 {
 	/**
 	 * Handle an incoming request.
@@ -17,8 +17,8 @@ class RedirectIfNotSupervisorHOD
 	 */
 	public function handle(Request $request, Closure $next): Response
 	{
-		// dd($request->user()->isSupervisorHOD());
-		if ( !$request->user()->isSupervisorHOD() ) {
+		// dd($request->user()->isHR());
+		if ( !$request->user()->isHR() ) {
 			return redirect()->back();
 		}
 		return $next($request);
