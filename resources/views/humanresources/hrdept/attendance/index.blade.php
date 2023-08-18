@@ -4,6 +4,20 @@
 <div class="col-sm-12 row">
 @include('humanresources.hrdept.navhr')
 	<h4>Attendance</h4>
+	<div class="table-responsive">
+		<table id="attendance" class="table table-hover table-sm align-middle" style="font-size:12px">
+			<thead>
+				<tr>
+					<th>Name</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
 </div>
 @endsection
 

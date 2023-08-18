@@ -17,7 +17,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 // use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-// custom email reset password in 
+// custom email reset password in
 // https://laracasts.com/discuss/channels/laravel/how-to-override-the-tomail-function-in-illuminateauthnotificationsresetpasswordphp
 use App\Notifications\ResetPassword;
 
@@ -81,9 +81,9 @@ class Login extends Authenticatable // implements MustVerifyEmail
 	{
 		return $this->belongsTo(\App\Models\Staff::class, 'staff_id');
 	}
-	
+
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
-	// custom email reset password in 
+	// custom email reset password in
 	// https://laracasts.com/discuss/channels/laravel/how-to-override-the-tomail-function-in-illuminateauthnotificationsresetpasswordphp
 	// public function sendPasswordResetNotification($token)
 	// {
@@ -111,7 +111,7 @@ class Login extends Authenticatable // implements MustVerifyEmail
 		// return $this->belongtouser->email;
 		return [$this->belongstostaff->email => $this->belongstostaff->name];
 	}
-	
+
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
 	// used for mustVerifyEmail
 	/**
@@ -152,26 +152,37 @@ class Login extends Authenticatable // implements MustVerifyEmail
 		}
 	}
 
-	public function isHRnAdmin() {
-		$uadmin = auth()->user()->belongstostaff()->where('authorise_id', 1)->get();					// user is admin
-		$uhoa = auth()->user()->belongstostaff->whereIn('authorise_id', [2, 3])->get();					// user is hod or asst. hod
+	// access for admin of the system
+	public function isAdmin()
+	{
+		$admin = auth()->user()->belongstostaff()->where('authorise_id', 1)->get();					// user is admin
+		if ($admin->isNotEmpty()) {
+			return true;
+		}
+	}
+
+	// high management
+	public function isHighManagement(array $hm)
+	{
+		$g = auth()->user()->belongstostaff()->whereIn('div_id', $hm);
+		// dd($g->ddRawSql());
+		foreach($g->get() as $t) {
+			if($t->get()->isNotEmpty()) {
+				return true;
+			}
+		}
+	}
+
+	// make sure admin and HR personnel can access human resource dept
+	public function isHRDept() {
 		$u = auth()->user()->belongstostaff->belongstomanydepartment()->wherePivot('main', 1)->firstOrFail();
 		// dd($u->id);
 		if ($u->id == 14) {
 			if ($uhoa->isNotEmpty()) {
 				return true;
-			} else {
-				return false;				
-			}
-		} else {
-			if($uadmin->isNotEmpty()) {
-				return true;
-			} else {
-				return false;
 			}
 		}
 	}
-
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
 }

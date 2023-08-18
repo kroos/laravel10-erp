@@ -25,8 +25,9 @@ class StaffController extends Controller
 {
 	function __construct()
 	{
-		$this->middleware(['auth', 'hraccess']);
-		// $this->middleware('hraccess'/*, ['only' => ['show', 'edit', 'update']]*/);
+		$this->middleware(['auth']);
+		$this->middleware('highMgmtAccess:1|2|3|4|5,NULL', ['only' => ['index', 'show']]);
+		$this->middleware('highMgmtAccess:3|5,14', ['only' => ['create', 'store', 'edit', 'update', 'destroy']]);
 	}
 
 	/**
