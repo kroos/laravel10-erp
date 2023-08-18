@@ -13,7 +13,7 @@ class HRDeptController extends Controller
 	function __construct()
 	{
 		$this->middleware('auth');
-		$this->middleware('highMgmtAccess:1,14'/*, ['only' => ['show', 'edit', 'update']]*/);
+		$this->middleware('highMgmtAccess:1|2|3|4|5,NULL'/*, ['only' => ['show', 'edit', 'update']]*/);
 	}
 
 	/**

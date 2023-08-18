@@ -32,23 +32,14 @@ class RedirectIfNotHighManagement
 		}
 		$deptP = $request->user()->belongstostaff->belongstomanydepartment()->wherePivot('main', 1)->first();
 
-		// dd( [(true || false), (true && false)] );
-		// dd( ($request->user()->isHighManagement($hmu) && $deptP->id == $dept) );
-
-		if ($dept === 'NULL') {
-			if (!$request->user()->isHighManagement($hmu)) {
+		if($dept == 'NULL') {
+			if( !($request->user()->isHighManagement($hmu) || $request->user()->isAdmin()) ) {
+					return redirect()->back();
+			}
+		} else {
+			if( !(($request->user()->isHighManagement($hmu) && $deptP->id == $dept) || $request->user()->isHighManagement($hmu) || $request->user()->isAdmin()) ) {
 				return redirect()->back();
 			}
-		}
-
-		if ($dept != 'NULL') {
-			if( !($request->user()->isHighManagement($hmu) && $deptP->id == $dept) ) {
-				return redirect()->back();
-			}
-		}
-
-		if(!$request->user()->isAdmin()) {
-			return redirect()->back();
 		}
 		return $next($request);
 	}
