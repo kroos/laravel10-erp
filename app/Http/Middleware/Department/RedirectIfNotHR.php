@@ -1,5 +1,5 @@
 <?php
-namespace App\Http\Middleware\HumanResources\HRDept;
+namespace App\Http\Middleware\Department;
 
 use Closure;
 use Illuminate\Http\Request;
@@ -17,8 +17,8 @@ class RedirectIfNotHR
 	 */
 	public function handle(Request $request, Closure $next): Response
 	{
-		// dd($request->user()->isHRnAdmin());
-		if ( !$request->user()->isHRnAdmin() ) {
+		// dd($request->user()->isHR());
+		if ( !$request->user()->isHR() ) {
 			return redirect()->back();
 		}
 		return $next($request);
