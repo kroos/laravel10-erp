@@ -26,8 +26,8 @@ class AttendanceController extends Controller
 	function __construct()
 	{
 		$this->middleware(['auth']);
-		$this->middleware('highMgmtAccess:1|2|3|4|5,NULL', ['only' => ['index', 'show']]);
-		$this->middleware('highMgmtAccess:3|5,14', ['only' => ['create', 'store', 'edit', 'update', 'destroy']]);
+		$this->middleware('highMgmtAccess:1|2|4|5,NULL', ['only' => ['index', 'show']]);
+		$this->middleware('highMgmtAccess:1|5,14', ['only' => ['create', 'store', 'edit', 'update', 'destroy']]);
 	}
 
 	/**
