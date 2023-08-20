@@ -161,6 +161,24 @@ class Login extends Authenticatable // implements MustVerifyEmail
 		}
 	}
 
+	public function isHODdept($dept)
+	{
+		$hmu = [];
+		if (Str::contains($dept, '|')) {
+			$hms = explode("|", $dept);									// convert $hm to array
+			foreach ($hms as $hm1) {
+				$hmu[] += $hm1;
+			}
+		} else {
+			$hmu = [$dept];
+		}
+		$h = \Auth::user()->belongstostaff->whereIn('div_id', 1)->belongstomanydepartment()->wherePivot('main', 1)->whereIn('department_id', $hmu);
+		dd($h->ddRawSql());
+		if($h->isNotaEmpty()) {
+			return true;
+		}
+	}
+
 	// high management
 	public function isHighManagement(array $hm)
 	{
