@@ -8,6 +8,10 @@
     height: 25px;
     width: 40px;
   }
+
+  /* div {
+    border: 1px solid black;
+  } */
 </style>
 
 <?php
@@ -20,7 +24,9 @@ $relationship = App\Models\HumanResources\OptRelationship::all()->pluck('relatio
 $emergencies = $profile->hasmanyemergency()->get();
 $spouses = $profile->hasmanyspouse()->get();
 $childrens = $profile->hasmanychildren()->get();
-$totalRows = $emergencies->count()
+$totalRows_emergency = $emergencies->count();
+$totalRows_spouse = $spouses->count();
+$totalRows_children = $childrens->count();
 ?>
 
 <div class="container rounded bg-white mt-2 mb-2">
@@ -146,83 +152,96 @@ $totalRows = $emergencies->count()
         </div>
 
 
+        <?php $i = 1 ?>
         <div class="row">
           <div class="d-flex justify-content-between align-items-center">
             <h4 class="text-right">Emergency Contact</h4>
+            @if ($totalRows_emergency < 2) <button class="border px-3 p-1 add-experience btn btn-sm btn-outline-secondary add_emergency" type="button">
+              <i class="bi-plus" aria-hidden="true"></i>
+              </button>
+              @endif
           </div>
         </div>
         <div class="row mb-5">
           <div class="col-md-6 border-right">
-            <div class="px-3">
+            <div class="px-3 wrap_emergency_odd">
 
               @foreach ($emergencies as $emergency)
               @if ($loop->odd)
 
-              <div>
+              <div class="table_emergency">
+                <input type="hidden" name="emer[{{ $i }}][id]" value="{{ $emergency->id }}">
+                <input type="hidden" name="emer[{{ $i }}][staff_id]" value="{{ $profile-> id }}">
+
                 <div class="row mt-3">
-                  <div class="col-md-12">
-                    <label class="labels">NAME</label>
-                    <input type="text" class="form-control" value="{{ $emergency->contact_person }}" readonly>
+                  <div class="col-md-12 {{ $errors->has('emer.'.$i.'.contact_person') ? 'has-error' : '' }}">
+                    <label for="contact_person" class="labels">NAME</label>
+                    {!! Form::text( "emer[$i][contact_person]", @$emergency->contact_person, ['class' => 'form-control', 'id' => 'contact_person', 'placeholder' => 'Please Insert', 'autocomplete' => 'off'] ) !!}
                   </div>
                 </div>
 
                 <div class="row mt-3">
-                  <div class="col-md-6">
-                    <label class="labels">RELATIONSHIP</label>
-                    <input type="text" class="form-control" value="{{ $emergency->belongstorelationship->relationship}}" readonly>
+                  <div class="col-md-6 {{ $errors->has('emer.'.$i.'.relationship_id') ? 'has-error' : '' }}">
+                    <label for="relationship_id" class="labels">RELATIONSHIP</label>
+                    {!! Form::select( "emer[$i][relationship_id]", $relationship, @$emergency->relationship_id, ['class' => 'form-control', 'id' => 'relationship_id', 'placeholder' => 'Please Select', 'autocomplete' => 'off'] ) !!}
                   </div>
-                  <div class="col-md-6">
-                    <label class="labels">PHONE NUMBER</label>
-                    <input type="text" class="form-control" value="{{ $emergency->phone }}" readonly>
+                  <div class="col-md-6 {{ $errors->has('emer.'.$i.'.phone') ? 'has-error' : '' }}">
+                    <label for="phone" class="labels">PHONE NUMBER</label>
+                    {!! Form::text( "emer[$i][phone]", @$emergency->phone, ['class' => 'form-control', 'id' => 'phone', 'placeholder' => 'Please Insert', 'autocomplete' => 'off'] ) !!}
                   </div>
                 </div>
 
                 <div class="row mt-3">
-                  <div class="col-md-12">
-                    <label class="labels">ADDRESS</label>
-                    <input type="text" class="form-control" value="{{ $emergency->address }}" readonly>
+                  <div class="col-md-12 {{ $errors->has('emer.'.$i.'.address') ? 'has-error' : '' }}">
+                    <label for="emergency_address" class="labels">ADDRESS</label>
+                    {!! Form::text( "emer[$i][address]", @$emergency->address, ['class' => 'form-control', 'id' => 'emergency_address', 'placeholder' => 'Please Insert', 'autocomplete' => 'off'] ) !!}
                   </div>
                 </div>
               </div>
 
+              <?php $i++ ?>
               @endif
               @endforeach
 
             </div>
           </div>
           <div class="col-md-6 border-right">
-            <div class="px-3">
+            <div class="px-3 wrap_emergency_even">
 
               @foreach ($emergencies as $emergency)
               @if ($loop->even)
 
-              <div>
+              <div class="table_emergency">
+                <input type="hidden" name="emer[{{ $i }}][id]" value="{{ $emergency->id }}">
+                <input type="hidden" name="emer[{{ $i }}][staff_id]" value="{{ $profile-> id }}">
+
                 <div class="row mt-3">
-                  <div class="col-md-12">
-                    <label class="labels">NAME</label>
-                    <input type="text" class="form-control" value="{{ $emergency->contact_person }}" readonly>
+                  <div class="col-md-12 {{ $errors->has('emer.'.$i.'.contact_person') ? 'has-error' : '' }}">
+                    <label for="contact_person" class="labels">NAME</label>
+                    {!! Form::text( "emer[$i][contact_person]", @$emergency->contact_person, ['class' => 'form-control', 'id' => 'contact_person', 'placeholder' => 'Please Insert', 'autocomplete' => 'off'] ) !!}
                   </div>
                 </div>
 
                 <div class="row mt-3">
-                  <div class="col-md-6">
-                    <label class="labels">RELATIONSHIP</label>
-                    <input type="text" class="form-control" value="{{ $emergency->belongstorelationship->relationship }}" readonly>
+                  <div class="col-md-6 {{ $errors->has('emer.'.$i.'.relationship_id') ? 'has-error' : '' }}">
+                    <label for="relationship_id" class="labels">RELATIONSHIP</label>
+                    {!! Form::select( "emer[$i][relationship_id]", $relationship, @$emergency->relationship_id, ['class' => 'form-control', 'id' => 'relationship_id', 'placeholder' => 'Please Select', 'autocomplete' => 'off'] ) !!}
                   </div>
-                  <div class="col-md-6">
-                    <label class="labels">PHONE NUMBER</label>
-                    <input type="text" class="form-control" value="{{ $emergency->phone }}" readonly>
+                  <div class="col-md-6 {{ $errors->has('emer.'.$i.'.phone') ? 'has-error' : '' }}">
+                    <label for="phone" class="labels">PHONE NUMBER</label>
+                    {!! Form::text( "emer[$i][phone]", @$emergency->phone, ['class' => 'form-control', 'id' => 'phone', 'placeholder' => 'Please Insert', 'autocomplete' => 'off'] ) !!}
                   </div>
                 </div>
 
                 <div class="row mt-3">
-                  <div class="col-md-12">
-                    <label class="labels">ADDRESS</label>
-                    <input type="text" class="form-control" value="{{ $emergency->address }}" readonly>
+                  <div class="col-md-12 {{ $errors->has('emer.'.$i.'.address') ? 'has-error' : '' }}">
+                    <label for="emergency_address" class="labels">ADDRESS</label>
+                    {!! Form::text( "emer[$i][address]", @$emergency->address, ['class' => 'form-control', 'id' => 'emergency_address', 'placeholder' => 'Please Insert', 'autocomplete' => 'off'] ) !!}
                   </div>
                 </div>
               </div>
 
+              <?php $i++ ?>
               @endif
               @endforeach
 
@@ -231,91 +250,138 @@ $totalRows = $emergencies->count()
         </div>
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        <?php $j = 1 ?>
         <div class="row">
           <div class="d-flex justify-content-between align-items-center">
             <h4 class="text-right">Spouse</h4>
+            @if ($totalRows_spouse < 4) <button class="border px-3 p-1 add-experience btn btn-sm btn-outline-secondary add_spouse" type="button">
+              <i class="bi-plus" aria-hidden="true"></i>
+              </button>
+              @endif
           </div>
         </div>
         <div class="row">
           <div class="col-md-6 border-right">
-            <div class="px-3">
+            <div class="px-3 wrap_spouse_odd">
 
               @foreach ($spouses as $spouse)
               @if ($loop->odd)
 
-              <div class="mb-5">
+              <div class="mb-5 table_spouse">
+                <input type="hidden" name="spou[{{ $j }}][id]" value="{{ $spouse->id }}">
+                <input type="hidden" name="spou[{{ $j }}][staff_id]" value="{{ $profile-> id }}">
+
                 <div class="row mt-3">
-                  <div class="col-md-12">
-                    <label class="labels">NAME</label>
-                    <input type="text" class="form-control" value="{{ $spouse->spouse }}" readonly>
+                  <div class="col-md-12 {{ $errors->has('spou.'.$j.'.spouse') ? 'has-error' : '' }}">
+                    <label for="spouse" class="labels">NAME</label>
+                    {!! Form::text( "spou[$j][spouse]", @$spouse->spouse, ['class' => 'form-control', 'id' => 'spouse', 'placeholder' => 'Please Insert', 'autocomplete' => 'off'] ) !!}
                   </div>
                 </div>
 
                 <div class="row mt-3">
-                  <div class="col-md-6">
-                    <label class="labels">IC</label>
-                    <input type="text" class="form-control" value="{{ $spouse->id_card_passport }}" readonly>
+                  <div class="col-md-6 {{ $errors->has('spou.'.$j.'.id_card_passport') ? 'has-error' : '' }}">
+                    <label for="id_card_passport" class="labels">IC</label>
+                    {!! Form::text( "spou[$j][id_card_passport]", @$spouse->id_card_passport, ['class' => 'form-control', 'id' => 'id_card_passport', 'placeholder' => 'Please Insert', 'autocomplete' => 'off'] ) !!}
                   </div>
-                  <div class="col-md-6">
-                    <label class="labels">PHONE NUMBER</label>
-                    <input type="text" class="form-control" value="{{ $spouse->phone }}" readonly>
+                  <div class="col-md-6 {{ $errors->has('spou.'.$j.'.phone') ? 'has-error' : '' }}">
+                    <label for="phone" class="labels">PHONE NUMBER</label>
+                    {!! Form::text( "spou[$j][phone]", @$spouse->phone, ['class' => 'form-control', 'id' => 'phone', 'placeholder' => 'Please Insert', 'autocomplete' => 'off'] ) !!}
                   </div>
                 </div>
 
                 <div class="row mt-3">
-                  <div class="col-md-6">
-                    <label class="labels">Date Of Birth</label>
-                    <input type="text" class="form-control" value="{{ $spouse->dob }}" readonly>
+                  <div class="col-md-6 {{ $errors->has('spou.'.$j.'.dob') ? 'has-error' : '' }}">
+                    <label for="dob" class="labels">Date Of Birth</label>
+                    {!! Form::text( "spou[$j][dob]", @$spouse->dob, ['class' => 'form-control', 'id' => 'dob', 'placeholder' => 'Please Insert', 'autocomplete' => 'off'] ) !!}
                   </div>
-                  <div class="col-md-6">
-                    <label class="labels">Profession</label>
-                    <input type="text" class="form-control" value="{{ $spouse->profession }}" readonly>
+                  <div class="col-md-6 {{ $errors->has('spou.'.$j.'.profession') ? 'has-error' : '' }}">
+                    <label for="profession" class="labels">Profession</label>
+                    {!! Form::text( "spou[$j][profession]", @$spouse->profession, ['class' => 'form-control', 'id' => 'profession', 'placeholder' => 'Please Insert', 'autocomplete' => 'off'] ) !!}
                   </div>
                 </div>
               </div>
 
+              <?php $j++ ?>
               @endif
               @endforeach
 
             </div>
           </div>
           <div class="col-md-6 border-right">
-            <div class="px-3">
+            <div class="px-3 wrap_spouse_even">
 
               @foreach ($spouses as $spouse)
               @if ($loop->even)
 
-              <div class="mb-5">
+              <div class="mb-5 table_spouse">
+                <input type="hidden" name="spou[{{ $j }}][id]" value="{{ $spouse->id }}">
+                <input type="hidden" name="spou[{{ $j }}][staff_id]" value="{{ $profile-> id }}">
+
                 <div class="row mt-3">
-                  <div class="col-md-12">
-                    <label class="labels">NAME</label>
-                    <input type="text" class="form-control" value="{{ $spouse->spouse }}" readonly>
+                  <div class="col-md-12 {{ $errors->has('spou.'.$j.'.spouse') ? 'has-error' : '' }}">
+                    <label for="spouse" class="labels">NAME</label>
+                    {!! Form::text( "spou[$j][spouse]", @$spouse->spouse, ['class' => 'form-control', 'id' => 'spouse', 'placeholder' => 'Please Insert', 'autocomplete' => 'off'] ) !!}
                   </div>
                 </div>
 
                 <div class="row mt-3">
-                  <div class="col-md-6">
-                    <label class="labels">IC</label>
-                    <input type="text" class="form-control" value="{{ $spouse->id_card_passport }}" readonly>
+                  <div class="col-md-6 {{ $errors->has('spou.'.$j.'.id_card_passport') ? 'has-error' : '' }}">
+                    <label for="id_card_passport" class="labels">IC</label>
+                    {!! Form::text( "spou[$j][id_card_passport]", @$spouse->id_card_passport, ['class' => 'form-control', 'id' => 'id_card_passport', 'placeholder' => 'Please Insert', 'autocomplete' => 'off'] ) !!}
                   </div>
-                  <div class="col-md-6">
-                    <label class="labels">PHONE NUMBER</label>
-                    <input type="text" class="form-control" value="{{ $spouse->phone }}" readonly>
+                  <div class="col-md-6 {{ $errors->has('spou.'.$j.'.phone') ? 'has-error' : '' }}">
+                    <label for="phone" class="labels">PHONE NUMBER</label>
+                    {!! Form::text( "spou[$j][phone]", @$spouse->phone, ['class' => 'form-control', 'id' => 'phone', 'placeholder' => 'Please Insert', 'autocomplete' => 'off'] ) !!}
                   </div>
                 </div>
 
                 <div class="row mt-3">
-                  <div class="col-md-6">
-                    <label class="labels">Date Of Birth</label>
-                    <input type="text" class="form-control" value="{{ $spouse->dob }}" readonly>
+                  <div class="col-md-6 {{ $errors->has('spou.'.$j.'.dob') ? 'has-error' : '' }}">
+                    <label for="dob" class="labels">Date Of Birth</label>
+                    {!! Form::text( "spou[$j][dob]", @$spouse->dob, ['class' => 'form-control', 'id' => 'dob', 'placeholder' => 'Please Insert', 'autocomplete' => 'off'] ) !!}
                   </div>
-                  <div class="col-md-6">
-                    <label class="labels">Profession</label>
-                    <input type="text" class="form-control" value="{{ $spouse->profession }}" readonly>
+                  <div class="col-md-6 {{ $errors->has('spou.'.$j.'.profession') ? 'has-error' : '' }}">
+                    <label for="profession" class="labels">Profession</label>
+                    {!! Form::text( "spou[$j][profession]", @$spouse->profession, ['class' => 'form-control', 'id' => 'profession', 'placeholder' => 'Please Insert', 'autocomplete' => 'off'] ) !!}
                   </div>
                 </div>
               </div>
 
+              <?php $j++ ?>
               @endif
               @endforeach
 
@@ -324,47 +390,92 @@ $totalRows = $emergencies->count()
         </div>
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        <?php $k = 1 ?>
         <div class="row">
           <div class="d-flex justify-content-between align-items-center">
             <h4 class="text-right">Children</h4>
+            @if ($totalRows_children < 25) <button class="border px-3 p-1 add-experience btn btn-sm btn-outline-secondary add_children" type="button">
+              <i class="bi-plus" aria-hidden="true"></i>
+              </button>
+              @endif
           </div>
         </div>
         <div class="row">
           <div class="col-md-6 border-right">
-            <div class="px-3">
+            <div class="px-3 wrap_children_odd">
 
               @foreach ($childrens as $children)
               @if ($loop->odd)
 
-              <div class="mb-5">
+              <div class="mb-5 table_children">
+                <input type="hidden" name="chil[{{ $k }}][id]" value="{{ $children->id }}">
+                <input type="hidden" name="chil[{{ $k }}][staff_id]" value="{{ $profile-> id }}">
+
                 <div class="row mt-3">
-                  <div class="col-md-12">
-                    <label class="labels">NAME</label>
+                  <div class="col-md-12 {{ $errors->has('chil.'.$k.'.spouse') ? 'has-error' : '' }}">
+                    <label for="children" class="labels">NAME</label>
                     <input type="text" class="form-control" value="{{ $children->children }}" readonly>
                   </div>
                 </div>
 
                 <div class="row mt-3">
-                  <div class="col-md-6">
-                    <label class="labels">Date Of Birth</label>
+                  <div class="col-md-6 {{ $errors->has('chil.'.$k.'.spouse') ? 'has-error' : '' }}">
+                    <label for="dob" class="labels">Date Of Birth</label>
                     <input type="text" class="form-control" value="{{ $children->dob }}" readonly>
                   </div>
-                  <div class="col-md-6">
-                    <label class="labels">Gender</label>
+                  <div class="col-md-6 {{ $errors->has('chil.'.$k.'.spouse') ? 'has-error' : '' }}">
+                    <label for="" class="labels">Gender</label>
                     <input type="text" class="form-control" value="{{ $children->belongstogender->gender }}" readonly>
                   </div>
                 </div>
 
                 <div class="row mt-3">
-                  <div class="col-md-12">
-                    <label class="labels">Health Condition</label>
+                  <div class="col-md-12 {{ $errors->has('chil.'.$k.'.spouse') ? 'has-error' : '' }}">
+                    <label for="" class="labels">Health Condition</label>
                     <input type="text" class="form-control" value="{{ $children->belongstohealthstatus->health_status }}" readonly>
                   </div>
                 </div>
 
                 <div class="row mt-3">
-                  <div class="col-md-12">
-                    <label class="labels">Education Level</label>
+                  <div class="col-md-12 {{ $errors->has('chil.'.$k.'.spouse') ? 'has-error' : '' }}">
+                    <label for="" class="labels">Education Level</label>
                     <input type="text" class="form-control" value="{{ $children->belongstoeducationlevel->education_level }}" readonly>
                   </div>
                 </div>
@@ -433,5 +544,216 @@ $totalRows = $emergencies->count()
 @endsection
 
 @section('js')
+/////////////////////////////////////////////////////////////////////////////////////////
+// ADD EMERGENCY
+var max_emergency = 2;
+var totalRows_emergency = {{ $totalRows_emergency }};
 
-@endsection
+$(".add_emergency").click(function() {
+
+if (totalRows_emergency % 2 === 0) {
+var wrap_emergency = $(".wrap_emergency_odd");
+} else {
+var wrap_emergency = $(".wrap_emergency_even");
+}
+
+if(totalRows_emergency < max_emergency) { totalRows_emergency++; wrap_emergency.append( '<div class="table_emergency">' + '<input type="hidden" name="emer[' + totalRows_emergency +'][id]" value="">' +
+  '<input type="hidden" name="emer['+ totalRows_emergency +'][staff_id]" value="{{ $profile-> id}}">' +
+
+  '<div class="row mt-3">' +
+    '<div class="col-md-12 {{ $errors->has('emer.*.contact_person') ? 'has-error' : '' }}">' +
+      '<label for="contact_person" class="labels">NAME</label>' +
+      '{!! Form::text( "emer[$i][contact_person]", @$value, ['class' => 'form-control', 'id' => 'contact_person', 'placeholder' => 'Please Insert', 'autocomplete' => 'off'] ) !!}' +
+      '</div>' +
+    '</div>' +
+
+  '<div class="row mt-3">' +
+    '<div class="col-md-6 {{ $errors->has('emer.*.relationship_id') ? 'has-error' : '' }}">' +
+      '<label for="relationship_id" class="labels">RELATIONSHIP</label>' +
+      '{!! Form::select( "emer[$i][relationship_id]", $relationship, @$value, ['class' => 'form-control', 'id' => 'relationship_id', 'placeholder' => 'Please Select', 'autocomplete' => 'off'] ) !!}' +
+      '</div>' +
+    '<div class="col-md-6 {{ $errors->has('emer.*.phone') ? 'has-error' : '' }}">' +
+      '<label for="phone" class="labels">PHONE NUMBER</label>' +
+      '{!! Form::text( "emer[$i][phone]", @$value, ['class' => 'form-control', 'id' => 'phone', 'placeholder' => 'Please Insert', 'autocomplete' => 'off'] ) !!}' +
+      '</div>' +
+    '</div>' +
+
+  '<div class="row mt-3">' +
+    '<div class="col-md-12 {{ $errors->has('emer.*.address') ? 'has-error' : '' }}">' +
+      '<label for="emergency_address" class="labels">ADDRESS</label>' +
+      '{!! Form::text( "emer[$i][address]", @$value, ['class' => 'form-control', 'id' => 'emergency_address', 'placeholder' => 'Please Insert', 'autocomplete' => 'off'] ) !!}' +
+      '</div>' +
+    '</div>' +
+
+  '<div class="mt-1 d-flex flex-row justify-content-end">' +
+    '<button class="btn btn-outline-secondary btn-sm-custom bi bi-dash-lg remove_emergency"></button>' +
+    '</div>' +
+  '</div>'
+
+  );
+
+  $('#form').bootstrapValidator('addField', $('.table_emergency') .find('[name="emer['+ totalRows_emergency +'][id]"]'));
+  $('#form').bootstrapValidator('addField', $('.table_emergency') .find('[name="emer['+ totalRows_emergency +'][staff_id]"]'));
+  $('#form').bootstrapValidator('addField', $('.table_emergency') .find('[name="emer['+ totalRows_emergency +'][contact_person]"]'));
+  $('#form').bootstrapValidator('addField', $('.table_emergency') .find('[name="emer['+ totalRows_emergency +'][relationship_id]"]'));
+  $('#form').bootstrapValidator('addField', $('.table_emergency') .find('[name="emer['+ totalRows_emergency +'][phone]"]'));
+  $('#form').bootstrapValidator('addField', $('.table_emergency') .find('[name="emer['+ totalRows_emergency +'][address]"]'));
+  }
+  })
+
+  // DELETE EMERGENCY
+  $(".wrap_emergency_odd").on("click",".remove_emergency", function(e){
+  e.preventDefault();
+  var $row = $(this).parent().parent();
+  var $option1 = $row.find('[name="emer['+ totalRows_emergency +'][id]"]');
+  var $option2 = $row.find('[name="emer['+ totalRows_emergency +'][staff_id]"]');
+  var $option3 = $row.find('[name="emer['+ totalRows_emergency +'][contact_person]"]');
+  var $option4 = $row.find('[name="emer['+ totalRows_emergency +'][relationship_id]"]');
+  var $option5 = $row.find('[name="emer['+ totalRows_emergency +'][phone]"]');
+  var $option6 = $row.find('[name="emer['+ totalRows_emergency +'][address]"]');
+  $row.remove();
+
+  $('#form').bootstrapValidator('removeField', $option1);
+  $('#form').bootstrapValidator('removeField', $option2);
+  $('#form').bootstrapValidator('removeField', $option3);
+  $('#form').bootstrapValidator('removeField', $option4);
+  $('#form').bootstrapValidator('removeField', $option5);
+  $('#form').bootstrapValidator('removeField', $option6);
+  console.log();
+  totalRows_emergency--;
+  })
+
+  // DELETE EMERGENCY
+  $(".wrap_emergency_even").on("click",".remove_emergency", function(e){
+  e.preventDefault();
+  var $row = $(this).parent().parent();
+  var $option1 = $row.find('[name="emer['+ totalRows_emergency +'][id]"]');
+  var $option2 = $row.find('[name="emer['+ totalRows_emergency +'][staff_id]"]');
+  var $option3 = $row.find('[name="emer['+ totalRows_emergency +'][contact_person]"]');
+  var $option4 = $row.find('[name="emer['+ totalRows_emergency +'][relationship_id]"]');
+  var $option5 = $row.find('[name="emer['+ totalRows_emergency +'][phone]"]');
+  var $option6 = $row.find('[name="emer['+ totalRows_emergency +'][address]"]');
+  $row.remove();
+
+  $('#form').bootstrapValidator('removeField', $option1);
+  $('#form').bootstrapValidator('removeField', $option2);
+  $('#form').bootstrapValidator('removeField', $option3);
+  $('#form').bootstrapValidator('removeField', $option4);
+  $('#form').bootstrapValidator('removeField', $option5);
+  $('#form').bootstrapValidator('removeField', $option6);
+  console.log();
+  totalRows_emergency--;
+  })
+
+
+  /////////////////////////////////////////////////////////////////////////////////////////
+  // ADD SPOUSE
+  var max_spouse = 4;
+  var totalRows_spouse = {{ $totalRows_spouse }};
+
+  $(".add_spouse").click(function() {
+
+  if (totalRows_spouse % 2 === 0) {
+  var wrap_spouse = $(".wrap_spouse_odd");
+  } else {
+  var wrap_spouse = $(".wrap_spouse_even");
+  }
+
+  if(totalRows_spouse < max_spouse) { totalRows_spouse++; wrap_spouse.append( '<div class="mb-5 table_spouse">' + '<input type="hidden" name="spou[' + totalRows_spouse +'][id]" value="">' +
+    '<input type="hidden" name="spou['+ totalRows_spouse +'][staff_id]" value="{{ $profile-> id }}">' +
+
+    '<div class="row mt-3">' +
+      '<div class="col-md-12 {{ $errors->has('spou.*.spouse') ? 'has-error' : '' }}">' +
+        '<label for="spouse" class="labels">NAME</label>' +
+        '{!! Form::text( "spou[$j][spouse]", @$value, ['class' => 'form-control', 'id' => 'spouse', 'placeholder' => 'Please Insert', 'autocomplete' => 'off'] ) !!}' +
+        '</div>' +
+      '</div>' +
+
+    '<div class="row mt-3">' +
+      '<div class="col-md-6 {{ $errors->has('spou.*.id_card_passport') ? 'has-error' : '' }}">' +
+        '<label for="id_card_passport" class="labels">IC</label>' +
+        '{!! Form::text( "spou[$j][id_card_passport]", @$value, ['class' => 'form-control', 'id' => 'id_card_passport', 'placeholder' => 'Please Insert', 'autocomplete' => 'off'] ) !!}' +
+        '</div>' +
+      '<div class="col-md-6 {{ $errors->has('spou.*.phone') ? 'has-error' : '' }}">' +
+        '<label for="phone" class="labels">PHONE NUMBER</label>' +
+        '{!! Form::text( "spou[$j][phone]", @$value, ['class' => 'form-control', 'id' => 'phone', 'placeholder' => 'Please Insert', 'autocomplete' => 'off'] ) !!}' +
+        '</div>' +
+      '</div>' +
+
+    '<div class="row mt-3">' +
+      '<div class="col-md-6 {{ $errors->has('spou.*.dob') ? 'has-error' : '' }}">' +
+        '<label for="dob" class="labels">Date Of Birth</label>' +
+        '{!! Form::text( "spou[$j][dob]", @$value, ['class' => 'form-control', 'id' => 'dob', 'placeholder' => 'Please Insert', 'autocomplete' => 'off'] ) !!}' +
+        '</div>' +
+      '<div class="col-md-6 {{ $errors->has('spou.*.profession') ? 'has-error' : '' }}">' +
+        '<label for="profession" class="labels">Profession</label>' +
+        '{!! Form::text( "spou[$j][profession]", @$value, ['class' => 'form-control', 'id' => 'profession', 'placeholder' => 'Please Insert', 'autocomplete' => 'off'] ) !!}' +
+        '</div>' +
+      '</div>' +
+
+    '<div class="mt-1 d-flex flex-row justify-content-end">' +
+      '<button class="btn btn-outline-secondary btn-sm-custom bi bi-dash-lg remove_spouse"></button>' +
+      '</div>' +
+    '</div>'
+
+    );
+
+    $('#form').bootstrapValidator('addField', $('.table_spouse') .find('[name="spou['+ totalRows_spouse +'][id]"]'));
+    $('#form').bootstrapValidator('addField', $('.table_spouse') .find('[name="spou['+ totalRows_spouse +'][staff_id]"]'));
+    $('#form').bootstrapValidator('addField', $('.table_spouse') .find('[name="spou['+ totalRows_spouse +'][spouse]"]'));
+    $('#form').bootstrapValidator('addField', $('.table_spouse') .find('[name="spou['+ totalRows_spouse +'][id_card_passport]"]'));
+    $('#form').bootstrapValidator('addField', $('.table_spouse') .find('[name="spou['+ totalRows_spouse +'][phone]"]'));
+    $('#form').bootstrapValidator('addField', $('.table_spouse') .find('[name="spou['+ totalRows_spouse +'][dob]"]'));
+    $('#form').bootstrapValidator('addField', $('.table_spouse') .find('[name="spou['+ totalRows_spouse +'][profession]"]'));
+    }
+    })
+
+    // DELETE SPOUSE
+    $(".wrap_spouse_odd").on("click",".remove_spouse", function(e){
+    e.preventDefault();
+    var $row = $(this).parent().parent();
+    var $option1 = $row.find('[name="spou['+ totalRows_spouse +'][id]"]');
+    var $option2 = $row.find('[name="spou['+ totalRows_spouse +'][staff_id]"]');
+    var $option3 = $row.find('[name="spou['+ totalRows_spouse +'][spouse]"]');
+    var $option4 = $row.find('[name="spou['+ totalRows_spouse +'][id_card_passport]"]');
+    var $option5 = $row.find('[name="spou['+ totalRows_spouse +'][phone]"]');
+    var $option6 = $row.find('[name="spou['+ totalRows_spouse +'][dob]"]');
+    var $option7 = $row.find('[name="spou['+ totalRows_spouse +'][profession]"]');
+    $row.remove();
+
+    $('#form').bootstrapValidator('removeField', $option1);
+    $('#form').bootstrapValidator('removeField', $option2);
+    $('#form').bootstrapValidator('removeField', $option3);
+    $('#form').bootstrapValidator('removeField', $option4);
+    $('#form').bootstrapValidator('removeField', $option5);
+    $('#form').bootstrapValidator('removeField', $option6);
+    $('#form').bootstrapValidator('removeField', $option7);
+    console.log();
+    totalRows_spouse--;
+    })
+
+    // DELETE SPOUSE
+    $(".wrap_spouse_even").on("click",".remove_spouse", function(e){
+    e.preventDefault();
+    var $row = $(this).parent().parent();
+    var $option1 = $row.find('[name="spou['+ totalRows_spouse +'][id]"]');
+    var $option2 = $row.find('[name="spou['+ totalRows_spouse +'][staff_id]"]');
+    var $option3 = $row.find('[name="spou['+ totalRows_spouse +'][spouse]"]');
+    var $option4 = $row.find('[name="spou['+ totalRows_spouse +'][id_card_passport]"]');
+    var $option5 = $row.find('[name="spou['+ totalRows_spouse +'][phone]"]');
+    var $option6 = $row.find('[name="spou['+ totalRows_spouse +'][dob]"]');
+    var $option7 = $row.find('[name="spou['+ totalRows_spouse +'][profession]"]');
+    $row.remove();
+
+    $('#form').bootstrapValidator('removeField', $option1);
+    $('#form').bootstrapValidator('removeField', $option2);
+    $('#form').bootstrapValidator('removeField', $option3);
+    $('#form').bootstrapValidator('removeField', $option4);
+    $('#form').bootstrapValidator('removeField', $option5);
+    $('#form').bootstrapValidator('removeField', $option6);
+    $('#form').bootstrapValidator('removeField', $option7);
+    console.log();
+    totalRows_spouse--;
+    })
+
+    @endsection
