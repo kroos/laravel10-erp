@@ -276,10 +276,10 @@ foreach ($c as $v) {
 
 	<?php
 	$x = \Auth::user()->belongstostaff->hasmanyleaveapprovalbackup()->whereNull('leave_status_id')->get();	// user is a backup for some1 else
-	$s1 = \Auth::user()->belongstostaff()->whereIn('div_id', [4, 3])->get()->count();		// user is a supervisor and HR
-	$h1 = \Auth::user()->belongstostaff()->whereIn('div_id', [1, 3])->get()->count();			// user is a HOD and HR
-	$d1 = \Auth::user()->belongstostaff()->whereIn('div_id', [2, 3])->get()->count();			// user is a director and HR
-	$r1 = \Auth::user()->belongstostaff()->where('div_id', 3)->get()->count();				// user is a HR
+	$s1 = \Auth::user()->belongstostaff()->whereIn('div_id', [4, 3])->get()->count();						// user is a supervisor and HR
+	$h1 = \Auth::user()->belongstostaff()->whereIn('div_id', [1, 3])->get()->count();						// user is a HOD and HR
+	$d1 = \Auth::user()->belongstostaff()->whereIn('div_id', [2, 3])->get()->count();						// user is a director and HR
+	$r1 = \Auth::user()->belongstostaff()->where('div_id', 3)->get()->count();								// user is a HR
 	// dd($h1);
 	?>
 
