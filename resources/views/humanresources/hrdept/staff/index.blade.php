@@ -3,7 +3,7 @@
 @section('content')
 <?php
 use App\Models\Staff;
-
+use Illuminate\Database\Eloquent\Builder;
 ?>
 <div class="col-sm-12 row">
 @include('humanresources.hrdept.navhr')
@@ -37,50 +37,85 @@ use App\Models\Staff;
 			<tbody class="table-group-divider">
 <?php
 // who am i?
-$me = \Auth::user()->belongstostaff->whereIn('div_id', [1,4,5])->get();
+$me1 = \Auth::user()->belongstostaff->div_id == 1;		// hod
+$me2 = \Auth::user()->belongstostaff->div_id == 5;		// hod assistant
+$me3 = \Auth::user()->belongstostaff->div_id == 4;		// supervisor
+$me4 = \Auth::user()->belongstostaff->div_id == 3;		// HR
+$me5 = \Auth::user()->belongstostaff->authorise_id == 1;	// admin
+$me6 = \Auth::user()->belongstostaff->div_id == 2;		// director
 $dept = \Auth::user()->belongstostaff->belongstomanydepartment()->wherePivot('main', 1)->first();
+$deptid = $dept->id;
 $branch = $dept->branch_id;
 $category = $dept->category_id;
-
-$st = Staff::where('active', 1)->get();
-// $sdept = $st->belongstomanydepartment()->wherePivot('main', 1)->get();
-dd($me);
-
-if($me){
-	$st = Staff::where('active', 1)->get();
-}
 ?>
-				@foreach($st as $s)
-				<tr>
-					@if(auth()->user()->belongstostaff->authorise_id == 1)
-					<td>{{ $s->id }}</td>
-					@endif
-					<td><a href="{{ route('staff.show', $s->id) }}" alt="Detail" title="Detail">{{ $s->hasmanylogin()->where('active', 1)->first()->username }}</a></td>
-					<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-html="true" data-bs-title="
-						<div class='d-flex flex-column align-items-center text-center p-3 py-5'>
-							<img class='rounded-5 mt-3' width='180px' src='{{ asset('storage/user_profile/' . $s->image) }}'>
-							<span class='font-weight-bold'>{{ $s->name }}</span>
-							<span class='font-weight-bold'>{{ $s->hasmanylogin()->where('active', 1)->first()->username }}</span>
-							<span> </span>
-						</div>
-					">{{ $s->name }}</td>
-					<td>{{ $s->belongstorestdaygroup?->group }}</td>
-					<!-- <td>{{ $s->belongstogender?->gender }}</td> -->
-					<td>{{ $s->belongstonationality?->country }}</td>
-					<td>{{ $s->belongstomaritalstatus?->marital_status }}</td>
-					<td>{{ $s->belongstomanydepartment()->wherePivot('main', 1)->first()?->belongstocategory->category }}</td>
-					<td>{{ $s->belongstomanydepartment()->wherePivot('main', 1)->first()?->department }}</td>
-					<td>{{ $s->belongstomanydepartment()->wherePivot('main', 1)->first()?->belongstobranch->location }}</td>
-					<td>{{ $s->belongstoleaveapprovalflow?->description }}</td>
-					<td>{{ $s->mobile }}</td>
-<!-- 				<td>{{ $s->cimb_account }}</td>
-					<td>{{ $s->epf_account }}</td>
-					<td>{{ $s->income_tax_no }}</td>
-					<td>{{ $s->socso_no }}</td>
-					<td>{{ \Carbon\Carbon::parse($s->join)->format('j M Y ') }}</td>
-					<td>{{ \Carbon\Carbon::parse($s->confirmed)->format('j M Y ') }}</td> -->
-				</tr>
+				@foreach(Staff::where('active', 1)->get() as $s)
+<?php
+if ($me1) {																				// hod
+	if ($deptid == 21) {																// hod | dept prod A
+		$ha = $s->belongstomanydepartment()->wherePivot('main', 1)->first()->id == $deptid || $s->belongstomanydepartment()->wherePivot('main', 1)->first()->category_id == 2;
+	} elseif($deptid == 28) {															// hod | not dept prod A | dept prod B
+		$ha = $s->belongstomanydepartment()->wherePivot('main', 1)->first()->id == $deptid || $s->belongstomanydepartment()->wherePivot('main', 1)->first()->category_id == 2;
+	} elseif($deptid == 14) {															// hod | not dept prod A | not dept prod B | HR
+		$ha = true;
+	} elseif($deptid == 6) {															// hod | not dept prod A | not dept prod B | not HR | cust serv
+		$ha = $s->belongstomanydepartment()->wherePivot('main', 1)->first()->id == $deptid || $s->belongstomanydepartment()->wherePivot('main', 1)->first()->id == 7;
+	} elseif ($deptid == 23) {															// hod | not dept prod A | not dept prod B | not HR | not cust serv | puchasing
+		$ha = $s->belongstomanydepartment()->wherePivot('main', 1)->first()->id == $deptid || $s->belongstomanydepartment()->wherePivot('main', 1)->first()->id == 16 || $s->belongstomanydepartment()->wherePivot('main', 1)->first()->id == 17;
+	} else {																			// hod | not dept prod A | not dept prod B | not HR | not cust serv | not puchasing | other dept
+		$ha = $s->belongstomanydepartment()->wherePivot('main', 1)->first()->id == $deptid;
+	}
+} elseif($me2) {																		// not hod | asst hod
+	if($deptid == 14) {																	// not hod | not dept prod A | not dept prod B | HR
+		$ha = true;
+	} elseif($deptid == 6) {															// not hod | not dept prod A | not dept prod B | not HR | cust serv
+		$ha = $s->belongstomanydepartment()->wherePivot('main', 1)->first()->id == $deptid || $s->belongstomanydepartment()->wherePivot('main', 1)->first()->id == 7;
+	}
+} elseif($me3) {																		// not hod | not asst hod | supervisor
+	if($branch == 1) {																	// not hod | not asst hod | supervisor | branch A
+		$ha = $s->belongstomanydepartment()->wherePivot('main', 1)->first()->id == $deptid || ($s->belongstomanydepartment()->wherePivot('main', 1)->first()->category_id == 2 && $s->belongstomanydepartment()->wherePivot('main', 1)->first()->branch_id == $branch);
+	} elseif ($branch == 2) {															// not hod | not asst hod | supervisor | not branch A | branch B
+		$ha = $s->belongstomanydepartment()->wherePivot('main', 1)->first()->id == $deptid || ($s->belongstomanydepartment()->wherePivot('main', 1)->first()->category_id == 2 && $s->belongstomanydepartment()->wherePivot('main', 1)->first()->branch_id == $branch);
+	}
+} elseif($me6) {																		// not hod | not asst hod | not supervisor | director
+	$ha = true;
+} elseif($me5) {																		// not hod | not asst hod | not supervisor | not director | admin
+	$ha = true;
+} else {
+	$ha = false;
+}
 
+?>
+					@if( $ha )
+						<tr>
+							@if(auth()->user()->belongstostaff->authorise_id == 1)
+							<td>{{ $s->id }}</td>
+							@endif
+							<td><a href="{{ route('staff.show', $s->id) }}" alt="Detail" title="Detail">{{ $s->hasmanylogin()->where('active', 1)->first()?->username }}</a></td>
+							<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-html="true" data-bs-title="
+								<div class='d-flex flex-column align-items-center text-center p-3 py-5'>
+									<img class='rounded-5 mt-3' width='180px' src='{{ asset('storage/user_profile/' . $s->image) }}'>
+									<span class='font-weight-bold'>{{ $s->name }}</span>
+									<span class='font-weight-bold'>{{ $s->hasmanylogin()->where('active', 1)->first()?->username }}</span>
+									<span> </span>
+								</div>
+							">{{ $s->name }}</td>
+							<td>{{ $s->belongstorestdaygroup?->group }}</td>
+							<!-- <td>{{ $s->belongstogender?->gender }}</td> -->
+							<td>{{ $s->belongstonationality?->country }}</td>
+							<td>{{ $s->belongstomaritalstatus?->marital_status }}</td>
+							<td>{{ $s->belongstomanydepartment()->wherePivot('main', 1)->first()?->belongstocategory->category }}</td>
+							<td>{{ $s->belongstomanydepartment()->wherePivot('main', 1)->first()?->department }}</td>
+							<td>{{ $s->belongstomanydepartment()->wherePivot('main', 1)->first()?->belongstobranch->location }}</td>
+							<td>{{ $s->belongstoleaveapprovalflow?->description }}</td>
+							<td>{{ $s->mobile }}</td>
+		<!-- 				<td>{{ $s->cimb_account }}</td>
+							<td>{{ $s->epf_account }}</td>
+							<td>{{ $s->income_tax_no }}</td>
+							<td>{{ $s->socso_no }}</td>
+							<td>{{ \Carbon\Carbon::parse($s->join)->format('j M Y ') }}</td>
+							<td>{{ \Carbon\Carbon::parse($s->confirmed)->format('j M Y ') }}</td> -->
+						</tr>
+					@endif
 				@endforeach
 			</tbody>
 		</table>

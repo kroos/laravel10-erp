@@ -276,11 +276,15 @@ foreach ($c as $v) {
 
 	<?php
 	$x = \Auth::user()->belongstostaff->hasmanyleaveapprovalbackup()->whereNull('leave_status_id')->get();	// user is a backup for some1 else
-	$s1 = \Auth::user()->belongstostaff()->whereIn('div_id', [4, 3])->get()->count();		// user is a supervisor and HR
-	$h1 = \Auth::user()->belongstostaff()->whereIn('div_id', [1, 3])->get()->count();			// user is a HOD and HR
-	$d1 = \Auth::user()->belongstostaff()->whereIn('div_id', [2, 3])->get()->count();			// user is a director and HR
-	$r1 = \Auth::user()->belongstostaff()->where('div_id', 3)->get()->count();				// user is a HR
+	// $s1 = \Auth::user()->belongstostaff()->whereIn('div_id', [4, 3])->get()->count();					// user is a supervisor and HR
+	$s1 = \Auth::user()->belongstostaff->div_id == 4 || (\Auth::user()->belongstostaff->div_id == 1 && \Auth::user()->belongstostaff->belongstomanydepartment()->wherePivot('main', 1)->first()->department_id == 14);	// supervisor and hod HR
+	// $h1 = \Auth::user()->belongstostaff()->whereIn('div_id', [1, 3])->get()->count();					// user is a HOD and HR
+	$h1 = \Auth::user()->belongstostaff->div_id == 1 || (\Auth::user()->belongstostaff->div_id == 1 && \Auth::user()->belongstostaff->belongstomanydepartment()->wherePivot('main', 1)->first()->department_id == 14);	// HOD and hod HR
 	// dd($h1);
+	// $d1 = \Auth::user()->belongstostaff()->whereIn('div_id', [2, 3])->get()->count();					// user is a director and HR
+	$d1 = \Auth::user()->belongstostaff->div_id == 2 || (\Auth::user()->belongstostaff->div_id == 1 && \Auth::user()->belongstostaff->belongstomanydepartment()->wherePivot('main', 1)->first()->department_id == 14);	// dir and hod HR
+	// $r1 = \Auth::user()->belongstostaff()->where('div_id', 3)->get()->count();								// user is a HR
+	$r1 = \Auth::user()->belongstostaff->div_id == 1 && \Auth::user()->belongstostaff->belongstomanydepartment()->wherePivot('main', 1)->first()->department_id == 14;													// hod HR
 	?>
 
 	<p>&nbsp;</p>
@@ -543,7 +547,7 @@ foreach ($c as $v) {
 											<div class="modal-dialog modal-dialog-centered">
 												<div class="modal-content">
 													<div class="modal-header">
-														<h1 class="modal-title fs-5" id="hodlabel{{ $a->id }}">Supervisor Approval</h1>
+														<h1 class="modal-title fs-5" id="hodlabel{{ $a->id }}">Head of Department Approval</h1>
 														<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 													</div>
 													<div class="modal-body">
@@ -656,7 +660,7 @@ foreach ($c as $v) {
 										<div class="modal-dialog modal-dialog-centered">
 											<div class="modal-content">
 												<div class="modal-header">
-													<h1 class="modal-title fs-5" id="dirlabel{{ $a->id }}">Supervisor Approval</h1>
+													<h1 class="modal-title fs-5" id="dirlabel{{ $a->id }}">Director Approval</h1>
 													<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 												</div>
 												<div class="modal-body">
@@ -767,7 +771,7 @@ foreach ($c as $v) {
 										<div class="modal-dialog modal-dialog-centered">
 											<div class="modal-content">
 												<div class="modal-header">
-													<h1 class="modal-title fs-5" id="hrlabel{{ $a->id }}">Supervisor Approval</h1>
+													<h1 class="modal-title fs-5" id="hrlabel{{ $a->id }}">Human Resource Department Approval</h1>
 													<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 												</div>
 												<div class="modal-body">
