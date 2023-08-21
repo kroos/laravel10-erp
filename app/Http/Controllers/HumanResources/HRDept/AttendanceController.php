@@ -40,8 +40,8 @@ class AttendanceController extends Controller
 	{
 		$s = Staff::where('active', 1)->get();
 		$sa = $s->count();
-		$attendance = HRAttendance::whereYear('attend_date', Carbon::now()->format('Y'))->orderBy('attend_date', 'desc')->cursorPaginate($sa);
-		return view('humanresources.hrdept.attendance.index', compact('attendance'));
+		$attendance = HRAttendance::whereYear('attend_date', Carbon::now()->format('Y'))->distinct()->orderBy('attend_date', 'desc')->cursorPaginate($sa);
+		return view('humanresources.hrdept.attendance.index', ['attendance' => $attendance]);
 	}
 
 	/**
@@ -64,7 +64,7 @@ class AttendanceController extends Controller
 	 */
 	public function show(Staff $staff)
 	{
-		return view('humanresources.hrdept.attendance.show', compact(['staff']));
+		return view('humanresources.hrdept.attendance.show', ['staff' => $staff]);
 	}
 
 	/**
