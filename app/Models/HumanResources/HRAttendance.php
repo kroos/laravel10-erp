@@ -41,6 +41,7 @@ class HRAttendance extends Model
 	public function belongstoopttcms(): BelongsTo
 	{
 		return $this->belongsTo(\App\Models\HumanResources\OptTcms::class, 'attendance_type_id');
+	}
 
 	public function belongstodaytype(): BelongsTo
 	{

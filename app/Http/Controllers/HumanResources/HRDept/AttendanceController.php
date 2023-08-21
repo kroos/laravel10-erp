@@ -8,13 +8,16 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
 
 // load validation
-use App\Http\Requests\HumanResources\Leave\HRLeaveRequestStore;
 
 // load models
+use App\Models\HumanResources\HRAttendance;
 use App\Models\Staff;
 
 // load array helper
 use Illuminate\Support\Arr;
+
+// for viewing
+use Illuminate\View\View;
 
 // load Carbon
 use \Carbon\Carbon;
@@ -33,9 +36,12 @@ class AttendanceController extends Controller
 	/**
 	 * Display a listing of the resource.
 	 */
-	public function index()
+	public function index(): View
 	{
-		return view('humanresources.hrdept.attendance.index');
+		$s = Staff::where('active', 1)->get();
+		$sa = $s->count();
+		$attendance = HRAttendance::whereYear('attend_date', Carbon::now()->format('Y'))->orderBy('attend_date', 'desc')->cursorPaginate($sa);
+		return view('humanresources.hrdept.attendance.index', compact('attendance'));
 	}
 
 	/**

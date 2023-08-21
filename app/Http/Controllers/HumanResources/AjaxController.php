@@ -6,9 +6,10 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 // load model
+use App\Models\Staff;
 use App\Models\HumanResources\HRLeave;
 use App\Models\HumanResources\OptLeaveType;
-use App\Models\HumanResources\HRHolidayCalendar;;
+use App\Models\HumanResources\HRHolidayCalendar;
 use App\Models\Setting;
 use App\Models\HumanResources\OptWorkingHour;
 use App\Models\HumanResources\HRLeaveEntitlement;
@@ -510,7 +511,7 @@ class AjaxController extends Controller
 
 	public function leavestatus(Request $request)
 	{
-		
+
 		// $ls['results'] = [];
 		if(\Auth::user()->belongstostaff->div_id != 2) {
 			$c = OptLeaveStatus::where('id', '<>', 6)->where('id', '<>', 3)->get();
@@ -939,5 +940,21 @@ class AjaxController extends Controller
 		Session::flash('flash_message', 'Successfully make an approval for user.');
 		return redirect()->route('leave.index');
 	}
+
+	public function attendancelist()
+	{
+		$r = [];
+		foreach (HRAttendance::all() as $a) {
+			if ($a->belongtostaff?->where('active', 1)->get()->count()) {
+				$r = [$a->belongstostaff?->hasmanylogin()->where('active', 1)->first()->username, $a->belongstostaff?->name, $a->belongstodaytype?->daytype, $a->belongstoopttcms?->leave, $a->date, $a->in, $a->break, $a->resume, $a->out, $a->time_work_hour];
+			}
+		}
+		return $r;
+	}
+
+
+
+
+
 
 }

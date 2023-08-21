@@ -70,8 +70,6 @@ class Kernel extends HttpKernel
 
 		'highMgmtAccess' => \App\Http\Middleware\HighManagement\RedirectIfNotHighManagement::class,
 
-		'hrAccess' => \App\Http\Middleware\Department\RedirectIfNotHR::class,
-
 		'leaveaccess' => \App\Http\Middleware\HumanResources\Leave\RedirectIfNotOwnerLeave::class,
 		'profileaccess' => \App\Http\Middleware\HumanResources\Profile\RedirectIfNotOwnerProfile::class,
 	];

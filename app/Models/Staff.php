@@ -104,7 +104,7 @@ class Staff extends Authenticatable
 		return $this->hasMany(\App\Models\HumanResources\HRLeaveAmend::class, 'staff_id');
 	}
 
-	public function hasmanyhrattendance(): HasMany
+	public function hasmanyattendance(): HasMany
 	{
 		return $this->hasMany(\App\Models\HumanResources\HRAttendance::class, 'staff_id');
 	}

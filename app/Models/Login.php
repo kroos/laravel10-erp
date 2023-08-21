@@ -173,7 +173,7 @@ class Login extends Authenticatable // implements MustVerifyEmail
 			$hmu = [$dept];
 		}
 		$h = \Auth::user()->belongstostaff->whereIn('div_id', 1)->belongstomanydepartment()->wherePivot('main', 1)->whereIn('department_id', $hmu);
-		dd($h->ddRawSql());
+		// dd($h->ddRawSql());
 		if($h->isNotaEmpty()) {
 			return true;
 		}
@@ -186,17 +186,6 @@ class Login extends Authenticatable // implements MustVerifyEmail
 		// dd($g->ddRawSql());
 		foreach($g->get() as $t) {
 			if($t->get()->isNotEmpty()) {
-				return true;
-			}
-		}
-	}
-
-	// make sure admin and HR personnel can access human resource dept
-	public function isHRDept() {
-		$u = auth()->user()->belongstostaff->belongstomanydepartment()->wherePivot('main', 1)->firstOrFail();
-		// dd($u->id);
-		if ($u->id == 14) {
-			if ($uhoa->isNotEmpty()) {
 				return true;
 			}
 		}
