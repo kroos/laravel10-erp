@@ -72,6 +72,16 @@ if ($me1) {																				// hod
 } else {
 	$ha = false;
 }
+/////////////////////////////
+// to determine date of today
+$gwh = $s->belongstostaff->where('active', 1)->belongstomanydepartment()->wherePivot('main', 1)->first()->wh_group_id;
+$day = Carbon::parse($s->attend_date)->dayOfWeek; // == 5 => friday
+$s->belongstostaff->where('active', 1)->belongstomanydepartment()->wherePivot('main', 1)->belongstowhgroup->where(function (Builder $query) use ($s->attend_date){
+																												$query->whereDate('effective_date_start', '<=', $s->attend_date)
+																												->whereDate('effective_date_end', '>=', $s->attend_date);
+																											})
+																											->where(['year' => Carbon::now()->format('Y'), 'group' => $gwh, 'category' => 8])
+																											->get();
 ?>
 			@if($ha)
 			@if($s->belongstostaff?->active == 1)
