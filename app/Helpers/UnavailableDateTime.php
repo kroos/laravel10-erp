@@ -147,7 +147,7 @@ class UnavailableDateTime
 		$dty = $dt->copy()->year;
 
 		// get group working hour from department
-		$gwh = Staff::find($user)->belongstomanydepartment()->first()->wh_group_id;
+		$gwh = Staff::find($user)->belongstomanydepartment()->wherePivot('main', 1)->first()->wh_group_id;
 
 		// pls be remind, this is for leave application, so if maintenance (group=1/$gwh=1) apply leave, we should give user category 8
 

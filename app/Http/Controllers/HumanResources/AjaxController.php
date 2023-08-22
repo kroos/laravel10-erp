@@ -6,9 +6,10 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 // load model
+use App\Models\Staff;
 use App\Models\HumanResources\HRLeave;
 use App\Models\HumanResources\OptLeaveType;
-use App\Models\HumanResources\HRHolidayCalendar;;
+use App\Models\HumanResources\HRHolidayCalendar;
 use App\Models\Setting;
 use App\Models\HumanResources\OptWorkingHour;
 use App\Models\HumanResources\HRLeaveEntitlement;
@@ -510,7 +511,7 @@ class AjaxController extends Controller
 
 	public function leavestatus(Request $request)
 	{
-		
+
 		// $ls['results'] = [];
 		if(\Auth::user()->belongstostaff->div_id != 2) {
 			$c = OptLeaveStatus::where('id', '<>', 6)->where('id', '<>', 3)->get();
