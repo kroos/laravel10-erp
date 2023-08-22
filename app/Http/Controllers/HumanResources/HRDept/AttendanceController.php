@@ -8,13 +8,25 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
 
 // load validation
-use App\Http\Requests\HumanResources\Leave\HRLeaveRequestStore;
+
+
+use Illuminate\Support\Facades\DB;
+
+// load cursor pagination
+use Illuminate\Pagination\CursorPaginator;
 
 // load models
+use App\Models\HumanResources\HRAttendance;
 use App\Models\Staff;
+
+// load paginator
+use Illuminate\Pagination\Paginator;
 
 // load array helper
 use Illuminate\Support\Arr;
+
+// for viewing
+use Illuminate\View\View;
 
 // load Carbon
 use \Carbon\Carbon;
@@ -33,9 +45,25 @@ class AttendanceController extends Controller
 	/**
 	 * Display a listing of the resource.
 	 */
-	public function index()
+	public function index(): View
 	{
-		return view('humanresources.hrdept.attendance.index');
+		Paginator::useBootstrapFive();
+		$sa = HRAttendance::SelectRaw('COUNT(hr_attendances.staff_id) as totalactivestaff,  hr_attendances.attend_date')
+			->join('staffs', 'hr_attendances.staff_id', '=', 'staffs.id')
+			->where('staffs.active', 1)
+			->groupBy('hr_attendances.attend_date')
+			->orderBy('hr_attendances.attend_date', 'DESC')
+			->cursorPaginate(1);
+
+		$attendance = HRAttendance::join('staffs', 'hr_attendances.staff_id', '=', 'staffs.id')
+			->where('staffs.active', 1)
+			// ->whereDate('attend_date', Carbon::now()->format('Y-m-d'))
+			->whereDate('attend_date', $sa->first()->attend_date)
+			->orderBy('hr_attendances.attend_date', 'DESC')
+			->cursorPaginate($sa->first()->totalactivestaff);
+		// $attendance->appends(['attend_date' => Carbon::now()->format('Y-m-d')]);;
+
+		return view('humanresources.hrdept.attendance.index', ['attendance' => $attendance, 'sa' => $sa]);
 	}
 
 	/**
@@ -58,7 +86,7 @@ class AttendanceController extends Controller
 	 */
 	public function show(Staff $staff)
 	{
-		return view('humanresources.hrdept.attendance.show', compact(['staff']));
+		return view('humanresources.hrdept.attendance.show', ['staff' => $staff]);
 	}
 
 	/**

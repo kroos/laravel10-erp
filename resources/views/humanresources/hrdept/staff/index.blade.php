@@ -3,7 +3,6 @@
 @section('content')
 <?php
 use App\Models\Staff;
-use Illuminate\Database\Eloquent\Builder;
 ?>
 <div class="col-sm-12 row">
 @include('humanresources.hrdept.navhr')
