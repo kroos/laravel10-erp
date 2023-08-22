@@ -4,14 +4,14 @@
 <div class="col-sm-12 row">
 @include('humanresources.hrdept.navhr')
 	<h4>Attendance</h4>
-	<div class="table-responsive">
+	<div class="">
 		<table id="attendance" class="table table-hover table-sm align-middle" style="font-size:12px">
 			<thead>
 				<tr>
 					<th>ID</th>
 					<th>Name</th>
 					<th>Type</th>
-					<th>Leave</th>
+					<th>Cause</th>
 					<th>Date</th>
 					<th>In</th>
 					<th>Break</th>
@@ -23,7 +23,9 @@
 			</thead>
 			<tbody>
 <?php
+use App\Helpers\UnavailableDateTime;
 use \Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 
 // who am i?
 $me1 = \Auth::user()->belongstostaff->div_id == 1;		// hod
@@ -36,34 +38,35 @@ $dept = \Auth::user()->belongstostaff->belongstomanydepartment()->wherePivot('ma
 $deptid = $dept->id;
 $branch = $dept->branch_id;
 $category = $dept->category_id;
+$i = 1;
 ?>
 			@foreach($attendance as $s)
 <?php
 if ($me1) {																				// hod
 	if ($deptid == 21) {																// hod | dept prod A
-		$ha = $s->belongstostaff?->where('active', 1)->belongstomanydepartment()->wherePivot('main', 1)->first()->id == $deptid || $s->belongstostaff?->where('active', 1)->belongstomanydepartment()->wherePivot('main', 1)->first()->category_id == 2;
+		$ha = $s->belongstostaff->belongstomanydepartment()->wherePivot('main', 1)->first()->id == $deptid || $s->belongstostaff->belongstomanydepartment()->wherePivot('main', 1)->first()->category_id == 2;
 	} elseif($deptid == 28) {															// hod | not dept prod A | dept prod B
-		$ha = $s->belongstostaff?->where('active', 1)->belongstomanydepartment()->wherePivot('main', 1)->first()->id == $deptid || $s->belongstostaff?->where('active', 1)->belongstomanydepartment()->wherePivot('main', 1)->first()->category_id == 2;
+		$ha = $s->belongstostaff->belongstomanydepartment()->wherePivot('main', 1)->first()->id == $deptid || $s->belongstostaff->belongstomanydepartment()->wherePivot('main', 1)->first()->category_id == 2;
 	} elseif($deptid == 14) {															// hod | not dept prod A | not dept prod B | HR
 		$ha = true;
 	} elseif($deptid == 6) {															// hod | not dept prod A | not dept prod B | not HR | cust serv
-		$ha = $s->belongstostaff?->where('active', 1)->belongstomanydepartment()->wherePivot('main', 1)->first()->id == $deptid || $s->belongstostaff?->where('active', 1)->belongstomanydepartment()->wherePivot('main', 1)->first()->id == 7;
+		$ha = $s->belongstostaff->belongstomanydepartment()->wherePivot('main', 1)->first()->id == $deptid || $s->belongstostaff->belongstomanydepartment()->wherePivot('main', 1)->first()->id == 7;
 	} elseif ($deptid == 23) {															// hod | not dept prod A | not dept prod B | not HR | not cust serv | puchasing
-		$ha = $s->belongstostaff?->where('active', 1)->belongstomanydepartment()->wherePivot('main', 1)->first()->id == $deptid || $s->belongstostaff?->where('active', 1)->belongstomanydepartment()->wherePivot('main', 1)->first()->id == 16 || $s->belongstostaff?->where('active', 1)->belongstomanydepartment()->wherePivot('main', 1)->first()->id == 17;
+		$ha = $s->belongstostaff->belongstomanydepartment()->wherePivot('main', 1)->first()->id == $deptid || $s->belongstostaff->belongstomanydepartment()->wherePivot('main', 1)->first()->id == 16 || $s->belongstostaff->belongstomanydepartment()->wherePivot('main', 1)->first()->id == 17;
 	} else {																			// hod | not dept prod A | not dept prod B | not HR | not cust serv | not puchasing | other dept
-		$ha = $s->belongstostaff?->where('active', 1)->belongstomanydepartment()->wherePivot('main', 1)->first()->id == $deptid;
+		$ha = $s->belongstostaff->belongstomanydepartment()->wherePivot('main', 1)->first()->id == $deptid;
 	}
 } elseif($me2) {																		// not hod | asst hod
 	if($deptid == 14) {																	// not hod | not dept prod A | not dept prod B | HR
 		$ha = true;
 	} elseif($deptid == 6) {															// not hod | not dept prod A | not dept prod B | not HR | cust serv
-		$ha = $s->belongstostaff?->where('active', 1)->belongstomanydepartment()->wherePivot('main', 1)->first()->id == $deptid || $s->belongstostaff?->where('active', 1)->belongstomanydepartment()->wherePivot('main', 1)->first()->id == 7;
+		$ha = $s->belongstostaff->belongstomanydepartment()->wherePivot('main', 1)->first()->id == $deptid || $s->belongstostaff->belongstomanydepartment()->wherePivot('main', 1)->first()->id == 7;
 	}
 } elseif($me3) {																		// not hod | not asst hod | supervisor
 	if($branch == 1) {																	// not hod | not asst hod | supervisor | branch A
-		$ha = $s->belongstostaff?->where('active', 1)->belongstomanydepartment()->wherePivot('main', 1)->first()->id == $deptid || ($s->belongstostaff?->where('active', 1)->belongstomanydepartment()->wherePivot('main', 1)->first()->category_id == 2 && $s->belongstostaff?->where('active', 1)->belongstomanydepartment()->wherePivot('main', 1)->first()->branch_id == $branch);
+		$ha = $s->belongstostaff->belongstomanydepartment()->wherePivot('main', 1)->first()->id == $deptid || ($s->belongstostaff->belongstomanydepartment()->wherePivot('main', 1)->first()->category_id == 2 && $s->belongstostaff->belongstomanydepartment()->wherePivot('main', 1)->first()->branch_id == $branch);
 	} elseif ($branch == 2) {															// not hod | not asst hod | supervisor | not branch A | branch B
-		$ha = $s->belongstostaff?->where('active', 1)->belongstomanydepartment()->wherePivot('main', 1)->first()->id == $deptid || ($s->belongstostaff?->where('active', 1)->belongstomanydepartment()->wherePivot('main', 1)->first()->category_id == 2 && $s->belongstostaff?->where('active', 1)->belongstomanydepartment()->wherePivot('main', 1)->first()->branch_id == $branch);
+		$ha = $s->belongstostaff->belongstomanydepartment()->wherePivot('main', 1)->first()->id == $deptid || ($s->belongstostaff->belongstomanydepartment()->wherePivot('main', 1)->first()->category_id == 2 && $s->belongstostaff->belongstomanydepartment()->wherePivot('main', 1)->first()->branch_id == $branch);
 	}
 } elseif($me6) {																		// not hod | not asst hod | not supervisor | director
 	$ha = true;
@@ -72,39 +75,50 @@ if ($me1) {																				// hod
 } else {
 	$ha = false;
 }
-/////////////////////////////
-// to determine date of today
-$gwh = $s->belongstostaff->where('active', 1)->belongstomanydepartment()->wherePivot('main', 1)->first()->wh_group_id;
-$day = Carbon::parse($s->attend_date)->dayOfWeek; // == 5 => friday
-$s->belongstostaff->where('active', 1)->belongstomanydepartment()->wherePivot('main', 1)->belongstowhgroup->where(function (Builder $query) use ($s->attend_date){
-																												$query->whereDate('effective_date_start', '<=', $s->attend_date)
-																												->whereDate('effective_date_end', '>=', $s->attend_date);
-																											})
-																											->where(['year' => Carbon::now()->format('Y'), 'group' => $gwh, 'category' => 8])
-																											->get();
+
 ?>
 			@if($ha)
-			@if($s->belongstostaff?->active == 1)
+<?php
+/////////////////////////////
+// to determine working hour of each user
+$wh = UnavailableDateTime::workinghourtime($s->attend_date, $s->belongstostaff->id)->first();
+
+// looking for leave of each staff
+$l = $s->belongstostaff->hasmanyleave()->where(function (Builder $query) {
+		$query->where('leave_status_id', 5)->orWhereNull('leave_status_id');
+	})->first();
+
+
+
+
+
+
+
+
+
+
+
+?>
 				<tr>
 					<td>{{ $s->belongstostaff?->hasmanylogin()->where('active', 1)->first()?->username }}</td>
 					<td>{{ $s->belongstostaff?->name }}</td>
 					<td>{{ $s->belongstodaytype?->daytype }}</td>
 					<td>{{ $s->belongstoopttcms?->leave }}</td>
 					<td>{{ Carbon::parse($s->attend_date)->format('j M Y') }}</td>
-					<td>{{ Carbon::parse($s->in)->format('g:i a') }}</td>
-					<td>{{ Carbon::parse($s->break)->format('g:i a') }}</td>
-					<td>{{ Carbon::parse($s->resume)->format('g:i a') }}</td>
-					<td>{{ Carbon::parse($s->out)->format('g:i a') }}</td>
+					<td><span class="{{ (Carbon::parse($s->in)->equalTo('00:00:00'))?'text-info':((Carbon::parse($s->in)->gt($wh->time_start_am))?'text-danger':'') }}">{{ (Carbon::parse($s->in)->equalTo('00:00:00'))?'':Carbon::parse($s->in)->format('g:i a') }}</span></td>
+					<td><span class="{{ (Carbon::parse($s->break)->equalTo('00:00:00'))?'text-info':((Carbon::parse($s->break)->lt($wh->time_end_am))?'text-danger':'') }}">{{ (Carbon::parse($s->break)->equalTo('00:00:00'))?'':Carbon::parse($s->break)->format('g:i a') }}</span></td>
+					<td><span class="{{ (Carbon::parse($s->resume)->equalTo('00:00:00'))?'text-info':((Carbon::parse($s->resume)->gt($wh->time_start_pm))?'text-danger':'') }}">{{ (Carbon::parse($s->resume)->equalTo('00:00:00'))?'':Carbon::parse($s->resume)->format('g:i a') }}</span></td>
+					<td><span class="{{ (Carbon::parse($s->out)->equalTo('00:00:00'))?'text-info':((Carbon::parse($s->out)->lt($wh->time_end_pm))?'text-danger':'') }}">{{ (Carbon::parse($s->out)->equalTo('00:00:00'))?'':Carbon::parse($s->out)->format('g:i a') }}</span></td>
 					<td>{{ $s->time_work_hour }}</td>
+					<td>{{ $s->exception }}</td>
 				</tr>
-			@endif
 			@endif
 			@endforeach
 			</tbody>
 		</table>
 	</div>
 	<div class="d-flex justify-content-center">
-		{!! $attendance->links() !!}
+		{!! $sa->links() !!} <!-- check this for this type of pagination -->
 	</div>
 </div>
 @endsection
@@ -120,9 +134,10 @@ $(document).ready(function(){
 // datatables
 $.fn.dataTable.moment( 'D MMM YYYY' );
 $.fn.dataTable.moment( 'D MMM YYYY h:mm a' );
-$('#staff').DataTable({
-	"lengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "All"] ],
-	"order": [[1, "asc" ]],	// sorting the 6th column descending
+$('#attendance').DataTable({
+	"paging": false,
+	"lengthMenu": [ [-1], ["All"] ],
+	"order": [[ 0, 'asc' ], [ 1, 'asc' ]],	// sorting the 6th column descending
 	responsive: true
 })
 .on( 'length.dt page.dt order.dt search.dt', function ( e, settings, len ) {

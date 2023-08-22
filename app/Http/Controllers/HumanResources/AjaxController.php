@@ -941,20 +941,4 @@ class AjaxController extends Controller
 		return redirect()->route('leave.index');
 	}
 
-	public function attendancelist()
-	{
-		$r = [];
-		foreach (HRAttendance::all() as $a) {
-			if ($a->belongtostaff?->where('active', 1)->get()->count()) {
-				$r = [$a->belongstostaff?->hasmanylogin()->where('active', 1)->first()->username, $a->belongstostaff?->name, $a->belongstodaytype?->daytype, $a->belongstoopttcms?->leave, $a->date, $a->in, $a->break, $a->resume, $a->out, $a->time_work_hour];
-			}
-		}
-		return $r;
-	}
-
-
-
-
-
-
 }
