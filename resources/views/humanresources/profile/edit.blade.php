@@ -155,6 +155,39 @@ $totalRows_children = $childrens->count();
         </div>
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         <?php $i = 1 ?>
         <div class="row">
           <div class="d-flex justify-content-between align-items-center">
@@ -491,7 +524,7 @@ $totalRows_children = $childrens->count();
             </div>
           </div>
           <div class="col-md-6 border-right">
-            <div class="px-3">
+            <div class="px-3 wrap_children_even">
 
               @foreach ($childrens as $children)
               @if ($loop->even)
@@ -540,7 +573,6 @@ $totalRows_children = $childrens->count();
             </div>
           </div>
         </div>
-
       </div>
     </div>
   </div>
@@ -552,33 +584,6 @@ $totalRows_children = $childrens->count();
 @endsection
 
 @section('js')
-/////////////////////////////////////////////////////////////////////////////////////////
-// DATE PICKER
-$('.dob-input').datetimepicker({
-icons: {
-time: "fas fas-regular fa-clock fa-beat",
-date: "fas fas-regular fa-calendar fa-beat",
-up: "fa-regular fa-circle-up fa-beat",
-down: "fa-regular fa-circle-down fa-beat",
-previous: 'fas fas-regular fa-arrow-left fa-beat',
-next: 'fas fas-regular fa-arrow-right fa-beat',
-today: 'fas fas-regular fa-calenday-day fa-beat',
-clear: 'fas fas-regular fa-broom-wide fa-beat',
-close: 'fas fas-regular fa-rectangle-xmark fa-beat'
-},
-format: 'YYYY-MM-DD',
-useCurrent: false,
-});
-
-/////////////////////////////////////////////////////////////////////////////////////////
-// SELECTION
-$('.select-input').select2({
-placeholder: 'Please Select',
-width: '100%',
-allowClear: true,
-closeOnSelect: true,
-});
-
 /////////////////////////////////////////////////////////////////////////////////////////
 // ADD EMERGENCY
 var max_emergency = 2;
@@ -592,34 +597,36 @@ var wrap_emergency = $(".wrap_emergency_odd");
 var wrap_emergency = $(".wrap_emergency_even");
 }
 
-if(totalRows_emergency < max_emergency) { 
-  totalRows_emergency++; 
-  wrap_emergency.append( 
-    '<div class="table_emergency">' + '<input type="hidden" name="emer[{{$i}}][id]" value="">' +
-  '<input type="hidden" name="emer[{{$i}}][staff_id]" value="{{ $profile-> id}}">' +
-
-  '<div class="row mt-3">' +
-    '<div class="col-md-12 {{ $errors->has('emer.*.contact_person') ? 'has-error' : '' }}">' +
-      '<label for="emer[{{$i}}][contact_person]" class="labels">NAME</label>' +
-      '{!! Form::text( "emer[$i][contact_person]", @$value, ['class' => 'form-control', 'id' => "emer[$i][contact_person]", 'placeholder' => 'Please Insert'] ) !!}' +
-      '</div>' +
-    '</div>' +
+if(totalRows_emergency < max_emergency) { totalRows_emergency++; wrap_emergency.append( 
+  '<div class="table_emergency">' + 
+    '<input type="hidden" name="emer['+totalRows_emergency+'][id]" value="">' + 
+    '<input type="hidden" name="emer['+totalRows_emergency+'][staff_id]" value="{{ $profile-> id}}">' + 
+    '<div class="row mt-3">' + 
+      '<div class="col-md-12 {{ $errors->has('emer.*.contact_person') ? 'has-error' : '' }}">' + 
+      '<label for="emer['+totalRows_emergency+'][contact_person]" class="labels">NAME</label>' + 
+      '<input class="form-control" id="emer['+totalRows_emergency+'][contact_person]" placeholder="Please Insert" name="emer['+totalRows_emergency+'][contact_person]" type="text" value="">' +
+  '</div>' +
+  '</div>' +
 
   '<div class="row mt-3">' +
     '<div class="col-md-6 {{ $errors->has('emer.*.relationship_id') ? 'has-error' : '' }}">' +
-      '<label for="emer[{{$i}}][relationship_id]" class="labels">RELATIONSHIP</label>' +
-      '{!! Form::select( "emer[$i][relationship_id]", $relationship, @$value, ['class' => 'form-control select-input', 'id' => "emer[$i][relationship_id]", 'placeholder' => 'Please Select'] ) !!}' +
+      '<label for="emer['+totalRows_emergency+'][relationship_id]" class="labels">RELATIONSHIP</label>' +
+      '<select class="form-control select-input" id="emer['+totalRows_emergency+'][relationship_id]" name="emer['+totalRows_emergency+'][relationship_id]">' +
+@foreach ($relationship as $loop)
+'<option value="">1</option>' +
+@endforeach
+'</select>' +
       '</div>' +
     '<div class="col-md-6 {{ $errors->has('emer.*.phone') ? 'has-error' : '' }}">' +
-      '<label for="emer[{{$i}}][phone]" class="labels">PHONE NUMBER</label>' +
-      '{!! Form::text( "emer[$i][phone]", @$value, ['class' => 'form-control', 'id' => 'phone', 'placeholder' => 'Please Insert'] ) !!}' +
+      '<label for="emer['+totalRows_emergency+'][phone]" class="labels">PHONE NUMBER</label>' +
+      '<input class="form-control" id="emer['+totalRows_emergency+'][phone]" placeholder="Please Insert" name="emer['+totalRows_emergency+'][phone]" type="text" value="">' +
       '</div>' +
     '</div>' +
 
   '<div class="row mt-3">' +
     '<div class="col-md-12 {{ $errors->has('emer.*.address') ? 'has-error' : '' }}">' +
-      '<label for="emer[{{$i}}][address]" class="labels">ADDRESS</label>' +
-      '{!! Form::text( "emer[$i][address]", @$value, ['class' => 'form-control', 'id' => 'emergency_address', 'placeholder' => 'Please Insert'] ) !!}' +
+      '<label for="emer['+totalRows_emergency+'][address]" class="labels">ADDRESS</label>' +
+      '<input class="form-control" id="emer['+totalRows_emergency+'][address]" placeholder="Please Insert" name="emer['+totalRows_emergency+'][address]" type="text" value="">' +
       '</div>' +
     '</div>' +
 
@@ -636,6 +643,29 @@ if(totalRows_emergency < max_emergency) {
   $('#form').bootstrapValidator('addField', $('.table_emergency') .find('[name="emer['+ totalRows_emergency +'][relationship_id]"]'));
   $('#form').bootstrapValidator('addField', $('.table_emergency') .find('[name="emer['+ totalRows_emergency +'][phone]"]'));
   $('#form').bootstrapValidator('addField', $('.table_emergency') .find('[name="emer['+ totalRows_emergency +'][address]"]'));
+
+  $('.dob-input').datetimepicker({
+  icons: {
+  time: "fas fas-regular fa-clock fa-beat",
+  date: "fas fas-regular fa-calendar fa-beat",
+  up: "fa-regular fa-circle-up fa-beat",
+  down: "fa-regular fa-circle-down fa-beat",
+  previous: 'fas fas-regular fa-arrow-left fa-beat',
+  next: 'fas fas-regular fa-arrow-right fa-beat',
+  today: 'fas fas-regular fa-calenday-day fa-beat',
+  clear: 'fas fas-regular fa-broom-wide fa-beat',
+  close: 'fas fas-regular fa-rectangle-xmark fa-beat'
+  },
+  format: 'YYYY-MM-DD',
+  useCurrent: true,
+  });
+
+  $('.select-input').select2({
+  placeholder: 'Please Select',
+  width: '100%',
+  allowClear: true,
+  closeOnSelect: true,
+  });
   };
   });
 
@@ -697,35 +727,36 @@ if(totalRows_emergency < max_emergency) {
   var wrap_spouse = $(".wrap_spouse_even");
   }
 
-  if(totalRows_spouse < max_spouse) { totalRows_spouse++; wrap_spouse.append( '<div class="mb-5 table_spouse">' + '<input type="hidden" name="spou[' + totalRows_spouse +'][id]" value="">' +
-    '<input type="hidden" name="spou['+ totalRows_spouse +'][staff_id]" value="{{ $profile-> id }}">' +
-
-    '<div class="row mt-3">' +
-      '<div class="col-md-12 {{ $errors->has('spou.*.spouse') ? 'has-error' : '' }}">' +
-        '<label for="spouse" class="labels">NAME</label>' +
-        '{!! Form::text( "spou[$j][spouse]", @$value, ['class' => 'form-control', 'id' => 'spouse', 'placeholder' => 'Please Insert'] ) !!}' +
-        '</div>' +
-      '</div>' +
+  if(totalRows_spouse < max_spouse) { totalRows_spouse++; wrap_spouse.append( 
+    '<div class="mb-5 table_spouse">' + 
+      '<input type="hidden" name="spou['+totalRows_spouse+'][id]" value="">' + 
+      '<input type="hidden" name="spou['+totalRows_spouse+'][staff_id]" value="{{ $profile-> id }}">' + 
+      '<div class="row mt-3">' + 
+        '<div class="col-md-12 {{ $errors->has('spou.*.spouse') ? 'has-error' : '' }}">' + 
+        '<label for="spou['+totalRows_spouse+'][spouse]" class="labels">NAME</label>' + 
+        '<input class="form-control" id="spou['+totalRows_spouse+'][spouse]" placeholder="Please Insert" name="spou['+totalRows_spouse+'][spouse]" type="text" value="">' +
+    '</div>' +
+    '</div>' +
 
     '<div class="row mt-3">' +
       '<div class="col-md-6 {{ $errors->has('spou.*.id_card_passport') ? 'has-error' : '' }}">' +
-        '<label for="id_card_passport" class="labels">IC</label>' +
-        '{!! Form::text( "spou[$j][id_card_passport]", @$value, ['class' => 'form-control', 'id' => 'id_card_passport', 'placeholder' => 'Please Insert'] ) !!}' +
+        '<label for="spou['+totalRows_spouse+'][id_card_passport]" class="labels">IC</label>' +
+        '<input class="form-control" id="spou['+totalRows_spouse+'][id_card_passport]" placeholder="Please Insert" name="spou['+totalRows_spouse+'][id_card_passport]" type="text" value="">' +
         '</div>' +
       '<div class="col-md-6 {{ $errors->has('spou.*.phone') ? 'has-error' : '' }}">' +
-        '<label for="phone" class="labels">PHONE NUMBER</label>' +
-        '{!! Form::text( "spou[$j][phone]", @$value, ['class' => 'form-control', 'id' => 'phone', 'placeholder' => 'Please Insert'] ) !!}' +
+        '<label for="spou['+totalRows_spouse+'][phone]" class="labels">PHONE NUMBER</label>' +
+        '<input class="form-control" id="spou['+totalRows_spouse+'][phone]" placeholder="Please Insert" name="spou['+totalRows_spouse+'][phone]" type="text" value="">' +
         '</div>' +
       '</div>' +
 
     '<div class="row mt-3">' +
       '<div class="col-md-6 {{ $errors->has('spou.*.dob') ? 'has-error' : '' }}">' +
-        '<label for="dob" class="labels">Date Of Birth</label>' +
-        '{!! Form::text( "spou[$j][dob]", @$value, ['class' => 'form-control dob-input', 'id' => 'dob', 'placeholder' => 'Please Insert'] ) !!}' +
+        '<label for="spou['+totalRows_spouse+'][dob]" class="labels">Date Of Birth</label>' +
+        '<input class="form-control dob-input" id="spou['+totalRows_spouse+'][dob]" placeholder="Please Insert" name="spou['+totalRows_spouse+'][dob]" type="text" value="">' +
         '</div>' +
       '<div class="col-md-6 {{ $errors->has('spou.*.profession') ? 'has-error' : '' }}">' +
-        '<label for="profession" class="labels">Profession</label>' +
-        '{!! Form::text( "spou[$j][profession]", @$value, ['class' => 'form-control', 'id' => 'profession', 'placeholder' => 'Please Insert'] ) !!}' +
+        '<label for="spou['+totalRows_spouse+'][profession]" class="labels">Profession</label>' +
+        '<input class="form-control" id="spou['+totalRows_spouse+'][profession]" placeholder="Please Insert" name="spou['+totalRows_spouse+'][profession]" type="text" value="">' +
         '</div>' +
       '</div>' +
 
@@ -743,6 +774,29 @@ if(totalRows_emergency < max_emergency) {
     $('#form').bootstrapValidator('addField', $('.table_spouse') .find('[name="spou['+ totalRows_spouse +'][phone]"]'));
     $('#form').bootstrapValidator('addField', $('.table_spouse') .find('[name="spou['+ totalRows_spouse +'][dob]"]'));
     $('#form').bootstrapValidator('addField', $('.table_spouse') .find('[name="spou['+ totalRows_spouse +'][profession]"]'));
+
+    $('.dob-input').datetimepicker({
+    icons: {
+    time: "fas fas-regular fa-clock fa-beat",
+    date: "fas fas-regular fa-calendar fa-beat",
+    up: "fa-regular fa-circle-up fa-beat",
+    down: "fa-regular fa-circle-down fa-beat",
+    previous: 'fas fas-regular fa-arrow-left fa-beat',
+    next: 'fas fas-regular fa-arrow-right fa-beat',
+    today: 'fas fas-regular fa-calenday-day fa-beat',
+    clear: 'fas fas-regular fa-broom-wide fa-beat',
+    close: 'fas fas-regular fa-rectangle-xmark fa-beat'
+    },
+    format: 'YYYY-MM-DD',
+    useCurrent: true,
+    });
+
+    $('.select-input').select2({
+    placeholder: 'Please Select',
+    width: '100%',
+    allowClear: true,
+    closeOnSelect: true,
+    });
     };
     });
 
@@ -816,73 +870,153 @@ if(totalRows_emergency < max_emergency) {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     /////////////////////////////////////////////////////////////////////////////////////////
     // ADD CHILDREN
-    var max_emergency = 2;
-    var totalRows_emergency = {{ $totalRows_emergency }};
+    var max_children = 25;
+    var totalRows_children = {{ $totalRows_children }};
+    var test = {{ $totalRows_children }};
 
-    $(".add_emergency").click(function() {
+    $(".add_children").click(function() {
 
-    if (totalRows_emergency % 2 === 0) {
-    var wrap_emergency = $(".wrap_emergency_odd");
+    if (totalRows_children % 2 === 0) {
+    var wrap_children = $(".wrap_children_odd");
     } else {
-    var wrap_emergency = $(".wrap_emergency_even");
+    var wrap_children = $(".wrap_children_even");
     }
 
-    if(totalRows_emergency < max_emergency) { totalRows_emergency++; wrap_emergency.append( '<div class="table_emergency">' + '<input type="hidden" name="emer[' + totalRows_emergency +'][id]" value="">' +
-      '<input type="hidden" name="emer['+ totalRows_emergency +'][staff_id]" value="{{ $profile-> id}}">' +
-
+    if(totalRows_children < max_children) { totalRows_children++; wrap_children.append( 
+      '<div class="mb-5 table_children">' + 
+        '<input type="hidden" name="chil[' +totalRows_children+'][id]" value="">' +
+      '<input type="hidden" name="chil['+totalRows_children+'][staff_id]" value="{{ $profile-> id }}">' +
       '<div class="row mt-3">' +
-        '<div class="col-md-12 {{ $errors->has('emer.*.contact_person') ? 'has-error' : '' }}">' +
-          '<label for="contact_person" class="labels">NAME</label>' +
-          '{!! Form::text( "emer[$i][contact_person]", @$value, ['class' => 'form-control', 'id' => "emer[$i][contact_person]", 'placeholder' => 'Please Insert'] ) !!}' +
+        '<div class="col-md-12 {{ $errors->has('chil.*.children') ? 'has-error' : '' }}">' +
+          '<label for="chil['+totalRows_children+'][children]" class="labels">NAME</label>' +
+          '<input class="form-control" id="chil['+totalRows_children+'][children]" placeholder="Please Insert" name="chil['+totalRows_children+'][children]" type="text" value="">' +
           '</div>' +
         '</div>' +
 
       '<div class="row mt-3">' +
-        '<div class="col-md-6 {{ $errors->has('emer.*.relationship_id') ? 'has-error' : '' }}">' +
-          '<label for="relationship_id" class="labels">RELATIONSHIP</label>' +
-          '{!! Form::select( "emer[$i][relationship_id]", $relationship, @$value, ['class' => 'form-control select-input', 'id' => "emer[$i][relationship_id]", 'placeholder' => 'Please Select'] ) !!}' +
+        '<div class="col-md-6 {{ $errors->has('chil.*.dob') ? 'has-error' : '' }}">' +
+          '<label for="chil['+totalRows_children+'][dob]" class="labels">Date Of Birth</label>' +
+          '<input class="form-control dob-input" id="chil['+totalRows_children+'][dob]" placeholder="Please Insert" name="chil['+totalRows_children+'][dob]" type="text" value="">' +
           '</div>' +
-        '<div class="col-md-6 {{ $errors->has('emer.*.phone') ? 'has-error' : '' }}">' +
-          '<label for="phone" class="labels">PHONE NUMBER</label>' +
-          '{!! Form::text( "emer[$i][phone]", @$value, ['class' => 'form-control', 'id' => 'phone', 'placeholder' => 'Please Insert'] ) !!}' +
+        '<div class="col-md-6 {{ $errors->has('chil.*.gender_id') ? 'has-error' : '' }}">' +
+          '<label for="chil['+totalRows_children+'][gender_id]" class="labels">Gender</label>' +
+          '<select class="form-control select-input" id="chil['+totalRows_children+'][gender_id]" name="chil['+totalRows_children+'][gender_id]">' +
+
+            '</select>' +
+
+          '{!! Form::select( "chil[$k][gender_id]", $gender, @$value, ['class' => 'form-control select-input', 'id' => "chil[$k][gender_id]", 'placeholder' => 'Please Insert'] ) !!}' +
           '</div>' +
         '</div>' +
 
       '<div class="row mt-3">' +
-        '<div class="col-md-12 {{ $errors->has('emer.*.address') ? 'has-error' : '' }}">' +
-          '<label for="emergency_address" class="labels">ADDRESS</label>' +
-          '{!! Form::text( "emer[$i][address]", @$value, ['class' => 'form-control', 'id' => 'emergency_address', 'placeholder' => 'Please Insert'] ) !!}' +
+        '<div class="col-md-12 {{ $errors->has('chil.*.health_status_id') ? 'has-error' : '' }}">' +
+          '<label for="chil['+totalRows_children+'][health_status_id]" class="labels">Health Condition</label>' +
+          '<select class="form-control select-input" id="chil['+totalRows_children+'][health_status_id]" name="chil['+totalRows_children+'][health_status_id]">' +
+
+            '</select>' +
+
+          '{!! Form::select( "chil[$k][health_status_id]", $health_status, @$value, ['class' => 'form-control select-input', 'id' => "chil[$k][health_status_id]", 'placeholder' => 'Please Insert'] ) !!}' +
+          '</div>' +
+        '</div>' +
+
+      '<div class="row mt-3">' +
+        '<div class="col-md-12 {{ $errors->has('chil.*.education_level_id') ? 'has-error' : '' }}">' +
+          '<label for="chil['+totalRows_children+'][education_level_id]" class="labels">Education Level</label>' +
+          '<select class="form-control select-input" id="chil['+totalRows_children+'][education_level_id]" name="chil['+totalRows_children+'][education_level_id]">' +
+
+            '</select>' +
+
+          '{!! Form::select( "chil[$k][education_level_id]", $education_level, @$value, ['class' => 'form-control select-input', 'id' => "chil[$k][education_level_id]", 'placeholder' => 'Please Insert'] ) !!}' +
           '</div>' +
         '</div>' +
 
       '<div class="mt-1 d-flex flex-row justify-content-end">' +
-        '<button class="btn btn-outline-secondary btn-sm-custom bi bi-dash-lg remove_emergency"></button>' +
+        '<button class="btn btn-outline-secondary btn-sm-custom bi bi-dash-lg remove_children"></button>' +
         '</div>' +
-      '</div>'
+      '</div>' 
 
       );
 
-      $('#form').bootstrapValidator('addField', $('.table_emergency') .find('[name="emer['+ totalRows_emergency +'][id]"]'));
-      $('#form').bootstrapValidator('addField', $('.table_emergency') .find('[name="emer['+ totalRows_emergency +'][staff_id]"]'));
-      $('#form').bootstrapValidator('addField', $('.table_emergency') .find('[name="emer['+ totalRows_emergency +'][contact_person]"]'));
-      $('#form').bootstrapValidator('addField', $('.table_emergency') .find('[name="emer['+ totalRows_emergency +'][relationship_id]"]'));
-      $('#form').bootstrapValidator('addField', $('.table_emergency') .find('[name="emer['+ totalRows_emergency +'][phone]"]'));
-      $('#form').bootstrapValidator('addField', $('.table_emergency') .find('[name="emer['+ totalRows_emergency +'][address]"]'));
+      $('#form').bootstrapValidator('addField', $('.table_children') .find('[name="chil['+ totalRows_children +'][id]"]'));
+      $('#form').bootstrapValidator('addField', $('.table_children') .find('[name="chil['+ totalRows_children +'][staff_id]"]'));
+      $('#form').bootstrapValidator('addField', $('.table_children') .find('[name="chil['+ totalRows_children +'][children]"]'));
+      $('#form').bootstrapValidator('addField', $('.table_children') .find('[name="chil['+ totalRows_children +'][dob]"]'));
+      $('#form').bootstrapValidator('addField', $('.table_children') .find('[name="chil['+ totalRows_children +'][gender_id]"]'));
+      $('#form').bootstrapValidator('addField', $('.table_children') .find('[name="chil['+ totalRows_children +'][health_status_id]"]'));
+      $('#form').bootstrapValidator('addField', $('.table_children') .find('[name="chil['+ totalRows_children +'][education_level_id]"]'));
+
+      $('.dob-input').datetimepicker({
+      icons: {
+      time: "fas fas-regular fa-clock fa-beat",
+      date: "fas fas-regular fa-calendar fa-beat",
+      up: "fa-regular fa-circle-up fa-beat",
+      down: "fa-regular fa-circle-down fa-beat",
+      previous: 'fas fas-regular fa-arrow-left fa-beat',
+      next: 'fas fas-regular fa-arrow-right fa-beat',
+      today: 'fas fas-regular fa-calenday-day fa-beat',
+      clear: 'fas fas-regular fa-broom-wide fa-beat',
+      close: 'fas fas-regular fa-rectangle-xmark fa-beat'
+      },
+      format: 'YYYY-MM-DD',
+      useCurrent: true,
+      });
+
+      $('.select-input').select2({
+      placeholder: 'Please Select',
+      width: '100%',
+      allowClear: true,
+      closeOnSelect: true,
+      });
       };
       });
 
-      // DELETE EMERGENCY
-      $(".wrap_emergency_odd").on("click",".remove_emergency", function(e){
+      // DELETE CHILDREN
+      $(".wrap_children_odd").on("click",".remove_children", function(e){
       e.preventDefault();
       var $row = $(this).parent().parent();
-      var $option1 = $row.find('[name="emer['+ totalRows_emergency +'][id]"]');
-      var $option2 = $row.find('[name="emer['+ totalRows_emergency +'][staff_id]"]');
-      var $option3 = $row.find('[name="emer['+ totalRows_emergency +'][contact_person]"]');
-      var $option4 = $row.find('[name="emer['+ totalRows_emergency +'][relationship_id]"]');
-      var $option5 = $row.find('[name="emer['+ totalRows_emergency +'][phone]"]');
-      var $option6 = $row.find('[name="emer['+ totalRows_emergency +'][address]"]');
+      var $option1 = $row.find('[name="chil['+ totalRows_children +'][id]"]');
+      var $option2 = $row.find('[name="chil['+ totalRows_children +'][staff_id]"]');
+      var $option3 = $row.find('[name="chil['+ totalRows_children +'][children]"]');
+      var $option4 = $row.find('[name="chil['+ totalRows_children +'][dob]"]');
+      var $option5 = $row.find('[name="chil['+ totalRows_children +'][gender_id]"]');
+      var $option6 = $row.find('[name="chil['+ totalRows_children +'][health_status_id]"]');
+      var $option7 = $row.find('[name="chil['+ totalRows_children +'][education_level_id]"]');
       $row.remove();
 
       $('#form').bootstrapValidator('removeField', $option1);
@@ -891,20 +1025,22 @@ if(totalRows_emergency < max_emergency) {
       $('#form').bootstrapValidator('removeField', $option4);
       $('#form').bootstrapValidator('removeField', $option5);
       $('#form').bootstrapValidator('removeField', $option6);
+      $('#form').bootstrapValidator('removeField', $option7);
       console.log();
-      totalRows_emergency--;
+      totalRows_children--;
       });
 
-      // DELETE EMERGENCY
-      $(".wrap_emergency_even").on("click",".remove_emergency", function(e){
+      // DELETE CHILDREN
+      $(".wrap_children_even").on("click",".remove_children", function(e){
       e.preventDefault();
       var $row = $(this).parent().parent();
-      var $option1 = $row.find('[name="emer['+ totalRows_emergency +'][id]"]');
-      var $option2 = $row.find('[name="emer['+ totalRows_emergency +'][staff_id]"]');
-      var $option3 = $row.find('[name="emer['+ totalRows_emergency +'][contact_person]"]');
-      var $option4 = $row.find('[name="emer['+ totalRows_emergency +'][relationship_id]"]');
-      var $option5 = $row.find('[name="emer['+ totalRows_emergency +'][phone]"]');
-      var $option6 = $row.find('[name="emer['+ totalRows_emergency +'][address]"]');
+      var $option1 = $row.find('[name="chil['+ totalRows_children +'][id]"]');
+      var $option2 = $row.find('[name="chil['+ totalRows_children +'][staff_id]"]');
+      var $option3 = $row.find('[name="chil['+ totalRows_children +'][children]"]');
+      var $option4 = $row.find('[name="chil['+ totalRows_children +'][dob]"]');
+      var $option5 = $row.find('[name="chil['+ totalRows_children +'][gender_id]"]');
+      var $option6 = $row.find('[name="chil['+ totalRows_children +'][health_status_id]"]');
+      var $option7 = $row.find('[name="chil['+ totalRows_children +'][education_level_id]"]');
       $row.remove();
 
       $('#form').bootstrapValidator('removeField', $option1);
@@ -913,7 +1049,36 @@ if(totalRows_emergency < max_emergency) {
       $('#form').bootstrapValidator('removeField', $option4);
       $('#form').bootstrapValidator('removeField', $option5);
       $('#form').bootstrapValidator('removeField', $option6);
+      $('#form').bootstrapValidator('removeField', $option7);
       console.log();
-      totalRows_emergency--;
+      totalRows_children--;
+      });
+
+
+      /////////////////////////////////////////////////////////////////////////////////////////
+      // DATE PICKER
+      $('.dob-input').datetimepicker({
+      icons: {
+      time: "fas fas-regular fa-clock fa-beat",
+      date: "fas fas-regular fa-calendar fa-beat",
+      up: "fa-regular fa-circle-up fa-beat",
+      down: "fa-regular fa-circle-down fa-beat",
+      previous: 'fas fas-regular fa-arrow-left fa-beat',
+      next: 'fas fas-regular fa-arrow-right fa-beat',
+      today: 'fas fas-regular fa-calenday-day fa-beat',
+      clear: 'fas fas-regular fa-broom-wide fa-beat',
+      close: 'fas fas-regular fa-rectangle-xmark fa-beat'
+      },
+      format: 'YYYY-MM-DD',
+      useCurrent: true,
+      });
+
+      /////////////////////////////////////////////////////////////////////////////////////////
+      // SELECTION
+      $('.select-input').select2({
+      placeholder: 'Please Select',
+      width: '100%',
+      allowClear: true,
+      closeOnSelect: true,
       });
       @endsection
