@@ -12,6 +12,7 @@
 					<th>Name</th>
 					<th>Type</th>
 					<th>Cause</th>
+					<th>Leave</th>
 					<th>Date</th>
 					<th>In</th>
 					<th>Break</th>
@@ -42,6 +43,7 @@ $i = 1;
 ?>
 			@foreach($attendance as $s)
 <?php
+// dump($s);
 if ($me1) {																				// hod
 	if ($deptid == 21) {																// hod | dept prod A
 		$ha = $s->belongstostaff->belongstomanydepartment()->wherePivot('main', 1)->first()->id == $deptid || $s->belongstostaff->belongstomanydepartment()->wherePivot('main', 1)->first()->category_id == 2;
@@ -84,26 +86,56 @@ if ($me1) {																				// hod
 $wh = UnavailableDateTime::workinghourtime($s->attend_date, $s->belongstostaff->id)->first();
 
 // looking for leave of each staff
-$l = $s->belongstostaff->hasmanyleave()->where(function (Builder $query) {
-		$query->where('leave_status_id', 5)->orWhereNull('leave_status_id');
-	})->first();
+$l = $s->belongstostaff->hasmanyleave()
+		->where(function (Builder $query) {
+			$query->where('leave_status_id', 5)->orWhereNull('leave_status_id');
+		})
+		->where(function (Builder $query) use ($s){
+			$query->whereDate('date_time_start', '<=', $s->attend_date)
+			->whereDate('date_time_end', '>=', $s->attend_date);
+		})
+		->first();
+// dump($l);
+$in = Carbon::parse($s->in)->equalTo('00:00:00');
+$break = Carbon::parse($s->break)->equalTo('00:00:00');
+$resume = Carbon::parse($s->resume)->equalTo('00:00:00');
+$out = Carbon::parse($s->out)->equalTo('00:00:00');
 
+// looking for saturday leave
+if( Carbon::parse($s->attend_date)->dayOfWeek === Carbon::SATURDAY ) {
+	$sat = $s->belongstostaff->belongstorestdaygroup?->hasmanyrestdaycalendar()->whereDate('saturday_date', $s->attend_date)->first();
+	if ($sat) {
+		$dayt = "RESTDAY";
+	} else {
+		$dayt = $s->belongstodaytype?->daytype;
+	}
+} else {
+	$dayt = $s->belongstodaytype?->daytype;
+}
 
-
-
-
-
-
-
-
-
+if(($in && $break && $resume && $break) || ($in && $break) || ($resume && $out)) {
+	$ll = true;
+} else {
+	$ll = false;
+}
+// dump($ll);
+if($l) {
+	$lea = '<a href="'.route('leave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+} else {
+	if($ll && $l) {
+		$lea = '<a href="'.route('leave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+	} else {
+		$lea = $s->belongstoopttcms?->leave;
+	}
+}
 
 ?>
 				<tr>
 					<td>{{ $s->belongstostaff?->hasmanylogin()->where('active', 1)->first()?->username }}</td>
 					<td>{{ $s->belongstostaff?->name }}</td>
-					<td>{{ $s->belongstodaytype?->daytype }}</td>
-					<td>{{ $s->belongstoopttcms?->leave }}</td>
+					<td>{{ $dayt }}</td>
+					<td>{{ ($s->belongstodaytype?->daytype == 2 && $ll)?:() }}</td>
+					<td>{!! $lea !!}</td>
 					<td>{{ Carbon::parse($s->attend_date)->format('j M Y') }}</td>
 					<td><span class="{{ (Carbon::parse($s->in)->equalTo('00:00:00'))?'text-info':((Carbon::parse($s->in)->gt($wh->time_start_am))?'text-danger':'') }}">{{ (Carbon::parse($s->in)->equalTo('00:00:00'))?'':Carbon::parse($s->in)->format('g:i a') }}</span></td>
 					<td><span class="{{ (Carbon::parse($s->break)->equalTo('00:00:00'))?'text-info':((Carbon::parse($s->break)->lt($wh->time_end_am))?'text-danger':'') }}">{{ (Carbon::parse($s->break)->equalTo('00:00:00'))?'':Carbon::parse($s->break)->format('g:i a') }}</span></td>
@@ -112,6 +144,7 @@ $l = $s->belongstostaff->hasmanyleave()->where(function (Builder $query) {
 					<td>{{ $s->time_work_hour }}</td>
 					<td>{{ $s->exception }}</td>
 				</tr>
+<a href=""></a>
 			@endif
 			@endforeach
 			</tbody>
