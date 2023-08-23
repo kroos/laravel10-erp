@@ -22,7 +22,7 @@ $race = App\Models\HumanResources\OptRace::all()->pluck('race', 'id')->sortKeys(
 $marital_status = App\Models\HumanResources\OptMaritalStatus::all()->pluck('marital_status', 'id')->sortKeys()->toArray();
 $relationship = App\Models\HumanResources\OptRelationship::all()->pluck('relationship', 'id')->sortKeys()->toArray();
 $health_status = App\Models\HumanResources\OptHealthStatus::all()->pluck('health_status', 'id')->sortKeys()->toArray();
-$education_level = App\Models\HumanResources\OptEducationLevel::all()->pluck('education_level', 'id')->sortKeys()->toArray();
+$education_level = App\Models\HumanResources\OptEducationLevel::all()->pluck('education_level', 'id')->sortKeys()->toArray();212
 
 $emergencies = $profile->hasmanyemergency()->get();
 $spouses = $profile->hasmanyspouse()->get();
@@ -612,8 +612,8 @@ if(totalRows_emergency < max_emergency) { totalRows_emergency++; wrap_emergency.
     '<div class="col-md-6 {{ $errors->has('emer.*.relationship_id') ? 'has-error' : '' }}">' +
       '<label for="emer['+totalRows_emergency+'][relationship_id]" class="labels">RELATIONSHIP</label>' +
       '<select class="form-control select-input" id="emer['+totalRows_emergency+'][relationship_id]" name="emer['+totalRows_emergency+'][relationship_id]">' +
-@foreach ($relationship as $loop)
-'<option value="">1</option>' +
+@foreach ($relationship as $loop_relationship1)
+'<option value="{{ $loop_relationship1->id }}">{{ $loop_relationship1->relationship }}</option>' +
 @endforeach
 '</select>' +
       '</div>' +
