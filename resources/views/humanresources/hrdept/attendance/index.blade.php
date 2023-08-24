@@ -5,6 +5,9 @@
 @include('humanresources.hrdept.navhr')
 	<h4>Attendance</h4>
 	<div class="">
+		<div class="d-flex justify-content-center">
+			{!! $sa->links() !!} <!-- check this for this type of pagination -->
+		</div>
 		<table id="attendance" class="table table-hover table-sm align-middle" style="font-size:12px">
 			<thead>
 				<tr>
@@ -19,14 +22,25 @@
 					<th>Resume</th>
 					<th>Out</th>
 					<th>Duration</th>
+					<th>Remarks</th>
 					<th>Exception</th>
 				</tr>
 			</thead>
 			<tbody>
 <?php
-use App\Helpers\UnavailableDateTime;
-use \Carbon\Carbon;
+// load facade
 use Illuminate\Database\Eloquent\Builder;
+
+// load helper
+use App\Models\HumanResources\HRHolidayCalendar;
+use App\Models\HumanResources\OptDayType;
+use App\Models\HumanResources\OptTcms;
+
+// load model
+use App\Helpers\UnavailableDateTime;
+
+// load lib
+use \Carbon\Carbon;
 
 // who am i?
 $me1 = \Auth::user()->belongstostaff->div_id == 1;		// hod
@@ -101,47 +115,75 @@ $break = Carbon::parse($s->break)->equalTo('00:00:00');
 $resume = Carbon::parse($s->resume)->equalTo('00:00:00');
 $out = Carbon::parse($s->out)->equalTo('00:00:00');
 
-// looking for saturday leave
-if( Carbon::parse($s->attend_date)->dayOfWeek === Carbon::SATURDAY ) {
-	$sat = $s->belongstostaff->belongstorestdaygroup?->hasmanyrestdaycalendar()->whereDate('saturday_date', $s->attend_date)->first();
-	if ($sat) {
-		$dayt = "RESTDAY";
-	} else {
-		$dayt = $s->belongstodaytype?->daytype;
+// looking for RESTDAY, WORKDAY & HOLIDAY
+$sun = Carbon::parse($s->attend_date)->dayOfWeek == 7;
+$sat = Carbon::parse($s->attend_date)->dayOfWeek == 6;
+$hdate = HRHolidayCalendar::
+		where(function (Builder $query) use ($s){
+			$query->whereDate('date_start', '<=', $s->attend_date)
+			->whereDate('date_end', '>=', $s->attend_date);
+		})
+		->get();
+if($hdate->isNotEmpty()) {											// date holiday
+	$dayt = OptDayType::find(3)->daytype;							// camouflage for temp before update the table
+	$s->update(['daytype_id' => 3]);
+	$dtype = false;
+} elseif($hdate->isEmpty()) {										// date not holiday
+	if(Carbon::parse($s->attend_date)->dayOfWeek == 0) {			// sunday
+		$dayt = OptDayType::find(2)->daytype;
+		$s->update(['daytype_id' => 2]);
+		$dtype = false;
+	} elseif(Carbon::parse($s->attend_date)->dayOfWeek == 6) {		// saturday
+		$sat = $s->belongstostaff->belongstorestdaygroup?->hasmanyrestdaycalendar()->whereDate('saturday_date', $s->attend_date)->first();
+		// dd($sat);
+		if($sat) {													// determine if user belongs to sat group restday
+			$dayt = OptDayType::find(2)->daytype;
+			$s->update(['daytype_id' => 2]);
+			$dtype = false;
+		} else {
+			$dayt = OptDayType::find(1)->daytype;
+			$s->update(['daytype_id' => 1]);
+			$dtype = true;
+		}
+	} else {														// all other day is working day
+		$dayt = OptDayType::find(1)->daytype;
+		$s->update(['daytype_id' => 1]);
+		$dtype = true;
 	}
-} else {
-	$dayt = $s->belongstodaytype?->daytype;
 }
 
-if(($in && $break && $resume && $break) || ($in && $break) || ($resume && $out)) {
-	$ll = true;
-} else {
+
+// detect absent
+if( ((($in && $break && $resume && $break) || ($in && $break) || ($resume && $out)) && $dtype) && !$l) {
+	if(is_null($s->attendance_type_id)) {
+		$ll = OptTcms::find(1)->leave;
+		// $s->update(['attendance_type_id' => 1]);
+	} else {
+		$ll = $s->belongstoopttcms->leave;
+	}
+} else {																							// check sini
 	$ll = false;
 }
-// dump($ll);
+
 if($l) {
 	$lea = '<a href="'.route('leave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 } else {
-	if($ll && $l) {
-		$lea = '<a href="'.route('leave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
-	} else {
-		$lea = $s->belongstoopttcms?->leave;
-	}
+	$lea = NULL;
 }
-
 ?>
 				<tr>
 					<td>{{ $s->belongstostaff?->hasmanylogin()->where('active', 1)->first()?->username }}</td>
-					<td>{{ $s->belongstostaff?->name }}</td>
+					<td>{{ $s->name }}</td>
 					<td>{{ $dayt }}</td>
-					<td>{{ ($s->belongstodaytype?->daytype == 2 && $ll)?:() }}</td>
+					<td>{{ $ll }}</td>
 					<td>{!! $lea !!}</td>
 					<td>{{ Carbon::parse($s->attend_date)->format('j M Y') }}</td>
-					<td><span class="{{ (Carbon::parse($s->in)->equalTo('00:00:00'))?'text-info':((Carbon::parse($s->in)->gt($wh->time_start_am))?'text-danger':'') }}">{{ (Carbon::parse($s->in)->equalTo('00:00:00'))?'':Carbon::parse($s->in)->format('g:i a') }}</span></td>
-					<td><span class="{{ (Carbon::parse($s->break)->equalTo('00:00:00'))?'text-info':((Carbon::parse($s->break)->lt($wh->time_end_am))?'text-danger':'') }}">{{ (Carbon::parse($s->break)->equalTo('00:00:00'))?'':Carbon::parse($s->break)->format('g:i a') }}</span></td>
-					<td><span class="{{ (Carbon::parse($s->resume)->equalTo('00:00:00'))?'text-info':((Carbon::parse($s->resume)->gt($wh->time_start_pm))?'text-danger':'') }}">{{ (Carbon::parse($s->resume)->equalTo('00:00:00'))?'':Carbon::parse($s->resume)->format('g:i a') }}</span></td>
-					<td><span class="{{ (Carbon::parse($s->out)->equalTo('00:00:00'))?'text-info':((Carbon::parse($s->out)->lt($wh->time_end_pm))?'text-danger':'') }}">{{ (Carbon::parse($s->out)->equalTo('00:00:00'))?'':Carbon::parse($s->out)->format('g:i a') }}</span></td>
+					<td><span class="{{ ($in)?'text-info':((Carbon::parse($s->in)->gt($wh->time_start_am))?'text-danger':'') }}">{{ ($in)?'':Carbon::parse($s->in)->format('g:i a') }}</span></td>
+					<td><span class="{{ ($break)?'text-info':((Carbon::parse($s->break)->lt($wh->time_end_am))?'text-danger':'') }}">{{ ($break)?'':Carbon::parse($s->break)->format('g:i a') }}</span></td>
+					<td><span class="{{ ($resume)?'text-info':((Carbon::parse($s->resume)->gt($wh->time_start_pm))?'text-danger':'') }}">{{ ($resume)?'':Carbon::parse($s->resume)->format('g:i a') }}</span></td>
+					<td><span class="{{ ($out)?'text-info':((Carbon::parse($s->out)->lt($wh->time_end_pm))?'text-danger':'') }}">{{ ($out)?'':Carbon::parse($s->out)->format('g:i a') }}</span></td>
 					<td>{{ $s->time_work_hour }}</td>
+					<td>{{ $s->remarks }}</td>
 					<td>{{ $s->exception }}</td>
 				</tr>
 <a href=""></a>
