@@ -9,6 +9,10 @@
     width: 40px;
   }
 
+  /* .form-control, #ic {
+  border: 1px solid black;
+} */
+
   /* div {
     border: 1px solid black;
   } */
@@ -22,7 +26,7 @@ $race = App\Models\HumanResources\OptRace::all()->pluck('race', 'id')->sortKeys(
 $marital_status = App\Models\HumanResources\OptMaritalStatus::all()->pluck('marital_status', 'id')->sortKeys()->toArray();
 $relationship = App\Models\HumanResources\OptRelationship::all()->pluck('relationship', 'id')->sortKeys()->toArray();
 $health_status = App\Models\HumanResources\OptHealthStatus::all()->pluck('health_status', 'id')->sortKeys()->toArray();
-$education_level = App\Models\HumanResources\OptEducationLevel::all()->pluck('education_level', 'id')->sortKeys()->toArray();212
+$education_level = App\Models\HumanResources\OptEducationLevel::all()->pluck('education_level', 'id')->sortKeys()->toArray();
 
 $emergencies = $profile->hasmanyemergency()->get();
 $spouses = $profile->hasmanyspouse()->get();
@@ -34,8 +38,6 @@ $totalRows_children = $childrens->count();
 
 <div class="container rounded bg-white mt-2 mb-2">
 
-  {!! Form::model($profile, ['route' => ['profile.update', $profile->id], 'method' => 'PATCH', 'id' => 'form', 'class' => 'form-horizontal', 'autocomplete' => 'off', 'files' => true]) !!}
-
   <div class="row">
     <div class="col-md-2 border-right">
       <div class="d-flex flex-column align-items-center text-center p-3 py-5">
@@ -44,8 +46,12 @@ $totalRows_children = $childrens->count();
         <span> </span>
       </div>
     </div>
+
     <div class="col-md-10 border-right">
       <div class="p-1 py-3">
+
+        {!! Form::model($profile, ['route' => ['profile.update', $profile->id], 'method' => 'PATCH', 'id' => 'form', 'class' => 'form-horizontal', 'autocomplete' => 'off', 'files' => true]) !!}
+
         <div class="row">
           <div class="d-flex justify-content-between align-items-center">
             <h4 class="text-right">Staff Profile</h4>
@@ -154,40 +160,7 @@ $totalRows_children = $childrens->count();
           </div>
         </div>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        <!--------------------------- EMERGENCY ---------------------------->
         <?php $i = 1 ?>
         <div class="row">
           <div class="d-flex justify-content-between align-items-center">
@@ -233,6 +206,10 @@ $totalRows_children = $childrens->count();
                     {!! Form::text( "emer[$i][address]", @$emergency->address, ['class' => 'form-control', 'id' => "emer[$i][address]", 'placeholder' => 'Please Insert'] ) !!}
                   </div>
                 </div>
+
+                <div class="mt-1 d-flex flex-row justify-content-end">
+                  <button class="btn btn-outline-secondary btn-sm-custom bi bi-dash-lg delete_emergency" data-id="{{ $emergency->id }}" data-table="emergency"></button>
+                </div>
               </div>
 
               <?php $i++ ?>
@@ -275,6 +252,10 @@ $totalRows_children = $childrens->count();
                     {!! Form::text( "emer[$i][address]", @$emergency->address, ['class' => 'form-control', 'id' => "emer[$i][address]", 'placeholder' => 'Please Insert'] ) !!}
                   </div>
                 </div>
+
+                <div class="mt-1 d-flex flex-row justify-content-end">
+                  <button class="btn btn-outline-secondary btn-sm-custom bi bi-dash-lg delete_emergency" data-id="{{ $emergency->id }}" data-table="emergency"></button>
+                </div>
               </div>
 
               <?php $i++ ?>
@@ -285,41 +266,7 @@ $totalRows_children = $childrens->count();
           </div>
         </div>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        <!--------------------------- SPOUSE ---------------------------->
         <?php $j = 1 ?>
         <div class="row">
           <div class="d-flex justify-content-between align-items-center">
@@ -369,6 +316,10 @@ $totalRows_children = $childrens->count();
                     {!! Form::text( "spou[$j][profession]", @$spouse->profession, ['class' => 'form-control', 'id' => "spou[$j][profession]", 'placeholder' => 'Please Insert'] ) !!}
                   </div>
                 </div>
+
+                <div class="mt-1 d-flex flex-row justify-content-end">
+                  <button class="btn btn-outline-secondary btn-sm-custom bi bi-dash-lg delete_spouse" data-id="{{ $spouse->id }}" data-table="spouse"></button>
+                </div>
               </div>
 
               <?php $j++ ?>
@@ -415,6 +366,10 @@ $totalRows_children = $childrens->count();
                     {!! Form::text( "spou[$j][profession]", @$spouse->profession, ['class' => 'form-control', 'id' => "spou[$j][profession]", 'placeholder' => 'Please Insert'] ) !!}
                   </div>
                 </div>
+
+                <div class="mt-1 d-flex flex-row justify-content-end">
+                  <button class="btn btn-outline-secondary btn-sm-custom bi bi-dash-lg delete_spouse" data-id="{{ $spouse->id }}" data-table="spouse"></button>
+                </div>
               </div>
 
               <?php $j++ ?>
@@ -425,44 +380,7 @@ $totalRows_children = $childrens->count();
           </div>
         </div>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        <!--------------------------- CHILDREN ---------------------------->
         <?php $k = 1 ?>
         <div class="row">
           <div class="d-flex justify-content-between align-items-center">
@@ -515,6 +433,10 @@ $totalRows_children = $childrens->count();
                     {!! Form::select( "chil[$k][education_level_id]", $education_level, @$children->education_level_id, ['class' => 'form-control select-input', 'id' => "chil[$k][education_level_id]", 'placeholder' => 'Please Insert'] ) !!}
                   </div>
                 </div>
+
+                <div class="mt-1 d-flex flex-row justify-content-end">
+                  <button class="btn btn-outline-secondary btn-sm-custom bi bi-dash-lg delete_children" data-id="{{ $children->id }}" data-table="children"></button>
+                </div>
               </div>
 
               <?php $k++ ?>
@@ -564,6 +486,10 @@ $totalRows_children = $childrens->count();
                     {!! Form::select( "chil[$k][education_level_id]", $education_level, @$children->education_level_id, ['class' => 'form-control select-input', 'id' => "chil[$k][education_level_id]", 'placeholder' => 'Please Insert'] ) !!}
                   </div>
                 </div>
+
+                <div class="mt-1 d-flex flex-row justify-content-end">
+                  <button class="btn btn-outline-secondary btn-sm-custom bi bi-dash-lg delete_children" data-id="{{ $children->id }}" data-table="children"></button>
+                </div>
               </div>
 
               <?php $k++ ?>
@@ -573,17 +499,238 @@ $totalRows_children = $childrens->count();
             </div>
           </div>
         </div>
+
+        <div class="row">
+          <div class="text-center">
+            {!! Form::button('Save', ['class' => 'btn btn-sm btn-outline-secondary', 'type' => 'submit']) !!}
+          </div>
+        </div>
+
+        {!! Form::close() !!}
+
+        <div class="row mt-4">
+          <div class="text-center">
+            <a href="{{ url()->previous() }}">
+              <button class="btn btn-sm btn-outline-secondary">Back</button>
+            </a>
+          </div>
+        </div>
       </div>
     </div>
   </div>
-
-  {!! Form::close() !!}
-
 </div>
-
 @endsection
 
 @section('js')
+/////////////////////////////////////////////////////////////////////////////////////////
+// DELETE EMERGENCY
+$(document).on('click', '.delete_emergency', function(e){
+var ackID = $(this).data('id');
+var ackTable = $(this).data('table');
+SwalDelete(ackID, ackTable);
+e.preventDefault();
+});
+
+function SwalDelete(ackID, ackTable){
+swal.fire({
+title: 'Delete Emergency Contact',
+text: 'Are you sure to delete this contact?',
+icon: 'info',
+showCancelButton: true,
+confirmButtonColor: '#3085d6',
+cancelButtonColor: '#d33',
+cancelButtonText: 'Cancel',
+confirmButtonText: 'Yes',
+showLoaderOnConfirm: true,
+
+preConfirm: function() {
+return new Promise(function(resolve) {
+$.ajax({
+url: '{{ url('profile') }}' + '/' + ackID,
+type: 'DELETE',
+dataType: 'json',
+data: {
+id: ackID,
+table: ackTable,
+_token : $('meta[name=csrf-token]').attr('content')
+},
+})
+.done(function(response){
+swal.fire('Accept', response.message, response.status)
+.then(function(){
+window.location.reload(true);
+});
+})
+.fail(function(){
+swal.fire('Oops...', 'Something went wrong with ajax!', 'error');
+})
+});
+},
+allowOutsideClick: false
+})
+.then((result) => {
+if (result.dismiss === swal.DismissReason.cancel) {
+swal.fire('Cancel Action', '', 'info')
+}
+});
+}
+//auto refresh right after clicking OK button
+$(document).on('click', '.swal2-confirm', function(e){
+window.location.reload(true);
+});
+
+
+/////////////////////////////////////////////////////////////////////////////////////////
+// DELETE SPOUSE
+$(document).on('click', '.delete_spouse', function(e){
+  var ackID = $(this).data('id');
+  var ackTable = $(this).data('table');
+  SwalDelete(ackID, ackTable);
+  e.preventDefault();
+});
+
+function SwalDelete(ackID, ackTable){
+  swal.fire({
+    title: 'Delete Spouse Contact',
+    text: 'Are you sure to delete this contact?',
+    icon: 'info',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    cancelButtonText: 'Cancel',
+    confirmButtonText: 'Yes',
+    showLoaderOnConfirm: true,
+
+    preConfirm: function() {
+      return new Promise(function(resolve) {
+        $.ajax({
+          url: '{{ url('profile') }}' + '/' + ackID,
+          type: 'DELETE',
+          dataType: 'json',
+          data: {
+            id: ackID,
+            table: ackTable,
+            _token : $('meta[name=csrf-token]').attr('content')
+          },
+        })
+        .done(function(response){
+          swal.fire('Accept', response.message, response.status)
+          .then(function(){
+            window.location.reload(true);
+          });
+        })
+        .fail(function(){
+          swal.fire('Oops...', 'Something went wrong with ajax!', 'error');
+        })
+      });
+    },
+    allowOutsideClick: false
+  })
+  .then((result) => {
+    if (result.dismiss === swal.DismissReason.cancel) {
+      swal.fire('Cancel Action', '', 'info')
+    }
+  });
+}
+//auto refresh right after clicking OK button
+$(document).on('click', '.swal2-confirm', function(e){
+  window.location.reload(true);
+});
+
+
+/////////////////////////////////////////////////////////////////////////////////////////
+// DELETE CHILDREN
+$(document).on('click', '.delete_children', function(e){
+  var ackID = $(this).data('id');
+  var ackTable = $(this).data('table');
+  SwalDelete(ackID, ackTable);
+  e.preventDefault();
+});
+
+function SwalDelete(ackID, ackTable){
+  swal.fire({
+    title: 'Delete Children Contact',
+    text: 'Are you sure to delete this contact?',
+    icon: 'info',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    cancelButtonText: 'Cancel',
+    confirmButtonText: 'Yes',
+    showLoaderOnConfirm: true,
+
+    preConfirm: function() {
+      return new Promise(function(resolve) {
+        $.ajax({
+          url: '{{ url('profile') }}' + '/' + ackID,
+          type: 'DELETE',
+          dataType: 'json',
+          data: {
+            id: ackID,
+            table: ackTable,
+            _token : $('meta[name=csrf-token]').attr('content')
+          },
+        })
+        .done(function(response){
+          swal.fire('Accept', response.message, response.status)
+          .then(function(){
+            window.location.reload(true);
+          });
+        })
+        .fail(function(){
+          swal.fire('Oops...', 'Something went wrong with ajax!', 'error');
+        })
+      });
+    },
+    allowOutsideClick: false
+  })
+  .then((result) => {
+    if (result.dismiss === swal.DismissReason.cancel) {
+      swal.fire('Cancel Action', '', 'info')
+    }
+  });
+}
+//auto refresh right after clicking OK button
+$(document).on('click', '.swal2-confirm', function(e){
+  window.location.reload(true);
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /////////////////////////////////////////////////////////////////////////////////////////
 // ADD EMERGENCY
 var max_emergency = 2;
@@ -597,25 +744,23 @@ var wrap_emergency = $(".wrap_emergency_odd");
 var wrap_emergency = $(".wrap_emergency_even");
 }
 
-if(totalRows_emergency < max_emergency) { totalRows_emergency++; wrap_emergency.append( 
-  '<div class="table_emergency">' + 
-    '<input type="hidden" name="emer['+totalRows_emergency+'][id]" value="">' + 
-    '<input type="hidden" name="emer['+totalRows_emergency+'][staff_id]" value="{{ $profile-> id}}">' + 
-    '<div class="row mt-3">' + 
-      '<div class="col-md-12 {{ $errors->has('emer.*.contact_person') ? 'has-error' : '' }}">' + 
-      '<label for="emer['+totalRows_emergency+'][contact_person]" class="labels">NAME</label>' + 
+if(totalRows_emergency < max_emergency) { totalRows_emergency++; wrap_emergency.append( '<div class="table_emergency">' + '<input type="hidden" name="emer[' +totalRows_emergency+'][id]" value="">' +
+  '<input type="hidden" name="emer['+totalRows_emergency+'][staff_id]" value="{{ $profile-> id}}">' +
+  '<div class="row mt-3">' +
+    '<div class="col-md-12 {{ $errors->has('emer.*.contact_person') ? 'has-error' : '' }}">' +
+      '<label for="emer['+totalRows_emergency+'][contact_person]" class="labels">NAME</label>' +
       '<input class="form-control" id="emer['+totalRows_emergency+'][contact_person]" placeholder="Please Insert" name="emer['+totalRows_emergency+'][contact_person]" type="text" value="">' +
-  '</div>' +
-  '</div>' +
+      '</div>' +
+    '</div>' +
 
   '<div class="row mt-3">' +
     '<div class="col-md-6 {{ $errors->has('emer.*.relationship_id') ? 'has-error' : '' }}">' +
       '<label for="emer['+totalRows_emergency+'][relationship_id]" class="labels">RELATIONSHIP</label>' +
       '<select class="form-control select-input" id="emer['+totalRows_emergency+'][relationship_id]" name="emer['+totalRows_emergency+'][relationship_id]">' +
-@foreach ($relationship as $loop_relationship1)
-'<option value="{{ $loop_relationship1->id }}">{{ $loop_relationship1->relationship }}</option>' +
-@endforeach
-'</select>' +
+        @foreach ($relationship as $relationship_id => $relationship_js)
+        '<option value="{{$relationship_id}}">{{ $relationship_js }}</option>' +
+        @endforeach
+        '</select>' +
       '</div>' +
     '<div class="col-md-6 {{ $errors->has('emer.*.phone') ? 'has-error' : '' }}">' +
       '<label for="emer['+totalRows_emergency+'][phone]" class="labels">PHONE NUMBER</label>' +
@@ -727,16 +872,14 @@ if(totalRows_emergency < max_emergency) { totalRows_emergency++; wrap_emergency.
   var wrap_spouse = $(".wrap_spouse_even");
   }
 
-  if(totalRows_spouse < max_spouse) { totalRows_spouse++; wrap_spouse.append( 
-    '<div class="mb-5 table_spouse">' + 
-      '<input type="hidden" name="spou['+totalRows_spouse+'][id]" value="">' + 
-      '<input type="hidden" name="spou['+totalRows_spouse+'][staff_id]" value="{{ $profile-> id }}">' + 
-      '<div class="row mt-3">' + 
-        '<div class="col-md-12 {{ $errors->has('spou.*.spouse') ? 'has-error' : '' }}">' + 
-        '<label for="spou['+totalRows_spouse+'][spouse]" class="labels">NAME</label>' + 
+  if(totalRows_spouse < max_spouse) { totalRows_spouse++; wrap_spouse.append( '<div class="mb-5 table_spouse">' + '<input type="hidden" name="spou[' +totalRows_spouse+'][id]" value="">' +
+    '<input type="hidden" name="spou['+totalRows_spouse+'][staff_id]" value="{{ $profile-> id }}">' +
+    '<div class="row mt-3">' +
+      '<div class="col-md-12 {{ $errors->has('spou.*.spouse') ? 'has-error' : '' }}">' +
+        '<label for="spou['+totalRows_spouse+'][spouse]" class="labels">NAME</label>' +
         '<input class="form-control" id="spou['+totalRows_spouse+'][spouse]" placeholder="Please Insert" name="spou['+totalRows_spouse+'][spouse]" type="text" value="">' +
-    '</div>' +
-    '</div>' +
+        '</div>' +
+      '</div>' +
 
     '<div class="row mt-3">' +
       '<div class="col-md-6 {{ $errors->has('spou.*.id_card_passport') ? 'has-error' : '' }}">' +
@@ -849,61 +992,6 @@ if(totalRows_emergency < max_emergency) { totalRows_emergency++; wrap_emergency.
     });
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     /////////////////////////////////////////////////////////////////////////////////////////
     // ADD CHILDREN
     var max_children = 25;
@@ -918,9 +1006,7 @@ if(totalRows_emergency < max_emergency) { totalRows_emergency++; wrap_emergency.
     var wrap_children = $(".wrap_children_even");
     }
 
-    if(totalRows_children < max_children) { totalRows_children++; wrap_children.append( 
-      '<div class="mb-5 table_children">' + 
-        '<input type="hidden" name="chil[' +totalRows_children+'][id]" value="">' +
+    if(totalRows_children < max_children) { totalRows_children++; wrap_children.append( '<div class="mb-5 table_children">' + '<input type="hidden" name="chil[' +totalRows_children+'][id]" value="">' +
       '<input type="hidden" name="chil['+totalRows_children+'][staff_id]" value="{{ $profile-> id }}">' +
       '<div class="row mt-3">' +
         '<div class="col-md-12 {{ $errors->has('chil.*.children') ? 'has-error' : '' }}">' +
@@ -937,10 +1023,10 @@ if(totalRows_emergency < max_emergency) { totalRows_emergency++; wrap_emergency.
         '<div class="col-md-6 {{ $errors->has('chil.*.gender_id') ? 'has-error' : '' }}">' +
           '<label for="chil['+totalRows_children+'][gender_id]" class="labels">Gender</label>' +
           '<select class="form-control select-input" id="chil['+totalRows_children+'][gender_id]" name="chil['+totalRows_children+'][gender_id]">' +
-
+            @foreach ($gender as $gender_id => $gender_js)
+            '<option value="{{$gender_id}}">{{ $gender_js }}</option>' +
+            @endforeach
             '</select>' +
-
-          '{!! Form::select( "chil[$k][gender_id]", $gender, @$value, ['class' => 'form-control select-input', 'id' => "chil[$k][gender_id]", 'placeholder' => 'Please Insert'] ) !!}' +
           '</div>' +
         '</div>' +
 
@@ -948,10 +1034,10 @@ if(totalRows_emergency < max_emergency) { totalRows_emergency++; wrap_emergency.
         '<div class="col-md-12 {{ $errors->has('chil.*.health_status_id') ? 'has-error' : '' }}">' +
           '<label for="chil['+totalRows_children+'][health_status_id]" class="labels">Health Condition</label>' +
           '<select class="form-control select-input" id="chil['+totalRows_children+'][health_status_id]" name="chil['+totalRows_children+'][health_status_id]">' +
-
+            @foreach ($health_status as $health_status_id => $health_status_js)
+            '<option value="{{$health_status_id}}">{{ $health_status_js }}</option>' +
+            @endforeach
             '</select>' +
-
-          '{!! Form::select( "chil[$k][health_status_id]", $health_status, @$value, ['class' => 'form-control select-input', 'id' => "chil[$k][health_status_id]", 'placeholder' => 'Please Insert'] ) !!}' +
           '</div>' +
         '</div>' +
 
@@ -959,17 +1045,17 @@ if(totalRows_emergency < max_emergency) { totalRows_emergency++; wrap_emergency.
         '<div class="col-md-12 {{ $errors->has('chil.*.education_level_id') ? 'has-error' : '' }}">' +
           '<label for="chil['+totalRows_children+'][education_level_id]" class="labels">Education Level</label>' +
           '<select class="form-control select-input" id="chil['+totalRows_children+'][education_level_id]" name="chil['+totalRows_children+'][education_level_id]">' +
-
+            @foreach ($education_level as $education_level_id => $education_level_js)
+            '<option value="{{$education_level_id}}">{{ $education_level_js }}</option>' +
+            @endforeach
             '</select>' +
-
-          '{!! Form::select( "chil[$k][education_level_id]", $education_level, @$value, ['class' => 'form-control select-input', 'id' => "chil[$k][education_level_id]", 'placeholder' => 'Please Insert'] ) !!}' +
           '</div>' +
         '</div>' +
 
       '<div class="mt-1 d-flex flex-row justify-content-end">' +
         '<button class="btn btn-outline-secondary btn-sm-custom bi bi-dash-lg remove_children"></button>' +
         '</div>' +
-      '</div>' 
+      '</div>'
 
       );
 
@@ -1073,6 +1159,7 @@ if(totalRows_emergency < max_emergency) { totalRows_emergency++; wrap_emergency.
       useCurrent: true,
       });
 
+
       /////////////////////////////////////////////////////////////////////////////////////////
       // SELECTION
       $('.select-input').select2({
@@ -1080,5 +1167,242 @@ if(totalRows_emergency < max_emergency) { totalRows_emergency++; wrap_emergency.
       width: '100%',
       allowClear: true,
       closeOnSelect: true,
+      });
+
+
+      /////////////////////////////////////////////////////////////////////////////////////////
+      // VALIDATOR
+      $(document).ready(function() {
+      $('#form').bootstrapValidator({
+      feedbackIcons: {
+      valid: '',
+      invalid: '',
+      validating: ''
+      },
+      fields: {
+      ic: {
+      validators: {
+      notEmpty: {
+      message: 'Please insert ic.'
+      },
+      numeric: {
+      message: 'The value is not numeric'
+      }
+      }
+      },
+
+      mobile: {
+      validators: {
+      notEmpty: {
+      message: 'Please insert mobile number.'
+      },
+      numeric: {
+      message: 'The value is not numeric'
+      }
+      }
+      },
+
+      email: {
+      validators: {
+      notEmpty: {
+      message: 'Please insert email.'
+      },
+      emailAddress: {
+      message: 'The value is not a valid email.'
+      }
+      }
+      },
+
+      address: {
+      validators: {
+      notEmpty: {
+      message: 'Please insert address.'
+      }
+      }
+      },
+
+      dob: {
+      validators: {
+      notEmpty: {
+      message: 'Please insert date of birth.'
+      }
+      }
+      },
+
+      gender_id: {
+      validators: {
+      notEmpty: {
+      message: 'Please select a gender.'
+      }
+      }
+      },
+
+      nationality_id: {
+      validators: {
+      notEmpty: {
+      message: 'Please select a nationality.'
+      }
+      }
+      },
+
+      race_id: {
+      validators: {
+      notEmpty: {
+      message: 'Please select a race.'
+      }
+      }
+      },
+
+      religion_id: {
+      validators: {
+      notEmpty: {
+      message: 'Please select a religion.'
+      }
+      }
+      },
+
+      marital_status_id: {
+      validators: {
+      notEmpty: {
+      message: 'Please select a marital status.'
+      }
+      }
+      },
+
+      <?php $l = 1; ?>
+      <?php foreach ($emergencies as $emergency) { ?>
+        'emer[{{ $l }}][contact_person]': {
+        validators: {
+        notEmpty: {
+        message: 'Please insert contact person.'
+        }
+        }
+        },
+
+        'emer[{{ $l }}][relationship_id]': {
+        validators: {
+        notEmpty: {
+        message: 'Please select a relationship.'
+        }
+        }
+        },
+
+        'emer[{{ $l }}][phone]': {
+        validators: {
+        notEmpty: {
+        message: 'Please insert phone number.'
+        },
+        numeric: {
+        message: 'The value is not numeric'
+        }
+        }
+        },
+
+        'emer[{{ $l }}][address]': {
+        validators: {
+        notEmpty: {
+        message: 'Please insert address.'
+        }
+        }
+        },
+        <?php $l++; ?>
+      <?php } ?>
+
+      <?php $m = 1; ?>
+      <?php foreach ($spouses as $spouse) { ?>
+        'spou[{{ $m }}][spouse]': {
+        validators: {
+        notEmpty: {
+        message: 'Please insert spouse name.'
+        }
+        }
+        },
+
+        'spou[{{ $m }}][id_card_passport]': {
+        validators: {
+        notEmpty: {
+        message: 'Please insert ic.'
+        },
+        numeric: {
+        message: 'The value is not numeric'
+        }
+        }
+        },
+
+        'spou[{{ $m }}][phone]': {
+        validators: {
+        notEmpty: {
+        message: 'Please insert phone number.'
+        },
+        numeric: {
+        message: 'The value is not numeric'
+        }
+        }
+        },
+
+        'spou[{{ $m }}][dob]': {
+        validators: {
+        notEmpty: {
+        message: 'Please insert date of birth.'
+        }
+        }
+        },
+
+        'spou[{{ $m }}][profession]': {
+        validators: {
+        notEmpty: {
+        message: 'Please insert profession.'
+        }
+        }
+        },
+        <?php $m++; ?>
+      <?php } ?>
+
+      <?php $n = 1; ?>
+      <?php foreach ($childrens as $children) { ?>
+        'chil[{{ $n }}][children]': {
+        validators: {
+        notEmpty: {
+        message: 'Please insert children name.'
+        }
+        }
+        },
+
+        'chil[{{ $n }}][dob]': {
+        validators: {
+        notEmpty: {
+        message: 'Please insert date of birth.'
+        }
+        }
+        },
+
+        'chil[{{ $n }}][gender_id]': {
+        validators: {
+        notEmpty: {
+        message: 'Please select a gender.'
+        }
+        }
+        },
+
+        'chil[{{ $n }}][health_status_id]': {
+        validators: {
+        notEmpty: {
+        message: 'Please select a health status.'
+        }
+        }
+        },
+
+        'chil[{{ $n }}][education_level_id]': {
+        validators: {
+        notEmpty: {
+        message: 'Please select an educational status.'
+        }
+        }
+        },
+        <?php $n++; ?>
+      <?php } ?>
+
+      }
+      })
       });
       @endsection
