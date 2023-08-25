@@ -35,6 +35,7 @@ use Illuminate\Database\Eloquent\Builder;
 use App\Models\HumanResources\HRHolidayCalendar;
 use App\Models\HumanResources\OptDayType;
 use App\Models\HumanResources\OptTcms;
+use App\Models\HumanResources\HROvertime;
 
 // load model
 use App\Helpers\UnavailableDateTime;
@@ -152,6 +153,11 @@ if($hdate->isNotEmpty()) {											// date holiday
 	}
 }
 
+$o = HROvertime::where([['staff_id', $s->belongstostaff->id], ['ot_date', $s->attend_date]])->first();
+// dump($o);
+if($o) {
+	$ot = $o;
+}
 
 // detect absent
 if( (($in && $break && $resume && $break) && $dtype) && !$l ) {
@@ -170,6 +176,10 @@ if( (($in && $break && $resume && $break) && $dtype) && !$l ) {
 
 // || ($in && $break) || ($resume && $out)
 // $ll = false;
+
+
+
+
 
 if ($dtype) {													// working
 	if ($l) {													// working | leave
@@ -275,6 +285,9 @@ if ($dtype) {													// working
 							$ll = false;
 						}
 					} else {									// working | no leave | in | no break | no resume | out
+						if($ot) {
+
+						}
 						$ll = false;
 					}
 				} else {										// working | no leave | in | no break | resume
