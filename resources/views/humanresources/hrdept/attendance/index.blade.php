@@ -22,6 +22,7 @@
 					<th>Resume</th>
 					<th>Out</th>
 					<th>Duration</th>
+					<th>Overtime</th>
 					<th>Remarks</th>
 					<th>Exception</th>
 				</tr>
@@ -155,9 +156,6 @@ if($hdate->isNotEmpty()) {											// date holiday
 
 $o = HROvertime::where([['staff_id', $s->belongstostaff->id], ['ot_date', $s->attend_date]])->first();
 // dump($o);
-if($o) {
-	$ot = $o;
-}
 
 // detect absent
 if( (($in && $break && $resume && $break) && $dtype) && !$l ) {
@@ -441,15 +439,6 @@ if($l) {
 } else {
 	$lea = NULL;
 }
-								// ($out)?'text-info':((Carbon::parse($s->out)->lt($wh->time_end_pm))?'text-danger':'')
-									// if(isset($ot)) {
-									// 	dump($ot->end);
-									// 	if($out->lte($ot->end)) {
-									// 		echo 'text-danger';
-									// 	} else {
-									// 		echo 'text-info';
-									// 	}
-									// }
 ?>
 				<tr>
 					<td>{{ $s->belongstostaff?->hasmanylogin()->where('active', 1)->first()?->username }}</td>
@@ -463,20 +452,24 @@ if($l) {
 					<td><span class="{{ ($resume)?'text-info':((Carbon::parse($s->resume)->gt($wh->time_start_pm))?'text-danger':'') }}">{{ ($resume)?'':Carbon::parse($s->resume)->format('g:i a') }}</span></td>
 					<td><span class="
 							<?php
-								if($out) {								// no punch out
+								if($out) {																													// no punch out
 									echo 'text-info';
-								} else {								// punch out
-									if(isset($ot)) {					// punch out | OT
-										if (Carbon::parse($s->out)->lt($ot->end)) {
-											echo 'text-danger';
-										} else {
-											echo 'text-info';
+								} else {																													// punch out
+									if($o) {																												// punch out | OT
+										if (Carbon::parse($s->out)->gt($o->belongstoovertimerange?->where('active', 1)->first()->end)) {					// punch out | OT | out lt OT
+											echo 'text-d ot';
+										} else {																											// punch out | OT | OT lt out
+											if (Carbon::parse($s->out)->lt($o->belongstoovertimerange?->where('active', 1)->first()->end)) {				// punch out | OT | OT gt out
+												echo 'text-danger';
+											}
 										}
-									} else {							// punch out | no OT
-										if (Carbon::parse($s->out)->lt($wh->time_end_pm)) {
+									} else {																												// punch out | no OT
+										if (Carbon::parse($s->out)->lt($wh->time_end_pm)) {																	// punch out | no OT | out lt working hour
 											echo 'text-danger';
-										} else {
-											echo 'text-info';
+										} else {																											// punch out | no OT | out gt working hour
+											if (Carbon::parse($s->out)->gt($wh->time_end_pm)) {
+												echo 'text-d wh';
+											}
 										}
 									}
 								}
@@ -485,6 +478,7 @@ if($l) {
 							{{ ($out)?'':Carbon::parse($s->out)->format('g:i a') }}
 						</span></td>
 					<td>{{ $s->time_work_hour }}</td>
+					<td>{{ $o?->belongstoovertimerange?->where('active', 1)->first()->total_time }}</td>
 					<td>{{ $s->remarks }}</td>
 					<td>{{ $s->exception }}</td>
 				</tr>
