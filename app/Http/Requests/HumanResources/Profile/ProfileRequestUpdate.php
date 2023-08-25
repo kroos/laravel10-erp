@@ -35,7 +35,17 @@ class ProfileRequestUpdate extends FormRequest
       'emer.*.contact_person' => 'required',
       'emer.*.relationship_id' => 'required|integer',
       'emer.*.phone' => 'required|numeric',
-      'emer.*.address' => 'required'
+      'emer.*.address' => 'required',
+      'spou.*.spouse' => 'required',
+      'spou.*.id_card_passport' => 'required|numeric',
+      'spou.*.phone' => 'required|numeric',
+      'spou.*.dob' => 'required|date_format:Y-m-d',
+      'spou.*.profession' => 'required',
+      'chil.*.children' => 'required',
+      'chil.*.dob' => 'required|date_format:Y-m-d',
+      'chil.*.gender_id' => 'required|integer',
+      'chil.*.health_status_id' => 'required|integer',
+      'chil.*.education_level_id' => 'required|integer'
     ];
   }
 
@@ -59,10 +69,24 @@ class ProfileRequestUpdate extends FormRequest
       'religion_id.required' => 'Please select a religion.',
       'marital_status_id.required' => 'Please select a marital status.',
       'emer.*.contact_person.required' => 'Please insert emergency contact person.',
-      'emer.*.relationship_id.required' => 'Please select a relationship.',
+      'emer.*.relationship_id.required' => 'Please select a emergency relationship.',
       'emer.*.phone.required' => 'Please insert emergency phone number.',
       'emer.*.phone.numeric' => 'Please insert valid emergency phone number.',
-      'emer.*.address.required' => 'Please insert emergency address.'
+      'emer.*.address.required' => 'Please insert emergency address.',
+      'spou.*.spouse.required' => 'Please insert spouse name.',
+      'spou.*.id_card_passport.required' => 'Please insert spouse ic.',
+      'spou.*.id_card_passport.numeric' => 'Please insert valid spouse ic.',
+      'spou.*.phone.required' => 'Please insert spouse phone number.',
+      'spou.*.phone.numeric' => 'Please insert valid spouse phone number.',
+      'spou.*.dob.required' => 'Please insert spouse date of birth.',
+      'spou.*.dob.date_format' => 'Please insert spouse date of birth in correct date format.',
+      'spou.*.profession.required' => 'Please insert spouse profession.',
+      'chil.*.children.required' => 'Please insert children name.',
+      'chil.*.dob.required' => 'Please insert children date of birth.',
+      'chil.*.dob.date_format' => 'Please insert children date of birth in correct date format.',
+      'chil.*.gender_id.required' => 'Please select a gender for children.',
+      'chil.*.health_status_id.required' => 'Please select a health status for children.',
+      'chil.*.education_level_id.required' => 'Please select a educational level for children.'
     ];
   }
 
@@ -79,6 +103,16 @@ class ProfileRequestUpdate extends FormRequest
       'emer.*.relationship_id' => 'emergency contact relationship',
       'emer.*.phone' => 'emergency contact phone number',
       'emer.*.address' => 'emergency contact address',
+      'spou.*.spouse' => 'spouse name',
+      'spou.*.id_card_passport' => 'spouse ic number',
+      'spou.*.phone' => 'spouse phone number',
+      'spou.*.dob' => 'spouse date of birth',
+      'spou.*.profession' => 'spouse profession',
+      'chil.*.children' => 'children name',
+      'chil.*.dob' => 'children date of birth',
+      'chil.*.gender_id' => 'children gender',
+      'chil.*.health_status_id' => 'children health status',
+      'chil.*.education_level_id' => 'children educational level'
     ];
   }
 }
