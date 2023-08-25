@@ -177,10 +177,6 @@ if( (($in && $break && $resume && $break) && $dtype) && !$l ) {
 // || ($in && $break) || ($resume && $out)
 // $ll = false;
 
-
-
-
-
 if ($dtype) {													// working
 	if ($l) {													// working | leave
 		if ($in) {												// working | leave | no in
@@ -285,9 +281,6 @@ if ($dtype) {													// working
 							$ll = false;
 						}
 					} else {									// working | no leave | in | no break | no resume | out
-						if($ot) {
-
-						}
 						$ll = false;
 					}
 				} else {										// working | no leave | in | no break | resume
@@ -448,6 +441,15 @@ if($l) {
 } else {
 	$lea = NULL;
 }
+								// ($out)?'text-info':((Carbon::parse($s->out)->lt($wh->time_end_pm))?'text-danger':'')
+									// if(isset($ot)) {
+									// 	dump($ot->end);
+									// 	if($out->lte($ot->end)) {
+									// 		echo 'text-danger';
+									// 	} else {
+									// 		echo 'text-info';
+									// 	}
+									// }
 ?>
 				<tr>
 					<td>{{ $s->belongstostaff?->hasmanylogin()->where('active', 1)->first()?->username }}</td>
@@ -459,7 +461,29 @@ if($l) {
 					<td><span class="{{ ($in)?'text-info':((Carbon::parse($s->in)->gt($wh->time_start_am))?'text-danger':'') }}">{{ ($in)?'':Carbon::parse($s->in)->format('g:i a') }}</span></td>
 					<td><span class="{{ ($break)?'text-info':((Carbon::parse($s->break)->lt($wh->time_end_am))?'text-danger':'') }}">{{ ($break)?'':Carbon::parse($s->break)->format('g:i a') }}</span></td>
 					<td><span class="{{ ($resume)?'text-info':((Carbon::parse($s->resume)->gt($wh->time_start_pm))?'text-danger':'') }}">{{ ($resume)?'':Carbon::parse($s->resume)->format('g:i a') }}</span></td>
-					<td><span class="{{ ($out)?'text-info':((Carbon::parse($s->out)->lt($wh->time_end_pm))?'text-danger':'') }}">{{ ($out)?'':Carbon::parse($s->out)->format('g:i a') }}</span></td>
+					<td><span class="
+							<?php
+								if($out) {								// no punch out
+									echo 'text-info';
+								} else {								// punch out
+									if(isset($ot)) {					// punch out | OT
+										if (Carbon::parse($s->out)->lt($ot->end)) {
+											echo 'text-danger';
+										} else {
+											echo 'text-info';
+										}
+									} else {							// punch out | no OT
+										if (Carbon::parse($s->out)->lt($wh->time_end_pm)) {
+											echo 'text-danger';
+										} else {
+											echo 'text-info';
+										}
+									}
+								}
+							?>
+						">
+							{{ ($out)?'':Carbon::parse($s->out)->format('g:i a') }}
+						</span></td>
 					<td>{{ $s->time_work_hour }}</td>
 					<td>{{ $s->remarks }}</td>
 					<td>{{ $s->exception }}</td>
