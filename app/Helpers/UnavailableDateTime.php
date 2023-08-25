@@ -3,7 +3,9 @@ namespace App\Helpers;
 
 use App\Models\HumanResources\HRLeave;
 use App\Models\HumanResources\HRHolidayCalendar;
-use App\Models\HumanResources\HRLeaveEntitlement;
+use App\Models\HumanResources\HRLeaveAnnual;
+use App\Models\HumanResources\HRLeaveMC;
+use App\Models\HumanResources\HRLeaveMaternity;
 use App\Models\HumanResources\OptWorkingHour;
 use App\Models\Staff;
 use App\Models\Setting;
@@ -45,11 +47,13 @@ class UnavailableDateTime
 		$nystart_date = $start_date->copy()->addYear();
 		$nyend_date = $end_date->copy()->addYears(1)->subDay();
 		// block next year if entitlements and working hours not set
-		$entit = HRLeaveEntitlement::where('year', $nystart_date->copy()->year)->get();
+		$entitannual = HRLeaveAnnual::where('year', $nystart_date->copy()->year)->get();
+		$entitmc = HRLeaveMC::where('year', $nystart_date->copy()->year)->get();
+		$entitmaternity = HRLeaveMaternity::where('year', $nystart_date->copy()->year)->get();
 		$wh = OptWorkingHour::where('year', $nystart_date->copy()->year)->get();
 		// dd([empty($entit->count()), empty($wh->count()), $entit->count()]);
 		$nextyear = [];
-		if(empty($entit->count()) || empty($wh->count())){
+		if(empty($entitannual->count() && $entitmc->count() && $entitmaternity->count()) || empty($wh->count())){
 			foreach ($nystart_date->daysUntil($nyend_date) as $nydate) {
 				$nextyear[] = $nydate->format('Y-m-d');
 			}
@@ -80,7 +84,7 @@ class UnavailableDateTime
 		// block saturday according to group
 		// make sure $request->id comes from table staff
 		// ->whereYear('saturday_date', $d->copy()->year)->whereYear('saturday_date', $d->copy()->addYear()->year)->get()
-		$sat = Staff::find($id)?->belongstorestdaygroup()->first()->hasmanyrestdaycalendar()
+		$sat = Staff::find($id)?->belongstorestdaygroup?->hasmanyrestdaycalendar()
 		->where(function (Builder $query) use ($d){
 			$query->whereYear('saturday_date', $d->copy()->year)
 			->orwhereYear('saturday_date', $d->copy()->addYear()->year);
