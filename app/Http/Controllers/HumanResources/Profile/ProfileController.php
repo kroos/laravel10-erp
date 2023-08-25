@@ -67,28 +67,6 @@ class ProfileController extends Controller
     return view('humanresources.profile.edit', compact('profile'));
   }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   /**
    * Update the specified resource in storage.
    */
@@ -149,42 +127,6 @@ class ProfileController extends Controller
     Session::flash('flash_message', 'Data successfully updated!');
     return Redirect::route('profile.show', $profile);
   }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   /**
    * Remove the specified resource from storage.

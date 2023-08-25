@@ -695,42 +695,6 @@ $(document).on('click', '.swal2-confirm', function(e){
   window.location.reload(true);
 });
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /////////////////////////////////////////////////////////////////////////////////////////
 // ADD EMERGENCY
 var max_emergency = 2;
