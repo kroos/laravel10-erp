@@ -134,7 +134,7 @@ $(document).ready(function(){
 $.fn.dataTable.moment( 'D MMM YYYY' );
 $.fn.dataTable.moment( 'D MMM YYYY h:mm a' );
 $('#staff').DataTable({
-	"lengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "All"] ],
+	"lengthMenu": [ [-1], ["All"] ],
 	"order": [[1, "asc" ]],	// sorting the 6th column descending
 	responsive: true
 })
