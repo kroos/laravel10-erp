@@ -1,3 +1,11 @@
+<?php
+use App\Models\Staff;
+use App\Models\HumanResources\OptReligion;
+use App\Models\HumanResources\OptGender;
+use App\Models\HumanResources\OptRace;
+use App\Models\HumanResources\OptMaritalStatus;
+use App\Models\HumanResources\OptCountry;
+?>
 @extends('layouts.app')
 
 @section('content')
@@ -5,12 +13,12 @@
 @include('humanresources.hrdept.navhr')
 	<h4 class="align-items-center">Add Staff</h4>
 	{{ Form::open(['route' => ['staff.store'], 'id' => 'form', 'class' => 'form-horizontal', 'autocomplete' => 'off', 'files' => true]) }}
-	<div class="col-sm-6 row">
+	<div class="col-sm-6">
 
 		<div class="form-group row mb-3 {{ $errors->has('name') ? 'has-error' : '' }}">
-			{{ Form::label( 'name', 'Name : ', ['class' => 'col-sm-5 col-form-label'] ) }}
+			{{ Form::label( 'nam', 'Name : ', ['class' => 'col-sm-5 col-form-label'] ) }}
 			<div class="col-auto">
-				{{ Form::text('name', @$value, ['class' => 'form-control col-auto', 'id' => 'reason', 'placeholder' => 'Name', 'autocomplete' => 'off']) }}
+				{{ Form::text('name', @$value, ['class' => 'form-control col-auto', 'id' => 'nam', 'placeholder' => 'Name', 'autocomplete' => 'off']) }}
 			</div>
 		</div>
 
@@ -22,160 +30,150 @@
 		</div>
 
 		<div class="form-group row mb-3 {{ $errors->has('religion_id') ? 'has-error' : '' }}">
-			{{ Form::label( 'ic', 'Religion : ', ['class' => 'col-sm-5 col-form-label'] ) }}
+			{{ Form::label( 'rel', 'Religion : ', ['class' => 'col-sm-5 col-form-label'] ) }}
 			<div class="col-auto">
-				{{ Form::text('religion_id', @$value, ['class' => 'form-control col-auto', 'id' => 'ic', 'placeholder' => 'Religion', 'autocomplete' => 'off']) }}
+				{{ Form::select('religion_id', OptReligion::pluck('religion', 'id')->toArray(), @$value, ['class' => 'form-control form-select form-select-sm col-auto', 'id' => 'rel', 'placeholder' => 'Religion', 'autocomplete' => 'off']) }}
+			</div>
+		</div>
+
+		<div class="form-group row mb-3 {{ $errors->has('gender_id') ? 'has-error' : '' }}">
+			{{ Form::label( 'gen', 'Gender : ', ['class' => 'col-sm-5 col-form-label'] ) }}
+			<div class="col-auto">
+				{{ Form::select('gender_id', OptGender::pluck('gender', 'id')->toArray(), @$value, ['class' => 'form-control col-auto', 'id' => 'gen', 'placeholder' => 'Gender', 'autocomplete' => 'off']) }}
+			</div>
+		</div>
+
+		<div class="form-group row mb-3 {{ $errors->has('race_id') ? 'has-error' : '' }}">
+			{{ Form::label( 'rac', 'Race : ', ['class' => 'col-sm-5 col-form-label'] ) }}
+			<div class="col-auto">
+				{{ Form::select('race_id', OptRace::pluck('race', 'id')->toArray(), @$value, ['class' => 'form-control col-auto', 'id' => 'rac', 'placeholder' => 'Race', 'autocomplete' => 'off']) }}
+			</div>
+		</div>
+
+		<div class="form-group row mb-3 {{ $errors->has('nationality_id') ? 'has-error' : '' }}">
+			{{ Form::label( 'nat', 'Nationality : ', ['class' => 'col-sm-5 col-form-label'] ) }}
+			<div class="col-auto">
+				{{ Form::select('nationality_id', OptCountry::pluck('country', 'id')->toArray(), @$value, ['class' => 'form-control col-auto', 'id' => 'nat', 'placeholder' => 'Nationality', 'autocomplete' => 'off']) }}
+			</div>
+		</div>
+
+		<div class="form-group row mb-3 {{ $errors->has('marital_status_id') ? 'has-error' : '' }}">
+			{{ Form::label( 'mar', 'Marital Status : ', ['class' => 'col-sm-5 col-form-label'] ) }}
+			<div class="col-auto">
+				{{ Form::select('marital_status_id', OptMaritalStatus::pluck('marital_status', 'id')->toArray(), @$value, ['class' => 'form-control col-auto', 'id' => 'mar', 'placeholder' => 'Marital Status', 'autocomplete' => 'off']) }}
+			</div>
+		</div>
+
+		<div class="form-group row mb-3 {{ $errors->has('email') ? 'has-error' : '' }}">
+			{{ Form::label( 'ema', 'Email : ', ['class' => 'col-sm-5 col-form-label'] ) }}
+			<div class="col-auto">
+				{{ Form::text('email', @$value, ['class' => 'form-control col-auto', 'id' => 'ema', 'placeholder' => 'Email', 'autocomplete' => 'off']) }}
+			</div>
+		</div>
+
+		<div class="form-group row mb-3 {{ $errors->has('address') ? 'has-error' : '' }}">
+			{{ Form::label( 'add', 'Address : ', ['class' => 'col-sm-5 col-form-label'] ) }}
+			<div class="col-auto">
+				{{ Form::textarea('address', @$value, ['class' => 'form-control col-auto', 'id' => 'add', 'placeholder' => 'Address', 'autocomplete' => 'off']) }}
+			</div>
+		</div>
+
+		<div class="form-group row mb-3 {{ $errors->has('mobile') ? 'has-error' : '' }}">
+			{{ Form::label( 'mob', 'Mobile : ', ['class' => 'col-sm-5 col-form-label'] ) }}
+			<div class="col-auto">
+				{{ Form::text('mobile', @$value, ['class' => 'form-control col-auto', 'id' => 'mob', 'placeholder' => 'Mobile', 'autocomplete' => 'off']) }}
+			</div>
+		</div>
+
+		<div class="form-group row mb-3 {{ $errors->has('phone') ? 'has-error' : '' }}">
+			{{ Form::label( 'pho', 'Phone : ', ['class' => 'col-sm-5 col-form-label'] ) }}
+			<div class="col-auto">
+				{{ Form::text('phone', @$value, ['class' => 'form-control col-auto', 'id' => 'pho', 'placeholder' => 'Phone', 'autocomplete' => 'off']) }}
+			</div>
+		</div>
+
+		<div class="form-group row mb-3 {{ $errors->has('dob') ? 'has-error' : '' }}">
+			{{ Form::label( 'dob', 'Date Of Birth : ', ['class' => 'col-sm-5 col-form-label'] ) }}
+			<div class="col-auto">
+				{{ Form::text('dob', @$value, ['class' => 'form-control col-auto', 'id' => 'dob', 'placeholder' => 'Date Of Birth', 'autocomplete' => 'off']) }}
+			</div>
+		</div>
+
+		<div class="form-group row mb-3 {{ $errors->has('cimb_account') ? 'has-error' : '' }}">
+			{{ form::label( 'cia', 'CIMB Account : ', ['class' => 'col-sm-5 col-form-label'] ) }}
+			<div class="col-auto">
+				{{ form::text('cimb_account', @$value, ['class' => 'form-control col-auto', 'id' => 'cia', 'placeholder' => 'CIMB Account', 'autocomplete' => 'off']) }}
+			</div>
+		</div>
+
+		<div class="form-group row mb-3 {{ $errors->has('epf_account') ? 'has-error' : '' }}">
+			{{ form::label( 'epf', 'EPF Account : ', ['class' => 'col-sm-5 col-form-label'] ) }}
+			<div class="col-auto">
+				{{ form::text('epf_account', @$value, ['class' => 'form-control col-auto', 'id' => 'epf', 'placeholder' => 'EPF Account', 'autocomplete' => 'off']) }}
+			</div>
+		</div>
+
+		<div class="form-group row mb-3 {{ $errors->has('income_tax_no') ? 'has-error' : '' }}">
+			{{ form::label( 'itn', 'Income Tax No : ', ['class' => 'col-sm-5 col-form-label'] ) }}
+			<div class="col-auto">
+				{{ form::text('income_tax_no', @$value, ['class' => 'form-control col-auto', 'id' => 'itn', 'placeholder' => 'Income Tax No', 'autocomplete' => 'off']) }}
+			</div>
+		</div>
+
+		<div class="form-group row mb-3 {{ $errors->has('socso_no') ? 'has-error' : '' }}">
+			{{ form::label( 'son', 'SOCSO No : ', ['class' => 'col-sm-5 col-form-label'] ) }}
+			<div class="col-auto">
+				{{ form::text('socso_no', @$value, ['class' => 'form-control col-auto', 'id' => 'son', 'placeholder' => 'SOCSO No', 'autocomplete' => 'off']) }}
+			</div>
+		</div>
+
+		<div class="form-group row mb-3 {{ $errors->has('weight') ? 'has-error' : '' }}">
+			{{ form::label( 'wei', 'Weight : ', ['class' => 'col-sm-5 col-form-label'] ) }}
+			<div class="col-auto">
+				{{ form::text('weight', @$value, ['class' => 'form-control col-auto', 'id' => 'wei', 'placeholder' => 'Weight', 'autocomplete' => 'off']) }}
+			</div>
+		</div>
+
+		<div class="form-group row mb-3 {{ $errors->has('height') ? 'has-error' : '' }}">
+			{{ form::label( 'hei', 'Height : ', ['class' => 'col-sm-5 col-form-label'] ) }}
+			<div class="col-auto">
+				{{ form::text('height', @$value, ['class' => 'form-control col-auto', 'id' => 'hei', 'placeholder' => 'Height', 'autocomplete' => 'off']) }}
+			</div>
+		</div>
+
+		<div class="form-group row mb-3 {{ $errors->has('join') ? 'has-error' : '' }}">
+			{{ form::label( 'jpo', 'Date Join : ', ['class' => 'col-sm-5 col-form-label'] ) }}
+			<div class="col-auto">
+				{{ form::text('join', @$value, ['class' => 'form-control col-auto', 'id' => 'jpo', 'placeholder' => 'Date Join', 'autocomplete' => 'off']) }}
+			</div>
+		</div>
+
+		<div class="form-group row mb-3 {{ $errors->has('image') ? 'has-error' : '' }}">
+			{{ Form::label( 'ima', 'Image : ', ['class' => 'col-sm-5 col-form-label'] ) }}
+			<div class="col-auto supportdoc">
+				{{ Form::file( 'image', ['class' => 'form-control form-control-file', 'id' => 'ima', 'placeholder' => 'Image']) }}
+			</div>
+		</div>
+	</div>
+
+	<div class="col-sm-6">
+
+		<div class="form-group row mb-3 {{ $errors->has('spouse') ? 'has-error' : '' }}">
+			{{ Form::label( 'spo', 'Spouse : ', ['class' => 'col-sm-5 col-form-label'] ) }}
+			<div class="col-auto spouse">
+				{{ Form::text( 'spouse', @$value, ['class' => 'form-control form-control-file', 'id' => 'spo', 'placeholder' => 'Spouse']) }}
+			</div>
+		</div>
+
+		<div class="form-group row mb-3 {{ $errors->has('children') ? 'has-error' : '' }}">
+			{{ Form::label( 'ima', 'Children : ', ['class' => 'col-sm-5 col-form-label'] ) }}
+			<div class="col-auto spouse">
+				{{ Form::text( 'children', @$value, ['class' => 'form-control form-control-file', 'id' => 'ima', 'placeholder' => 'Children']) }}
 			</div>
 		</div>
 
 
 
-
-
-
-
-<?php $staff = \App\Models\Staff::findOrFail(37) ?>
-		<div class="col-5">Religion :</div>
-		<div class="col-7">{{ $staff->belongstoreligion?->religion }}</div>
-		<div class="col-5">Gender :</div>
-		<div class="col-7">{{ $staff->belongstogender?->gender }}</div>
-		<div class="col-5">Race :</div>
-		<div class="col-7">{{ $staff->belongstorace?->race }}</div>
-		<div class="col-5">Nationality :</div>
-		<div class="col-7">{{ $staff->belongstonationality?->country }}</div>
-		<div class="col-5">Marital Status :</div>
-		<div class="col-7">{{ $staff->belongstomaritalstatus?->marital_status }}</div>
-		<div class="col-5">Email :</div>
-		<div class="col-7">{{ $staff->email }}</div>
-		<div class="col-5">Address :</div>
-		<div class="col-7">{{ $staff->address }}</div>
-		<div class="col-5">Place of Birth :</div>
-		<div class="col-7">{{ $staff->place_of_birth }}</div>
-		<div class="col-5">Mobile :</div>
-		<div class="col-7">{{ $staff->mobile }}</div>
-		<div class="col-5">Phone :</div>
-		<div class="col-7">{{ $staff->phone }}</div>
-		<div class="col-5">Date of Birth :</div>
-		<div class="col-7">{{ \Carbon\Carbon::parse($staff->dob)->format('j M Y') }}</div>
-		<div class="col-5">CIMB Account :</div>
-		<div class="col-7">{{ $staff->cimb_account }}</div>
-		<div class="col-5">EPF Account :</div>
-		<div class="col-7">{{ $staff->epf_account }}</div>
-		<div class="col-5">Income Tax No :</div>
-		<div class="col-7">{{ $staff->income_tax_no }}</div>
-		<div class="col-5">SOCSO No :</div>
-		<div class="col-7">{{ $staff->socso_no }}</div>
-		<div class="col-5">SOCSO No :</div>
-		<div class="col-7">{{ $staff->socso_no }}</div>
-		<div class="col-5">Weight :</div>
-		<div class="col-7">{{ $staff->weight }} kg</div>
-		<div class="col-5">Height :</div>
-		<div class="col-7">{{ $staff->height }} cm</div>
-		<div class="col-5">Date Join :</div>
-		<div class="col-7">{{ \Carbon\Carbon::parse($staff->join)->format('j M Y') }}</div>
-		<div class="col-5">Date Confirmed :</div>
-		<div class="col-7">{{ \Carbon\Carbon::parse($staff->confirmed)->format('j M Y') }}</div>
-	</div>
-	<div class="col-sm-6 row">
-		<div class="col-5">System Authorised :</div>
-		<div class="col-7">{{ $staff->belongstoauthorised?->authorise }}</div>
-		<div class="col-5">Leave Approval Personnel :</div>
-		<div class="col-7">{{ $staff->belongstodivision?->div }}</div>
-		<div class="col-5">Leave Approval Flow :</div>
-		<div class="col-7">{{ $staff->belongstoleaveapprovalflow?->description }}</div>
-		<div class="col-5">RestDay Group :</div>
-		<div class="col-7">{{ $staff->belongstorestdaygroup?->group }}</div>
-		<div class="col-5">Cross Backup To :</div>
-<?php
-$cb = $staff->crossbackupto()->get();
-?>
-		<div class="col-7">
-			@if($cb->count())
-			<ul>
-				@foreach($cb as $r)
-				<li>{{ $r->name }}</li>
-				@endforeach
-			</ul>
-			@endif
-		</div>
-		<div class="col-5">Cross Backup For :</div>
-<?php
-$cbf = $staff->crossbackupfrom()->get();
-?>
-		<div class="col-7">
-			@if($cbf->count())
-			<ul>
-				@foreach($cbf as $rf)
-				<li>{{ $rf->name }}</li>
-				@endforeach
-			</ul>
-			@endif
-		</div>
-		<div class="col-5">Spouse :</div>
-		<div class="col-7">
-			@if($staff->hasmanyspouse()?->get()->count())
-			<table class="table table-sm table-hover" style="font-size:12px;">
-				<thead>
-					<tr>
-						<th>Name</th>
-						<th>Phone</th>
-					</tr>
-				</thead>
-				<tbody>
-				@foreach($staff->hasmanyspouse()?->get() as $sp)
-					<tr>
-						<td>$sp->spouse</td>
-						<td>$sp->phone</td>
-					</tr>
-				@endforeach
-				</tbody>
-			</table>
-			@endif
-		</div>
-		<div class="col-5">Children :</div>
-		<div class="col-7">
-			@if($staff->hasmanychildren()?->get()->count())
-			<table class="table table-sm table-hover" style="font-size:12px;">
-				<thead>
-					<tr>
-						<th>Name</th>
-						<th>Age</th>
-						<th>Tax Exemption (%)</th>
-					</tr>
-				</thead>
-				<tbody>
-				@foreach($staff->hasmanychildren()?->get() as $sc)
-					<tr>
-						<td>{{$sc->children}}</td>
-						<td>{{ \Carbon\Carbon::parse($sc->dob)->toPeriod(now(), 1, 'year')->count() }} year/s</td>
-						<td>{{ $sc->belongstotaxexemptionpercentage?->tax_exemption_percentage }}</td>
-					</tr>
-				@endforeach
-				</tbody>
-			</table>
-			@endif
-		</div>
-		<div class="col-5">Emergency Contact :</div>
-		<div class="col-7">
-			@if($staff->hasmanyemergency()?->get()->count())
-			<table class="table table-sm table-hover" style="font-size:12px;">
-				<thead>
-					<tr>
-						<th>Name</th>
-						<th>Phone</th>
-					</tr>
-				</thead>
-				<tbody>
-				@foreach($staff->hasmanyemergency()?->get() as $sc)
-					<tr>
-						<td>{{ $sc->contact_person }}</td>
-						<td>{{ $sc->phone }}</td>
-					</tr>
-				@endforeach
-				</tbody>
-			</table>
-			@endif
-		</div>
 	</div>
 	{!! Form::submit('Save', ['class' => 'btn btn-sm btn-outline-secondary']) !!}
 	{{ Form::close() }}
@@ -184,6 +182,28 @@ $cbf = $staff->crossbackupfrom()->get();
 
 @section('js')
 /////////////////////////////////////////////////////////////////////////////////////////
-// tooltip
+$('#rel, #gen, #rac, #nat, #mar').select2({
+	// placeholder: 'Please Select',
+	width: '100%',
+	allowClear: true,
+	closeOnSelect: true,
+});
+
+
+$('#dob, #jpo').datetimepicker({
+	icons: {
+		time: "fas fas-regular fa-clock fa-beat",
+		date: "fas fas-regular fa-calendar fa-beat",
+		up: "fa-regular fa-circle-up fa-beat",
+		down: "fa-regular fa-circle-down fa-beat",
+		previous: 'fas fas-regular fa-arrow-left fa-beat',
+		next: 'fas fas-regular fa-arrow-right fa-beat',
+		today: 'fas fas-regular fa-calenday-day fa-beat',
+		clear: 'fas fas-regular fa-broom-wide fa-beat',
+		close: 'fas fas-regular fa-rectangle-xmark fa-beat'
+	},
+	format: 'YYYY-MM-DD',
+	useCurrent: true,
+});
 
 @endsection

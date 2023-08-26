@@ -154,277 +154,316 @@ if($hdate->isNotEmpty()) {											// date holiday
 	}
 }
 
-$o = HROvertime::where([['staff_id', $s->belongstostaff->id], ['ot_date', $s->attend_date]])->first();
+$o = HROvertime::where([['staff_id', $s->belongstostaff->id], ['ot_date', $s->attend_date], ['active', 1]])->first();
 // dump($o);
 
 // detect absent
-if( (($in && $break && $resume && $break) && $dtype) && !$l ) {
-	if(is_null($s->attendance_type_id)) {
-		$ll = OptTcms::find(1)->leave;
-		// $s->update(['attendance_type_id' => 1]);
-	} else {
-		$ll = $s->belongstoopttcms->leave;
-	}
-} else {																							// check sini
-	if( (($break && ($resume && $out)) && $dtype) && !$l ) {
-		$ll = OptTcms::find(2)->leave;
-		// $s->update(['attendance_type_id' => 2]);
-	}
-}
-
-// || ($in && $break) || ($resume && $out)
-// $ll = false;
-
-if ($dtype) {													// working
-	if ($l) {													// working | leave
-		if ($in) {												// working | leave | no in
-			if ($break) {										// working | leave | no in | no break
-				if ($resume) {									// working | leave | no in | no break | no resume
-					if ($out) {									// working | leave | no in | no break | no resume | no out
+if ($dtype) {																									// working
+	if ($l) {																									// working | leave
+		if ($in) {																								// working | leave | no in
+			if ($break) {																						// working | leave | no in | no break
+				if ($resume) {																					// working | leave | no in | no break | no resume
+					if ($out) {																					// working | leave | no in | no break | no resume | no out
 						$ll = $l->belongstooptleavetype->leave_type_code;
-					} else {									// working | leave | no in | no break | no resume | out
+					} else {																					// working | leave | no in | no break | no resume | out
 						$ll = $l->belongstooptleavetype->leave_type_code;
 					}
-				} else {										// working | leave | no in | no break | resume
-					if ($out) {									// working | leave | no in | no break | resume | no out
+				} else {																						// working | leave | no in | no break | resume
+					if ($out) {																					// working | leave | no in | no break | resume | no out
 						$ll = $l->belongstooptleavetype->leave_type_code;
-					} else {									// working | leave | no in | no break | resume | out
+					} else {																					// working | leave | no in | no break | resume | out
 						$ll = $l->belongstooptleavetype->leave_type_code;
 					}
 				}
-			} else {											// working | leave | no in | break
-				if ($resume) {									// working | leave | no in | break | no resume
-					if ($out) {									// working | leave | no in | break | no resume | no out
+			} else {																							// working | leave | no in | break
+				if ($resume) {																					// working | leave | no in | break | no resume
+					if ($out) {																					// working | leave | no in | break | no resume | no out
 						$ll = $l->belongstooptleavetype->leave_type_code;
-					} else {									// working | leave | no in | break | no resume | out
+					} else {																					// working | leave | no in | break | no resume | out
 						$ll = $l->belongstooptleavetype->leave_type_code;
 					}
-				} else {										// working | leave | no in | break | resume
-					if ($out) {									// working | leave | no in | break | resume | no out
+				} else {																						// working | leave | no in | break | resume
+					if ($out) {																					// working | leave | no in | break | resume | no out
 						$ll = $l->belongstooptleavetype->leave_type_code;
-					} else {									// working | leave | no in | break | resume | out
+					} else {																					// working | leave | no in | break | resume | out
 						$ll = $l->belongstooptleavetype->leave_type_code;
 					}
 				}
 			}
-		} else {												// working | leave | in
-			if ($break) {										// working | leave | in | no break
-				if ($resume) {									// working | leave | in | no break | no resume
-					if ($out) {									// working | leave | in | no break | no resume | no out
+		} else {																								// working | leave | in
+			if ($break) {																						// working | leave | in | no break
+				if ($resume) {																					// working | leave | in | no break | no resume
+					if ($out) {																					// working | leave | in | no break | no resume | no out
 						$ll = $l->belongstooptleavetype->leave_type_code;
-					} else {									// working | leave | in | no break | no resume | out
+					} else {																					// working | leave | in | no break | no resume | out
 						$ll = $l->belongstooptleavetype->leave_type_code;
 					}
-				} else {										// working | leave | in | no break | resume
-					if ($out) {									// working | leave | in | no break | resume | no out
+				} else {																						// working | leave | in | no break | resume
+					if ($out) {																					// working | leave | in | no break | resume | no out
 						$ll = $l->belongstooptleavetype->leave_type_code;
-					} else {									// working | leave | in | no break | resume | out
+					} else {																					// working | leave | in | no break | resume | out
 						$ll = $l->belongstooptleavetype->leave_type_code;
 					}
 				}
-			} else {											// working | leave | in | break
-				if ($resume) {									// working | leave | in | break | no resume
-					if ($out) {									// working | leave | in | break | no resume | no out
+			} else {																							// working | leave | in | break
+				if ($resume) {																					// working | leave | in | break | no resume
+					if ($out) {																					// working | leave | in | break | no resume | no out
 						$ll = $l->belongstooptleavetype->leave_type_code;
-					} else {									// working | leave | in | break | no resume | out
+					} else {																					// working | leave | in | break | no resume | out
 						$ll = $l->belongstooptleavetype->leave_type_code;
 					}
-				} else {										// working | leave | in | break | resume
-					if ($out) {									// working | leave | in | break | resume | no out
+				} else {																						// working | leave | in | break | resume
+					if ($out) {																					// working | leave | in | break | resume | no out
 						$ll = $l->belongstooptleavetype->leave_type_code;
-					} else {									// working | leave | in | break | resume | out
+					} else {																					// working | leave | in | break | resume | out
 						$ll = $l->belongstooptleavetype->leave_type_code;
 					}
 				}
 			}
 		}
-	} else {													// working | no leave
-		if ($in) {												// working | no leave | no in
-			if ($break) {										// working | no leave | no in | no break
-				if ($resume) {									// working | no leave | no in | no break | no resume
-					if ($out) {									// working | no leave | no in | no break | no resume | no out
-						$ll = OptTcms::find(1)->leave;			// absent
-					} else {									// working | no leave | no in | no break | no resume | out
-						$ll = OptTcms::find(2)->leave;			// half absent
+	} else {																									// working | no leave
+		if ($in) {																								// working | no leave | no in
+			if ($break) {																						// working | no leave | no in | no break
+				if ($resume) {																					// working | no leave | no in | no break | no resume
+					if ($out) {																					// working | no leave | no in | no break | no resume | no out
+						if (is_null($s->attendance_type_id)) {
+							$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(1)->leave.'</a>';					// absent
+						} else {
+							$ll = $s->belongstoopttcms->leave;
+						}
+					} else {																					// working | no leave | no in | no break | no resume | out
+						if (is_null($s->attendance_type_id)) {
+							$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(2)->leave.'</a>';					// half absent
+						} else {
+							$ll = $s->belongstoopttcms->leave;
+						}
 					}
-				} else {										// working | no leave | no in | no break | resume
-					if ($out) {									// working | no leave | no in | no break | resume | no out
-						$ll = 'Check';							// pls check
-					} else {									// working | no leave | no in | no break | resume | out
-						$ll = OptTcms::find(2)->leave;			// half absent
+				} else {																						// working | no leave | no in | no break | resume
+					if ($out) {																					// working | no leave | no in | no break | resume | no out
+						if (is_null($s->attendance_type_id)) {
+							$ll = '<a href="'.route('attendance.edit', $s->id).'">Check</a>';					// pls check
+						} else {
+							$ll = $s->belongstoopttcms->leave;
+						}
+					} else {																					// working | no leave | no in | no break | resume | out
+						if (is_null($s->attendance_type_id)) {
+							$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(2)->leave.'</a>';					// half absent
+						} else {
+							$ll = $s->belongstoopttcms->leave;
+						}
 					}
 				}
-			} else {											// working | no leave | no in | break
-				if ($resume) {									// working | no leave | no in | break | no resume
-					if ($out) {									// working | no leave | no in | break | no resume | no out
-						$ll = 'Check';							// pls check
-					} else {									// working | no leave | no in | break | no resume | out
-						$ll = 'Check';							// pls check
+			} else {																							// working | no leave | no in | break
+				if ($resume) {																					// working | no leave | no in | break | no resume
+					if ($out) {																					// working | no leave | no in | break | no resume | no out
+						if (is_null($s->attendance_type_id)) {
+							$ll = '<a href="'.route('attendance.edit', $s->id).'">Check</a>';					// pls check
+						} else {
+							$ll = $s->belongstoopttcms->leave;
+						}
+					} else {																					// working | no leave | no in | break | no resume | out
+						if (is_null($s->attendance_type_id)) {
+							$ll = '<a href="'.route('attendance.edit', $s->id).'">Check</a>';					// pls check
+						} else {
+							$ll = $s->belongstoopttcms->leave;
+						}
 					}
-				} else {										// working | no leave | no in | break | resume
-					if ($out) {									// working | no leave | no in | break | resume | no out
-						$ll = 'Check';							// pls check
-					} else {									// working | no leave | no in | break | resume | out
-						$ll = 'Check';							// pls check
+				} else {																						// working | no leave | no in | break | resume
+					if ($out) {																					// working | no leave | no in | break | resume | no out
+						if (is_null($s->attendance_type_id)) {
+							$ll = '<a href="'.route('attendance.edit', $s->id).'">Check</a>';					// pls check
+						} else {
+							$ll = $s->belongstoopttcms->leave;
+						}
+					} else {																					// working | no leave | no in | break | resume | out
+						if (is_null($s->attendance_type_id)) {
+							if ($break == $resume) {															// check for break and resume is the same value
+								$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(2)->leave.'</a>';					// half absent
+							} else {
+								$ll = '<a href="'.route('attendance.edit', $s->id).'">Check</a>';					// pls check
+							}
+						} else {
+							$ll = $s->belongstoopttcms->leave;
+						}
 					}
 				}
 			}
-		} else {												// working | no leave | in
-			if ($break) {										// working | no leave | in | no break
-				if ($resume) {									// working | no leave | in | no break | no resume
-					if ($out) {									// working | no leave | in | no break | no resume | no out
+		} else {																								// working | no leave | in
+			if ($break) {																						// working | no leave | in | no break
+				if ($resume) {																					// working | no leave | in | no break | no resume
+					if ($out) {																					// working | no leave | in | no break | no resume | no out
 						if (Carbon::parse(now())->gt($s->attend_date)) {
-							$ll = OptTcms::find(2)->leave;			// half absent
+							if (is_null($s->attendance_type_id)) {
+								$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(2)->leave.'</a>';					// half absent
+							} else {
+								$ll = $s->belongstoopttcms->leave;
+							}
 						} else {
 							$ll = false;
 						}
-					} else {									// working | no leave | in | no break | no resume | out
+					} else {																					// working | no leave | in | no break | no resume | out
 						$ll = false;
 					}
-				} else {										// working | no leave | in | no break | resume
-					if ($out) {									// working | no leave | in | no break | resume | no out
-						$ll = 'Check';							// pls check
-					} else {									// working | no leave | in | no break | resume | out
+				} else {																						// working | no leave | in | no break | resume
+					if ($out) {																					// working | no leave | in | no break | resume | no out
+						if (is_null($s->attendance_type_id)) {
+							$ll = '<a href="'.route('attendance.edit', $s->id).'">Check</a>';					// pls check
+						} else {
+							$ll = $s->belongstoopttcms->leave;
+						}
+					} else {																					// working | no leave | in | no break | resume | out
 						$ll = false;
 					}
 				}
-			} else {											// working | no leave | in | break
-				if ($resume) {									// working | no leave | in | break | no resume
-					if ($out) {									// working | no leave | in | break | no resume | no out
-						$ll = OptTcms::find(2)->leave;			// half absent
-					} else {									// working | no leave | in | break | no resume | out
+			} else {																							// working | no leave | in | break
+				if ($resume) {																					// working | no leave | in | break | no resume
+					if ($out) {																					// working | no leave | in | break | no resume | no out
+						if (is_null($s->attendance_type_id)) {
+							$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(2)->leave.'</a>';					// half absent
+						} else {
+							$ll = $s->belongstoopttcms->leave;
+						}
+					} else {																					// working | no leave | in | break | no resume | out
 						$ll = false;
 					}
-				} else {										// working | no leave | in | break | resume
-					if ($out) {									// working | no leave | in | break | resume | no out
-						$ll = 'Check';							// pls check
-					} else {									// working | no leave | in | break | resume | out
+				} else {																						// working | no leave | in | break | resume
+					if ($out) {																					// working | no leave | in | break | resume | no out
+						if (is_null($s->attendance_type_id)) {
+							if ($break == $resume) {															// check for break and resume is the same value
+								$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(2)->leave.'</a>';					// half absent
+							} else {
+								$ll = '<a href="'.route('attendance.edit', $s->id).'">Check</a>';					// pls check
+							}
+						} else {
+							$ll = $s->belongstoopttcms->leave;
+						}
+					} else {																					// working | no leave | in | break | resume | out
 						$ll = false;
 					}
 				}
 			}
 		}
 	}
-} else {														// no working
-	if ($l) {													// no working | leave
-		if ($in) {												// no working | leave | no in
-			if ($break) {										// no working | leave | no in | no break
-				if ($resume) {									// no working | leave | no in | no break | no resume
-					if ($out) {									// no working | leave | no in | no break | no resume | no out
+} else {																										// no working
+	if ($l) {																									// no working | leave
+		if ($in) {																								// no working | leave | no in
+			if ($break) {																						// no working | leave | no in | no break
+				if ($resume) {																					// no working | leave | no in | no break | no resume
+					if ($out) {																					// no working | leave | no in | no break | no resume | no out
 						$ll = false;
-					} else {									// no working | leave | no in | no break | no resume | out
+					} else {																					// no working | leave | no in | no break | no resume | out
 						$ll = false;
 					}
-				} else {										// no working | leave | no in | no break | resume
-					if ($out) {									// no working | leave | no in | no break | resume | no out
+				} else {																						// no working | leave | no in | no break | resume
+					if ($out) {																					// no working | leave | no in | no break | resume | no out
 						$ll = false;
-					} else {									// no working | leave | no in | no break | resume | out
+					} else {																					// no working | leave | no in | no break | resume | out
 						$ll = false;
 					}
 				}
-			} else {											// no working | leave | no in | break
-				if ($resume) {									// no working | leave | no in | break | no resume
-					if ($out) {									// no working | leave | no in | break | no resume | no out
+			} else {																							// no working | leave | no in | break
+				if ($resume) {																					// no working | leave | no in | break | no resume
+					if ($out) {																					// no working | leave | no in | break | no resume | no out
 						$ll = false;
-					} else {									// no working | leave | no in | break | no resume | out
+					} else {																					// no working | leave | no in | break | no resume | out
 						$ll = false;
 					}
-				} else {										// no working | leave | no in | break | resume
-					if ($out) {									// no working | leave | no in | break | resume | no out
+				} else {																						// no working | leave | no in | break | resume
+					if ($out) {																					// no working | leave | no in | break | resume | no out
 						$ll = false;
-					} else {									// no working | leave | no in | break | resume | out
+					} else {																					// no working | leave | no in | break | resume | out
 						$ll = false;
 					}
 				}
 			}
-		} else {												// no working | leave | in
-			if ($break) {										// no working | leave | in | no break
-				if ($resume) {									// no working | leave | in | no break | no resume
-					if ($out) {									// no working | leave | in | no break | no resume | no out
+		} else {																								// no working | leave | in
+			if ($break) {																						// no working | leave | in | no break
+				if ($resume) {																					// no working | leave | in | no break | no resume
+					if ($out) {																					// no working | leave | in | no break | no resume | no out
 						$ll = false;
-					} else {									// no working | leave | in | no break | no resume | out
+					} else {																					// no working | leave | in | no break | no resume | out
 						$ll = false;
 					}
-				} else {										// no working | leave | in | no break | resume
-					if ($out) {									// no working | leave | in | no break | resume | no out
+				} else {																						// no working | leave | in | no break | resume
+					if ($out) {																					// no working | leave | in | no break | resume | no out
 						$ll = false;
-					} else {									// no working | leave | in | no break | resume | out
+					} else {																					// no working | leave | in | no break | resume | out
 						$ll = false;
 					}
 				}
-			} else {											// no working | leave | in | break
-				if ($resume) {									// no working | leave | in | break | no resume
-					if ($out) {									// no working | leave | in | break | no resume | no out
+			} else {																							// no working | leave | in | break
+				if ($resume) {																					// no working | leave | in | break | no resume
+					if ($out) {																					// no working | leave | in | break | no resume | no out
 						$ll = false;
-					} else {									// no working | leave | in | break | no resume | out
+					} else {																					// no working | leave | in | break | no resume | out
 						$ll = false;
 					}
-				} else {										// no working | leave | in | break | resume
-					if ($out) {									// no working | leave | in | break | resume | no out
+				} else {																						// no working | leave | in | break | resume
+					if ($out) {																					// no working | leave | in | break | resume | no out
 						$ll = false;
-					} else {									// no working | leave | in | break | resume | out
+					} else {																					// no working | leave | in | break | resume | out
 						$ll = false;
 					}
 				}
 			}
 		}
-	} else {													// no working | no leave
-		if ($in) {												// no working | no leave | no in
-			if ($break) {										// no working | no leave | no in | no break
-				if ($resume) {									// no working | no leave | no in | no break | no resume
-					if ($out) {									// no working | no leave | no in | no break | no resume | no out
+	} else {																									// no working | no leave
+		if ($in) {																								// no working | no leave | no in
+			if ($break) {																						// no working | no leave | no in | no break
+				if ($resume) {																					// no working | no leave | no in | no break | no resume
+					if ($out) {																					// no working | no leave | no in | no break | no resume | no out
 						$ll = false;
-					} else {									// no working | no leave | no in | no break | no resume | out
+					} else {																					// no working | no leave | no in | no break | no resume | out
 						$ll = false;
 					}
-				} else {										// no working | no leave | no in | no break | resume
-					if ($out) {									// no working | no leave | no in | no break | resume | no out
+				} else {																						// no working | no leave | no in | no break | resume
+					if ($out) {																					// no working | no leave | no in | no break | resume | no out
 						$ll = false;
-					} else {									// no working | no leave | no in | no break | resume | out
+					} else {																					// no working | no leave | no in | no break | resume | out
 						$ll = false;
 					}
 				}
-			} else {											// no working | no leave | no in | break
-				if ($resume) {									// no working | no leave | no in | break | no resume
-					if ($out) {									// no working | no leave | no in | break | no resume | no out
+			} else {																							// no working | no leave | no in | break
+				if ($resume) {																					// no working | no leave | no in | break | no resume
+					if ($out) {																					// no working | no leave | no in | break | no resume | no out
 						$ll = false;
-					} else {									// no working | no leave | no in | break | no resume | out
+					} else {																					// no working | no leave | no in | break | no resume | out
 						$ll = false;
 					}
-				} else {										// no working | no leave | no in | break | resume
-					if ($out) {									// no working | no leave | no in | break | resume | no out
+				} else {																						// no working | no leave | no in | break | resume
+					if ($out) {																					// no working | no leave | no in | break | resume | no out
 						$ll = false;
-					} else {									// no working | no leave | no in | break | resume | out
+					} else {																					// no working | no leave | no in | break | resume | out
 						$ll = false;
 					}
 				}
 			}
-		} else {												// no working | no leave | in
-			if ($break) {										// no working | no leave | in | no break
-				if ($resume) {									// no working | no leave | in | no break | no resume
-					if ($out) {									// no working | no leave | in | no break | no resume | no out
+		} else {																								// no working | no leave | in
+			if ($break) {																						// no working | no leave | in | no break
+				if ($resume) {																					// no working | no leave | in | no break | no resume
+					if ($out) {																					// no working | no leave | in | no break | no resume | no out
 						$ll = false;
-					} else {									// no working | no leave | in | no break | no resume | out
+					} else {																					// no working | no leave | in | no break | no resume | out
 						$ll = false;
 					}
-				} else {										// no working | no leave | in | no break | resume
-					if ($out) {									// no working | no leave | in | no break | resume | no out
+				} else {																						// no working | no leave | in | no break | resume
+					if ($out) {																					// no working | no leave | in | no break | resume | no out
 						$ll = false;
-					} else {									// no working | no leave | in | no break | resume | out
+					} else {																					// no working | no leave | in | no break | resume | out
 						$ll = false;
 					}
 				}
-			} else {											// no working | no leave | in | break
-				if ($resume) {									// no working | no leave | in | break | no resume
-					if ($out) {									// no working | no leave | in | break | no resume | no out
+			} else {																							// no working | no leave | in | break
+				if ($resume) {																					// no working | no leave | in | break | no resume
+					if ($out) {																					// no working | no leave | in | break | no resume | no out
 						$ll = false;
-					} else {									// no working | no leave | in | break | no resume | out
+					} else {																					// no working | no leave | in | break | no resume | out
 						$ll = false;
 					}
-				} else {										// no working | no leave | in | break | resume
-					if ($out) {									// no working | no leave | in | break | resume | no out
+				} else {																						// no working | no leave | in | break | resume
+					if ($out) {																					// no working | no leave | in | break | resume | no out
 						$ll = false;
-					} else {									// no working | no leave | in | break | resume | out
+					} else {																					// no working | no leave | in | break | resume | out
 						$ll = false;
 					}
 				}
@@ -444,7 +483,7 @@ if($l) {
 					<td>{{ $s->belongstostaff?->hasmanylogin()->where('active', 1)->first()?->username }}</td>
 					<td>{{ $s->name }}</td>
 					<td>{{ $dayt }}</td>
-					<td>{{ $ll }}</td>
+					<td>{!! $ll !!}</td>
 					<td>{!! $lea !!}</td>
 					<td>{{ Carbon::parse($s->attend_date)->format('j M Y') }}</td>
 					<td><span class="{{ ($in)?'text-info':((Carbon::parse($s->in)->gt($wh->time_start_am))?'text-danger':'') }}">{{ ($in)?'':Carbon::parse($s->in)->format('g:i a') }}</span></td>
