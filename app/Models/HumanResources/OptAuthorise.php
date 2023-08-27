@@ -22,7 +22,7 @@ class OptAuthorise extends Model
 	protected $table = 'option_authorities';
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
-	public function hasmanybranch(): HasMany
+	public function hasmanystaff(): HasMany
 	{
 		return $this->hasMany(\App\Models\Staff::class, 'authorise_id');
 	}
