@@ -33,7 +33,7 @@ require __DIR__.'/auth.php';
 #############################################################################################
 // ipma erp human resources controller
 require __DIR__.'/HumanResources/hr.php';
-require __DIR__.'/HumanResources/ajax_leave.php';
+require __DIR__.'/HumanResources/ajax_hr.php';
 
 
 
