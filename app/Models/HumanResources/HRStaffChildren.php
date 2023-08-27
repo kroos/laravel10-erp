@@ -19,7 +19,7 @@ class HRStaffChildren extends Model
 {
 	use HasFactory;
 	// protected $connection = 'mysql';
-	protected $table = 'hr_children';
+	protected $table = 'hr_childrens';
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
 	// db relation hasMany/hasOne
