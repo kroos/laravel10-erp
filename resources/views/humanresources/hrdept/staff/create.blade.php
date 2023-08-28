@@ -5,6 +5,8 @@ use App\Models\HumanResources\OptGender;
 use App\Models\HumanResources\OptRace;
 use App\Models\HumanResources\OptMaritalStatus;
 use App\Models\HumanResources\OptCountry;
+use App\Models\HumanResources\HRLeaveApprovalFlow;
+
 ?>
 @extends('layouts.app')
 
@@ -16,8 +18,27 @@ use App\Models\HumanResources\OptCountry;
 
 	<div class="row justify-content-center">
 		<div class="col-sm-6 gy-1 gx-1 align-items-start">
+
+			<div class="offset-sm-4 form-check mb-3 {{ $errors->has('authorise_id') ? 'has-error' : '' }}">
+				<div class="pretty p-icon p-curve p-tada">
+					<input type="hidden" name="authorise_id" value="">
+					<input type="checkbox" name="authorise_id" class="form-check-input" value="1" id="auth">
+					<div class="state p-primary-o">
+						<i class="icon mdi mdi-check-all"></i>
+						<label class="form-check-label" for="auth">System Administrator</label>
+					</div>
+				</div>
+			</div>
+
+			<div class="form-group row mb-3 {{ $errors->has('status_id') ? 'has-error' : '' }}">
+				{{ Form::label( 'sta', 'Staff Status : ', ['class' => 'col-sm-4 col-form-label'] ) }}
+				<div class="col-auto">
+					<select name="status_id" id="sta" class="form-select form-select-sm" placeholder="Status"></select>
+				</div>
+			</div>
+
 			<div class="form-group row mb-3 {{ $errors->has('username') ? 'has-error' : '' }}">
-				{{ Form::label( 'unam', 'UserName : ', ['class' => 'col-sm-4 col-form-label'] ) }}
+				{{ Form::label( 'unam', 'Username : ', ['class' => 'col-sm-4 col-form-label'] ) }}
 				<div class="col-auto">
 					{{ Form::text('username', @$value, ['class' => 'form-control form-control-sm col-auto', 'id' => 'unam', 'placeholder' => 'Username', 'autocomplete' => 'off']) }}
 				</div>
@@ -27,13 +48,6 @@ use App\Models\HumanResources\OptCountry;
 				{{ Form::label( 'pas', 'Password : ', ['class' => 'col-sm-4 col-form-label'] ) }}
 				<div class="col-auto">
 					{{ Form::text('password', @$value, ['class' => 'form-control form-control-sm col-auto', 'id' => 'pas', 'placeholder' => 'Password', 'autocomplete' => 'off']) }}
-				</div>
-			</div>
-
-			<div class="form-group row mb-3 {{ $errors->has('status_id') ? 'has-error' : '' }}">
-				{{ Form::label( 'sta', 'Staff Status : ', ['class' => 'col-sm-4 col-form-label'] ) }}
-				<div class="col-auto">
-					<select name="status_id" id="sta" class="form-select form-select-sm" placeholder="Status"></select>
 				</div>
 			</div>
 
@@ -65,23 +79,46 @@ use App\Models\HumanResources\OptCountry;
 				</div>
 			</div>
 
-			<div class="offset-sm-4 form-check row {{ $errors->has('authorise_id') ? 'has-error' : '' }}">
-				<div class="pretty p-icon p-jelly">
-					<input class="form-check-input" type="checkbox" value="1" id="auth">
-					<div class="state p-info-o">
-						<i class="icon mdi mdi-check-all"></i>
-						<label class="form-check-label" for="auth">Is System Administrator?</label>
+			<p class="col-sm-4">Leave Flow Approval :</p>
+			<div class="offset-sm-4 mb-3 form-check row {{ $errors->has('leave_flow_id') ? 'has-error' : '' }}">
+			@foreach(HRLeaveApprovalFlow::all() as $k)
+				<div class="pretty p-icon p-curve p-tada mb-2">
+					<input type="radio" name="leave_flow_id" class="form-check-input" value="{{ $k->id }}" id="auth">
+					<div class="state p-primary-o">
+						<i class="icon mdi mdi-check"></i>
+						<label class="form-check-label" for="auth">{{ $k->description }}</label>
 					</div>
+				</div>
+			@endforeach
+			</div>
+
+			<div class="form-group row mb-3 {{ $errors->has('annual_leave') ? 'has-error' : '' }}">
+				{{ Form::label( 'annu', 'Annual Leave : ', ['class' => 'col-sm-4 col-form-label'] ) }}
+				<div class="col-auto">
+					{{ Form::text('annual_leave', @$value, ['class' => 'form-control form-control-sm col-auto', 'id' => 'annu', 'placeholder' => 'Annual Leave', 'autocomplete' => 'off']) }}
+				</div>
+			</div>
+
+			<div class="form-group row mb-3 {{ $errors->has('mc_leave') ? 'has-error' : '' }}">
+				{{ Form::label( 'mcl', 'Medical Certificate Leave : ', ['class' => 'col-sm-4 col-form-label'] ) }}
+				<div class="col-auto">
+					{{ Form::text('mc_leave', @$value, ['class' => 'form-control form-control-sm col-auto', 'id' => 'mcl', 'placeholder' => 'Medical Certificate Leave', 'autocomplete' => 'off']) }}
+				</div>
+			</div>
+
+			<div class="form-group row mb-3 {{ $errors->has('maternity_leave') ? 'has-error' : '' }}">
+				{{ Form::label( 'matl', 'Maternity Leave : ', ['class' => 'col-sm-4 col-form-label'] ) }}
+				<div class="col-auto">
+					{{ Form::text('maternity_leave', @$value, ['class' => 'form-control form-control-sm col-auto', 'id' => 'matl', 'placeholder' => 'Maternity Leave', 'autocomplete' => 'off']) }}
 				</div>
 			</div>
 
 
 
 
+		</div>
 
-
-
-
+		<div class="col-sm-6 gy-1 gx-1 align-items-start">
 
 			<div class="form-group row mb-3 {{ $errors->has('name') ? 'has-error' : '' }}">
 				{{ Form::label( 'nam', 'Name : ', ['class' => 'col-sm-4 col-form-label'] ) }}
@@ -222,9 +259,6 @@ use App\Models\HumanResources\OptCountry;
 					{{ Form::file( 'image', ['class' => 'form-control form-control-sm form-control-file', 'id' => 'ima', 'placeholder' => 'Image']) }}
 				</div>
 			</div>
-		</div>
-
-		<div class="col-sm-6 gy-1 gx-1 align-items-start">
 
 			<div class="col-auto row">
 				<div class="row">
@@ -348,7 +382,7 @@ use App\Models\HumanResources\OptCountry;
 		</div>
 	</div>
 
-	<div class="offset-6">
+	<div class="offset-5 mb-6">
 		{!! Form::submit('Add Staff', ['class' => 'btn btn-sm btn-outline-secondary']) !!}
 	</div>
 
@@ -434,13 +468,14 @@ $('#bra').select2({
 		}
 	},
 });
-// $('#bra').on("select2:select", function (e) {
-// 	console.log("select2:select", e);
-// 	$("#dep").remoteChained({
-// 		parents : '#bra, #cat',
-// 		url : "{{ route('department.department') }}",
-// 	});
-// });
+$('#bra').on("select2:select", function (e) {
+	console.log("select2:select", e);
+	$('#dep').val(null).trigger('change');
+	// $("#dep").remoteChained({
+	// 	parents : '#bra, #cat',
+	// 	url : "{{ route('department.department') }}",
+	// });
+});
 $('#bra').on("select2:unselect", function (e) {
 	console.log("select2:unselect", e);
 	$('#dep').val(null).trigger('change');
@@ -449,13 +484,14 @@ $('#bra').on("select2:unselect", function (e) {
 	// 	url : "{{ route('department.department') }}",
 	// });
 });
-// $('#cat').on("select2:select", function (e) {
-// 	console.log("select2:select", e);
-// 	$("#dep").remoteChained({
-// 		parents : '#bra, #cat',
-// 		url : "{{ route('department.department') }}",
-// 	});
-// });
+$('#cat').on("select2:select", function (e) {
+	console.log("select2:select", e);
+	$('#dep').val(null).trigger('change');
+	// $("#dep").remoteChained({
+	// 	parents : '#bra, #cat',
+	// 	url : "{{ route('department.department') }}",
+	// });
+});
 $('#cat').on("select2:unselect", function (e) {
 	console.log("select2:unselect", e);
 	$('#dep').val(null).trigger('change');
@@ -967,6 +1003,68 @@ $('#form').bootstrapValidator({
 				// },
 			}
 		},
+		leave_flow_id: {
+			validators: {
+				notEmpty: {
+					message: 'Please choose. '
+				},
+			}
+		},
+		annual_leave: {
+			validators: {
+				// notEmpty: {
+				// 	message: 'Please choose. '
+				// },
+				numeric: {
+					separator: '.',
+					message: 'Numbers must be in decimal ',
+				},
+				step: {
+					baseValue: 0,
+					step: 0.5,
+					message: 'Number increase must be in 0.5 ',
+				},
+			}
+		},
+		mc_leave: {
+			validators: {
+				// notEmpty: {
+				// 	message: 'Please choose. '
+				// },
+				numeric: {
+					separator: '.',
+					message: 'Numbers must be in decimal ',
+				},
+				step: {
+					baseValue: 0,
+					step: 0.5,
+					message: 'Number increase must be in 0.5 ',
+				},
+			}
+		},
+		maternity_leave: {
+			validators: {
+				// notEmpty: {
+				// 	message: 'Please choose. '
+				// },
+				numeric: {
+					separator: '.',
+					message: 'Numbers must be in decimal ',
+				},
+				step: {
+					baseValue: 0,
+					step: 0.5,
+					message: 'Number increase must be in 0.5 ',
+				},
+			}
+		},
+		authorise_id: {
+			validators: {
+				// notEmpty: {
+				// 	message: 'Please choose. '
+				// },
+			}
+		},
 
 
 
@@ -1182,9 +1280,6 @@ $('#form').bootstrapValidator({
 				// notEmpty: {
 				// 	message: 'Please insert spouse phone. '
 				// },
-				numeric: {
-					message: 'Only numbers. '
-				},
 			}
 		},
 		'staffchildren[{{ $ic }}][education_level_id]': {
@@ -1192,9 +1287,6 @@ $('#form').bootstrapValidator({
 				// notEmpty: {
 				// 	message: 'Please insert spouse profession. '
 				// },
-				numeric: {
-					message: 'Only numbers. '
-				},
 			}
 		},
 		'staffchildren[{{ $ic }}][health_status_id]': {
@@ -1202,9 +1294,6 @@ $('#form').bootstrapValidator({
 				// notEmpty: {
 				// 	message: 'Please insert spouse profession. '
 				// },
-				numeric: {
-					message: 'Only numbers. '
-				},
 			}
 		},
 		'staffchildren[{{ $ic }}][tax_exemption]': {
@@ -1224,10 +1313,10 @@ $('#form').bootstrapValidator({
 				// notEmpty: {
 				// 	message: 'Please insert spouse. '
 				// },
-				// regexp: {
-				// 	regexp: /^[a-z\s\'\@]+$/i,
-				// 	message: 'The full name can consist of alphabetieal characters, \', @ and spaces only'
-				// },
+				regexp: {
+					regexp: /^[a-z\s\'\@]+$/i,
+					message: 'The full name can consist of alphabetieal characters, \', @ and spaces only'
+				},
 			}
 		},
 		'staffemergency[{{ $ie }}][phone]': {
@@ -1235,9 +1324,6 @@ $('#form').bootstrapValidator({
 				// notEmpty: {
 				// 	message: 'Please insert spouse phone. '
 				// },
-				numeric: {
-					message: 'Only numbers. '
-				},
 			}
 		},
 		'staffemergency[{{ $ie }}][relationship_id]': {
@@ -1245,9 +1331,6 @@ $('#form').bootstrapValidator({
 				// notEmpty: {
 				// 	message: 'Please insert spouse profession. '
 				// },
-				numerie: {
-					message: 'Only numbers. '
-				},
 			}
 		},
 		'staffemergency[{{ $ie }}][address]': {
@@ -1255,7 +1338,6 @@ $('#form').bootstrapValidator({
 				// notEmpty: {
 				// 	message: 'Please insert spouse profession. '
 				// },
-
 			}
 		},
 @endfor
