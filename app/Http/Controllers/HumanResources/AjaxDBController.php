@@ -35,6 +35,8 @@ use App\Models\HumanResources\OptRestdayGroup;
 use App\Models\HumanResources\OptTaxExemptionPercentage;
 use App\Models\HumanResources\OptTcms;
 use App\Models\HumanResources\OptWorkingHour;
+use App\Models\HumanResources\OptStatus;
+use App\Models\HumanResources\DepartmentPivot;
 
 // load helper
 use App\Helpers\UnavailableDateTime;
@@ -51,6 +53,21 @@ class AjaxDBController extends Controller
 	}
 
 	//////////////////////////////////////////////////////////////////////////////////////////////
+	// compared username
+	public function loginuser(Request $request)
+	{
+		$valid = true;
+		$log = \App\Models\Login::all();
+		foreach($log as $k) {
+			if($k->username == $request->username) {
+				$valid = false;
+			}
+		}
+		return response()->json([
+			'valid' => $valid,
+		]);
+	}
+
 	// get types of leave according to user
 	public function leaveType(Request $request)
 	{
@@ -354,6 +371,37 @@ class AjaxDBController extends Controller
 		return response()->json($ls);
 	}
 
+	public function department(Request $request)
+	{
+		$au = DepartmentPivot::where([['category_id', $request->category_id], ['branch_id', $request->branch_id]])->get();
+		foreach ($au as $key) {
+			if($key->id != 31) {
+				$cuti['results'][] = [
+										'id' => $key->id,
+										'text' => $key->department.' | '.$key->code,
+									];
+				// $cuti['pagination'] = ['more' => true];
+				//for jquery-chained
+				// $cuti[$key->id] = $key->department.' | '.$key->code;
+			}
+		}
+		return response()->json( $cuti );
+	}
+
+	public function restdaygroup(Request $request)
+	{
+		$au = OptRestdayGroup::all();
+		foreach ($au as $key) {
+			$cuti['results'][] = [
+									'id' => $key->id,
+									'text' => $key->group,
+								];
+			// $cuti['pagination'] = ['more' => true];
+			// $cuti[$key->id] = $key->department.' | '.$key->code;
+		}
+		return response()->json( $cuti );
+	}
+
 	public function authorise()
 	{
 		// https://select2.org/data-sources/formats
@@ -382,20 +430,6 @@ class AjaxDBController extends Controller
 		return response()->json( $cuti );
 	}
 
-	public function category()
-	{
-		// https://select2.org/data-sources/formats
-		$au = OptCategory::all();
-		foreach ($au as $key) {
-			$cuti['results'][] = [
-									'id' => $key->id,
-									'text' => $key->category,
-								];
-			// $cuti['pagination'] = ['more' => true];
-		}
-		return response()->json( $cuti );
-	}
-
 	public function country()
 	{
 		// https://select2.org/data-sources/formats
@@ -404,20 +438,6 @@ class AjaxDBController extends Controller
 			$cuti['results'][] = [
 									'id' => $key->id,
 									'text' => $key->country,
-								];
-			// $cuti['pagination'] = ['more' => true];
-		}
-		return response()->json( $cuti );
-	}
-
-	public function department()
-	{
-		// https://select2.org/data-sources/formats
-		$au = OptDepartment::all();
-		foreach ($au as $key) {
-			$cuti['results'][] = [
-									'id' => $key->id,
-									'text' => $key->department,
 								];
 			// $cuti['pagination'] = ['more' => true];
 		}
@@ -460,6 +480,34 @@ class AjaxDBController extends Controller
 			$cuti['results'][] = [
 									'id' => $key->id,
 									'text' => $key->gender,
+								];
+			// $cuti['pagination'] = ['more' => true];
+		}
+		return response()->json( $cuti );
+	}
+
+	public function status()
+	{
+		// https://select2.org/data-sources/formats
+		$au = OptStatus::all();
+		foreach ($au as $key) {
+			$cuti['results'][] = [
+									'id' => $key->id,
+									'text' => $key->status.' | '.$key->code,
+								];
+			// $cuti['pagination'] = ['more' => true];
+		}
+		return response()->json( $cuti );
+	}
+
+	public function category()
+	{
+		// https://select2.org/data-sources/formats
+		$au = OptCategory::all();
+		foreach ($au as $key) {
+			$cuti['results'][] = [
+									'id' => $key->id,
+									'text' => $key->category,
 								];
 			// $cuti['pagination'] = ['more' => true];
 		}
@@ -530,6 +578,20 @@ class AjaxDBController extends Controller
 			$cuti['results'][] = [
 									'id' => $key->id,
 									'text' => $key->tax_exemption_percentage,
+								];
+			// $cuti['pagination'] = ['more' => true];
+		}
+		return response()->json( $cuti );
+	}
+
+	public function relationship()
+	{
+		// https://select2.org/data-sources/formats
+		$au = OptRelationship::all();
+		foreach ($au as $key) {
+			$cuti['results'][] = [
+									'id' => $key->id,
+									'text' => $key->relationship,
 								];
 			// $cuti['pagination'] = ['more' => true];
 		}

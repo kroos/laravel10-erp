@@ -13,6 +13,7 @@ Route::patch('/dirstatus', [AjaxController::class, 'dirstatus'])->name('leavesta
 Route::patch('/hrstatus', [AjaxController::class, 'hrstatus'])->name('leavestatus.hrstatus');
 
 // Ajax DB Controller : only to retrieve data from db
+Route::post('/loginuser', [AjaxDBController::class, 'loginuser'])->name('loginuser.loginuser');
 Route::post('/leaveType', [AjaxDBController::class, 'leaveType'])->name('leaveType.leaveType');
 Route::post('/backupperson', [AjaxDBController::class, 'backupperson'])->name('backupperson.backupperson');
 Route::post('/unavailabledate', [AjaxDBController::class, 'unavailabledate'])->name('leavedate.unavailabledate');
@@ -32,6 +33,10 @@ Route::post('/maritalstatus', [AjaxDBController::class, 'maritalstatus'])->name(
 Route::post('/religion', [AjaxDBController::class, 'religion'])->name('religion.religion');
 Route::post('/race', [AjaxDBController::class, 'race'])->name('race.race');
 Route::post('/taxexemptionpercentage', [AjaxDBController::class, 'taxexemptionpercentage'])->name('taxexemptionpercentage.taxexemptionpercentage');
+Route::post('/relationship', [AjaxDBController::class, 'relationship'])->name('relationship.relationship');
+Route::post('/status', [AjaxDBController::class, 'status'])->name('status.status');
+Route::get('/department', [AjaxDBController::class, 'department'])->name('department.department');
+Route::post('/restdaygroup', [AjaxDBController::class, 'restdaygroup'])->name('restdaygroup.restdaygroup');
 
 
 // Route::get('/login/{login}', [

@@ -495,16 +495,16 @@ if($l) {
 									echo 'text-info';
 								} else {																													// punch out
 									if($o) {																												// punch out | OT
-										if (Carbon::parse($s->out)->gt($o->belongstoovertimerange?->where('active', 1)->first()->end)) {					// punch out | OT | out lt OT
+										if (Carbon::parse($s->out)->gt($o->belongstoovertimerange?->end)) {													// punch out | OT | out lt OT
 											echo 'text-d ot';
 										} else {																											// punch out | OT | OT lt out
-											if (Carbon::parse($s->out)->lt($o->belongstoovertimerange?->where('active', 1)->first()->end)) {				// punch out | OT | OT gt out
-												echo 'text-danger';
+											if (Carbon::parse($s->out)->lt($o->belongstoovertimerange?->end)) {												// punch out | OT | OT gt out
+												echo 'text-danger ot';
 											}
 										}
 									} else {																												// punch out | no OT
 										if (Carbon::parse($s->out)->lt($wh->time_end_pm)) {																	// punch out | no OT | out lt working hour
-											echo 'text-danger';
+											echo 'text-danger wh';
 										} else {																											// punch out | no OT | out gt working hour
 											if (Carbon::parse($s->out)->gt($wh->time_end_pm)) {
 												echo 'text-d wh';
