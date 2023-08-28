@@ -24,15 +24,16 @@ class HRLeave extends Model
 
 	/////////////////////////////////////////////////////////////////////////////////////////
 	// hasmany relationship
-	public function hasmanyleaveamend(): HasMany
-	{
-		return $this->hasMany(\App\Models\HumanResources\HRLeaveAmend::class, 'leave_id');
-	}
-
+		
 	// public function hasmanyleavereplacement(): HasMany
 	// {
 	// 	return $this->hasMany(\App\Models\HumanResources\HRLeaveReplacement::class, 'leave_id');
 	// }
+
+	public function hasmanyleaveamend(): HasMany
+	{
+		return $this->hasMany(\App\Models\HumanResources\HRLeaveAmend::class, 'leave_id');
+	}
 
 	public function hasmanyleaveapprovalbackup(): HasMany
 	{
@@ -97,6 +98,36 @@ class HRLeave extends Model
 	{
 		return $this->belongsTo(\App\Models\HumanResources\OptLeaveStatus::class, 'leave_status_id');
 	}
+
+
+	/////////////////////////////////////////////////////////////////////////////////////////
+	// hasone relationship (for leave cancel)
+
+	public function hasoneleaveapprovalbackup(): HasOne
+	{
+		return $this->hasOne(\App\Models\HumanResources\HRLeaveApprovalBackup::class, 'leave_id');
+	}
+
+	public function hasoneleaveapprovalsupervisor(): HasOne
+	{
+		return $this->hasOne(\App\Models\HumanResources\HRLeaveApprovalSupervisor::class, 'leave_id');
+	}
+
+	public function hasoneleaveapprovalhod(): HasOne
+	{
+		return $this->hasOne(\App\Models\HumanResources\HRLeaveApprovalHOD::class, 'leave_id');
+	}
+
+	public function hasoneleaveapprovaldir(): HasOne
+	{
+		return $this->hasOne(\App\Models\HumanResources\HRLeaveApprovalDirector::class, 'leave_id');
+	}
+
+	public function hasoneleaveapprovalhr(): HasOne
+	{
+		return $this->hasOne(\App\Models\HumanResources\HRLeaveApprovalHR::class, 'leave_id');
+	}
+
 }
 
 

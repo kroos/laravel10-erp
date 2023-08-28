@@ -123,9 +123,17 @@
 					need to put something or loose it for this div
 				</h4> -->
 
+				<!-- IF SUCCESS -->
 				@if(Session::has('flash_message'))
 				<h6 class="pb-4 mb-4 border-bottom text-center alert alert-success">
 					{{ Session::get('flash_message') }}
+				</h6>
+				@endif
+
+				<!-- IF ERROR -->
+				@if(Session::has('flash_danger'))
+				<h6 class="pb-4 mb-4 border-bottom text-center alert alert-danger">
+					{{ Session::get('flash_danger') }}
 				</h6>
 				@endif
 

@@ -186,7 +186,7 @@ class AjaxController extends Controller
 			}
 			// finally update at all the approver according to his/her leave flow
 			if($n->belongstostaff->belongstoleaveapprovalflow->backup_approval == 1) {
-				$n->hasoneleaveapprovalbackup()->update([
+				$n->hasmanyleaveapprovalbackup()->update([
 					'leave_status_id' => 3,
 					'remarks' => 'Cancelled By '.\Auth::user()->belongstostaff->name
 				]);
@@ -658,16 +658,4 @@ class AjaxController extends Controller
 		Session::flash('flash_message', 'Successfully make an approval for user.');
 		return redirect()->route('leave.index');
 	}
-
-
-
-
-
-
-
-
-
-
-
-
 }
