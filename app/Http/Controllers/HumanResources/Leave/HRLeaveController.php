@@ -129,7 +129,7 @@ class HRLeaveController extends Controller
 			// check entitlement if configured or not
 			$entitlement = $user->hasmanyleaveannual()->where('year', $daStart->year)->first();
 			// if(!$entitlement) {																													// kick him out if there is no entitlement been configured for entitlement
-			// 	Session::flash('flash_message', 'Please contact with your Human Resources Manager. Most probably, HR havent configured yet your entitlement.');
+			// 	Session::flash('flash_danger', 'Please contact with your Human Resources Manager. Most probably, HR havent configured yet your entitlement.');
 			// 	return redirect()->back();
 			// }
 
@@ -181,7 +181,7 @@ class HRLeaveController extends Controller
 							$l->hasmanyleaveapprovalhr()->create();
 						}
 					} else {
-						Session::flash('flash_message', 'Please check your entitlement based on the date leave you apply');
+						Session::flash('flash_danger', 'Please make sure your applied leave does not exceed your available leave balance');
 						return redirect()->back();
 					}
 				} elseif($request->leave_type == 1) {																								// apply leace 1 whole day
@@ -234,7 +234,7 @@ class HRLeaveController extends Controller
 							$l->hasmanyleaveapprovalhr()->create();
 						}
 					} else {
-						Session::flash('flash_message', 'Please check your entitlement based on the date leave you apply');
+						Session::flash('flash_danger', 'Please make sure your applied leave does not exceed your available leave balance');
 						return redirect()->back();
 					}
 				}
@@ -281,7 +281,7 @@ class HRLeaveController extends Controller
 							$l->hasmanyleaveapprovalhr()->create();
 						}
 					} else {																														// annual_leave_balance < $totalday, then exit
-						Session::flash('flash_message', 'Please check your entitlement based on the date leave you apply');
+						Session::flash('flash_danger', 'Please make sure your applied leave does not exceed your available leave balance');
 						return redirect()->back();
 					}
 				} else {																															// false: date choose overlapping date with unavailable date
@@ -345,7 +345,7 @@ class HRLeaveController extends Controller
 						}
 						$user->hasmanyleaveannual()->where('year', $daStart->year)->update(['annual_leave_balance' => $entitle, 'annual_leave_utilize' => $utilize]);		// update leave_balance by substarct
 					} else {																														// annual_leave_balance < $totalday, then exit
-						Session::flash('flash_message', 'Please check your entitlement based on the date leave you apply');
+						Session::flash('flash_danger', 'Please make sure your applied leave does not exceed your available leave balance');
 						return redirect()->back();
 					}
 				}
@@ -358,7 +358,7 @@ class HRLeaveController extends Controller
 			// check entitlement if configured or not
 			// $entitlement = $user->hasmanyleaveentitlement()->where('year', $daStart->year)->first();
 			// if(!$entitlement) {																													// kick him out if there is no entitlement been configured for entitlement
-			// 	Session::flash('flash_message', 'Please contact with your Human Resources Manager. Most probably, HR havent configured yet your entitlement.');
+			// 	Session::flash('flash_danger', 'Please contact with your Human Resources Manager. Most probably, HR havent configured yet your entitlement.');
 			// 	return redirect()->back();
 			// }
 
@@ -408,7 +408,7 @@ class HRLeaveController extends Controller
 							$l->hasmanyleaveapprovalhr()->create();
 						}
 					// } else {
-						// Session::flash('flash_message', 'Please check your entitlement based on the date leave you apply');
+						// Session::flash('flash_danger', 'Please make sure your applied leave does not exceed your available leave balance');
 						// return redirect()->back();
 					// }
 				} elseif($request->leave_type == 1) {																								// apply leace 1 whole day
@@ -451,7 +451,7 @@ class HRLeaveController extends Controller
 							$l->hasmanyleaveapprovalhr()->create();
 						}
 					// } else {
-						// Session::flash('flash_message', 'Please check your entitlement based on the date leave you apply');
+						// Session::flash('flash_danger', 'Please make sure your applied leave does not exceed your available leave balance');
 						// return redirect()->back();
 					// }
 				}
@@ -496,7 +496,7 @@ class HRLeaveController extends Controller
 							$l->hasmanyleaveapprovalhr()->create();
 						}
 					// } else {																														// mc_balance < $totalday, then exit
-						// Session::flash('flash_message', 'Please check your entitlement based on the date leave you apply');
+						// Session::flash('flash_danger', 'Please make sure your applied leave does not exceed your available leave balance');
 						// return redirect()->back();
 					// }
 				} else {
@@ -558,7 +558,7 @@ class HRLeaveController extends Controller
 						}
 						// $user->hasmanyleaveentitlement()->where('year', $daStart->year)->update(['mc_balance' => $entitle]);						// substract mc_balance
 					// } else {																														// mc_balance < $totalday, then exit
-						// Session::flash('flash_message', 'Please check your entitlement based on the date leave you apply');
+						// Session::flash('flash_danger', 'Please make sure your applied leave does not exceed your available leave balance');
 						// return redirect()->back();
 					// }
 				}
@@ -571,7 +571,7 @@ class HRLeaveController extends Controller
 			// check entitlement if configured or not
 			$entitlement = $user->hasmanyleavemc()->where('year', $daStart->year)->first();
 			// if(!$entitlement) {																													// kick him out if there is no entitlement been configured for entitlement
-			// 	Session::flash('flash_message', 'Please contact with your Human Resources Manager. Most probably, HR havent configured yet your entitlement.');
+			// 	Session::flash('flash_danger', 'Please contact with your Human Resources Manager. Most probably, HR havent configured yet your entitlement.');
 			// 	return redirect()->back();
 			// }
 
@@ -623,7 +623,7 @@ class HRLeaveController extends Controller
 							$l->hasmanyleaveapprovalhr()->create();
 						}
 					} else {
-						Session::flash('flash_message', 'Please check your entitlement based on the date leave you apply');
+						Session::flash('flash_danger', 'Please make sure your applied leave does not exceed your available leave balance');
 						return redirect()->back();
 					}
 				} elseif($request->leave_type == 1) {																								// apply leace 1 whole day
@@ -668,7 +668,7 @@ class HRLeaveController extends Controller
 							$l->hasmanyleaveapprovalhr()->create();
 						}
 					} else {
-						Session::flash('flash_message', 'Please check your entitlement based on the date leave you apply');
+						Session::flash('flash_danger', 'Please make sure your applied leave does not exceed your available leave balance');
 						return redirect()->back();
 					}
 				}
@@ -715,7 +715,7 @@ class HRLeaveController extends Controller
 							$l->hasmanyleaveapprovalhr()->create();
 						}
 					} else {																														// mc_leave_balance < $totalday, then exit
-						Session::flash('flash_message', 'Please check your entitlement based on the date leave you apply');
+						Session::flash('flash_danger', 'Please make sure your applied leave does not exceed your available leave balance');
 						return redirect()->back();
 					}
 				} else {
@@ -779,7 +779,7 @@ class HRLeaveController extends Controller
 						}
 						$user->hasmanyleavemc()->where('year', $daStart->year)->update(['mc_leave_balance' => $entitle, 'mc_leave_utilize' => $utilize]);		// update leave_balance by substarct
 					} else {																														// mc_leave_balance < $totalday, then exit
-						Session::flash('flash_message', 'Please check your entitlement based on the date leave you apply');
+						Session::flash('flash_danger', 'Please make sure your applied leave does not exceed your available leave balance');
 						return redirect()->back();
 					}
 				}
@@ -794,7 +794,7 @@ class HRLeaveController extends Controller
 			// check entitlement if configured or not
 			$entitlement = $user->hasmanyleavereplacement()->where('id', $request->id)->first();
 			// if(!$entitlement) {																													// kick him out if there is no entitlement been configured for entitlement
-			// 	Session::flash('flash_message', 'Please contact with your Human Resources Manager. Most probably, HR havent configured yet your entitlement.');
+			// 	Session::flash('flash_danger', 'Please contact with your Human Resources Manager. Most probably, HR havent configured yet your entitlement.');
 			// 	return redirect()->back();
 			// }
 
@@ -846,7 +846,7 @@ class HRLeaveController extends Controller
 							$l->hasmanyleaveapprovalhr()->create();
 						}
 					} else {
-						Session::flash('flash_message', 'Please check your entitlement based on the date leave you apply');
+						Session::flash('flash_danger', 'Please make sure your applied leave does not exceed your available leave balance');
 						return redirect()->back();
 					}
 				} elseif($request->leave_type == 1) {																								// apply leace 1 whole day
@@ -892,7 +892,7 @@ class HRLeaveController extends Controller
 							$l->hasmanyleaveapprovalhr()->create();
 						}
 					} else {
-						Session::flash('flash_message', 'Please check your entitlement based on the date leave you apply');
+						Session::flash('flash_danger', 'Please make sure your applied leave does not exceed your available leave balance');
 						return redirect()->back();
 					}
 				}
@@ -939,7 +939,7 @@ class HRLeaveController extends Controller
 							$l->hasmanyleaveapprovalhr()->create();
 						}
 					} else {																														// leave_balance < $totalday, then exit
-						Session::flash('flash_message', 'Please check your entitlement based on the date leave you apply');
+						Session::flash('flash_danger', 'Please make sure your applied leave does not exceed your available leave balance');
 						return redirect()->back();
 					}
 				} else {
@@ -1004,7 +1004,7 @@ class HRLeaveController extends Controller
 						}
 						$user->hasmanyleavereplacement()->where('id', $request->leave_replacement_id)->update(['leave_balance' => $entitle]);		// substract leave_balance
 					} else {																														// leave_balance < $totalday, then exit
-						Session::flash('flash_message', 'Please check your entitlement based on the date leave you apply');
+						Session::flash('flash_danger', 'Please make sure your applied leave does not exceed your available leave balance');
 						return redirect()->back();
 					}
 				}
@@ -1017,7 +1017,7 @@ class HRLeaveController extends Controller
 			$entitlement = $user->hasmanyleavematernity()->where('year', $daStart->year)->first();										// check entitlement if configured or not
 			if($entitlement->maternity_leave_balance >= $totalday) {
 				// if(!$entitlement) {																									// kick him out if there is no entitlement been configured for entitlement
-				// 	Session::flash('flash_message', 'Please contact with your Human Resources Manager. Most probably, HR havent configured yet your entitlement.');
+				// 	Session::flash('flash_danger', 'Please contact with your Human Resources Manager. Most probably, HR havent configured yet your entitlement.');
 				// 	return redirect()->back();
 				// }
 				$entitle = $entitlement->maternity_leave_balance - $totalday;
@@ -1060,7 +1060,7 @@ class HRLeaveController extends Controller
 					$l->hasmanyleaveapprovalhr()->create();
 				}
 			} else {
-				Session::flash('flash_message', 'It seems you haven taken your maternity leave. Please check with your HR');
+				Session::flash('flash_danger', 'It seems you haven taken your maternity leave. Please check with your HR');
 				return redirect()->route('leave.create')->withInput();
 			}
 		}
@@ -1073,7 +1073,7 @@ class HRLeaveController extends Controller
 			$te = Carbon::parse($request->date_time_start.' '.$request->time_end);
 
 			if ( $ts->gte($te) ) { // time start less than time end
-				Session::flash('flash_message', 'Your Time Off application can\'t be processed due to your selection time ('.\Carbon\Carbon::parse($request->date_time_start.' '.$request->time_start)->format('D, j F Y h:i A').' untill '.\Carbon\Carbon::parse($request->date_time_start.' '.$request->time_end)->format('D, j F Y h:i A').') . Please choose time correctly.');
+				Session::flash('flash_danger', 'Your Time Off application can\'t be processed due to your selection time ('.\Carbon\Carbon::parse($request->date_time_start.' '.$request->time_start)->format('D, j F Y h:i A').' untill '.\Carbon\Carbon::parse($request->date_time_start.' '.$request->time_end)->format('D, j F Y h:i A').') . Please choose time correctly.');
 				return redirect()->back()->withInput();
 			}
 
@@ -1128,7 +1128,7 @@ class HRLeaveController extends Controller
 			// return [$timeoverlap, $timeoverlapcount];
 
 			if ( $timeoverlapcount > 125 ) { // minutes over than 2 hours with contingency
-				Session::flash('flash_message', 'Your Time Off exceeded more than 2 hours. Please select time correctly.');
+				Session::flash('flash_danger', 'Your Time Off exceeded more than 2 hours. Please select time correctly.');
 				return redirect()->back()->withInput();
 			}
 
@@ -1181,7 +1181,7 @@ class HRLeaveController extends Controller
 			// check entitlement if configured or not
 			// $entitlement = $user->hasmanyleaveentitlement()->where('year', $daStart->year)->first();
 			// if(!$entitlement) {																													// kick him out if there is no entitlement been configured for entitlement
-			// 	Session::flash('flash_message', 'Please contact with your Human Resources Manager. Most probably, HR havent configured yet your entitlement.');
+			// 	Session::flash('flash_danger', 'Please contact with your Human Resources Manager. Most probably, HR havent configured yet your entitlement.');
 			// 	return redirect()->back();
 			// }
 
@@ -1231,7 +1231,7 @@ class HRLeaveController extends Controller
 							$l->hasmanyleaveapprovalhr()->create();
 						}
 					// } else {
-						// Session::flash('flash_message', 'Please check your entitlement based on the date leave you apply');
+						// Session::flash('flash_danger', 'Please make sure your applied leave does not exceed your available leave balance');
 						// return redirect()->back();
 					// }
 				} elseif($request->leave_type == 1) {																								// apply leace 1 whole day
@@ -1274,7 +1274,7 @@ class HRLeaveController extends Controller
 							$l->hasmanyleaveapprovalhr()->create();
 						}
 					// } else {
-						// Session::flash('flash_message', 'Please check your entitlement based on the date leave you apply');
+						// Session::flash('flash_danger', 'Please make sure your applied leave does not exceed your available leave balance');
 						// return redirect()->back();
 					// }
 				}
@@ -1319,7 +1319,7 @@ class HRLeaveController extends Controller
 							$l->hasmanyleaveapprovalhr()->create();
 						}
 					// } else {																														// mc_balance < $totalday, then exit
-						// Session::flash('flash_message', 'Please check your entitlement based on the date leave you apply');
+						// Session::flash('flash_danger', 'Please make sure your applied leave does not exceed your available leave balance');
 						// return redirect()->back();
 					// }
 				} else {
@@ -1381,7 +1381,7 @@ class HRLeaveController extends Controller
 						}
 						// $user->hasmanyleaveentitlement()->where('year', $daStart->year)->update(['mc_balance' => $entitle]);						// substract mc_balance
 					// } else {																														// mc_balance < $totalday, then exit
-						// Session::flash('flash_message', 'Please check your entitlement based on the date leave you apply');
+						// Session::flash('flash_danger', 'Please make sure your applied leave does not exceed your available leave balance');
 						// return redirect()->back();
 					// }
 				}
