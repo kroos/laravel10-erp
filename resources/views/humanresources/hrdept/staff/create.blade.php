@@ -15,8 +15,74 @@ use App\Models\HumanResources\OptCountry;
 	{{ Form::open(['route' => ['staff.store'], 'id' => 'form', 'class' => 'form-horizontal', 'autocomplete' => 'off', 'files' => true]) }}
 
 	<div class="row justify-content-center">
-
 		<div class="col-sm-6 gy-1 gx-1 align-items-start">
+			<div class="form-group row mb-3 {{ $errors->has('username') ? 'has-error' : '' }}">
+				{{ Form::label( 'unam', 'UserName : ', ['class' => 'col-sm-4 col-form-label'] ) }}
+				<div class="col-auto">
+					{{ Form::text('username', @$value, ['class' => 'form-control form-control-sm col-auto', 'id' => 'unam', 'placeholder' => 'Username', 'autocomplete' => 'off']) }}
+				</div>
+			</div>
+
+			<div class="form-group row mb-3 {{ $errors->has('password') ? 'has-error' : '' }}">
+				{{ Form::label( 'pas', 'Password : ', ['class' => 'col-sm-4 col-form-label'] ) }}
+				<div class="col-auto">
+					{{ Form::text('password', @$value, ['class' => 'form-control form-control-sm col-auto', 'id' => 'pas', 'placeholder' => 'Password', 'autocomplete' => 'off']) }}
+				</div>
+			</div>
+
+			<div class="form-group row mb-3 {{ $errors->has('status_id') ? 'has-error' : '' }}">
+				{{ Form::label( 'sta', 'Staff Status : ', ['class' => 'col-sm-4 col-form-label'] ) }}
+				<div class="col-auto">
+					<select name="status_id" id="sta" class="form-select form-select-sm" placeholder="Status"></select>
+				</div>
+			</div>
+
+			<div class="form-group row mb-3 {{ $errors->has('category_id') ? 'has-error' : '' }}">
+				{{ Form::label( 'cat', 'Category : ', ['class' => 'col-sm-4 col-form-label'] ) }}
+				<div class="col-auto">
+					<select name="category_id" id="cat" class="form-select form-select-sm" placeholder="Category"></select>
+				</div>
+			</div>
+
+			<div class="form-group row mb-3 {{ $errors->has('branch_id') ? 'has-error' : '' }}">
+				{{ Form::label( 'bra', 'Branch : ', ['class' => 'col-sm-4 col-form-label'] ) }}
+				<div class="col-auto">
+					<select name="branch_id" id="bra" class="form-select form-select-sm" placeholder="Branch"></select>
+				</div>
+			</div>
+
+			<div class="form-group row mb-3 {{ $errors->has('pivot_dept_id') ? 'has-error' : '' }}">
+				{{ Form::label( 'dep', 'Department : ', ['class' => 'col-sm-4 col-form-label'] ) }}
+				<div class="col-auto">
+					<select name="pivot_dept_id" id="dep" class="form-select form-select-sm" placeholder="Department"></select>
+				</div>
+			</div>
+
+			<div class="form-group row mb-3 {{ $errors->has('restday_group_id') ? 'has-error' : '' }}">
+				{{ Form::label( 'rdg', 'Rest Day Group : ', ['class' => 'col-sm-4 col-form-label'] ) }}
+				<div class="col-auto">
+					<select name="restday_group_id" id="rdg" class="form-select form-select-sm" placeholder="Department"></select>
+				</div>
+			</div>
+
+			<div class="offset-sm-4 form-check row {{ $errors->has('authorise_id') ? 'has-error' : '' }}">
+				<div class="pretty p-icon p-jelly">
+					<input class="form-check-input" type="checkbox" value="1" id="auth">
+					<div class="state p-info-o">
+						<i class="icon mdi mdi-check-all"></i>
+						<label class="form-check-label" for="auth">Is System Administrator?</label>
+					</div>
+				</div>
+			</div>
+
+
+
+
+
+
+
+
+
 			<div class="form-group row mb-3 {{ $errors->has('name') ? 'has-error' : '' }}">
 				{{ Form::label( 'nam', 'Name : ', ['class' => 'col-sm-4 col-form-label'] ) }}
 				<div class="col-auto">
@@ -167,7 +233,7 @@ use App\Models\HumanResources\OptCountry;
 					</div>
 					<div class="col-auto">
 						<button type="button" class="col-auto btn btn-sm btn-outline-secondary spouse_add">
-							<i class="fas fa-plus" aria-hidden="true"></i>&nbsp;Add More Spouse
+							<i class="fas fa-plus" aria-hidden="true"></i>&nbsp;Add Spouse
 						</button>
 					</div>
 				</div>
@@ -201,7 +267,7 @@ use App\Models\HumanResources\OptCountry;
 					</div>
 					<div class="col-auto">
 						<button type="button" class="col-auto btn btn-sm btn-outline-secondary children_add">
-							<i class="fas fa-plus" aria-hidden="true"></i>&nbsp;Add More Children
+							<i class="fas fa-plus" aria-hidden="true"></i>&nbsp;Add Children
 						</button>
 					</div>
 				</div>
@@ -244,6 +310,41 @@ use App\Models\HumanResources\OptCountry;
 				</div>
 			</div>
 
+			<p>&nbsp;</p>
+			<div class="col-auto row">
+				<div class="row">
+					<div class="col-auto">
+						<h6>Staff Emergency Contact</h6>
+					</div>
+					<div class="col-auto">
+						<button type="button" class="col-auto btn btn-sm btn-outline-secondary emergency_add">
+							<i class="fas fa-plus" aria-hidden="true"></i>&nbsp;Add Emergency Contact
+						</button>
+					</div>
+				</div>
+				<div class="row mb-1 g-1 emergency_wrap">
+					<div class="row emergency_row">
+						<div class="col-auto mb-1 g-1 ">
+							<button class="btn btn-sm btn-outline-secondary emergency_remove" type="button">
+								<i class="fas fa-trash" aria-hidden="true"></i>
+							</button>
+						</div>
+						<div class="col-auto mb-1 g-1 form-group {{ $errors->has('staffemergency.*.contact_person') ? 'has-error' : '' }}">
+							<input type="text" name="staffemergency[1][contact_person]" id="ecp_1" class="form-control form-control-sm" placeholder="Emergency Contact">
+						</div>
+						<div class="col-auto mb-1 g-1 form-group {{ $errors->has('staffemergency.*.phone') ? 'has-error' : '' }}">
+							<input type="text" name="staffemergency[1][phone]" id="epp_1" class="form-control form-control-sm" placeholder="Phone">
+						</div>
+						<div class="col-auto mb-1 g-1 form-group {{ $errors->has('staffemergency.*.relationship_id') ? 'has-error' : '' }}">
+							<select name="staffemergency[1][relationship_id]" id="ere_1" class="form-select form-select-sm" placeholder="Relationship"></select>
+						</div>
+						<div class="col-auto mb-1 gx-1 form-group {{ $errors->has('staffemergency.*.address') ? 'has-error' : '' }}">
+							<input type="textarea" name="staffemergency[1][address]" id="ead_1" class="form-control form-control-sm" placeholder="Address">
+						</div>
+					</div>
+				</div>
+			</div>
+
 		</div>
 	</div>
 
@@ -257,16 +358,6 @@ use App\Models\HumanResources\OptCountry;
 
 @section('js')
 /////////////////////////////////////////////////////////////////////////////////////////
-$('#rel, #gen, #rac, #nat, #mar').select2({
-	placeholder: 'Please Select',
-	width: '100%',
-	allowClear: true,
-	closeOnSelect: true,
-});
-
-
-
-
 $('#dob, #jpo').datetimepicker({
 	icons: {
 		time: "fas fas-regular fa-clock fa-beat",
@@ -282,6 +373,150 @@ $('#dob, #jpo').datetimepicker({
 	format: 'YYYY-MM-DD',
 	useCurrent: true,
 });
+
+$('#rel, #gen, #rac, #nat, #mar').select2({
+	placeholder: 'Please Select',
+	width: '100%',
+	allowClear: true,
+	closeOnSelect: true,
+});
+
+$('#sta').select2({
+	placeholder: 'Please Select',
+	width: '100%',
+	allowClear: true,
+	closeOnSelect: true,
+	ajax: {
+		url: '{{ route('status.status') }}',
+		type: 'POST',
+		dataType: 'json',
+		data: function (params) {
+			var query = {
+				_token: '{!! csrf_token() !!}',
+			}
+			return query;
+		}
+	},
+});
+
+$('#cat').select2({
+	placeholder: 'Please Select',
+	width: '100%',
+	allowClear: true,
+	closeOnSelect: true,
+	ajax: {
+		url: '{{ route('category.category') }}',
+		type: 'POST',
+		dataType: 'json',
+		data: function (params) {
+			var query = {
+				_token: '{!! csrf_token() !!}',
+			}
+			return query;
+		}
+	},
+});
+
+$('#bra').select2({
+	placeholder: 'Please Select',
+	width: '100%',
+	allowClear: true,
+	closeOnSelect: true,
+	ajax: {
+		url: '{{ route('branch.branch') }}',
+		type: 'POST',
+		dataType: 'json',
+		data: function (params) {
+			var query = {
+				_token: '{!! csrf_token() !!}',
+			}
+			return query;
+		}
+	},
+});
+// $('#bra').on("select2:select", function (e) {
+// 	console.log("select2:select", e);
+// 	$("#dep").remoteChained({
+// 		parents : '#bra, #cat',
+// 		url : "{{ route('department.department') }}",
+// 	});
+// });
+$('#bra').on("select2:unselect", function (e) {
+	console.log("select2:unselect", e);
+	$('#dep').val(null).trigger('change');
+	// $("#dep").remoteChained({
+	// 	parents : '#bra, #cat',
+	// 	url : "{{ route('department.department') }}",
+	// });
+});
+// $('#cat').on("select2:select", function (e) {
+// 	console.log("select2:select", e);
+// 	$("#dep").remoteChained({
+// 		parents : '#bra, #cat',
+// 		url : "{{ route('department.department') }}",
+// 	});
+// });
+$('#cat').on("select2:unselect", function (e) {
+	console.log("select2:unselect", e);
+	$('#dep').val(null).trigger('change');
+	// $("#dep").remoteChained({
+	// 	parents : '#bra, #cat',
+	// 	url : "{{ route('department.department') }}",
+	// });
+});
+
+$('#dep').select2({
+	placeholder: 'Please Select',
+	width: '100%',
+	allowClear: true,
+	closeOnSelect: true,
+	ajax: {
+		url: '{{ route('department.department') }}',
+		type: 'GET',
+		dataType: 'json',
+		data: function (params) {
+			var query = {
+				branch_id: $('#bra').val(),
+				category_id: $('#cat').val(),
+				_token: '{!! csrf_token() !!}',
+			}
+			return query;
+		}
+	},
+});
+
+$('#rdg').select2({
+	placeholder: 'Please Select',
+	width: '100%',
+	allowClear: true,
+	closeOnSelect: true,
+	ajax: {
+		url: '{{ route('restdaygroup.restdaygroup') }}',
+		type: 'POST',
+		dataType: 'json',
+		data: function (params) {
+			var query = {
+				_token: '{!! csrf_token() !!}',
+			}
+			return query;
+		}
+	},
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /////////////////////////////////////////////////////////////////////////////////////////
 $('#cge_1').select2({
@@ -345,6 +580,24 @@ $('#ctep_1').select2({
 	closeOnSelect: true,
 	ajax: {
 		url: '{{ route('taxexemptionpercentage.taxexemptionpercentage') }}',
+		type: 'POST',
+		dataType: 'json',
+		data: function (params) {
+			var query = {
+				_token: '{!! csrf_token() !!}',
+			}
+			return query;
+		}
+	},
+});
+
+$('#ere_1').select2({
+	placeholder: 'Relationship',
+	width: '100%',
+	allowClear: true,
+	closeOnSelect: true,
+	ajax: {
+		url: '{{ route('relationship.relationship') }}',
 		type: 'POST',
 		dataType: 'json',
 		data: function (params) {
@@ -554,6 +807,87 @@ $(cwrappers).on("click",".children_remove", function(e){
 })
 
 /////////////////////////////////////////////////////////////////////////////////////////
+// add emergency : add and remove row
+
+var emax_fields = 3;						//maximum input boxes allowed
+var eadd_buttons = $(".emergency_add");
+var ewrappers = $(".emergency_wrap");
+
+var xe = 1;
+$(eadd_buttons).click(function(){
+	// e.preventDefault();
+
+	//max input box allowed
+	if(xe < emax_fields){
+		xe++;
+		ewrappers.append(
+			'<div class="row emergency_row">' +
+				'<div class="col-auto mb-1 g-1 ">' +
+					'<button class="btn btn-sm btn-outline-secondary emergency_remove" type="button">' +
+						'<i class="fas fa-trash" aria-hidden="true"></i>' +
+					'</button>' +
+				'</div>' +
+				'<div class="col-auto mb-1 g-1 form-group {{ $errors->has('staffemergency.*.contact_person') ? 'has-error' : '' }}">' +
+					'<input type="text" name="staffemergency[' + xe + '][contact_person]" id="ecp_' + xe + '" class="form-control form-control-sm" placeholder="Emergency Contact">' +
+				'</div>' +
+				'<div class="col-auto mb-1 g-1 form-group {{ $errors->has('staffemergency.*.phone') ? 'has-error' : '' }}">' +
+					'<input type="text" name="staffemergency[' + xe + '][phone]" id="epp_' + xe + '" class="form-control form-control-sm" placeholder="Phone">' +
+				'</div>' +
+				'<div class="col-auto mb-1 g-1 form-group {{ $errors->has('staffemergency.*.relationship_id') ? 'has-error' : '' }}">' +
+					'<select name="staffemergency[' + xe + '][relationship_id]" id="ere_' + xe + '" class="form-select form-select-sm" placeholder="Relationship"></select>' +
+				'</div>' +
+				'<div class="col-auto mb-1 gx-1 form-group {{ $errors->has('staffemergency.*.address') ? 'has-error' : '' }}">' +
+					'<input type="textarea" name="staffemergency[' + xe + '][address]" id="ead_' + xe + '" class="form-control form-control-sm" placeholder="Health Status">' +
+				'</div>' +
+			'</div>'
+		); //add input box
+
+		$('#ere_' + xe +'').select2({
+			placeholder: 'Gender',
+			width: '100%',
+			allowClear: true,
+			closeOnSelect: true,
+			ajax: {
+				url: '{{ route('relationship.relationship') }}',
+				type: 'POST',
+				dataType: 'json',
+				data: function (params) {
+					var query = {
+						_token: '{!! csrf_token() !!}',
+					}
+					return query;
+				}
+			},
+		});
+
+
+		//bootstrap validate
+		$('#form').bootstrapValidator('addField',	$('.children_row')	.find('[name="staffemergency['+ xe +'][contact_person]"]'));
+		$('#form').bootstrapValidator('addField',	$('.children_row')	.find('[name="staffemergency['+ xe +'][phone]"]'));
+		$('#form').bootstrapValidator('addField',	$('.children_row')	.find('[name="staffemergency['+ xe +'][relationship_id]"]'));
+		$('#form').bootstrapValidator('addField',	$('.children_row')	.find('[name="staffemergency['+ xe +'][address]"]'));
+	}
+})
+
+$(ewrappers).on("click",".children_remove", function(e){
+	//user click on remove text
+	e.preventDefault();
+	var $row = $(this).parent().parent();
+	var $option1 = $row.find('[name="staffemergency[' + xe + '][contact_person]"]');
+	var $option2 = $row.find('[name="staffemergency[' + xe + '][phone]"]');
+	var $option3 = $row.find('[name="staffemergency[' + xe + '][relationship_id]"]');
+	var $option4 = $row.find('[name="staffemergency[' + xe + '][address]"]');
+	$row.remove();
+
+	$('#form').bootstrapValidator('removeField', $option1);
+	$('#form').bootstrapValidator('removeField', $option2);
+	$('#form').bootstrapValidator('removeField', $option3);
+	$('#form').bootstrapValidator('removeField', $option4);
+	console.log();
+	xe--;
+})
+
+/////////////////////////////////////////////////////////////////////////////////////////
 // bootstrap validator
 
 $('#form').bootstrapValidator({
@@ -563,7 +897,243 @@ $('#form').bootstrapValidator({
 		validating: ''
 	},
 	fields: {
+		username: {
+			validators: {
+				notEmpty: {
+					message: 'Please insert username. '
+				},
+				remote: {
+					type: 'POST',
+					url: '{{ route('loginuser.loginuser') }}',
+					message: 'Username exist. Please use another userame. ',
+					data: function(validator) {
+								return {
+											_token: '{!! csrf_token() !!}',
+											username: $('#unam').val(),
+								};
+							},
+					delay: 1,		// wait 0.001 seconds
+				},
+			}
+		},
+		password: {
+			validators: {
+				notEmpty: {
+					message: 'Please insert password. '
+				},
+			}
+		},
+		status_id: {
+			validators: {
+				notEmpty: {
+					message: 'Please choose. '
+				},
+			}
+		},
+		category_id: {
+			validators: {
+				notEmpty: {
+					message: 'Please choose. '
+				},
+			}
+		},
+		branch_id: {
+			validators: {
+				notEmpty: {
+					message: 'Please choose. '
+				},
+			}
+		},
+		pivot_dept_id: {
+			validators: {
+				notEmpty: {
+					field: 'branch_id',
+					field: 'category_id',
+					message: 'Please choose. '
+				},
+			}
+		},
+		restday_group_id: {
+			validators: {
+				// notEmpty: {
+				// 	message: 'Please choose. '
+				// },
+			}
+		},
+		authorise_id: {
+			validators: {
+				// notEmpty: {
+				// 	message: 'Please choose. '
+				// },
+			}
+		},
 
+
+
+
+
+
+
+
+
+
+
+		name: {
+			validators: {
+				notEmpty: {
+					message: 'Please insert new staff name. '
+				},
+			}
+		},
+		ic: {
+			validators: {
+				notEmpty: {
+					message: 'Please insert Identity Card or Passport. '
+				},
+			}
+		},
+		religion_id: {
+			validators: {
+				notEmpty: {
+					message: 'Please select. '
+				},
+			}
+		},
+		gender_id: {
+			validators: {
+				notEmpty: {
+					message: 'Please select. '
+				},
+			}
+		},
+		race_id: {
+			validators: {
+				notEmpty: {
+					message: 'Please select. '
+				},
+			}
+		},
+		nationality_id: {
+			validators: {
+				// notEmpty: {
+				// 	message: 'Please select. '
+				// },
+			}
+		},
+		marital_status_id: {
+			validators: {
+				notEmpty: {
+					message: 'Please select. '
+				},
+			}
+		},
+		email: {
+			validators: {
+				notEmpty: {
+					message: 'Please insert email. '
+				},
+			}
+		},
+		address: {
+			validators: {
+				notEmpty: {
+					message: 'Please insert address. '
+				},
+			}
+		},
+		mobile: {
+			validators: {
+				notEmpty: {
+					message: 'Please insert mobile. '
+				},
+			}
+		},
+		phone: {
+			validators: {
+				// notEmpty: {
+				// 	message: 'Please insert phone. '
+				// },
+			}
+		},
+		dob: {
+			validators: {
+				// notEmpty: {
+				// 	message: 'Please insert phone. '
+				// },
+			}
+		},
+		cimb_account: {
+			validators: {
+				// notEmpty: {
+				// 	message: 'Please insert phone. '
+				// },
+			}
+		},
+		epf_account: {
+			validators: {
+				// notEmpty: {
+				// 	message: 'Please insert phone. '
+				// },
+			}
+		},
+		income_tax_no: {
+			validators: {
+				// notEmpty: {
+				// 	message: 'Please insert phone. '
+				// },
+			}
+		},
+		socso_no: {
+			validators: {
+				// notEmpty: {
+				// 	message: 'Please insert phone. '
+				// },
+			}
+		},
+		weight: {
+			validators: {
+				// notEmpty: {
+				// 	message: 'Please insert phone. '
+				// },
+			}
+		},
+		height: {
+			validators: {
+				// notEmpty: {
+				// 	message: 'Please insert phone. '
+				// },
+			}
+		},
+		join: {
+			validators: {
+				// notEmpty: {
+				// 	message: 'Please insert phone. '
+				// },
+			}
+		},
+		join: {
+			validators: {
+				// notEmpty: {
+				// 	message: 'Please insert phone. '
+				// },
+				date: {
+					format: 'YYYY-MM-DD',
+					message: 'The value is not a valid date. '
+				},
+			}
+		},
+		image: {
+			validators: {
+				file: {
+					extension: 'jpeg,jpg,png,bmp',
+					type: 'image/jpeg,image/png,image/bmp',
+					maxSize: 2097152,	// 2048 * 1024,
+					message: 'The selected file is not valid. Please use jpeg or png and the image is below than 3MB. '
+				},
+			}
+		},
+
+// spouse
 @for ($ie = 1; $ie <= 4; $ie++)
 		'staffspouse[{{ $ie }}][spouse]': {
 			validators: {
@@ -591,6 +1161,101 @@ $('#form').bootstrapValidator({
 				// notEmpty: {
 				// 	message: 'Please insert spouse profession. '
 				// },
+			}
+		},
+@endfor
+// children
+@for ($ic = 1; $ic <= 4; $ic++)
+		'staffchildren[{{ $ic }}][children]': {
+			validators: {
+				// notEmpty: {
+				// 	message: 'Please insert spouse. '
+				// },
+				regexp: {
+					regexp: /^[a-z\s\'\@]+$/i,
+					message: 'The full name can consist of alphabetical characters, \', @ and spaces only'
+				},
+			}
+		},
+		'staffchildren[{{ $ic }}][gender_id]': {
+			validators: {
+				// notEmpty: {
+				// 	message: 'Please insert spouse phone. '
+				// },
+				numeric: {
+					message: 'Only numbers. '
+				},
+			}
+		},
+		'staffchildren[{{ $ic }}][education_level_id]': {
+			validators: {
+				// notEmpty: {
+				// 	message: 'Please insert spouse profession. '
+				// },
+				numeric: {
+					message: 'Only numbers. '
+				},
+			}
+		},
+		'staffchildren[{{ $ic }}][health_status_id]': {
+			validators: {
+				// notEmpty: {
+				// 	message: 'Please insert spouse profession. '
+				// },
+				numeric: {
+					message: 'Only numbers. '
+				},
+			}
+		},
+		'staffchildren[{{ $ic }}][tax_exemption]': {
+			validators: {
+				// notEmpty: {
+				// 	message: 'Please insert spouse profession. '
+				// },
+				// numeric: {
+				// 	message: 'Only numbers. '
+				// },
+			}
+		},
+@endfor
+@for ($ie = 1; $ie <= 4; $ie++)
+		'staffemergency[{{ $ie }}][contact_person]': {
+			validators: {
+				// notEmpty: {
+				// 	message: 'Please insert spouse. '
+				// },
+				// regexp: {
+				// 	regexp: /^[a-z\s\'\@]+$/i,
+				// 	message: 'The full name can consist of alphabetieal characters, \', @ and spaces only'
+				// },
+			}
+		},
+		'staffemergency[{{ $ie }}][phone]': {
+			validators: {
+				// notEmpty: {
+				// 	message: 'Please insert spouse phone. '
+				// },
+				numeric: {
+					message: 'Only numbers. '
+				},
+			}
+		},
+		'staffemergency[{{ $ie }}][relationship_id]': {
+			validators: {
+				// notEmpty: {
+				// 	message: 'Please insert spouse profession. '
+				// },
+				numerie: {
+					message: 'Only numbers. '
+				},
+			}
+		},
+		'staffemergency[{{ $ie }}][address]': {
+			validators: {
+				// notEmpty: {
+				// 	message: 'Please insert spouse profession. '
+				// },
+
 			}
 		},
 @endfor
