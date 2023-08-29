@@ -11,9 +11,12 @@ use App\Models\Setting;
 use App\Models\Staff;
 use App\Models\HumanResources\HRLeave;
 use App\Models\HumanResources\HRHolidayCalendar;
-use App\Models\HumanResources\HRLeaveEntitlement;
 use App\Models\HumanResources\HRLeaveApprovalBackup;
 use App\Models\HumanResources\HRLeaveApprovalSupervisor;
+use App\Models\HumanResources\HRLeaveApprovalDirector;
+use App\Models\HumanResources\HRLeaveApprovalHOD;
+use App\Models\HumanResources\HRLeaveApprovalHR;
+
 
 use App\Models\HumanResources\OptAuthorise;
 use App\Models\HumanResources\OptBranch;
@@ -139,7 +142,7 @@ class AjaxController extends Controller
 					// 'leave_type_id' => NULL,
 					'leave_balance' => $addr,
 					'leave_utilize' => $addru,
-					'remarks' => 'Cancelled by '.\Auth::user()->belongstostaff->name
+					'remarks' => 'Cancelled by '.\Auth::user()->belongstostaff->name,
 				]);
 				// update di table staff leave pulokk staffleave
 				$n->update(['period_day' => 0, 'leave_status_id' => 3, 'remarks' => 'Cancelled By '.\Auth::user()->belongstostaff->name]);
@@ -155,7 +158,9 @@ class AjaxController extends Controller
 				// cari al dari applicant, year yg sama dgn date apply cuti.
 				// echo $n->belongstostaff->hasmanyleavematernity()->where('year', $dts->format('Y'))->first()->maternity_leave_balance.' applicant maternity leave balance<br />';
 
-				$addl = $n->period_day + $n->belongstostaff->hasmanyleavematernity()->where('year', $dts->format('Y'))->first()->maternity_balance;
+				$addl = $n->period_day + $n->belongstostaff->hasmanyleavematernity()->where('year', $dts->format('Y'))->first()->maternity_leave_balance;
+				$addu = $n->belongstostaff->hasmanyleavematernity()->where('year', $dts->format('Y'))->first()->maternity_leave_utilize - $n->period_day;
+
 				// echo $addl.' masukkan dalam annual balance<br />';
 
 				// find all approval
@@ -166,8 +171,9 @@ class AjaxController extends Controller
 
 				// update the al balance
 				$n->belongstostaff->hasmanyleavematernity()->where('year', $dts->format('Y'))->update([
-					'maternity_balance' => $addl,
-					'remarks' => 'Cancelled By '.\Auth::user()->belongstostaff->name
+					'maternity_leave_balance' => $addl,
+					'maternity_leave_utilize' => $addu,
+					'remarks' => 'Cancelled By '.\Auth::user()->belongstostaff->name,
 				]);
 				// update period, status leave of the applicant. status close by HOD/supervisor
 				$n->update(['period_day' => 0, 'leave_status_id' => 3, 'remarks' => 'Cancelled By '.\Auth::user()->belongstostaff->name]);
@@ -251,7 +257,7 @@ class AjaxController extends Controller
 				'verify_code' => 'required_if:leave_status_id,5|numeric|nullable',		// required if only leave_status_id is 5 (Approved)
 			],
 			[
-				'leave__status_id.required' => 'Please choose your approval',
+				'leave_status_id.required' => 'Please choose your approval',
 				'verify_code.required_if' => 'Please insert :attribute to approve leave, otherwise it wont be necessary for leave application reject',
 			],
 			[
@@ -298,14 +304,14 @@ class AjaxController extends Controller
 				$sala = $sal->belongstomanyleavemc->first();					// get mc leave
 				$albal = $sala->mc_leave_balance + $pd;							// mc leave balance
 				$aluti = $sala->mc_leave_utilize - $pd;							// mc leave utilize
-				$sala->update(['leave_balance' => $albal, 'leave_utilize' => $aluti]);
+				$sala->update(['mc_leave_balance' => $albal, 'mc_leave_utilize' => $aluti]);
 				$sal->update(['period_day' => 0, 'leave_status_id' => $request->leave_status_id]);
 			} elseif($saly == 7) {
 				$pd = $sal->period_day;											// get period day
 				$sala = $sal->belongstomanyleavematernity->first();				// get maternity leave
 				$albal = $sala->maternity_leave_balance + $pd;					// maternity leave balance
 				$aluti = $sala->maternity_leave_utilize - $pd;					// maternity leave utilize
-				$sala->update(['leave_balance' => $albal, 'leave_utilize' => $aluti]);
+				$sala->update(['maternity_leave_balance' => $albal, 'maternity_leave_utilize' => $aluti]);
 				$sal->update(['period_day' => 0, 'leave_status_id' => $request->leave_status_id]);
 			} elseif($saly == 3 || $saly == 6 || $saly == 11 || $saly == 12) {
 				$sal->update(['period_day' => 0, 'leave_status_id' => $request->leave_status_id]);
@@ -342,7 +348,7 @@ class AjaxController extends Controller
 				'verify_code' => 'required_if:leave_status_id,5|numeric|nullable',		// required if only leave_status_id is 5 (Approved)
 			],
 			[
-				'leave__status_id.required' => 'Please choose your approval',
+				'leave_status_id.required' => 'Please choose your approval',
 				'verify_code.required_if' => 'Please insert :attribute to approve leave, otherwise it wont be necessary for leave application reject',
 			],
 			[
@@ -389,14 +395,14 @@ class AjaxController extends Controller
 				$sala = $sal->belongstomanyleavemc->first();					// get mc leave
 				$albal = $sala->mc_leave_balance + $pd;							// mc leave balance
 				$aluti = $sala->mc_leave_utilize - $pd;							// mc leave utilize
-				$sala->update(['leave_balance' => $albal, 'leave_utilize' => $aluti]);
+				$sala->update(['mc_leave_balance' => $albal, 'mc_leave_utilize' => $aluti]);
 				$sal->update(['period_day' => 0, 'leave_status_id' => $request->leave_status_id]);
 			} elseif($saly == 7) {
 				$pd = $sal->period_day;											// get period day
 				$sala = $sal->belongstomanyleavematernity->first();				// get maternity leave
 				$albal = $sala->maternity_leave_balance + $pd;					// maternity leave balance
 				$aluti = $sala->maternity_leave_utilize - $pd;					// maternity leave utilize
-				$sala->update(['leave_balance' => $albal, 'leave_utilize' => $aluti]);
+				$sala->update(['maternity_leave_balance' => $albal, 'maternity_leave_utilize' => $aluti]);
 				$sal->update(['period_day' => 0, 'leave_status_id' => $request->leave_status_id]);
 			} elseif($saly == 3 || $saly == 6 || $saly == 11 || $saly == 12) {
 				$sal->update(['period_day' => 0, 'leave_status_id' => $request->leave_status_id]);
@@ -433,7 +439,7 @@ class AjaxController extends Controller
 				'verify_code' => 'required_if:leave_status_id,5|numeric|nullable',		// required if only leave_status_id is 5 (Approved)
 			],
 			[
-				'leave__status_id.required' => 'Please choose your approval',
+				'leave_status_id.required' => 'Please choose your approval',
 				'verify_code.required_if' => 'Please insert :attribute to approve leave, otherwise it wont be necessary for leave application reject',
 			],
 			[
@@ -480,14 +486,14 @@ class AjaxController extends Controller
 				$sala = $sal->belongstomanyleavemc->first();					// get mc leave
 				$albal = $sala->mc_leave_balance + $pd;							// mc leave balance
 				$aluti = $sala->mc_leave_utilize - $pd;							// mc leave utilize
-				$sala->update(['leave_balance' => $albal, 'leave_utilize' => $aluti]);
+				$sala->update(['mc_leave_balance' => $albal, 'mc_leave_utilize' => $aluti]);
 				$sal->update(['period_day' => 0, 'leave_status_id' => $request->leave_status_id]);
 			} elseif($saly == 7) {
 				$pd = $sal->period_day;											// get period day
 				$sala = $sal->belongstomanyleavematernity->first();				// get maternity leave
 				$albal = $sala->maternity_leave_balance + $pd;					// maternity leave balance
 				$aluti = $sala->maternity_leave_utilize - $pd;					// maternity leave utilize
-				$sala->update(['leave_balance' => $albal, 'leave_utilize' => $aluti]);
+				$sala->update(['maternity_leave_balance' => $albal, 'maternity_leave_utilize' => $aluti]);
 				$sal->update(['period_day' => 0, 'leave_status_id' => $request->leave_status_id]);
 			} elseif($saly == 3 || $saly == 6 || $saly == 11 || $saly == 12) {
 				$sal->update(['period_day' => 0, 'leave_status_id' => $request->leave_status_id]);
@@ -531,14 +537,14 @@ class AjaxController extends Controller
 				$sala = $sal->belongstomanyleavemc->first();					// get mc leave
 				$albal = $sala->mc_leave_balance + $pd;							// mc leave balance
 				$aluti = $sala->mc_leave_utilize - $pd;							// mc leave utilize
-				$sala->update(['leave_balance' => $albal, 'leave_utilize' => $aluti]);
+				$sala->update(['mc_leave_balance' => $albal, 'mc_leave_utilize' => $aluti]);
 				$sal->update(['leave_status_id' => $request->leave_status_id]);
 			} elseif($saly == 7) {
 				$pd = $sal->period_day;											// get period day
 				$sala = $sal->belongstomanyleavematernity->first();				// get maternity leave
 				$albal = $sala->maternity_leave_balance + $pd;					// maternity leave balance
 				$aluti = $sala->maternity_leave_utilize - $pd;					// maternity leave utilize
-				$sala->update(['leave_balance' => $albal, 'leave_utilize' => $aluti]);
+				$sala->update(['maternity_leave_balance' => $albal, 'maternity_leave_utilize' => $aluti]);
 				$sal->update(['period_day' => 0, 'leave_status_id' => $request->leave_status_id]);
 			} elseif($saly == 3 || $saly == 6 || $saly == 11 || $saly == 12) {
 				$sal->update(['leave_status_id' => $request->leave_status_id]);
@@ -575,7 +581,7 @@ class AjaxController extends Controller
 				'verify_code' => 'required_if:leave_status_id,5|numeric|nullable',		// required if only leave_status_id is 5 (Approved)
 			],
 			[
-				'leave__status_id.required' => 'Please choose your approval',
+				'leave_status_id.required' => 'Please choose your approval',
 				'verify_code.required_if' => 'Please insert :attribute to approve leave, otherwise it wont be necessary for leave application reject',
 			],
 			[
@@ -622,14 +628,14 @@ class AjaxController extends Controller
 				$sala = $sal->belongstomanyleavemc->first();					// get mc leave
 				$albal = $sala->mc_leave_balance + $pd;							// mc leave balance
 				$aluti = $sala->mc_leave_utilize - $pd;							// mc leave utilize
-				$sala->update(['leave_balance' => $albal, 'leave_utilize' => $aluti]);
+				$sala->update(['mc_leave_balance' => $albal, 'mc_leave_utilize' => $aluti]);
 				$sal->update(['period_day' => 0, 'leave_status_id' => $request->leave_status_id]);
 			} elseif($saly == 7) {
 				$pd = $sal->period_day;											// get period day
 				$sala = $sal->belongstomanyleavematernity->first();				// get maternity leave
 				$albal = $sala->maternity_leave_balance + $pd;					// maternity leave balance
 				$aluti = $sala->maternity_leave_utilize - $pd;					// maternity leave utilize
-				$sala->update(['leave_balance' => $albal, 'leave_utilize' => $aluti]);
+				$sala->update(['maternity_leave_balance' => $albal, 'maternity_leave_utilize' => $aluti]);
 				$sal->update(['period_day' => 0, 'leave_status_id' => $request->leave_status_id]);
 			} elseif($saly == 3 || $saly == 6 || $saly == 11 || $saly == 12) {
 				$sal->update(['period_day' => 0, 'leave_status_id' => $request->leave_status_id]);

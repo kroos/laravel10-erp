@@ -94,7 +94,7 @@ foreach ($c as $v) {
 				<td colspan="2">{{ $us->hasmanyleavereplacement()->sum('leave_balance') }} days</td>
 			</tr>
 			@endif
-			@if($us->belongstoleaveapprovalflow->backup_approval == 1)
+			@if($us->belongstoleaveapprovalflow?->backup_approval == 1)
 				<tr>
 					<th>Backup Personnel :</th>
 					<td colspan="2">
@@ -178,7 +178,7 @@ foreach ($c as $v) {
 	?>
 					<tr>
 						<td>
-							<a href="#" class="btn btn-sm btn-outline-secondary" alt="Print PDF" title="Print PDF" target="_blank"><i class="far fa-file-pdf"></i></a>
+							<a href="{{ route('leave.show', $leav->id) }}" class="btn btn-sm btn-outline-secondary" alt="Print PDF" title="Print PDF" target="_blank"><i class="far fa-file-pdf"></i></a>
 							HR9-{{ str_pad( $leav->leave_no, 5, "0", STR_PAD_LEFT ) }}/{{ $arr[1] }}
 						</td>
 	<?php

@@ -882,7 +882,6 @@ class HRLeaveController extends Controller
 
 						$data = $request->only(['leave_type_id', 'reason', 'date_time_start', 'date_time_end']);
 						$data += ['verify_code' => $code];
-						$data += ['half_type_id' => $time[0]];
 						$data += ['period_day' => 1];
 						$data += ['leave_no' => $row];
 						$data += ['leave_year' => $ye];
@@ -1442,7 +1441,7 @@ class HRLeaveController extends Controller
 	 */
 	public function show(HRLeave $leave)
 	{
-		//
+		return view('humanresources.leave.show', ['leave' => $leave]);
 	}
 
 	/**
