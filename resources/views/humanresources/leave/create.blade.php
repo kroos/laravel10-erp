@@ -17,36 +17,36 @@
 			</tbody>
 		</table>
 	</div>
-	
+
 	<!-- herecomes the hardest part, leave application -->
-	
+
 	<div class="d-flex justify-content-center align-items-center">
 		{{ Form::open(['route' => ['leave.store'], 'id' => 'form', 'autocomplete' => 'off', 'files' => true,  'data-toggle' => 'validator']) }}
 		<h5>Leave Application</h5>
-	
+
 		<div class="form-group row {{ $errors->has('leave_id') ? 'has-error' : '' }}">
 			{{ Form::label( 'leave_type_id', 'Leave Type : ', ['class' => 'col-sm-2 col-form-label'] ) }}
 			<div class="col-auto">
 				<select name="leave_type_id" id="leave_id" class="form-control col-auto"></select>
 			</div>
 		</div>
-	
+
 		<div class="form-group row mb-3 {{ $errors->has('reason') ? 'has-error' : '' }}">
 			{{ Form::label( 'reason', 'Reason : ', ['class' => 'col-sm-2 col-form-label'] ) }}
 			<div class="col-auto">
 				{{ Form::textarea('reason', @$value, ['class' => 'form-control col-auto', 'id' => 'reason', 'placeholder' => 'Reason', 'autocomplete' => 'off']) }}
 			</div>
 		</div>
-	
+
 		<div id="wrapper"></div>
-	
+
 		<div class="form-group row mb-3 {{ $errors->has('akuan') ? 'has-error' : '' }}">
 			<div class="offset-sm-2 col-auto">
 				{{ Form::checkbox('akuan', 1, @$value, ['class' => 'form-check-input ', 'id' => 'akuan1']) }}
 					<label for="akuan1" class="form-check-label p-1 bg-warning text-danger rounded"><p>I hereby confirmed that all details and information filled in are <strong>CORRECT</strong> and <strong>CHECKED</strong> before sending.</p></label>
 			</div>
 		</div>
-	
+
 		<div class="form-group row mb-3">
 			<div class="col-auto offset-sm-2">
 				{!! Form::button('Submit Application', ['class' => 'btn btn-sm btn-outline-secondary', 'type' => 'submit']) !!}
@@ -99,6 +99,7 @@ $('#leave_id').select2({
 $user = \Auth::user()->belongstostaff;
 $userneedbackup = $user->belongstoleaveapprovalflow->backup_approval;
 $setHalfDayMC = \App\Models\Setting::find(2)->active;
+// dd($setHalfDayMC);
 ?>
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -406,7 +407,7 @@ $('#leave_id').on('change', function() {
 			if (this.checked) {
 				var daynow = moment($('#from').val(), 'YYYY-MM-DD').format('dddd');
 				var datenow =$('#from').val();
-		
+
 				var data1 = $.ajax({
 					url: "{{ route('leavedate.timeleave') }}",
 					type: "POST",
@@ -670,7 +671,7 @@ $('#leave_id').on('change', function() {
 			if (this.checked) {
 				var daynow = moment($('#from').val(), 'YYYY-MM-DD').format('dddd');
 				var datenow =$('#from').val();
-		
+
 				var data1 = $.ajax({
 					url: "{{ route('leavedate.timeleave') }}",
 					type: "POST",
@@ -935,7 +936,7 @@ $oi = \Auth::user()->belongstostaff->hasmanyleavereplacement()->where('leave_bal
 			if (this.checked) {
 				var daynow = moment($('#from').val(), 'YYYY-MM-DD').format('dddd');
 				var datenow =$('#from').val();
-		
+
 				var data1 = $.ajax({
 					url: "{{ route('leavedate.timeleave') }}",
 					type: "POST",
@@ -974,7 +975,7 @@ $oi = \Auth::user()->belongstostaff->hasmanyleavereplacement()->where('leave_bal
 				}
 			}
 		});
-		
+
 		$(document).on('change', '#removeleavehalf :radio', function () {
 		// $('#removeleavehalf :radio').change(function() {
 			if (this.checked) {
@@ -1005,7 +1006,7 @@ $oi = \Auth::user()->belongstostaff->hasmanyleavereplacement()->where('leave_bal
 
 				var daynow = moment($('#from').val(), 'YYYY-MM-DD').format('dddd');
 				var datenow =$('#from').val();
-		
+
 				var data1 = $.ajax({
 					url: "{{ route('leavedate.timeleave') }}",
 					type: "POST",
@@ -1145,7 +1146,7 @@ $oi = \Auth::user()->belongstostaff->hasmanyleavereplacement()->where('leave_bal
 			$('#to').datetimepicker('minDate', moment( minDate, 'YYYY-MM-DD').add(59, 'days').format('YYYY-MM-DD') );
 			$('#to').val( moment( minDate, 'YYYY-MM-DD').add(59, 'days').format('YYYY-MM-DD') );
 		});
-		
+
 		$('#to').datetimepicker({
 			icons: {
 				time: "fas fas-regular fa-clock fa-beat",
@@ -1364,7 +1365,7 @@ $oi = \Auth::user()->belongstostaff->hasmanyleavereplacement()->where('leave_bal
 			}
 			@endif
 		});
-		
+
 		$('#to').datetimepicker({
 			icons: {
 				time: "fas fas-regular fa-clock fa-beat",
@@ -1465,7 +1466,7 @@ $oi = \Auth::user()->belongstostaff->hasmanyleavereplacement()->where('leave_bal
 				}
 			}
 		});
-		
+
 		$(document).on('change', '#removeleavehalf :radio', function () {
 		//$('#removeleavehalf :radio').change(function() {
 			if (this.checked) {
@@ -1837,7 +1838,7 @@ $oi = \Auth::user()->belongstostaff->hasmanyleavereplacement()->where('leave_bal
 			}
 			@endif
 		});
-		
+
 		$('#to').datetimepicker({
 			icons: {
 				time: "fas fas-regular fa-clock fa-beat",
@@ -2126,7 +2127,7 @@ $oi = \Auth::user()->belongstostaff->hasmanyleavereplacement()->where('leave_bal
 			}
 			@endif
 		});
-		
+
 		$('#to').datetimepicker({
 			icons: {
 				time: "fas fas-regular fa-clock fa-beat",
@@ -2182,14 +2183,14 @@ $oi = \Auth::user()->belongstostaff->hasmanyleavereplacement()->where('leave_bal
 			}
 		});
 		// end date
-		
+
 		/////////////////////////////////////////////////////////////////////////////////////////
 		// enable radio
 		$(document).on('change', '#appendleavehalf :radio', function () {
 			if (this.checked) {
 				var daynow = moment($('#from').val(), 'YYYY-MM-DD').format('dddd');
 				var datenow =$('#from').val();
-		
+
 				var data1 = $.ajax({
 					url: "{{ route('leavedate.timeleave') }}",
 					type: "POST",
@@ -2228,7 +2229,7 @@ $oi = \Auth::user()->belongstostaff->hasmanyleavereplacement()->where('leave_bal
 				}
 			}
 		});
-		
+
 		$(document).on('change', '#removeleavehalf :radio', function () {
 		// $('#removeleavehalf :radio').change(function() {
 			if (this.checked) {
@@ -2259,7 +2260,7 @@ $oi = \Auth::user()->belongstostaff->hasmanyleavereplacement()->where('leave_bal
 
 				var daynow = moment($('#from').val(), 'YYYY-MM-DD').format('dddd');
 				var datenow =$('#from').val();
-		
+
 				var data1 = $.ajax({
 					url: "{{ route('leavedate.timeleave') }}",
 					type: "POST",
@@ -2598,7 +2599,7 @@ $oi = \Auth::user()->belongstostaff->hasmanyleavereplacement()->where('leave_bal
 				}
 			}
 		});
-		
+
 		$(document).on('change', '#removeleavehalf :radio', function () {
 		//$('#removeleavehalf :radio').change(function() {
 			if (this.checked) {
