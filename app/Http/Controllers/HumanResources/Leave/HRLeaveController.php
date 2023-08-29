@@ -150,7 +150,9 @@ class HRLeaveController extends Controller
 						$data += ['leave_no' => $row];
 						$data += ['leave_year' => $ye];
 						if($request->file('document')){
-							$fileName = $request->file('document')->getClientOriginalName();
+							$file = $request->file('document')->getClientOriginalName();
+							$currentDate = Carbon::now()->format('Y-m-d H:i:s');
+							$fileName = $currentDate . '_' . $file;
 							// Store File in Storage Folder
 							$request->document->storeAs('uploads', $fileName);
 							// storage/app/uploads/file.png
@@ -195,7 +197,9 @@ class HRLeaveController extends Controller
 						$data += ['leave_no' => $row];
 						$data += ['leave_year' => $ye];
 						if($request->file('document')){
-							$fileName = $request->file('document')->getClientOriginalName();
+							$file = $request->file('document')->getClientOriginalName();
+							$currentDate = Carbon::now()->format('Y-m-d H:i:s');
+							$fileName = $currentDate . '_' . $file;
 							// Store File in Storage Folder
 							$request->document->storeAs('uploads', $fileName);
 							// storage/app/uploads/file.png
@@ -250,7 +254,9 @@ class HRLeaveController extends Controller
 						$data += ['leave_no' => $row];
 						$data += ['leave_year' => $ye];
 						if($request->file('document')){
-							$fileName = $request->file('document')->getClientOriginalName();
+							$file = $request->file('document')->getClientOriginalName();
+							$currentDate = Carbon::now()->format('Y-m-d H:i:s');
+							$fileName = $currentDate . '_' . $file;
 							// Store File in Storage Folder
 							$request->document->storeAs('uploads', $fileName);
 							// storage/app/uploads/file.png
@@ -291,7 +297,9 @@ class HRLeaveController extends Controller
 
 						foreach ($dateStartEnd as $value) {																// since date_time_start and date_time_end overlapping with block date, need to iterate date by date
 							if($request->file('document')){
-								$fileName = $request->file('document')->getClientOriginalName();
+								$file = $request->file('document')->getClientOriginalName();
+								$currentDate = Carbon::now()->format('Y-m-d H:i:s');
+								$fileName = $currentDate . '_' . $file;
 								// Store File in Storage Folder
 								$request->document->storeAs('uploads', $fileName);
 								// storage/app/uploads/file.png
@@ -378,7 +386,9 @@ class HRLeaveController extends Controller
 						$data += ['leave_no' => $row];
 						$data += ['leave_year' => $ye];
 						if($request->file('document')){
-							$fileName = $request->file('document')->getClientOriginalName();
+							$file = $request->file('document')->getClientOriginalName();
+							$currentDate = Carbon::now()->format('Y-m-d H:i:s');
+							$fileName = $currentDate . '_' . $file;
 							// Store File in Storage Folder
 							$request->document->storeAs('uploads', $fileName);
 							// storage/app/uploads/file.png
@@ -421,7 +431,9 @@ class HRLeaveController extends Controller
 						$data += ['leave_no' => $row];
 						$data += ['leave_year' => $ye];
 						if($request->file('document')){
-							$fileName = $request->file('document')->getClientOriginalName();
+							$file = $request->file('document')->getClientOriginalName();
+							$currentDate = Carbon::now()->format('Y-m-d H:i:s');
+							$fileName = $currentDate . '_' . $file;
 							// Store File in Storage Folder
 							$request->document->storeAs('uploads', $fileName);
 							// storage/app/uploads/file.png
@@ -466,7 +478,9 @@ class HRLeaveController extends Controller
 						$data += ['leave_no' => $row];
 						$data += ['leave_year' => $ye];
 						if($request->file('document')){
-							$fileName = $request->file('document')->getClientOriginalName();
+							$file = $request->file('document')->getClientOriginalName();
+							$currentDate = Carbon::now()->format('Y-m-d H:i:s');
+							$fileName = $currentDate . '_' . $file;
 							// Store File in Storage Folder
 							$request->document->storeAs('uploads', $fileName);
 							// storage/app/uploads/file.png
@@ -506,7 +520,9 @@ class HRLeaveController extends Controller
 
 						foreach ($dateStartEnd as $value) {
 							if($request->file('document')){
-								$fileName = $request->file('document')->getClientOriginalName();
+								$file = $request->file('document')->getClientOriginalName();
+								$currentDate = Carbon::now()->format('Y-m-d H:i:s');
+								$fileName = $currentDate . '_' . $file;
 								// Store File in Storage Folder
 								$request->document->storeAs('uploads', $fileName);
 								// storage/app/uploads/file.png
@@ -592,7 +608,9 @@ class HRLeaveController extends Controller
 						$data += ['leave_no' => $row];
 						$data += ['leave_year' => $ye];
 						if($request->file('document')){
-							$fileName = $request->file('document')->getClientOriginalName();
+							$file = $request->file('document')->getClientOriginalName();
+							$currentDate = Carbon::now()->format('Y-m-d H:i:s');
+							$fileName = $currentDate . '_' . $file;
 							// Store File in Storage Folder
 							$request->document->storeAs('uploads', $fileName);
 							// storage/app/uploads/file.png
@@ -637,7 +655,9 @@ class HRLeaveController extends Controller
 						$data += ['leave_no' => $row];
 						$data += ['leave_year' => $ye];
 						if($request->file('document')){
-							$fileName = $request->file('document')->getClientOriginalName();
+							$file = $request->file('document')->getClientOriginalName();
+							$currentDate = Carbon::now()->format('Y-m-d H:i:s');
+							$fileName = $currentDate . '_' . $file;
 							// Store File in Storage Folder
 							$request->document->storeAs('uploads', $fileName);
 							// storage/app/uploads/file.png
@@ -684,7 +704,9 @@ class HRLeaveController extends Controller
 						$data += ['leave_no' => $row];
 						$data += ['leave_year' => $ye];
 						if($request->file('document')){
-							$fileName = $request->file('document')->getClientOriginalName();
+							$file = $request->file('document')->getClientOriginalName();
+							$currentDate = Carbon::now()->format('Y-m-d H:i:s');
+							$fileName = $currentDate . '_' . $file;
 							// Store File in Storage Folder
 							$request->document->storeAs('uploads', $fileName);
 							// storage/app/uploads/file.png
@@ -726,7 +748,9 @@ class HRLeaveController extends Controller
 
 						foreach ($dateStartEnd as $value) {
 							if($request->file('document')){
-								$fileName = $request->file('document')->getClientOriginalName();
+								$file = $request->file('document')->getClientOriginalName();
+								$currentDate = Carbon::now()->format('Y-m-d H:i:s');
+								$fileName = $currentDate . '_' . $file;
 								// Store File in Storage Folder
 								$request->document->storeAs('uploads', $fileName);
 								// storage/app/uploads/file.png
@@ -815,7 +839,9 @@ class HRLeaveController extends Controller
 						$data += ['leave_no' => $row];
 						$data += ['leave_year' => $ye];
 						if($request->file('document')){
-							$fileName = $request->file('document')->getClientOriginalName();
+							$file = $request->file('document')->getClientOriginalName();
+							$currentDate = Carbon::now()->format('Y-m-d H:i:s');
+							$fileName = $currentDate . '_' . $file;
 							// Store File in Storage Folder
 							$request->document->storeAs('uploads', $fileName);
 							// storage/app/uploads/file.png
@@ -856,12 +882,13 @@ class HRLeaveController extends Controller
 
 						$data = $request->only(['leave_type_id', 'reason', 'date_time_start', 'date_time_end']);
 						$data += ['verify_code' => $code];
-						$data += ['half_type_id' => $time[0]];
 						$data += ['period_day' => 1];
 						$data += ['leave_no' => $row];
 						$data += ['leave_year' => $ye];
 						if($request->file('document')){
-							$fileName = $request->file('document')->getClientOriginalName();
+							$file = $request->file('document')->getClientOriginalName();
+							$currentDate = Carbon::now()->format('Y-m-d H:i:s');
+							$fileName = $currentDate . '_' . $file;
 							// Store File in Storage Folder
 							$request->document->storeAs('uploads', $fileName);
 							// storage/app/uploads/file.png
@@ -908,7 +935,9 @@ class HRLeaveController extends Controller
 						$data += ['leave_no' => $row];
 						$data += ['leave_year' => $ye];
 						if($request->file('document')){
-							$fileName = $request->file('document')->getClientOriginalName();
+							$file = $request->file('document')->getClientOriginalName();
+							$currentDate = Carbon::now()->format('Y-m-d H:i:s');
+							$fileName = $currentDate . '_' . $file;
 							// Store File in Storage Folder
 							$request->document->storeAs('uploads', $fileName);
 							// storage/app/uploads/file.png
@@ -950,7 +979,9 @@ class HRLeaveController extends Controller
 
 						foreach ($dateStartEnd as $value) {
 							if($request->file('document')){
-								$fileName = $request->file('document')->getClientOriginalName();
+								$file = $request->file('document')->getClientOriginalName();
+								$currentDate = Carbon::now()->format('Y-m-d H:i:s');
+								$fileName = $currentDate . '_' . $file;
 								// Store File in Storage Folder
 								$request->document->storeAs('uploads', $fileName);
 								// storage/app/uploads/file.png
@@ -1028,7 +1059,9 @@ class HRLeaveController extends Controller
 				$data += ['leave_no' => $row];
 				$data += ['leave_year' => $ye];
 				if($request->file('document')){
-					$fileName = $request->file('document')->getClientOriginalName();
+					$file = $request->file('document')->getClientOriginalName();
+					$currentDate = Carbon::now()->format('Y-m-d H:i:s');
+					$fileName = $currentDate . '_' . $file;
 					// Store File in Storage Folder
 					$request->document->storeAs('uploads', $fileName);
 					// storage/app/uploads/file.png
@@ -1146,7 +1179,9 @@ class HRLeaveController extends Controller
 			$data += ['leave_no' => $row];
 			$data += ['leave_year' => $ye];
 			if($request->file('document')){
-				$fileName = $request->file('document')->getClientOriginalName();
+				$file = $request->file('document')->getClientOriginalName();
+				$currentDate = Carbon::now()->format('Y-m-d H:i:s');
+				$fileName = $currentDate . '_' . $file;
 				// Store File in Storage Folder
 				$request->document->storeAs('uploads', $fileName);
 				// storage/app/uploads/file.png
@@ -1201,7 +1236,9 @@ class HRLeaveController extends Controller
 						$data += ['leave_no' => $row];
 						$data += ['leave_year' => $ye];
 						if($request->file('document')){
-							$fileName = $request->file('document')->getClientOriginalName();
+							$file = $request->file('document')->getClientOriginalName();
+							$currentDate = Carbon::now()->format('Y-m-d H:i:s');
+							$fileName = $currentDate . '_' . $file;
 							// Store File in Storage Folder
 							$request->document->storeAs('uploads', $fileName);
 							// storage/app/uploads/file.png
@@ -1244,7 +1281,9 @@ class HRLeaveController extends Controller
 						$data += ['leave_no' => $row];
 						$data += ['leave_year' => $ye];
 						if($request->file('document')){
-							$fileName = $request->file('document')->getClientOriginalName();
+							$file = $request->file('document')->getClientOriginalName();
+							$currentDate = Carbon::now()->format('Y-m-d H:i:s');
+							$fileName = $currentDate . '_' . $file;
 							// Store File in Storage Folder
 							$request->document->storeAs('uploads', $fileName);
 							// storage/app/uploads/file.png
@@ -1289,7 +1328,9 @@ class HRLeaveController extends Controller
 						$data += ['leave_no' => $row];
 						$data += ['leave_year' => $ye];
 						if($request->file('document')){
-							$fileName = $request->file('document')->getClientOriginalName();
+							$file = $request->file('document')->getClientOriginalName();
+							$currentDate = Carbon::now()->format('Y-m-d H:i:s');
+							$fileName = $currentDate . '_' . $file;
 							// Store File in Storage Folder
 							$request->document->storeAs('uploads', $fileName);
 							// storage/app/uploads/file.png
@@ -1329,7 +1370,9 @@ class HRLeaveController extends Controller
 
 						foreach ($dateStartEnd as $value) {
 							if($request->file('document')){
-								$fileName = $request->file('document')->getClientOriginalName();
+								$file = $request->file('document')->getClientOriginalName();
+								$currentDate = Carbon::now()->format('Y-m-d H:i:s');
+								$fileName = $currentDate . '_' . $file;
 								// Store File in Storage Folder
 								$request->document->storeAs('uploads', $fileName);
 								// storage/app/uploads/file.png
@@ -1398,7 +1441,7 @@ class HRLeaveController extends Controller
 	 */
 	public function show(HRLeave $leave)
 	{
-		//
+		return view('humanresources.leave.show', ['leave' => $leave]);
 	}
 
 	/**
