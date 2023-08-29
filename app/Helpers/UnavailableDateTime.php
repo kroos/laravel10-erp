@@ -22,6 +22,7 @@ class UnavailableDateTime
 {
 	public function __construct()
 	{
+		$this->middleware(['auth']);
 	}
 
 	public static function blockDate($id = '')
@@ -44,18 +45,29 @@ class UnavailableDateTime
 		}
 
 		// block next year date till entitlement and working hour were generate
-		$nystart_date = $start_date->copy()->addYear();
-		$nyend_date = $end_date->copy()->addYears(1)->subDay();
-		// block next year if entitlements and working hours not set
-		$entitannual = HRLeaveAnnual::where('year', $nystart_date->copy()->year)->get();
-		$entitmc = HRLeaveMC::where('year', $nystart_date->copy()->year)->get();
-		$entitmaternity = HRLeaveMaternity::where('year', $nystart_date->copy()->year)->get();
-		$wh = OptWorkingHour::where('year', $nystart_date->copy()->year)->get();
-		// dd([empty($entit->count()), empty($wh->count()), $entit->count()]);
-		$nextyear = [];
-		if(empty($entitannual->count() && $entitmc->count() && $entitmaternity->count()) || empty($wh->count())){
-			foreach ($nystart_date->daysUntil($nyend_date) as $nydate) {
+			$nystart_date = $start_date->copy()->addYear();
+			$nyend_date = $end_date->copy()->addYears(1)->subDay();
+			// block next year if entitlements and working hours not set
+			$entitannual = HRLeaveAnnual::where('year', $nystart_date->copy()->year)->get();
+			$entitmc = HRLeaveMC::where('year', $nystart_date->copy()->year)->get();
+			$entitmaternity = HRLeaveMaternity::where('year', $nystart_date->copy()->year)->get();
+			$wh = OptWorkingHour::where('year', $nystart_date->copy()->year)->get();
+			// dd([$entitannual, $entitmc, $entitmaternity, $wh]);
+			// dd([empty($entitannual->count()), empty($entitmc->count()), empty($entitmaternity->count()), empty($wh->count())]);
+			// dd([ empty($entitannual->count()) && empty($entitmc->count()) && empty($entitmaternity->count()) && empty($wh->count()) ]);
+			// dd(empty($entitannual->count() && $entitmc->count() && $entitmaternity->count()) && empty($wh->count()) );
+			$nextyear = [];
+		if (Setting::findOrFail(6)->active == 1) {																					// block next year leave (setting): enable is 1
+			foreach ($nystart_date->daysUntil($nyend_date) as $nydate) {															// straight away block next year
 				$nextyear[] = $nydate->format('Y-m-d');
+			}
+		} else {																													// no block next year leave (setting):
+			if(empty($entitannual->count()) && empty($entitmc->count()) && empty($entitmaternity->count()) && empty($wh->count())) {	// check the tables if its there 1st, endure all are ready
+				foreach ($nystart_date->daysUntil($nyend_date) as $nydate) {														// table not ready
+					$nextyear[] = $nydate->format('Y-m-d');
+				}
+			} else {																												// table ready
+				$nextyear = [];
 			}
 		}
 
@@ -100,40 +112,74 @@ class UnavailableDateTime
 			$saturdays = [];
 		}
 
-		if(Setting::find(1)->active == 1) {		// double date checking
-			// block self leave
-			// make sure $request->id comes from table staff
-			// $leaveday = HRLeave::where('staff_id', $id)->whereIn('leave_status_id', [4,5,6])->whereNull('leave_status_id')->whereRaw('"'.$d->copy()->year.'" BETWEEN YEAR(date_time_start) AND YEAR(date_time_end)')->orwhereRaw('"'.$d->copy()->addYear()->year.'" BETWEEN YEAR(date_time_start) AND YEAR(date_time_end)')->get();
-			$leaveday = HRLeave::where('staff_id', $id)->where(function (Builder $query){
-				$query->whereIn('leave_status_id', [4,5,6])
-				->orwhereNull('leave_status_id');
-			})
-			->where(function (Builder $query) use ($d){
-				$query->whereYear('date_time_start', '<=', $d->copy()->year)
-				->whereYear('date_time_end', '>=', $d->copy()->year);
-			})
-			->orwhere(function (Builder $query) use ($d){
-				$query->whereYear('date_time_start', '<=', $d->copy()->addYear()->year)
-				->whereYear('date_time_end', '>=', $d->copy()->addYear()->year);
-			})
-			// ->ddRawSql();
-			->get();
-			// echo $leaveday;
-			// dd($leaveday);
-			if(!is_null($leaveday)) {
-				$leavday = [];
-				foreach ($leaveday as $key) {
-					$period1 = \Carbon\CarbonPeriod::create($key->date_time_start, '1 days', $key->date_time_end);
-					foreach ($period1 as $key1) {
-						$leavday[] = $key1->format('Y-m-d');
-					}
+		// always block self leave
+		// make sure $request->id comes from table staff
+		// $leaveday = HRLeave::where('staff_id', $id)->whereIn('leave_status_id', [4,5,6])->whereNull('leave_status_id')->whereRaw('"'.$d->copy()->year.'" BETWEEN YEAR(date_time_start) AND YEAR(date_time_end)')->orwhereRaw('"'.$d->copy()->addYear()->year.'" BETWEEN YEAR(date_time_start) AND YEAR(date_time_end)')->get();
+		$aleaveday = HRLeave::where('staff_id', $id)
+		->where(function (Builder $query){
+			$query->whereIn('leave_status_id', [5,6])
+			->orwhereNull('leave_status_id');
+		})
+		// ->where('half_type_id', 2)
+		->where(function (Builder $query) use ($d){
+			$query->whereYear('date_time_start', '<=', $d->copy()->year)
+			->whereYear('date_time_end', '>=', $d->copy()->year);
+		})
+		->orwhere(function (Builder $query) use ($d){
+			$query->whereYear('date_time_start', '<=', $d->copy()->addYear()->year)
+			->whereYear('date_time_end', '>=', $d->copy()->addYear()->year);
+		})
+		// ->ddRawSql();
+		->get();
+
+		// just unblock half day leave
+		$hleaveday = HRLeave::where('staff_id', $id)
+		->where(function (Builder $query){
+			$query->whereIn('leave_status_id', [5,6])
+			->orwhereNull('leave_status_id');
+		})
+		->where('half_type_id', 2)
+		->where(function (Builder $query) use ($d){
+			$query->whereYear('date_time_start', '<=', $d->copy()->year)
+			->whereYear('date_time_end', '>=', $d->copy()->year);
+		})
+		->orwhere(function (Builder $query) use ($d){
+			$query->whereYear('date_time_start', '<=', $d->copy()->addYear()->year)
+			->whereYear('date_time_end', '>=', $d->copy()->addYear()->year);
+		})
+		// ->ddRawSql();
+		->get();
+
+		// echo $leaveday;
+		// dd([$aleaveday->count(), $hleaveday->count()]);
+
+		$leavday = [];
+		if(!is_null($aleaveday)) {
+			foreach ($aleaveday as $v1) {
+				$period1 = \Carbon\CarbonPeriod::create($v1->date_time_start, '1 days', $v1->date_time_end);
+				foreach ($period1 as $key1) {
+					$leavday1[] = $key1->format('Y-m-d');
 				}
-			} else {
-				$leavday = [];
 			}
-		} else {
-			$leavday = [];
 		}
+
+		if(!is_null($hleaveday)) {
+			foreach ($hleaveday as $v2) {
+				$period2 = \Carbon\CarbonPeriod::create($v2->date_time_start, '1 days', $v2->date_time_end);
+				foreach ($period2 as $key2) {
+					$leavday2[] = $key2->format('Y-m-d');
+				}
+			}
+		}
+		//$leaveo = array_diff($leavday1, $leavday2);
+		// dd($leaveo);
+
+		if(Setting::find(1)->active == 1) {																				// overlapped leave date checking
+			$leavday = $leavday1;
+		} else {
+			$leavday = array_diff($leavday1, $leavday2);																// remove 1 value from array so not blocking date with half day
+		}
+		// dd($leavday);
 
 		$unavailableleave = Arr::collapse([$holiday, $sundays, $leavday, $saturdays, $nextyear]);
 		return $unavailableleave;

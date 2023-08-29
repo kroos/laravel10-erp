@@ -45,8 +45,6 @@
 		<div class="col-7">{{ $staff->income_tax_no }}</div>
 		<div class="col-5">SOCSO No :</div>
 		<div class="col-7">{{ $staff->socso_no }}</div>
-		<div class="col-5">SOCSO No :</div>
-		<div class="col-7">{{ $staff->socso_no }}</div>
 		<div class="col-5">Weight :</div>
 		<div class="col-7">{{ $staff->weight }} kg</div>
 		<div class="col-5">Height :</div>
