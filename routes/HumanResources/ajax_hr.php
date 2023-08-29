@@ -35,8 +35,9 @@ Route::post('/race', [AjaxDBController::class, 'race'])->name('race.race');
 Route::post('/taxexemptionpercentage', [AjaxDBController::class, 'taxexemptionpercentage'])->name('taxexemptionpercentage.taxexemptionpercentage');
 Route::post('/relationship', [AjaxDBController::class, 'relationship'])->name('relationship.relationship');
 Route::post('/status', [AjaxDBController::class, 'status'])->name('status.status');
-Route::get('/department', [AjaxDBController::class, 'department'])->name('department.department');
+Route::post('/department', [AjaxDBController::class, 'department'])->name('department.department');
 Route::post('/restdaygroup', [AjaxDBController::class, 'restdaygroup'])->name('restdaygroup.restdaygroup');
+Route::post('/staffcrossbackup', [AjaxDBController::class, 'staffcrossbackup'])->name('staffcrossbackup.staffcrossbackup');
 
 
 // Route::get('/login/{login}', [

@@ -290,20 +290,21 @@ class AjaxDBController extends Controller
 	{
 		$blockdate = UnavailableDateTime::blockDate(\Auth::user()->belongstostaff->id);
 
-		if(\App\Models\Setting::find(4)->first()->active == 1){		// 3days checking
-			$lusa1 = Carbon::now()->addDays(\App\Models\Setting::find(5)->first()->active + 1)->format('Y-m-d');
-			$period2 = \Carbon\CarbonPeriod::create(Carbon::now()->format('Y-m-d'), '1 days', $lusa1);
-			$lusa = [];
+		$lusa1 = Carbon::now()->addDays(Setting::find(5)->active - 1)->format('Y-m-d');
+		$period2 = \Carbon\CarbonPeriod::create(Carbon::now()->format('Y-m-d'), '1 days', $lusa1);
+		$lusa = [];
+		// dd(Setting::find(4)->active);
+		if(Setting::find(4)->active == 1){															// enable N days checking : 1
 			foreach ($period2 as $key1) {
 				$lusa[] = $key1->format('Y-m-d');
 			}
-		} else {
-			$lusa = [];
 		}
+		// dd($lusa);
 
 		if($request->type == 1){
 			$unavailableleave = Arr::collapse([$blockdate, $lusa]);
-		} elseif($request->type == 2) {
+		}
+		if($request->type == 2) {
 			$unavailableleave = $blockdate;
 		}
 		return response()->json($unavailableleave);
@@ -367,6 +368,21 @@ class AjaxDBController extends Controller
 									'id' => $v->id,
 									'text' => $v->status
 								];
+		}
+		return response()->json($ls);
+	}
+
+	public function staffcrossbackup(Request $request)
+	{
+		$dept = DepartmentPivot::findOrFail($request->pivot_dept_id);
+		$depts = $dept->belongstomanystaff()->wherePivot('main', 1)->get();
+		foreach ($depts as $v) {
+			if ($v->active == 1) {
+				$ls['results'][] = [
+										'id' => $v->id,
+										'text' => $v->name
+									];
+			}
 		}
 		return response()->json($ls);
 	}

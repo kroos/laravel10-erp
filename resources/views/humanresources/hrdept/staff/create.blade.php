@@ -92,6 +92,37 @@ use App\Models\HumanResources\HRLeaveApprovalFlow;
 			@endforeach
 			</div>
 
+
+			<div class="form-group row mb-3 {{ $errors->has('category_id') ? 'has-error' : '' }}">
+				{{ Form::label( 'cat1', 'Cross Backup Category : ', ['class' => 'col-sm-4 col-form-label'] ) }}
+				<div class="col-auto">
+					<select name="category_id" id="cat1" class="form-select form-select-sm" placeholder="Cross Backup Category"></select>
+				</div>
+			</div>
+
+			<div class="form-group row mb-3 {{ $errors->has('branch_id') ? 'has-error' : '' }}">
+				{{ Form::label( 'bra1', 'Cross Backup Branch : ', ['class' => 'col-sm-4 col-form-label'] ) }}
+				<div class="col-auto">
+					<select name="branch_id" id="bra1" class="form-select form-select-sm" placeholder="Cross Backup Branch"></select>
+				</div>
+			</div>
+
+			<div class="form-group row mb-3 {{ $errors->has('pivot_dept_id') ? 'has-error' : '' }}">
+				{{ Form::label( 'dep1', 'Cross Backup Department : ', ['class' => 'col-sm-4 col-form-label'] ) }}
+				<div class="col-auto">
+					<select name="pivot_dept_id" id="dep1" class="form-select form-select-sm" placeholder="Cross Backup Department"></select>
+				</div>
+			</div>
+
+			<div class="form-group row mb-3 {{ $errors->has('staff_id') ? 'has-error' : '' }}">
+				{{ Form::label( 'sta1', 'Cross Backup Personnel : ', ['class' => 'col-sm-4 col-form-label'] ) }}
+				<div class="col-auto">
+					<select name="staff_id" id="sta1" class="form-select form-select-sm" placeholder="Cross Backup Personnel"></select>
+				</div>
+			</div>
+
+
+
 			<div class="form-group row mb-3 {{ $errors->has('annual_leave') ? 'has-error' : '' }}">
 				{{ Form::label( 'annu', 'Annual Leave : ', ['class' => 'col-sm-4 col-form-label'] ) }}
 				<div class="col-auto">
@@ -450,6 +481,14 @@ $('#cat').select2({
 		}
 	},
 });
+$('#cat').on("select2:select", function (e) {
+	console.log("select2:select", e);
+	$('#dep').val(null).trigger('change');
+});
+$('#cat').on("select2:unselect", function (e) {
+	console.log("select2:unselect", e);
+	$('#dep').val(null).trigger('change');
+});
 
 $('#bra').select2({
 	placeholder: 'Please Select',
@@ -471,34 +510,10 @@ $('#bra').select2({
 $('#bra').on("select2:select", function (e) {
 	console.log("select2:select", e);
 	$('#dep').val(null).trigger('change');
-	// $("#dep").remoteChained({
-	// 	parents : '#bra, #cat',
-	// 	url : "{{ route('department.department') }}",
-	// });
 });
 $('#bra').on("select2:unselect", function (e) {
 	console.log("select2:unselect", e);
 	$('#dep').val(null).trigger('change');
-	// $("#dep").remoteChained({
-	// 	parents : '#bra, #cat',
-	// 	url : "{{ route('department.department') }}",
-	// });
-});
-$('#cat').on("select2:select", function (e) {
-	console.log("select2:select", e);
-	$('#dep').val(null).trigger('change');
-	// $("#dep").remoteChained({
-	// 	parents : '#bra, #cat',
-	// 	url : "{{ route('department.department') }}",
-	// });
-});
-$('#cat').on("select2:unselect", function (e) {
-	console.log("select2:unselect", e);
-	$('#dep').val(null).trigger('change');
-	// $("#dep").remoteChained({
-	// 	parents : '#bra, #cat',
-	// 	url : "{{ route('department.department') }}",
-	// });
 });
 
 $('#dep').select2({
@@ -508,12 +523,111 @@ $('#dep').select2({
 	closeOnSelect: true,
 	ajax: {
 		url: '{{ route('department.department') }}',
-		type: 'GET',
+		type: 'POST',
 		dataType: 'json',
 		data: function (params) {
 			var query = {
 				branch_id: $('#bra').val(),
 				category_id: $('#cat').val(),
+				_token: '{!! csrf_token() !!}',
+			}
+			return query;
+		}
+	},
+});
+
+$('#cat1').select2({
+	placeholder: 'Please Select',
+	width: '100%',
+	allowClear: true,
+	closeOnSelect: true,
+	ajax: {
+		url: '{{ route('category.category') }}',
+		type: 'POST',
+		dataType: 'json',
+		data: function (params) {
+			var query = {
+				_token: '{!! csrf_token() !!}',
+			}
+			return query;
+		}
+	},
+});
+$('#cat1').on("select2:select", function (e) {
+	console.log("select2:select", e);
+	$('#dep1').val(null).trigger('change');
+});
+$('#cat1').on("select2:unselect", function (e) {
+	console.log("select2:unselect", e);
+	$('#dep1').val(null).trigger('change');
+});
+
+$('#bra1').select2({
+	placeholder: 'Please Select',
+	width: '100%',
+	allowClear: true,
+	closeOnSelect: true,
+	ajax: {
+		url: '{{ route('branch.branch') }}',
+		type: 'POST',
+		dataType: 'json',
+		data: function (params) {
+			var query = {
+				_token: '{!! csrf_token() !!}',
+			}
+			return query;
+		}
+	},
+});
+$('#bra1').on("select2:select", function (e) {
+	console.log("select2:select", e);
+	$('#dep1').val(null).trigger('change');
+});
+$('#bra1').on("select2:unselect", function (e) {
+	console.log("select2:unselect", e);
+	$('#dep1').val(null).trigger('change');
+});
+
+$('#dep1').select2({
+	placeholder: 'Please Select',
+	width: '100%',
+	allowClear: true,
+	closeOnSelect: true,
+	ajax: {
+		url: '{{ route('department.department') }}',
+		type: 'POST',
+		dataType: 'json',
+		data: function (params) {
+			var query = {
+				branch_id: $('#bra1').val(),
+				category_id: $('#cat1').val(),
+				_token: '{!! csrf_token() !!}',
+			}
+			return query;
+		}
+	},
+});
+$('#dep1').on("select2:select", function (e) {
+	console.log("select2:select", e);
+	$('#sta1').val(null).trigger('change');
+});
+$('#dep1').on("select2:unselect", function (e) {
+	console.log("select2:unselect", e);
+	$('#sta1').val(null).trigger('change');
+});
+
+$('#sta1').select2({
+	placeholder: 'Please Select',
+	width: '100%',
+	allowClear: true,
+	closeOnSelect: true,
+	ajax: {
+		url: '{{ route('staffcrossbackup.staffcrossbackup') }}',
+		type: 'POST',
+		dataType: 'json',
+		data: function (params) {
+			var query = {
+				pivot_dept_id: $('#dep1').val(),
 				_token: '{!! csrf_token() !!}',
 			}
 			return query;
@@ -538,21 +652,6 @@ $('#rdg').select2({
 		}
 	},
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 /////////////////////////////////////////////////////////////////////////////////////////
 $('#cge_1').select2({
@@ -1059,6 +1158,13 @@ $('#form').bootstrapValidator({
 			}
 		},
 		authorise_id: {
+			validators: {
+				// notEmpty: {
+				// 	message: 'Please choose. '
+				// },
+			}
+		},
+		staff_id: {
 			validators: {
 				// notEmpty: {
 				// 	message: 'Please choose. '
