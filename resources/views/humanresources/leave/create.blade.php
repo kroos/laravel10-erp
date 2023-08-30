@@ -102,7 +102,6 @@ $setHalfDayMC = \App\Models\Setting::find(2)->active;
 // dd($setHalfDayMC);
 // checking for overlapped leave only for half day leave
 // dd(\App\Helpers\UnavailableDateTime::unblockhalfdayleave(\Auth::user()->belongstostaff->id, '2023-09-08'));
-
 ?>
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -167,7 +166,7 @@ var data4 = $.parseJSON( data3 );
 // checking for overlapp leave on half day (if it is turn on)
 var data10 = $.ajax({
 	url: "{{ route('unblockhalfdayleave.unblockhalfdayleave') }}",
-	type: "GET",
+	type: "POST",
 	data: {
 			id: {{ \Auth::user()->belongstostaff->id }},
 			_token: '{!! csrf_token() !!}',
@@ -370,7 +369,7 @@ $.each(objtime, function() {
 		return [d = true, itime_start = this.time_start, itime_end = this.time_end];
 	}
 });
-console.log(d);
+// console.log(d);
 if(d === true) {
 					$('#wrapperday').append(
 							'{{ Form::label('leave_type', 'Leave Category : ', ['class' => 'col-sm-2 col-form-label removehalfleave']) }}' +
@@ -516,7 +515,7 @@ $.each(objtime, function() {
 		return [d = true, itime_start = this.time_start, itime_end = this.time_end];
 	}
 });
-console.log(d);
+// console.log(d);
 if(d === true) {
 					$('#wrapperday').append(
 							'{{ Form::label('leave_type', 'Leave Category : ', ['class' => 'col-sm-2 col-form-label removehalfleave']) }}' +
@@ -811,7 +810,7 @@ $.each(objtime, function() {
 		return [d = true, itime_start = this.time_start, itime_end = this.time_end];
 	}
 });
-console.log(d);
+// console.log(d);
 if(d === true) {
 					$('#wrapperday').append(
 							'{{ Form::label('leave_type', 'Leave Category : ', ['class' => 'col-sm-2 col-form-label removehalfleave']) }}' +
@@ -961,7 +960,7 @@ $.each(objtime, function() {
 		return [d = true, itime_start = this.time_start, itime_end = this.time_end];
 	}
 });
-console.log(d);
+// console.log(d);
 if(d === true) {
 					$('#wrapperday').append(
 							'{{ Form::label('leave_type', 'Leave Category : ', ['class' => 'col-sm-2 col-form-label removehalfleave']) }}' +
@@ -1267,7 +1266,7 @@ $.each(objtime, function() {
 		return [d = true, itime_start = this.time_start, itime_end = this.time_end];
 	}
 });
-console.log(d);
+// console.log(d);
 if(d === true) {
 					$('#wrapperday').append(
 							'{{ Form::label('leave_type', 'Leave Category : ', ['class' => 'col-sm-2 col-form-label removehalfleave']) }}' +
@@ -1413,7 +1412,7 @@ $.each(objtime, function() {
 		return [d = true, itime_start = this.time_start, itime_end = this.time_end];
 	}
 });
-console.log(d);
+// console.log(d);
 if(d === true) {
 					$('#wrapperday').append(
 							'{{ Form::label('leave_type', 'Leave Category : ', ['class' => 'col-sm-2 col-form-label removehalfleave']) }}' +
@@ -1899,7 +1898,7 @@ $.each(objtime, function() {
 		return [d = true, itime_start = this.time_start, itime_end = this.time_end];
 	}
 });
-console.log(d);
+// console.log(d);
 if(d === true) {
 					$('#wrapperday').append(
 							'{{ Form::label('leave_type', 'Leave Category : ', ['class' => 'col-sm-2 col-form-label removehalfleave']) }}' +
@@ -2088,7 +2087,7 @@ $.each(objtime, function() {
 		return [d = true, itime_start = this.time_start, itime_end = this.time_end];
 	}
 });
-console.log(d);
+// console.log(d);
 if(d === true) {
 					$('#wrapperday').append(
 							'{{ Form::label('leave_type', 'Leave Category : ', ['class' => 'col-sm-2 col-form-label removehalfleave']) }}' +
@@ -2563,7 +2562,7 @@ $.each(objtime, function() {
 		return [d = true, itime_start = this.time_start, itime_end = this.time_end];
 	}
 });
-console.log(d);
+// console.log(d);
 if(d === true) {
 					$('#wrapperday').append(
 							'{{ Form::label('leave_type', 'Leave Category : ', ['class' => 'col-sm-2 col-form-label removehalfleave']) }}' +
@@ -2755,7 +2754,7 @@ $.each(objtime, function() {
 		return [d = true, itime_start = this.time_start, itime_end = this.time_end];
 	}
 });
-console.log(d);
+// console.log(d);
 if(d === true) {
 					$('#wrapperday').append(
 							'{{ Form::label('leave_type', 'Leave Category : ', ['class' => 'col-sm-2 col-form-label removehalfleave']) }}' +
@@ -3094,7 +3093,7 @@ $.each(objtime, function() {
 		return [d = true, itime_start = this.time_start, itime_end = this.time_end];
 	}
 });
-console.log(d);
+// console.log(d);
 if(d === true) {
 					$('#wrapperday').append(
 							'{{ Form::label('leave_type', 'Leave Category : ', ['class' => 'col-sm-2 col-form-label removehalfleave']) }}' +
@@ -3283,7 +3282,7 @@ $.each(objtime, function() {
 		return [d = true, itime_start = this.time_start, itime_end = this.time_end];
 	}
 });
-console.log(d);
+// console.log(d);
 if(d === true) {
 					$('#wrapperday').append(
 							'{{ Form::label('leave_type', 'Leave Category : ', ['class' => 'col-sm-2 col-form-label removehalfleave']) }}' +
@@ -3648,7 +3647,7 @@ $.each(objtime, function() {
 		return [d = true, itime_start = this.time_start, itime_end = this.time_end];
 	}
 });
-console.log(d);
+// console.log(d);
 if(d === true) {
 					$('#wrapperday').append(
 							'{{ Form::label('leave_type', 'Leave Category : ', ['class' => 'col-sm-2 col-form-label removehalfleave']) }}' +
@@ -3837,7 +3836,7 @@ $.each(objtime, function() {
 		return [d = true, itime_start = this.time_start, itime_end = this.time_end];
 	}
 });
-console.log(d);
+// console.log(d);
 if(d === true) {
 					$('#wrapperday').append(
 							'{{ Form::label('leave_type', 'Leave Category : ', ['class' => 'col-sm-2 col-form-label removehalfleave']) }}' +
