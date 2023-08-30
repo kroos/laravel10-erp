@@ -185,6 +185,49 @@ class UnavailableDateTime
 		return $unavailableleave;
 	}
 
+	public static function unblockhalfdayleave($id = '')
+	{
+		$d = Carbon::now(config('app.timezone'));
+		$hleaveday1 = HRLeave::where('staff_id', $id)
+		->where(function (Builder $query){
+			$query->whereIn('leave_status_id', [5,6])
+			->orwhereNull('leave_status_id');
+		})
+		->where('half_type_id', 2)
+		->where(function (Builder $query) use ($d){
+			$query->whereYear('date_time_start', '<=', $d->copy()->year)
+			->whereYear('date_time_end', '>=', $d->copy()->year);
+		})
+		->orwhere(function (Builder $query) use ($d){
+			$query->whereYear('date_time_start', '<=', $d->copy()->addYear()->year)
+			->whereYear('date_time_end', '>=', $d->copy()->addYear()->year);
+		})
+		// ->ddRawSql();
+		->get();
+
+		// get the days of half day leave
+		if($hleaveday1) {
+			foreach ($hleaveday1 as $v2) {
+				$timeuhd[] = [
+								'date_half_leave' => \Carbon\Carbon::parse($v2->date_time_start)->format('Y-m-d'),
+								'time_start' => \Carbon\Carbon::parse($v2->date_time_start)->format('G:i:s'),
+								'time_end' => \Carbon\Carbon::parse($v2->date_time_end)->format('G:i:s')
+							];
+			}
+		} else {
+			$timeuhd = [];
+		}
+		// 		$date = \Carbon\Carbon::parse($hleaveday1->date_time_start)->format('Y-m-d');
+		// 		$timeuhds = \Carbon\Carbon::parse($hleaveday1->date_time_start)->format('G:i:s');
+		// 		$timeuhde = \Carbon\Carbon::parse($hleaveday1->date_time_end)->format('G:i:s');
+		// $timeuhd = [
+		// 				'date_half_leave' => $date,
+		// 				'time_start' => $timeuhds,
+		// 				'time_end' => $timeuhde
+		// 			];
+		return $timeuhd;
+	}
+
 	public static function workinghourtime($date = '', $user = '')
 	{
 		// dd($date);
@@ -316,29 +359,61 @@ class UnavailableDateTime
 		if($dt->copy()->dayOfWeek == 5) {				// friday
 			if($gwh == 1){								// friday | geng maintenance
 				if($dty == date('Y')){					// friday | geng maintenance | in same year
-					$time = OptWorkingHour::whereRaw('"'.$date.'" BETWEEN effective_date_start AND effective_date_end')->where(['year' => $dty, 'group' => $gwh, 'category' => 8])->get();
+					$time = OptWorkingHour::where(function (Builder $query) use ($date){
+												$query->whereDate('effective_date_start', '<=', $date)
+												->whereDate('effective_date_end', '>=', $date);
+											})
+											->where(['year' => $dty, 'group' => $gwh, 'category' => 8])->get();
 				} else {								// friday | geng maintenance | not in same year
-					$time = OptWorkingHour::whereRaw('"'.$date.'" BETWEEN effective_date_start AND effective_date_end')->where(['year' => $dty, 'group' => $gwh, 'category' => 8])->get();
+					$time = OptWorkingHour::where(function (Builder $query) use ($date){
+												$query->whereDate('effective_date_start', '<=', $date)
+												->whereDate('effective_date_end', '>=', $date);
+											})
+											->where(['year' => $dty, 'group' => $gwh, 'category' => 8])->get();
 				}
 			} else {									// not geng maintenance
 				if($dty == date('Y')){					// friday | not geng maintenance | in same year
-					$time = OptWorkingHour::whereRaw('"'.$date.'" BETWEEN effective_date_start AND effective_date_end')->where(['year' => $dty, 'group' => $gwh, 'category' => 3])->get();
+					$time = OptWorkingHour::where(function (Builder $query) use ($date){
+												$query->whereDate('effective_date_start', '<=', $date)
+												->whereDate('effective_date_end', '>=', $date);
+											})
+											->where(['year' => $dty, 'group' => $gwh, 'category' => 3])->get();
 				} else {								// friday | not geng maintenance | not in same year
-					$time = OptWorkingHour::whereRaw('"'.$date.'" BETWEEN effective_date_start AND effective_date_end')->where(['year' => $dty, 'group' => $gwh, 'category' => 3])->get();
+					$time = OptWorkingHour::where(function (Builder $query) use ($date){
+												$query->whereDate('effective_date_start', '<=', $date)
+												->whereDate('effective_date_end', '>=', $date);
+											})
+											->where(['year' => $dty, 'group' => $gwh, 'category' => 3])->get();
 				}
 			}
 		} else {										// not on friday
 			if($gwh == 1){								// not on friday | geng maintenance
 				if($dty == date('Y')){					// not on friday | geng maintenance | in same year
-					$time = OptWorkingHour::whereRaw('"'.$date.'" BETWEEN effective_date_start AND effective_date_end')->where(['year' => $dty, 'group' => $gwh, 'category' => 8])->get();
+					$time = OptWorkingHour::where(function (Builder $query) use ($date){
+												$query->whereDate('effective_date_start', '<=', $date)
+												->whereDate('effective_date_end', '>=', $date);
+											})
+											->where(['year' => $dty, 'group' => $gwh, 'category' => 8])->get();
 				} else {								// not on friday | geng maintenance | not in same year
-					$time = OptWorkingHour::whereRaw('"'.$date.'" BETWEEN effective_date_start AND effective_date_end')->where(['year' => $dty, 'group' => $gwh, 'category' => 8])->get();
+					$time = OptWorkingHour::where(function (Builder $query) use ($date){
+												$query->whereDate('effective_date_start', '<=', $date)
+												->whereDate('effective_date_end', '>=', $date);
+											})
+											->where(['year' => $dty, 'group' => $gwh, 'category' => 8])->get();
 				}
 			} else {									// not on friday | not geng maintenance
 				if($dty == date('Y')){					// not on friday | not geng maintenance | in same year
-					$time = OptWorkingHour::whereRaw('"'.$date.'" BETWEEN effective_date_start AND effective_date_end')->where(['year' => $dty, 'group' => $gwh])->whereIn('category', [1,2,4])->get();
+					$time = OptWorkingHour::where(function (Builder $query) use ($date){
+												$query->whereDate('effective_date_start', '<=', $date)
+												->whereDate('effective_date_end', '>=', $date);
+											})
+											->where(['year' => $dty, 'group' => $gwh])->whereIn('category', [1,2,4])->get();
 				} else {								// not on friday | not geng maintenance | not in same year
-					$time = OptWorkingHour::whereRaw('"'.$date.'" BETWEEN effective_date_start AND effective_date_end')->where(['year' => $dty, 'group' => $gwh])->whereIn('category', [1,2,4])->get();
+					$time = OptWorkingHour::where(function (Builder $query) use ($date){
+												$query->whereDate('effective_date_start', '<=', $date)
+												->whereDate('effective_date_end', '>=', $date);
+											})
+											->where(['year' => $dty, 'group' => $gwh])->whereIn('category', [1,2,4])->get();
 				}
 			}
 		}

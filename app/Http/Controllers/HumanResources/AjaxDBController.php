@@ -310,6 +310,12 @@ class AjaxDBController extends Controller
 		return response()->json($unavailableleave);
 	}
 
+	public function unblockhalfdayleave(Request $request)
+	{
+		$blocktime = UnavailableDateTime::unblockhalfdayleave($request->id);
+		return response()->json($blocktime);
+	}
+
 	public function backupperson(Request $request)
 	{
 		// we r going to find a backup person
