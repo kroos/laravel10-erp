@@ -1,9 +1,9 @@
 <?php
+
 namespace App\Http\Controllers\HumanResources\HRDept;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
 
@@ -32,6 +32,8 @@ use Illuminate\View\View;
 use \Carbon\Carbon;
 use \Carbon\CarbonPeriod;
 use \Carbon\CarbonInterval;
+
+use Session;
 
 class AttendanceController extends Controller
 {
@@ -112,9 +114,13 @@ class AttendanceController extends Controller
 	/**
 	 * Update the specified resource in storage.
 	 */
-	public function update(Request $request, Staff $staff)
+	public function update(Request $request, HRAttendance $attendance)
 	{
-		//
+		dd($request);
+		// $attendance->update($request->only(['daytype_id', 'attendance_type_id', 'in', 'break', 'resume', 'out', 'remark', 'hr_remark', 'exception']));
+
+		// Session::flash('flash_message', 'Data successfully updated!');
+		// return Redirect::route('attendance.index', $attendance);
 	}
 
 	/**
