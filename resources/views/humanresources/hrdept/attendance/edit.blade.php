@@ -127,7 +127,7 @@ $login = $staff->hasmanylogin()->where('active', '1')->get()->first();
           {!! Form::label( 'overtime', 'OVERTIME', ['class' => 'form-control border-0'] ) !!}
         </div>
         <div class="col-md-9 {{ $errors->has('mobile') ? 'has-error' : '' }}">
-        <!-- {!! Form::text( 'time_work_hour', @$attendance->time_work_hour, ['class' => 'form-control time-input', 'id' => 'time_work_hour'] ) !!} -->
+          <!-- {!! Form::text( 'time_work_hour', @$attendance->time_work_hour, ['class' => 'form-control time-input', 'id' => 'time_work_hour'] ) !!} -->
         </div>
       </div>
 
@@ -166,15 +166,15 @@ $login = $staff->hasmanylogin()->where('active', '1')->get()->first();
           {!! Form::label( 'exception', 'EXCEPTION', ['class' => 'form-control border-0'] ) !!}
         </div>
         <div class="col-md-9 {{ $errors->has('exception') ? 'has-error' : '' }}">
-          {!! Form::checkbox( 'exception', @$attendance->exception == 1, ['class' => 'form-control', 'id' => 'exception'] ) !!}
+          {{ Form::checkbox('exception', 1, null, ['id' => 'exception']) }}
         </div>
       </div>
 
       <div class="row mt-4">
-					<div class="text-center">
-						{!! Form::button('Update', ['class' => 'btn btn-sm btn-outline-secondary', 'type' => 'submit']) !!}
-					</div>
-				</div>
+        <div class="text-center">
+          {!! Form::button('Update', ['class' => 'btn btn-sm btn-outline-secondary', 'type' => 'submit']) !!}
+        </div>
+      </div>
 
       {{ Form::close() }}
 
@@ -217,5 +217,61 @@ placeholder: '',
 width: '100%',
 allowClear: true,
 closeOnSelect: true,
+});
+
+
+/////////////////////////////////////////////////////////////////////////////////////////
+// VALIDATION 
+$(document).ready(function() {
+	$('#form').bootstrapValidator({
+		feedbackIcons: {
+			valid: '',
+			invalid: '',
+			validating: ''
+		},
+		fields: {
+
+			daytype_id: {
+				validators: {
+					notEmpty: {
+						message: 'Please select a day type.'
+					},
+				}
+			},
+
+      in: {
+				validators: {
+					notEmpty: {
+						message: 'Please insert in time.'
+					},
+				}
+			},
+
+      break: {
+				validators: {
+					notEmpty: {
+						message: 'Please insert break time.'
+					},
+				}
+			},
+
+      resume: {
+				validators: {
+					notEmpty: {
+						message: 'Please insert resume time.'
+					},
+				}
+			},
+
+      out: {
+				validators: {
+					notEmpty: {
+						message: 'Please insert out time.'
+					},
+				}
+			},
+
+    }
+  })
 });
 @endsection
