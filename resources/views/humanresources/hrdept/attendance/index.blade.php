@@ -480,7 +480,9 @@ if($l) {
 }
 ?>
 				<tr>
-					<td>{{ $s->belongstostaff?->hasmanylogin()->where('active', 1)->first()?->username }}</td>
+					<td>
+						<a href="{{ route('attendance.edit', $s->id) }}">{{ $s->belongstostaff?->hasmanylogin()->where('active', 1)->first()?->username }}</a>
+					</td>
 					<td>{{ $s->name }}</td>
 					<td>{{ $dayt }}</td>
 					<td>{!! $ll !!}</td>
@@ -543,10 +545,17 @@ $(document).ready(function(){
 /////////////////////////////////////////////////////////////////////////////////////////
 // datatables
 $.fn.dataTable.moment( 'D MMM YYYY' );
-$.fn.dataTable.moment( 'D MMM YYYY h:mm a' );
+$.fn.dataTable.moment( 'h:mm a' );
 $('#attendance').DataTable({
 	"paging": false,
 	"lengthMenu": [ [-1], ["All"] ],
+	"columnDefs": [
+					{ type: 'date', 'targets': [5] },
+					{ type: 'time', 'targets': [6] },
+					{ type: 'time', 'targets': [7] },
+					{ type: 'time', 'targets': [8] },
+					{ type: 'time', 'targets': [9] },
+				],
 	"order": [[ 0, 'asc' ], [ 1, 'asc' ]],	// sorting the 6th column descending
 	responsive: true
 })

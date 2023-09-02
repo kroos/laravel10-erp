@@ -17,6 +17,8 @@
 
 @import "../../node_modules/bootstrap-icons/font/bootstrap-icons.css";
 
+
+/*datatables.net*/
 @import "../../node_modules/datatables.net-bs5/css/dataTables.bootstrap5.css";
 @import "../../node_modules/datatables.net-colreorder-bs5/css/colReorder.bootstrap5.css";
 @import "../../node_modules/datatables.net-fixedheader-bs5/css/fixedHeader.bootstrap5.css";
@@ -25,7 +27,9 @@
 @import "../../node_modules/@claviska/jquery-minicolors/jquery.minicolors.css";
 @import "../../node_modules/@mdi/font/css/materialdesignicons.css";
 
-/* @import "../../node_modules/gijgo/css/gijgo.css"; */
+/*fullcalendar version 3.9 compatible with jquery others are not compatible*/
+/*@import "../../node_modules/fullcalendar/dist/fullcalendar.css";*/
+/*@import "../../node_modules/fullcalendar/dist/fullcalendar.print.css";*/
 
 @import "../../node_modules/jquery-ui/themes/base/core.css";
 @import "../../node_modules/jquery-ui/themes/base/all.css";

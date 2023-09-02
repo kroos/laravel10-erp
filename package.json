@@ -25,7 +25,6 @@
     "datatables.net-colreorder-bs5": "^1.7.0",
     "datatables.net-fixedheader-bs5": "^3.4.0",
     "datatables.net-responsive-bs5": "^2.5.0",
-    "fullcalendar": "^6.1.8",
     "jquery": "^3.7.0",
     "jquery-chained": "1.0",
     "jquery-ui": "^1.13.2",

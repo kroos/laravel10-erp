@@ -4,8 +4,10 @@ namespace App\Http\Controllers\HumanResources\HRDept;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
+// for controller output
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\View\View;
 
 // load validation
 use App\Http\Requests\HumanResources\Leave\HRLeaveRequestStore;
@@ -33,7 +35,7 @@ class StaffController extends Controller
 	/**
 	 * Display a listing of the resource.
 	 */
-	public function index()
+	public function index(): View
 	{
 		return view('humanresources.hrdept.staff.index');
 	}
@@ -41,7 +43,7 @@ class StaffController extends Controller
 	/**
 	 * Show the form for creating a new resource.
 	 */
-	public function create()
+	public function create(): View
 	{
 		return view('humanresources.hrdept.staff.create');
 	}
@@ -49,7 +51,7 @@ class StaffController extends Controller
 	/**
 	 * Store a newly created resource in storage.
 	 */
-	public function store(Request $request, Staff $staff)
+	public function store(Request $request, Staff $staff): RedirectResponse
 	{
 		//
 	}
@@ -57,7 +59,7 @@ class StaffController extends Controller
 	/**
 	 * Display the specified resource.
 	 */
-	public function show(Staff $staff)
+	public function show(Staff $staff): View
 	{
 		return view('humanresources.hrdept.staff.show', compact(['staff']));
 	}
@@ -65,7 +67,7 @@ class StaffController extends Controller
 	/**
 	 * Show the form for editing the specified resource.
 	 */
-	public function edit(Staff $staff)
+	public function edit(Staff $staff): View
 	{
 		return view('humanresources.hrdept.staff.edit', compact(['staff']));
 	}
@@ -73,7 +75,7 @@ class StaffController extends Controller
 	/**
 	 * Update the specified resource in storage.
 	 */
-	public function update(Request $request, Staff $staff)
+	public function update(Request $request, Staff $staff): RedirectResponse
 	{
 		//
 	}
@@ -81,7 +83,7 @@ class StaffController extends Controller
 	/**
 	 * Remove the specified resource from storage.
 	 */
-	public function destroy(Staff $staff)
+	public function destroy(Staff $staff): RedirectResponse
 	{
 		//
 	}

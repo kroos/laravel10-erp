@@ -6,6 +6,7 @@ use App\Http\Controllers\HumanResources\Profile\ProfileController;
 use App\Http\Controllers\HumanResources\HRDept\HRDeptController;
 use App\Http\Controllers\HumanResources\HRDept\StaffController;
 use App\Http\Controllers\HumanResources\HRDept\AttendanceController;
+use App\Http\Controllers\HumanResources\HRDept\LeaveController;
 
 Route::resources([
 	'leave' => HRLeaveController::class,
@@ -13,5 +14,6 @@ Route::resources([
 	'hrdept' => HRDeptController::class,								// only for links
 	'staff' => StaffController::class,
 	'attendance' => AttendanceController::class,
+	'hrleave' => LeaveController::class,
 ]);
 

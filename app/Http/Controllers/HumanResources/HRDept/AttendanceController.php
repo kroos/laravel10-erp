@@ -4,16 +4,13 @@ namespace App\Http\Controllers\HumanResources\HRDept;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
+// for controller output
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
-
-// load validation
+use Illuminate\View\View;
 
 
 use Illuminate\Support\Facades\DB;
-
-// load cursor pagination
-use Illuminate\Pagination\CursorPaginator;
 
 // load models
 use App\Models\HumanResources\HRAttendance;
@@ -22,11 +19,11 @@ use App\Models\Staff;
 // load paginator
 use Illuminate\Pagination\Paginator;
 
+// load cursor pagination
+use Illuminate\Pagination\CursorPaginator;
+
 // load array helper
 use Illuminate\Support\Arr;
-
-// for viewing
-use Illuminate\View\View;
 
 // load Carbon
 use \Carbon\Carbon;
@@ -75,7 +72,7 @@ class AttendanceController extends Controller
 	/**
 	 * Store a newly created resource in storage.
 	 */
-	public function store(Request $request, HRAttendance $attendance)
+	public function store(Request $request, HRAttendance $attendance): RedirectResponse
 	{
 		//
 	}
@@ -83,7 +80,7 @@ class AttendanceController extends Controller
 	/**
 	 * Display the specified resource.
 	 */
-	public function show(HRAttendance $attendance)
+	public function show(HRAttendance $attendance): View
 	{
 		return view('humanresources.hrdept.attendance.show', ['attendance' => $attendance]);
 	}
@@ -91,23 +88,23 @@ class AttendanceController extends Controller
 	/**
 	 * Show the form for editing the specified resource.
 	 */
-	public function edit(HRAttendance $attendance)
+	public function edit(HRAttendance $attendance): View
 	{
-		//
+		return view('humanresources.hrdept.attendance.edit', ['attendance' => $attendance]);
 	}
 
 	/**
 	 * Update the specified resource in storage.
 	 */
-	public function update(Request $request, HRAttendance $attendance)
+	public function update(Request $request, HRAttendance $attendance): RedirectResponse
 	{
-		return view('humanresources.hrdept.attendance.edit', compact('attendance'));
+
 	}
 
 	/**
 	 * Remove the specified resource from storage.
 	 */
-	public function destroy(HRAttendance $attendance)
+	public function destroy(HRAttendance $attendance): RedirectResponse
 	{
 		//
 	}
