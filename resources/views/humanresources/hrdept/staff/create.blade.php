@@ -19,138 +19,6 @@ use App\Models\HumanResources\HRLeaveApprovalFlow;
 	<div class="row justify-content-center">
 		<div class="col-sm-6 gy-1 gx-1 align-items-start">
 
-			<div class="offset-sm-4 form-check mb-3 {{ $errors->has('authorise_id') ? 'has-error' : '' }}">
-				<div class="pretty p-icon p-curve p-tada">
-					<input type="hidden" name="authorise_id" value="">
-					<input type="checkbox" name="authorise_id" class="form-check-input" value="1" id="auth">
-					<div class="state p-primary-o">
-						<i class="icon mdi mdi-check-all"></i>
-						<label class="form-check-label" for="auth">System Administrator</label>
-					</div>
-				</div>
-			</div>
-
-			<div class="form-group row mb-3 {{ $errors->has('status_id') ? 'has-error' : '' }}">
-				{{ Form::label( 'sta', 'Staff Status : ', ['class' => 'col-sm-4 col-form-label'] ) }}
-				<div class="col-auto">
-					<select name="status_id" id="sta" class="form-select form-select-sm" placeholder="Status"></select>
-				</div>
-			</div>
-
-			<div class="form-group row mb-3 {{ $errors->has('username') ? 'has-error' : '' }}">
-				{{ Form::label( 'unam', 'Username : ', ['class' => 'col-sm-4 col-form-label'] ) }}
-				<div class="col-auto">
-					{{ Form::text('username', @$value, ['class' => 'form-control form-control-sm col-auto', 'id' => 'unam', 'placeholder' => 'Username', 'autocomplete' => 'off']) }}
-				</div>
-			</div>
-
-			<div class="form-group row mb-3 {{ $errors->has('password') ? 'has-error' : '' }}">
-				{{ Form::label( 'pas', 'Password : ', ['class' => 'col-sm-4 col-form-label'] ) }}
-				<div class="col-auto">
-					{{ Form::text('password', @$value, ['class' => 'form-control form-control-sm col-auto', 'id' => 'pas', 'placeholder' => 'Password', 'autocomplete' => 'off']) }}
-				</div>
-			</div>
-
-			<div class="form-group row mb-3 {{ $errors->has('category_id') ? 'has-error' : '' }}">
-				{{ Form::label( 'cat', 'Category : ', ['class' => 'col-sm-4 col-form-label'] ) }}
-				<div class="col-auto">
-					<select name="category_id" id="cat" class="form-select form-select-sm" placeholder="Category"></select>
-				</div>
-			</div>
-
-			<div class="form-group row mb-3 {{ $errors->has('branch_id') ? 'has-error' : '' }}">
-				{{ Form::label( 'bra', 'Branch : ', ['class' => 'col-sm-4 col-form-label'] ) }}
-				<div class="col-auto">
-					<select name="branch_id" id="bra" class="form-select form-select-sm" placeholder="Branch"></select>
-				</div>
-			</div>
-
-			<div class="form-group row mb-3 {{ $errors->has('pivot_dept_id') ? 'has-error' : '' }}">
-				{{ Form::label( 'dep', 'Department : ', ['class' => 'col-sm-4 col-form-label'] ) }}
-				<div class="col-auto">
-					<select name="pivot_dept_id" id="dep" class="form-select form-select-sm" placeholder="Department"></select>
-				</div>
-			</div>
-
-			<div class="form-group row mb-3 {{ $errors->has('restday_group_id') ? 'has-error' : '' }}">
-				{{ Form::label( 'rdg', 'Rest Day Group : ', ['class' => 'col-sm-4 col-form-label'] ) }}
-				<div class="col-auto">
-					<select name="restday_group_id" id="rdg" class="form-select form-select-sm" placeholder="Department"></select>
-				</div>
-			</div>
-
-			<p class="col-sm-4">Leave Flow Approval :</p>
-			<div class="offset-sm-4 mb-3 form-check row {{ $errors->has('leave_flow_id') ? 'has-error' : '' }}">
-			@foreach(HRLeaveApprovalFlow::all() as $k)
-				<div class="pretty p-icon p-curve p-tada mb-2">
-					<input type="radio" name="leave_flow_id" class="form-check-input" value="{{ $k->id }}" id="auth">
-					<div class="state p-primary-o">
-						<i class="icon mdi mdi-check"></i>
-						<label class="form-check-label" for="auth">{{ $k->description }}</label>
-					</div>
-				</div>
-			@endforeach
-			</div>
-
-
-			<div class="form-group row mb-3 {{ $errors->has('category_id') ? 'has-error' : '' }}">
-				{{ Form::label( 'cat1', 'Cross Backup Category : ', ['class' => 'col-sm-4 col-form-label'] ) }}
-				<div class="col-auto">
-					<select name="category_id" id="cat1" class="form-select form-select-sm" placeholder="Cross Backup Category"></select>
-				</div>
-			</div>
-
-			<div class="form-group row mb-3 {{ $errors->has('branch_id') ? 'has-error' : '' }}">
-				{{ Form::label( 'bra1', 'Cross Backup Branch : ', ['class' => 'col-sm-4 col-form-label'] ) }}
-				<div class="col-auto">
-					<select name="branch_id" id="bra1" class="form-select form-select-sm" placeholder="Cross Backup Branch"></select>
-				</div>
-			</div>
-
-			<div class="form-group row mb-3 {{ $errors->has('pivot_dept_id') ? 'has-error' : '' }}">
-				{{ Form::label( 'dep1', 'Cross Backup Department : ', ['class' => 'col-sm-4 col-form-label'] ) }}
-				<div class="col-auto">
-					<select name="pivot_dept_id" id="dep1" class="form-select form-select-sm" placeholder="Cross Backup Department"></select>
-				</div>
-			</div>
-
-			<div class="form-group row mb-3 {{ $errors->has('staff_id') ? 'has-error' : '' }}">
-				{{ Form::label( 'sta1', 'Cross Backup Personnel : ', ['class' => 'col-sm-4 col-form-label'] ) }}
-				<div class="col-auto">
-					<select name="staff_id" id="sta1" class="form-select form-select-sm" placeholder="Cross Backup Personnel"></select>
-				</div>
-			</div>
-
-
-
-			<div class="form-group row mb-3 {{ $errors->has('annual_leave') ? 'has-error' : '' }}">
-				{{ Form::label( 'annu', 'Annual Leave : ', ['class' => 'col-sm-4 col-form-label'] ) }}
-				<div class="col-auto">
-					{{ Form::text('annual_leave', @$value, ['class' => 'form-control form-control-sm col-auto', 'id' => 'annu', 'placeholder' => 'Annual Leave', 'autocomplete' => 'off']) }}
-				</div>
-			</div>
-
-			<div class="form-group row mb-3 {{ $errors->has('mc_leave') ? 'has-error' : '' }}">
-				{{ Form::label( 'mcl', 'Medical Certificate Leave : ', ['class' => 'col-sm-4 col-form-label'] ) }}
-				<div class="col-auto">
-					{{ Form::text('mc_leave', @$value, ['class' => 'form-control form-control-sm col-auto', 'id' => 'mcl', 'placeholder' => 'Medical Certificate Leave', 'autocomplete' => 'off']) }}
-				</div>
-			</div>
-
-			<div class="form-group row mb-3 {{ $errors->has('maternity_leave') ? 'has-error' : '' }}">
-				{{ Form::label( 'matl', 'Maternity Leave : ', ['class' => 'col-sm-4 col-form-label'] ) }}
-				<div class="col-auto">
-					{{ Form::text('maternity_leave', @$value, ['class' => 'form-control form-control-sm col-auto', 'id' => 'matl', 'placeholder' => 'Maternity Leave', 'autocomplete' => 'off']) }}
-				</div>
-			</div>
-
-
-
-
-		</div>
-
-		<div class="col-sm-6 gy-1 gx-1 align-items-start">
-
 			<div class="form-group row mb-3 {{ $errors->has('name') ? 'has-error' : '' }}">
 				{{ Form::label( 'nam', 'Name : ', ['class' => 'col-sm-4 col-form-label'] ) }}
 				<div class="col-auto">
@@ -173,9 +41,17 @@ use App\Models\HumanResources\HRLeaveApprovalFlow;
 			</div>
 
 			<div class="form-group row mb-3 {{ $errors->has('gender_id') ? 'has-error' : '' }}">
-				{{ Form::label( 'gen', 'Gender : ', ['class' => 'col-sm-4 col-form-label'] ) }}
+				<p class="col-sm-4">Gender :</p>
 				<div class="col-auto">
-					{{ Form::select('gender_id', OptGender::pluck('gender', 'id')->toArray(), @$value, ['class' => 'form-control form-select col-auto', 'id' => 'gen', 'placeholder' => 'Gender', 'autocomplete' => 'off']) }}
+					<?php $i=0 ?>
+					@foreach(\App\Models\HumanResources\OptGender::orderBy('id')->get() as $g)
+					<div class="form-check form-check-inline">
+						{{ Form::radio('gender_id', $g->id, @$value, ['class' => 'form-check-input', 'id' => 'gen_'.$i]) }}
+						{{ Form::label('gen_'.$i, $g->gender, ['class' => 'form-check-label']) }}
+					</div>
+					<?php $i++ ?>
+					@endforeach
+
 				</div>
 			</div>
 
@@ -411,6 +287,129 @@ use App\Models\HumanResources\HRLeaveApprovalFlow;
 			</div>
 
 		</div>
+		<div class="col-sm-6 gy-1 gx-1 align-items-start">
+
+			<div class="offset-sm-4 form-check mb-3 {{ $errors->has('authorise_id') ? 'has-error' : '' }}">
+				<div class="pretty p-icon p-curve p-tada">
+					<input type="hidden" name="authorise_id" value="">
+					<input type="checkbox" name="authorise_id" class="form-check-input" value="1" id="auth">
+					<div class="state p-primary-o">
+						<i class="icon mdi mdi-check-all"></i>
+						<label class="form-check-label" for="auth">System Administrator</label>
+					</div>
+				</div>
+			</div>
+
+			<div class="form-group row mb-3 {{ $errors->has('status_id') ? 'has-error' : '' }}">
+				{{ Form::label( 'sta', 'Staff Status : ', ['class' => 'col-sm-4 col-form-label'] ) }}
+				<div class="col-auto">
+					<select name="status_id" id="sta" class="form-select form-select-sm" placeholder="Status"></select>
+				</div>
+			</div>
+
+			<div class="form-group row mb-3 {{ $errors->has('username') ? 'has-error' : '' }}">
+				{{ Form::label( 'unam', 'Username : ', ['class' => 'col-sm-4 col-form-label'] ) }}
+				<div class="col-auto">
+					{{ Form::text('username', @$value, ['class' => 'form-control form-control-sm col-auto', 'id' => 'unam', 'placeholder' => 'Username', 'autocomplete' => 'off']) }}
+				</div>
+			</div>
+
+			<div class="form-group row mb-3 {{ $errors->has('password') ? 'has-error' : '' }}">
+				{{ Form::label( 'pas', 'Password : ', ['class' => 'col-sm-4 col-form-label'] ) }}
+				<div class="col-auto">
+					{{ Form::text('password', @$value, ['class' => 'form-control form-control-sm col-auto', 'id' => 'pas', 'placeholder' => 'Password', 'autocomplete' => 'off']) }}
+				</div>
+			</div>
+
+			<div class="form-group row mb-3 {{ $errors->has('category_id') ? 'has-error' : '' }}">
+				{{ Form::label( 'cat', 'Category : ', ['class' => 'col-sm-4 col-form-label'] ) }}
+				<div class="col-auto">
+					<select name="category_id" id="cat" class="form-select form-select-sm" placeholder="Category"></select>
+				</div>
+			</div>
+
+			<div class="form-group row mb-3 {{ $errors->has('branch_id') ? 'has-error' : '' }}">
+				{{ Form::label( 'bra', 'Branch : ', ['class' => 'col-sm-4 col-form-label'] ) }}
+				<div class="col-auto">
+					<select name="branch_id" id="bra" class="form-select form-select-sm" placeholder="Branch"></select>
+				</div>
+			</div>
+
+			<div class="form-group row mb-3 {{ $errors->has('pivot_dept_id') ? 'has-error' : '' }}">
+				{{ Form::label( 'dep', 'Department : ', ['class' => 'col-sm-4 col-form-label'] ) }}
+				<div class="col-auto">
+					<select name="pivot_dept_id" id="dep" class="form-select form-select-sm" placeholder="Department"></select>
+				</div>
+			</div>
+
+			<div class="form-group row mb-3 {{ $errors->has('restday_group_id') ? 'has-error' : '' }}">
+				{{ Form::label( 'rdg', 'Rest Day Group : ', ['class' => 'col-sm-4 col-form-label'] ) }}
+				<div class="col-auto">
+					<select name="restday_group_id" id="rdg" class="form-select form-select-sm" placeholder="Department"></select>
+				</div>
+			</div>
+
+			<p class="col-sm-4">Leave Flow Approval :</p>
+			<div class="offset-sm-4 mb-3 form-check row {{ $errors->has('leave_flow_id') ? 'has-error' : '' }}">
+			@foreach(HRLeaveApprovalFlow::all() as $k)
+				<div class="pretty p-icon p-curve p-tada mb-2">
+					<input type="radio" name="leave_flow_id" class="form-check-input" value="{{ $k->id }}" id="auth">
+					<div class="state p-primary-o">
+						<i class="icon mdi mdi-check"></i>
+						<label class="form-check-label" for="auth">{{ $k->description }}</label>
+					</div>
+				</div>
+			@endforeach
+			</div>
+
+
+			<div class="form-group row mb-3 {{ $errors->has('category_id') ? 'has-error' : '' }}">
+				{{ Form::label( 'cat1', 'Cross Backup Category : ', ['class' => 'col-sm-4 col-form-label'] ) }}
+				<div class="col-auto">
+					<select name="category_id" id="cat1" class="form-select form-select-sm" placeholder="Cross Backup Category"></select>
+				</div>
+			</div>
+
+			<div class="form-group row mb-3 {{ $errors->has('branch_id') ? 'has-error' : '' }}">
+				{{ Form::label( 'bra1', 'Cross Backup Branch : ', ['class' => 'col-sm-4 col-form-label'] ) }}
+				<div class="col-auto">
+					<select name="branch_id" id="bra1" class="form-select form-select-sm" placeholder="Cross Backup Branch"></select>
+				</div>
+			</div>
+
+			<div class="form-group row mb-3 {{ $errors->has('pivot_dept_id') ? 'has-error' : '' }}">
+				{{ Form::label( 'dep1', 'Cross Backup Department : ', ['class' => 'col-sm-4 col-form-label'] ) }}
+				<div class="col-auto">
+					<select name="pivot_dept_id" id="dep1" class="form-select form-select-sm" placeholder="Cross Backup Department"></select>
+				</div>
+			</div>
+
+			<div class="form-group row mb-3 {{ $errors->has('staff_id') ? 'has-error' : '' }}">
+				{{ Form::label( 'sta1', 'Cross Backup Personnel : ', ['class' => 'col-sm-4 col-form-label'] ) }}
+				<div class="col-auto">
+					<select name="staff_id" id="sta1" class="form-select form-select-sm" placeholder="Cross Backup Personnel"></select>
+				</div>
+			</div>
+
+
+
+			<div class="form-group row mb-3 {{ $errors->has('annual_leave') ? 'has-error' : '' }}">
+				{{ Form::label( 'annu', 'Annual Leave : ', ['class' => 'col-sm-4 col-form-label'] ) }}
+				<div class="col-auto">
+					{{ Form::text('annual_leave', @$value, ['class' => 'form-control form-control-sm col-auto', 'id' => 'annu', 'placeholder' => 'Annual Leave', 'autocomplete' => 'off']) }}
+				</div>
+			</div>
+
+			<div class="form-group row mb-3 {{ $errors->has('mc_leave') ? 'has-error' : '' }}">
+				{{ Form::label( 'mcl', 'Medical Certificate Leave : ', ['class' => 'col-sm-4 col-form-label'] ) }}
+				<div class="col-auto">
+					{{ Form::text('mc_leave', @$value, ['class' => 'form-control form-control-sm col-auto', 'id' => 'mcl', 'placeholder' => 'Medical Certificate Leave', 'autocomplete' => 'off']) }}
+				</div>
+			</div>
+
+			<div id="wrapmaternity"></div>
+
+		</div>
 	</div>
 
 	<div class="offset-5 mb-6">
@@ -439,11 +438,38 @@ $('#dob, #jpo').datetimepicker({
 	useCurrent: true,
 });
 
+// select2 on supposed to be
 $('#rel, #gen, #rac, #nat, #mar').select2({
 	placeholder: 'Please Select',
 	width: '100%',
 	allowClear: true,
 	closeOnSelect: true,
+});
+
+$('#gen_1').on('change', function () {
+		if( $(this).val() == 2 ) {
+			console.log($('#append').length);
+			if( $('#append').length == 0 ) {
+				$('#wrapmaternity').append(
+					'<div id="append">' +
+						'<div class="form-group row mb-3 {{ $errors->has('maternity_leave') ? 'has-error' : '' }}">' +
+							'<label for="matl" id="matl" class="col-sm-4 col-form-label">Maternity Leave : </label>' +
+							'<div class="col-auto">' +
+								'{{ Form::text('maternity_leave', @$value, ['class' => 'form-control form-control-sm col-auto', 'id' => 'matl', 'placeholder' => 'Maternity Leave', 'autocomplete' => 'off']) }}' +
+							'</div>' +
+						'</div>' +
+					'</div>'
+				);
+				$('#form').bootstrapValidator('addField', $('#append').find('[name="maternity_leave"]'));
+			}
+		}
+});
+
+$('#gen_0').on('change', function () {
+	if($(this).val() == 1) {
+		$('#append').remove();
+		$('#form').bootstrapValidator('removeField', $('#append').find('[name="maternity_leave"]'));
+	}
 });
 
 $('#sta').select2({
