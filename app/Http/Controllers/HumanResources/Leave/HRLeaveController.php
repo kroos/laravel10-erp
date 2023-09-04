@@ -5,8 +5,10 @@ namespace App\Http\Controllers\HumanResources\Leave;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
+// for controller output
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\View\View;
 
 // load validation
 use App\Http\Requests\HumanResources\Leave\HRLeaveRequestStore;
@@ -40,7 +42,7 @@ class HRLeaveController extends Controller
 	/**
 	 * Display a listing of the resource.
 	 */
-	public function index()
+	public function index(): View
 	{
 		return view('humanresources.leave.index');
 	}
@@ -48,7 +50,7 @@ class HRLeaveController extends Controller
 	/**
 	 * Show the form for creating a new resource.
 	 */
-	public function create()
+	public function create(): View
 	{
 		return view('humanresources.leave.create');
 	}
@@ -56,7 +58,7 @@ class HRLeaveController extends Controller
 	/**
 	 * Store a newly created resource in storage.
 	 */
-	public function store(HRLeaveRequestStore $request)//: RedirectResponse
+	public function store(HRLeaveRequestStore $request): RedirectResponse
 	{
 		// return $request->all();
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1439,7 +1441,7 @@ class HRLeaveController extends Controller
 	/**
 	 * Display the specified resource.
 	 */
-	public function show(HRLeave $leave)
+	public function show(HRLeave $leave): View
 	{
 		return view('humanresources.leave.show', ['leave' => $leave]);
 	}
@@ -1447,7 +1449,7 @@ class HRLeaveController extends Controller
 	/**
 	 * Show the form for editing the specified resource.
 	 */
-	public function edit(HRLeave $leave)
+	public function edit(HRLeave $leave): View
 	{
 		//
 	}
@@ -1455,7 +1457,7 @@ class HRLeaveController extends Controller
 	/**
 	 * Update the specified resource in storage.
 	 */
-	public function update(HRLeaveRequestStore $request, HRLeave $leave)
+	public function update(HRLeaveRequestStore $request, HRLeave $leave): RedirectResponse
 	{
 		//
 	}
@@ -1463,7 +1465,7 @@ class HRLeaveController extends Controller
 	/**
 	 * Remove the specified resource from storage.
 	 */
-	public function destroy(HRLeave $leave)
+	public function destroy(HRLeave $leave): RedirectResponse
 	{
 		//
 	}
