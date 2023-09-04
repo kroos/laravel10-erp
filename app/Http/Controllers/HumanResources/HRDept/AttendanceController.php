@@ -1,14 +1,18 @@
 <?php
+
 namespace App\Http\Controllers\HumanResources\HRDept;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+
 
 // for controller output
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
 
+// load validation
+use App\Http\Requests\HumanResources\Attendance\AttendanceRequestUpdate;
 
 use Illuminate\Support\Facades\DB;
 
@@ -29,6 +33,8 @@ use Illuminate\Support\Arr;
 use \Carbon\Carbon;
 use \Carbon\CarbonPeriod;
 use \Carbon\CarbonInterval;
+
+use Session;
 
 class AttendanceController extends Controller
 {
@@ -96,9 +102,28 @@ class AttendanceController extends Controller
 	/**
 	 * Update the specified resource in storage.
 	 */
-	public function update(Request $request, HRAttendance $attendance): RedirectResponse
+	public function update(AttendanceRequestUpdate $request, HRAttendance $attendance): RedirectResponse
 	{
+		// dd($request->all());
 
+		$exception = (!request()->has('exception') == '1' ? '0' : '1');
+
+		$attendance->update([
+			'daytype_id' => $request->daytype_id,
+			'attendance_type_id' => $request->attendance_type_id,
+			'in' => $request->in,
+			'break' => $request->break,
+			'resume' => $request->resume,
+			'out' => $request->out,
+			'remark' => $request->remark,
+			'hr_remark' => $request->hr_remark,
+			'exception' => $exception,
+		]);
+
+		$attendance->save();
+
+		Session::flash('flash_message', 'Data successfully updated!');
+		return Redirect::route('attendance.index', $attendance);
 	}
 
 	/**

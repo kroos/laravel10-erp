@@ -163,8 +163,10 @@ $totalRows_children = $childrens->count();
 				<!--------------------------- EMERGENCY ---------------------------->
 				<?php $i = 1 ?>
 				<div class="row">
-					<div class="d-flex justify-content-between align-items-center">
+					<div class="d-flex justify-content-between align-items-center col-md-3">
 						<h4 class="text-right">Emergency Contact</h4>
+					</div>
+					<div class="col-md-9">
 						@if ($totalRows_emergency < 2) <button class="border px-3 p-1 add-experience btn btn-sm btn-outline-secondary add_emergency" type="button">
 							<i class="bi-plus" aria-hidden="true"></i>
 						</button>
@@ -269,13 +271,15 @@ $totalRows_children = $childrens->count();
 				<!--------------------------- SPOUSE ---------------------------->
 				<?php $j = 1 ?>
 				<div class="row">
-					<div class="d-flex justify-content-between align-items-center">
+					<div class="d-flex justify-content-between align-items-center col-md-2">
 						<h4 class="text-right">Spouse</h4>
+					</div>
+					<div class="col-md-10">
 						@if ($totalRows_spouse < 4) <button class="border px-3 p-1 add-experience btn btn-sm btn-outline-secondary add_spouse" type="button">
 							<i class="bi-plus" aria-hidden="true"></i>
 						</button>
 						@endif
-					</div>
+          			</div>
 				</div>
 				<div class="row">
 					<div class="col-md-6 border-right">
@@ -383,8 +387,10 @@ $totalRows_children = $childrens->count();
 				<!--------------------------- CHILDREN ---------------------------->
 				<?php $k = 1 ?>
 				<div class="row">
-					<div class="d-flex justify-content-between align-items-center">
+					<div class="d-flex justify-content-between align-items-center col-md-2">
 						<h4 class="text-right">Children</h4>
+					</div>
+					<div class="col-md-10">
 						@if ($totalRows_children < 25) <button class="border px-3 p-1 add-experience btn btn-sm btn-outline-secondary add_children" type="button">
 							<i class="bi-plus" aria-hidden="true"></i>
 						</button>
