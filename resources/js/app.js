@@ -23,8 +23,8 @@ try {
     require('datatables.net-colreorder-bs5');
     require('datatables.net-fixedheader-bs5');
     require('datatables.net-responsive-bs5');
-    require('fullcalendar');
-    // require('gijgo');
+    // require('fullcalendar');
+
     require('pc-bootstrap4-datetimepicker');
     require('../../node_modules/jquery-chained/jquery.chained');
     require('../../node_modules/jquery-chained/jquery.chained.remote');

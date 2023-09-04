@@ -328,7 +328,7 @@ if ( ($ls->leave_type_id == 9) || ($ls->leave_type_id != 9 && $ls->half_type_id 
 ?>
 					<tr>
 						<td>HR9-{{ str_pad( $ls->leave_no, 5, "0", STR_PAD_LEFT ) }}/{{ $arr[1] }}</td>
-						<td>{{ $ls->belongstooptleavetype->leave_type_code }}</td>
+						<td>{{ $ls->belongstooptleavetype?->leave_type_code }}</td>
 						<td>{{ $dts }}</td>
 						<td>{{ $dte }}</td>
 						<td>{{ $dper }}</td>
@@ -337,7 +337,7 @@ if ( ($ls->leave_type_id == 9) || ($ls->leave_type_id != 9 && $ls->half_type_id 
 							@if(is_null($ls->leave_status_id))
 								Pending
 							@else
-								{{ $ls->belongstooptleavestatus->status }}
+								{{ $ls->belongstooptleavestatus?->status }}
 							@endif
 						</td>
 					</tr>
@@ -359,12 +359,18 @@ $(document).ready(function(){
 
 /////////////////////////////////////////////////////////////////////////////////////////
 // datatables
-$.fn.dataTable.moment( 'D MMM YYYY' );
+// $.fn.dataTable.moment( 'D MMM YYYY' );
 $.fn.dataTable.moment( 'D MMM YYYY h:mm a' );
 $('#leave').DataTable({
 	"lengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "All"] ],
-	"order": [[2, "asc" ]],	// sorting the 6th column descending
+	"columnDefs": [ { type: 'date', 'targets': [2] } ],
+	"order": [[2, "desc" ]],	// sorting the 6th column descending
 	responsive: true
-});
+})
+.on( 'length.dt page.dt order.dt search.dt', function ( e, settings, len ) {
+	$(document).ready(function(){
+		$('[data-bs-toggle="tooltip"]').tooltip();
+	});}
+);
 
 @endsection

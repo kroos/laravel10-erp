@@ -3,10 +3,15 @@
 namespace App\Http\Controllers\HumanResources\Config;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+
+// for controller output
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\View\View;
 
 // load model
 use App\Model\HumanResources\WorkingHour;
-use Illuminate\Http\Request;
 use \Carbon\Carbon;
 use Session;
 
@@ -17,17 +22,17 @@ class WorkingHourController extends Controller
 		$this->middleware('auth');
 	}
 
-	public function index()
+	public function index(): View
 	{
 		return view('humanresources.config.index');
 	}
 
-	public function create()
+	public function create(): View
 	{
 		return view('workinghour.create');
 	}
 
-	public function store(Request $request)
+	public function store(Request $request): RedirectResponse
 	{
 		$datefrom = Carbon::parse($request->effective_date_start);
 		$dateto = Carbon::parse($request->effective_date_end);
@@ -150,21 +155,21 @@ class WorkingHourController extends Controller
 				'remarks' => 'Maintenance - Half Day Leave'
 			],
 		]);
-		Session::flash('flash_message', 'Data successfully edited!');
+		Session::flash('flash_message', 'Data successfully inserted!');
 		return redirect( route('workingHour.index') );
 	}
 
-	public function show(WorkingHour $workingHour)
+	public function show(WorkingHour $workingHour): View
 	{
 	//
 	}
 
-	public function edit(WorkingHour $workingHour)
+	public function edit(WorkingHour $workingHour): View
 	{
 		return view('generalAndAdministrative.hr.hrsettings.workinghour.edit', compact(['workingHour']) );
 	}
 
-	public function update(Request $request, WorkingHour $workingHour)
+	public function update(Request $request, WorkingHour $workingHour): RedirectResponse
 	{
 		$t = WorkingHour::where('id', $workingHour->id)->update([
 			'time_start_am' => Carbon::parse($request->time_start_am)->format('H:i:s'),
@@ -178,7 +183,7 @@ class WorkingHourController extends Controller
 		return redirect( route('workingHour.index') );
 	}
 
-	public function destroy(WorkingHour $workingHour)
+	public function destroy(WorkingHour $workingHour): RedirectResponse
 	{
 
 	}

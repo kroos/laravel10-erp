@@ -162,7 +162,7 @@
 				<!-- <article class="blog-post">
 					<h2 class="display-5 link-body-emphasis mb-1">Sample blog post</h2>
 					<p class="blog-post-meta">January 1, 2021 by <a href="#">Mark</a></p>
-					
+
 					<p>This blog post shows a few different types of content that’s supported and styled with Bootstrap. Basic typography, lists, tables, images, code, and more are all supported as expected.</p>
 					<hr>
 					<p>This is some additional paragraph placeholder content. It has been written to fill the available space and show how a longer snippet of text affects the surrounding content. We'll repeat it often to keep the demonstration flowing, so be on the lookout for this exact same string of text.</p>
@@ -216,7 +216,7 @@
 				<!-- <article class="blog-post">
 					<h2 class="display-5 link-body-emphasis mb-1">Another blog post</h2>
 					<p class="blog-post-meta">December 23, 2020 by <a href="#">Jacob</a></p>
-					
+
 					<p>This is some additional paragraph placeholder content. It has been written to fill the available space and show how a longer snippet of text affects the surrounding content. We'll repeat it often to keep the demonstration flowing, so be on the lookout for this exact same string of text.</p>
 					<blockquote>
 						<p>Longer quote goes here, maybe with some <strong>emphasized text</strong> in the middle of it.</p>
@@ -257,14 +257,14 @@
 							</tr>
 						</tfoot>
 					</table>
-					
+
 					<p>This is some additional paragraph placeholder content. It's a slightly shorter version of the other highly repetitive body text used throughout.</p>
 				</article> -->
 
 				<!-- <article class="blog-post">
 					<h2 class="display-5 link-body-emphasis mb-1">New feature</h2>
 					<p class="blog-post-meta">December 14, 2020 by <a href="#">Chris</a></p>
-					
+
 					<p>This is some additional paragraph placeholder content. It has been written to fill the available space and show how a longer snippet of text affects the surrounding content. We'll repeat it often to keep the demonstration flowing, so be on the lookout for this exact same string of text.</p>
 					<ul>
 						<li>First list item</li>
@@ -358,10 +358,11 @@
 		<p>{{ config('app.name') }} made from <a href="https://getbootstrap.com/">Bootstrap</a> & <a href="https://laravel.com">Laravel v.{{ app()->version() }}</a> by <a href="{{ url('/') }}">IT Department</a>.</p>
 	</footer>
 </body>
-<script type="text/javascript" src="{{ asset('js/app.js') }}"></script>
-<script type="text/javascript" src="{{ asset('js/ckeditor/ckeditor.js') }}"></script>
-<script type="text/javascript" src="{{ asset('js/ckeditor/adapters/jquery.js') }}"></script>
-<script type="text/javascript" >
+<script src="{{ asset('js/app.js') }}"></script>
+<script src="{{ asset('js/fullcalendar/index.global.js') }}"></script>
+<script src="{{ asset('js/ckeditor/ckeditor.js') }}"></script>
+<script src="{{ asset('js/ckeditor/adapters/jquery.js') }}"></script>
+<script >
 	jQuery.noConflict ();
 	(function($){
 		$(document).ready(function(){
@@ -369,6 +370,10 @@
 			@show
 		});
 	})(jQuery);
+</script>
+<script>
+	@section('fullcalendar')
+	@show
 </script>
 </html>
 

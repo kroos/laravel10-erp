@@ -1,6 +1,33 @@
 @extends('layouts.app')
 
 @section('content')
+<div class="col-sm-12 row">
+@include('humanresources.hrdept.navhr')
+	<h4>Attendance</h4>
+	<div class="">
+		<div class="d-flex justify-content-center">
+			{!! $sa->links() !!} <!-- check this for this type of pagination -->
+		</div>
+		<table id="attendance" class="table table-hover table-sm align-middle" style="font-size:12px">
+			<thead>
+				<tr>
+					<th>ID</th>
+					<th>Name</th>
+					<th>Type</th>
+					<th>Cause</th>
+					<th>Leave</th>
+					<th>Date</th>
+					<th>In</th>
+					<th>Break</th>
+					<th>Resume</th>
+					<th>Out</th>
+					<th>Duration</th>
+					<th>Overtime</th>
+					<th>Remarks</th>
+					<th>Exception</th>
+				</tr>
+			</thead>
+			<tbody>
 <?php
 // load facade
 use Illuminate\Database\Eloquent\Builder;
@@ -30,56 +57,6 @@ $branch = $dept->branch_id;
 $category = $dept->category_id;
 $i = 1;
 ?>
-
-<div class="col-sm-12 row">
-@include('humanresources.hrdept.navhr')
-	<h4>Attendance</h4>
-	<div>
-
-	<form id="myForm" method="POST" action="{{ route('attendance.index') }}">
-		<div class="row mt-3">
-			<div class="col-md-9"></div>
-            <div class="col-md-2">
-				{!! Form::text( 'date', @$date, ['class' => 'form-control date-search', 'id' => 'date'] ) !!}
-            </div>
-            <div class="col-md-1">
-				<button type="button" onclick="submitForm()" class="btn btn-sm btn-outline-secondary">Search</button>
-            </div>
-        </div>
-	</form>
-
-	<script>
-	function submitForm() {
-		const form = document.getElementById('myForm');
-		const formData = new FormData(form);
-		const queryParams = new URLSearchParams(formData).toString();
-		window.location.href = "{{ route('attendance.index') }}?" + queryParams;
-	}
-	</script>
-
-	<br/>
-
-		<table id="attendance" class="table table-hover table-sm align-middle" style="font-size:12px">
-			<thead>
-				<tr>
-					<th>ID</th>
-					<th>Name</th>
-					<th>Type</th>
-					<th>Cause</th>
-					<th>Leave</th>
-					<th>Date</th>
-					<th>In</th>
-					<th>Break</th>
-					<th>Resume</th>
-					<th>Out</th>
-					<th>Duration</th>
-					<th>Overtime</th>
-					<th>Remarks</th>
-					<th>Exception</th>
-				</tr>
-			</thead>
-			<tbody>
-
 			@foreach($attendance as $s)
 <?php
 // dump($s);
@@ -116,6 +93,7 @@ if ($me1) {																				// hod
 } else {
 	$ha = false;
 }
+
 ?>
 			@if($ha)
 <?php
@@ -503,9 +481,7 @@ if($l) {
 ?>
 				<tr>
 					<td>
-						<a href="{{ route('attendance.edit', $s->id) }}">
-						{{ $s->belongstostaff?->hasmanylogin()->where('active', 1)->first()?->username }}
-</a>
+						<a href="{{ route('attendance.edit', $s->id) }}">{{ $s->belongstostaff?->hasmanylogin()->where('active', 1)->first()?->username }}</a>
 					</td>
 					<td>{{ $s->name }}</td>
 					<td>{{ $dayt }}</td>
@@ -517,7 +493,7 @@ if($l) {
 					<td><span class="{{ ($resume)?'text-info':((Carbon::parse($s->resume)->gt($wh->time_start_pm))?'text-danger':'') }}">{{ ($resume)?'':Carbon::parse($s->resume)->format('g:i a') }}</span></td>
 					<td><span class="
 							<?php
-								if($out){																													// no punch out
+								if($out) {																													// no punch out
 									echo 'text-info';
 								} else {																													// punch out
 									if($o) {																												// punch out | OT
@@ -547,14 +523,17 @@ if($l) {
 					<td>{{ $s->remarks }}</td>
 					<td>{{ $s->exception }}</td>
 				</tr>
+<a href=""></a>
 			@endif
 			@endforeach
 			</tbody>
 		</table>
 	</div>
+	<div class="d-flex justify-content-center">
+		{!! $sa->links() !!} <!-- check this for this type of pagination -->
+	</div>
 </div>
 @endsection
-
 
 @section('js')
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -566,10 +545,17 @@ $(document).ready(function(){
 /////////////////////////////////////////////////////////////////////////////////////////
 // datatables
 $.fn.dataTable.moment( 'D MMM YYYY' );
-$.fn.dataTable.moment( 'D MMM YYYY h:mm a' );
+$.fn.dataTable.moment( 'h:mm a' );
 $('#attendance').DataTable({
 	"paging": false,
 	"lengthMenu": [ [-1], ["All"] ],
+	"columnDefs": [
+					{ type: 'date', 'targets': [5] },
+					{ type: 'time', 'targets': [6] },
+					{ type: 'time', 'targets': [7] },
+					{ type: 'time', 'targets': [8] },
+					{ type: 'time', 'targets': [9] },
+				],
 	"order": [[ 0, 'asc' ], [ 1, 'asc' ]],	// sorting the 6th column descending
 	responsive: true
 })
@@ -578,22 +564,4 @@ $('#attendance').DataTable({
 		$('[data-bs-toggle="tooltip"]').tooltip();
 	});}
 );
-
-/////////////////////////////////////////////////////////////////////////////////////////
-// DATETIME PICKER
-$('.date-search').datetimepicker({
-	icons: {
-		time: "fas fas-regular fa-clock fa-beat",
-		date: "fas fas-regular fa-calendar fa-beat",
-		up: "fa-regular fa-circle-up fa-beat",
-		down: "fa-regular fa-circle-down fa-beat",
-		previous: 'fas fas-regular fa-arrow-left fa-beat',
-		next: 'fas fas-regular fa-arrow-right fa-beat',
-		today: 'fas fas-regular fa-calenday-day fa-beat',
-		clear: 'fas fas-regular fa-broom-wide fa-beat',
-		close: 'fas fas-regular fa-rectangle-xmark fa-beat'
-	},
-	format: 'YYYY-MM-DD',
-	useCurrent: true,
-});
 @endsection

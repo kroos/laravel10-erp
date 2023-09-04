@@ -38,7 +38,8 @@ Route::post('/status', [AjaxDBController::class, 'status'])->name('status.status
 Route::post('/department', [AjaxDBController::class, 'department'])->name('department.department');
 Route::post('/restdaygroup', [AjaxDBController::class, 'restdaygroup'])->name('restdaygroup.restdaygroup');
 Route::post('/staffcrossbackup', [AjaxDBController::class, 'staffcrossbackup'])->name('staffcrossbackup.staffcrossbackup');
-
+Route::post('/unblockhalfdayleave', [AjaxDBController::class, 'unblockhalfdayleave'])->name('unblockhalfdayleave.unblockhalfdayleave');
+Route::post('/leaveevents', [AjaxDBController::class, 'leaveevents'])->name('leaveevents');
 
 // Route::get('/login/{login}', [
 // 	'as' => 'login.edit',

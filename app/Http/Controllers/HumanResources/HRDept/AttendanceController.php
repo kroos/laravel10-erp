@@ -4,16 +4,17 @@ namespace App\Http\Controllers\HumanResources\HRDept;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+
+
+// for controller output
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\View\View;
 
 // load validation
 use App\Http\Requests\HumanResources\Attendance\AttendanceRequestUpdate;
 
 use Illuminate\Support\Facades\DB;
-
-// load cursor pagination
-use Illuminate\Pagination\CursorPaginator;
 
 // load models
 use App\Models\HumanResources\HRAttendance;
@@ -22,11 +23,11 @@ use App\Models\Staff;
 // load paginator
 use Illuminate\Pagination\Paginator;
 
+// load cursor pagination
+use Illuminate\Pagination\CursorPaginator;
+
 // load array helper
 use Illuminate\Support\Arr;
-
-// for viewing
-use Illuminate\View\View;
 
 // load Carbon
 use \Carbon\Carbon;
@@ -47,50 +48,37 @@ class AttendanceController extends Controller
 	/**
 	 * Display a listing of the resource.
 	 */
-	public function index(Request $request)/*: View*/
+	public function index(): View
 	{
-		// Paginator::useBootstrapFive();
-		// $sa = HRAttendance::SelectRaw('COUNT(hr_attendances.staff_id) as totalactivestaff,  hr_attendances.attend_date')
-		// 	->join('staffs', 'hr_attendances.staff_id', '=', 'staffs.id')
-		// 	->where('staffs.active', 1)
-		// 	->groupBy('hr_attendances.attend_date')
-		// 	->orderBy('hr_attendances.attend_date', 'DESC')
-		// 	->cursorPaginate(1);
-
-		// $attendance = HRAttendance::join('staffs', 'hr_attendances.staff_id', '=', 'staffs.id')
-		// 	->select('hr_attendances.id as id', 'staff_id', 'daytype_id', 'attendance_type_id', 'attend_date', 'in', 'break', 'resume', 'out', 'time_work_hour', 'work_hour', 'leave_taken', 'remark', 'hr_remark', 'exception', 'hr_attendances.created_at as created_at', 'hr_attendances.updated_at as updated_at', 'hr_attendances.deleted_at as deleted_at', 'staffs.name as name', 'staffs.restday_group_id as restday_group_id', 'staffs.active as active')
-		// 	->where('staffs.active', 1)
-		// 	->whereDate('hr_attendances.attend_date', $sa->first()->attend_date)
-		// 	->orderBy('hr_attendances.attend_date', 'DESC')/*->ddRawSql();*/
-		// 	->cursorPaginate($sa->first()->totalactivestaff);
-
-		if ($request->has('date')) {
-			$date = $request->query('date');
-		} else {
-			$date = Carbon::now()->format('Y-m-d');;
-		}
+		Paginator::useBootstrapFive();
+		$sa = HRAttendance::SelectRaw('COUNT(hr_attendances.staff_id) as totalactivestaff,  hr_attendances.attend_date')
+			->join('staffs', 'hr_attendances.staff_id', '=', 'staffs.id')
+			->where('staffs.active', 1)
+			->groupBy('hr_attendances.attend_date')
+			->orderBy('hr_attendances.attend_date', 'DESC')
+			->cursorPaginate(1);
 
 		$attendance = HRAttendance::join('staffs', 'hr_attendances.staff_id', '=', 'staffs.id')
 			->select('hr_attendances.id as id', 'staff_id', 'daytype_id', 'attendance_type_id', 'attend_date', 'in', 'break', 'resume', 'out', 'time_work_hour', 'work_hour', 'leave_taken', 'remark', 'hr_remark', 'exception', 'hr_attendances.created_at as created_at', 'hr_attendances.updated_at as updated_at', 'hr_attendances.deleted_at as deleted_at', 'staffs.name as name', 'staffs.restday_group_id as restday_group_id', 'staffs.active as active')
 			->where('staffs.active', 1)
-			->whereDate('hr_attendances.attend_date', $date)
-			->orderBy('hr_attendances.attend_date', 'DESC')
-			->get();
+			->whereDate('hr_attendances.attend_date', $sa->first()->attend_date)
+			->orderBy('hr_attendances.attend_date', 'DESC')/*->ddRawSql();*/
+			->cursorPaginate($sa->first()->totalactivestaff);
 
-		return view('humanresources.hrdept.attendance.index', ['attendance' => $attendance, 'date' => $date]);
+		return view('humanresources.hrdept.attendance.index', ['attendance' => $attendance, 'sa' => $sa]);
 	}
 
 	/**
 	 * Show the form for creating a new resource.
 	 */
-	public function create()
+	public function create(): View
 	{
 	}
 
 	/**
 	 * Store a newly created resource in storage.
 	 */
-	public function store(Request $request, Staff $staff)
+	public function store(Request $request, HRAttendance $attendance): RedirectResponse
 	{
 		//
 	}
@@ -98,17 +86,17 @@ class AttendanceController extends Controller
 	/**
 	 * Display the specified resource.
 	 */
-	public function show(Staff $staff)
+	public function show(HRAttendance $attendance): View
 	{
-		return view('humanresources.hrdept.attendance.show', ['staff' => $staff]);
+		return view('humanresources.hrdept.attendance.show', ['attendance' => $attendance]);
 	}
 
 	/**
 	 * Show the form for editing the specified resource.
 	 */
-	public function edit(HRAttendance $attendance)
+	public function edit(HRAttendance $attendance): View
 	{
-		return view('humanresources.hrdept.attendance.edit', compact('attendance'));
+		return view('humanresources.hrdept.attendance.edit', ['attendance' => $attendance]);
 	}
 
 	/**
@@ -141,7 +129,7 @@ class AttendanceController extends Controller
 	/**
 	 * Remove the specified resource from storage.
 	 */
-	public function destroy(Staff $staff)
+	public function destroy(HRAttendance $attendance): RedirectResponse
 	{
 		//
 	}
