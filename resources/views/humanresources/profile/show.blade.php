@@ -20,8 +20,10 @@ $childrens = $profile->hasmanychildren()->get();
     <div class="col-md-10 border-right">
       <div class="p-1 py-3">
         <div class="row">
-          <div class="d-flex justify-content-between align-items-center">
+          <div class="d-flex justify-content-between align-items-center col-md-2">
             <h4 class="text-right">Staff Profile</h4>
+          </div>
+          <div class="col-md-10">
             <a href="{{ route('profile.edit', $profile->id) }}">
               <button class="btn btn-sm btn-outline-secondary">EDIT</button>
             </a>
@@ -131,7 +133,7 @@ $childrens = $profile->hasmanychildren()->get();
           </div>
         </div>
 
-
+        @if ($emergencies->count() != 0)
         <div class="row">
           <div class="d-flex justify-content-between align-items-center">
             <h4 class="text-right">Emergency Contact</h4>
@@ -215,8 +217,10 @@ $childrens = $profile->hasmanychildren()->get();
             </div>
           </div>
         </div>
+        @endif
 
 
+        @if ($spouses->count() != 0)
         <div class="row">
           <div class="d-flex justify-content-between align-items-center">
             <h4 class="text-right">Spouse</h4>
@@ -308,8 +312,10 @@ $childrens = $profile->hasmanychildren()->get();
             </div>
           </div>
         </div>
+        @endif
 
 
+        @if ($childrens->count() != 0)
         <div class="row">
           <div class="d-flex justify-content-between align-items-center">
             <h4 class="text-right">Children</h4>
@@ -407,6 +413,7 @@ $childrens = $profile->hasmanychildren()->get();
             </div>
           </div>
         </div>
+        @endif
 
       </div>
     </div>
