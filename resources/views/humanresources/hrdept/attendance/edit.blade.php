@@ -14,6 +14,13 @@ $tcms = App\Models\HumanResources\OptTcms::pluck('leave_short', 'id')->sortKeys(
 
 $staff = $attendance->belongstostaff()->get()->first();
 $login = $staff->hasmanylogin()->where('active', '1')->get()->first();
+
+if ($attendance->time_work_hour != NULL || $attendance->time_work_hour != '') {
+  $time_work_hour = $attendance->time_work_hour;
+} else {
+  $time_work_hour = '00:00';
+}
+
 ?>
 
 <div class="col-12">
@@ -50,7 +57,7 @@ $login = $staff->hasmanylogin()->where('active', '1')->get()->first();
           {!! Form::label( 'date', 'DATE', ['class' => 'form-control border-0'] ) !!}
         </div>
         <div class="col-md-9">
-          {!! Form::label( 'attend_date', @$attendance->attend_date, ['class' => 'form-control'] ) !!}
+          {!! Form::label( 'attend_date', @$attendance->attend_date, ['class' => 'form-control', 'id' => 'attend_date'] ) !!}
         </div>
       </div>
 
@@ -77,7 +84,7 @@ $login = $staff->hasmanylogin()->where('active', '1')->get()->first();
           {!! Form::label( 'in', 'IN', ['class' => 'form-control border-0'] ) !!}
         </div>
         <div class="col-md-9 {{ $errors->has('in') ? 'has-error' : '' }}">
-          {!! Form::text( 'in', @$attendance->in, ['class' => 'form-control time-input', 'id' => 'in'] ) !!}
+          {!! Form::text( 'in', @$attendance->in, ['class' => 'form-control in-input', 'id' => 'in'] ) !!}
         </div>
       </div>
 
@@ -86,7 +93,7 @@ $login = $staff->hasmanylogin()->where('active', '1')->get()->first();
           {!! Form::label( 'break', 'BREAK', ['class' => 'form-control border-0'] ) !!}
         </div>
         <div class="col-md-9 {{ $errors->has('break') ? 'has-error' : '' }}">
-          {!! Form::text( 'break', @$attendance->break, ['class' => 'form-control time-input', 'id' => 'break'] ) !!}
+          {!! Form::text( 'break', @$attendance->break, ['class' => 'form-control break-input', 'id' => 'break'] ) !!}
         </div>
       </div>
 
@@ -95,7 +102,7 @@ $login = $staff->hasmanylogin()->where('active', '1')->get()->first();
           {!! Form::label( 'resume', 'RESUME', ['class' => 'form-control border-0'] ) !!}
         </div>
         <div class="col-md-9 {{ $errors->has('resume') ? 'has-error' : '' }}">
-          {!! Form::text( 'resume', @$attendance->resume, ['class' => 'form-control time-input', 'id' => 'resume'] ) !!}
+          {!! Form::text( 'resume', @$attendance->resume, ['class' => 'form-control resume-input', 'id' => 'resume'] ) !!}
         </div>
       </div>
 
@@ -104,7 +111,7 @@ $login = $staff->hasmanylogin()->where('active', '1')->get()->first();
           {!! Form::label( 'out', 'OUT', ['class' => 'form-control border-0'] ) !!}
         </div>
         <div class="col-md-9 {{ $errors->has('out') ? 'has-error' : '' }}">
-          {!! Form::text( 'out', @$attendance->out, ['class' => 'form-control time-input', 'id' => 'out'] ) !!}
+          {!! Form::text( 'out', @$attendance->out, ['class' => 'form-control out-input', 'id' => 'out'] ) !!}
         </div>
       </div>
 
@@ -118,18 +125,12 @@ $login = $staff->hasmanylogin()->where('active', '1')->get()->first();
           {!! Form::label( 'duration', 'DURATION', ['class' => 'form-control border-0'] ) !!}
         </div>
         <div class="col-md-9 {{ $errors->has('time_work_hour') ? 'has-error' : '' }}">
-          <!-- {!! Form::text( 'time_work_hour', @$attendance->time_work_hour, ['class' => 'form-control time-input', 'id' => 'time_work_hour'] ) !!} -->
+          <!-- {!! Form::text( 'time_work_hour', @$value, ['class' => 'form-control duration-input', 'id' => 'time_work_hour'] ) !!} -->
+          <span class="form-control duration-input" id="time_work_hour">{{ @$time_work_hour }}</span>
         </div>
       </div>
 
-      <div class="row mt-2">
-        <div class="col-md-3">
-          {!! Form::label( 'overtime', 'OVERTIME', ['class' => 'form-control border-0'] ) !!}
-        </div>
-        <div class="col-md-9 {{ $errors->has('mobile') ? 'has-error' : '' }}">
-          <!-- {!! Form::text( 'time_work_hour', @$attendance->time_work_hour, ['class' => 'form-control time-input', 'id' => 'time_work_hour'] ) !!} -->
-        </div>
-      </div>
+
 
 
 
@@ -192,8 +193,115 @@ $login = $staff->hasmanylogin()->where('active', '1')->get()->first();
 
 @section('js')
 /////////////////////////////////////////////////////////////////////////////////////////
-// DATE PICKER
-$('.time-input').datetimepicker({
+// DATE PICKER IN
+$('.in-input').datetimepicker({
+icons: {
+time: "fas fas-regular fa-clock fa-beat",
+date: "fas fas-regular fa-calendar fa-beat",
+up: "fa-regular fa-circle-up fa-beat",
+down: "fa-regular fa-circle-down fa-beat",
+previous: 'fas fas-regular fa-arrow-left fa-beat',
+next: 'fas fas-regular fa-arrow-right fa-beat',
+today: 'fas fas-regular fa-calenday-day fa-beat',
+clear: 'fas fas-regular fa-broom-wide fa-beat',
+close: 'fas fas-regular fa-rectangle-xmark fa-beat'
+},
+format: 'HH:mm',
+useCurrent: false,
+})
+.on('dp.change dp.update', function(e) {
+  
+  const startTimeStr = $('#in').val();
+    const endTimeStr = $('#out').val();
+
+    // Validate input format (HH:mm)
+    const timeRegex = /^([01]\d|2[0-3]):([0-5]\d)$/;
+
+    if (timeRegex.test(startTimeStr) && timeRegex.test(endTimeStr)) {
+        // Split the time strings into hours and minutes
+        const startTimeParts = startTimeStr.split(':');
+        const endTimeParts = endTimeStr.split(':');
+
+        const startHours = parseInt(startTimeParts[0], 10);
+        const startMinutes = parseInt(startTimeParts[1], 10);
+        const endHours = parseInt(endTimeParts[0], 10);
+        const endMinutes = parseInt(endTimeParts[1], 10);
+
+        // Calculate time difference
+        const hoursDiff = endHours - startHours;
+        const minutesDiff = endMinutes - startMinutes;
+
+        // Ensure minutes are between 0 and 59
+        if (minutesDiff < 0) {
+            hoursDiff--;
+            minutesDiff += 60;
+        }
+
+        const formattedTimeDifference = `${hoursDiff.toString().padStart(2, '0')}:${minutesDiff.toString().padStart(2, '0')}`;
+        $('#time_work_hour').text(formattedTimeDifference);
+    } else {
+        $('#time_work_hour').text('Invalid Time Format');
+    }
+
+});
+
+
+// DATE PICKER OUT
+$('.break-input').datetimepicker({
+icons: {
+time: "fas fas-regular fa-clock fa-beat",
+date: "fas fas-regular fa-calendar fa-beat",
+up: "fa-regular fa-circle-up fa-beat",
+down: "fa-regular fa-circle-down fa-beat",
+previous: 'fas fas-regular fa-arrow-left fa-beat',
+next: 'fas fas-regular fa-arrow-right fa-beat',
+today: 'fas fas-regular fa-calenday-day fa-beat',
+clear: 'fas fas-regular fa-broom-wide fa-beat',
+close: 'fas fas-regular fa-rectangle-xmark fa-beat'
+},
+format: 'HH:mm',
+useCurrent: false,
+});
+
+
+// DATE PICKER RESUME
+$('.resume-input').datetimepicker({
+icons: {
+time: "fas fas-regular fa-clock fa-beat",
+date: "fas fas-regular fa-calendar fa-beat",
+up: "fa-regular fa-circle-up fa-beat",
+down: "fa-regular fa-circle-down fa-beat",
+previous: 'fas fas-regular fa-arrow-left fa-beat',
+next: 'fas fas-regular fa-arrow-right fa-beat',
+today: 'fas fas-regular fa-calenday-day fa-beat',
+clear: 'fas fas-regular fa-broom-wide fa-beat',
+close: 'fas fas-regular fa-rectangle-xmark fa-beat'
+},
+format: 'HH:mm',
+useCurrent: false,
+});
+
+
+// DATE PICKER OUT
+$('.out-input').datetimepicker({
+icons: {
+time: "fas fas-regular fa-clock fa-beat",
+date: "fas fas-regular fa-calendar fa-beat",
+up: "fa-regular fa-circle-up fa-beat",
+down: "fa-regular fa-circle-down fa-beat",
+previous: 'fas fas-regular fa-arrow-left fa-beat',
+next: 'fas fas-regular fa-arrow-right fa-beat',
+today: 'fas fas-regular fa-calenday-day fa-beat',
+clear: 'fas fas-regular fa-broom-wide fa-beat',
+close: 'fas fas-regular fa-rectangle-xmark fa-beat'
+},
+format: 'HH:mm',
+useCurrent: false,
+});
+
+
+// DATE PICKER DURATION
+$('.duration-input').datetimepicker({
 icons: {
 time: "fas fas-regular fa-clock fa-beat",
 date: "fas fas-regular fa-calendar fa-beat",
