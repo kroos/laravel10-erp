@@ -49,6 +49,16 @@ document.addEventListener('DOMContentLoaded', function() {
 		initialView: 'dayGridMonth',
 		weekNumbers: true,
 		themeSystem: 'bootstrap',
+		events: {
+			url: '{{ route('leaveevents') }}',
+			method: 'POST',
+			extraParams: {
+				_token: '{!! csrf_token() !!}',
+			},
+		},
+		failure: function() {
+			alert('There was an error while fetching leaves!');
+		},
 	});
 	calendar.render();
 });

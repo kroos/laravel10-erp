@@ -69,7 +69,7 @@ class StaffController extends Controller
 	 */
 	public function edit(Staff $staff): View
 	{
-		return view('humanresources.hrdept.staff.edit', compact(['staff']));
+		return view('humanresources.hrdept.staff.edit', ['staff' => $staff]);
 	}
 
 	/**
