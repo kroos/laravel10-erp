@@ -51,9 +51,13 @@ class StaffController extends Controller
 	/**
 	 * Store a newly created resource in storage.
 	 */
-	public function store(Request $request, Staff $staff): RedirectResponse
+	public function store(Request $request, Staff $staff)/*: RedirectResponse*/
 	{
-		//
+		dd($request->all());
+		// Session::flash('flash_danger', 'Please make sure your applied leave does not exceed your available leave balance');
+		// return redirect()->back();
+		// Session::flash('flash_message', 'Successfully Applied Leave.');
+		// return redirect()->route('staff.index');
 	}
 
 	/**

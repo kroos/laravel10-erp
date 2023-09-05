@@ -13,7 +13,7 @@ use App\Models\HumanResources\HRLeaveApprovalFlow;
 @section('content')
 <div class="container justify-content-center align-items-start">
 @include('humanresources.hrdept.navhr')
-	<h4 class="align-items-start">Add Staff</h4>
+	<h4 class="align-items-start">Edit Staff</h4>
 	{{ Form::model($staff, ['route' => ['staff.update', $staff->id]], ['id' => 'form', 'class' => 'form-horizontal', 'autocomplete' => 'off', 'files' => true]) }}
 
 	<div class="row justify-content-center">
@@ -179,30 +179,28 @@ use App\Models\HumanResources\HRLeaveApprovalFlow;
 					</div>
 				</div>
 				<div class="row mb-1 g-1 spouse_wrap">
-					<div class="row spouse_row">
-						<div class="col-auto mb-1 g-1 ">
-							<button class="btn btn-sm btn-outline-secondary spouse_remove" type="button">
-								<i class="fas fa-trash" aria-hidden="true"></i>
-							</button>
-						</div>
-
-						@if($staff->hasmanyspouse()->get()->count())
-							@foreach($staff->hasmanyspouse()->get() as $spouse)
+					@if($staff->hasmanyspouse()->get()->count())
+						<?php $i=1 ?>
+						@foreach($staff->hasmanyspouse()->get() as $spouse)
+							<div class="row spouse_row">
+								<div class="col-auto mb-1 g-1 ">
+									<button class="btn btn-sm btn-outline-secondary spouse_delete" data-id="{{ $spouse->id }}" type="button">
+										<i class="fas fa-trash" aria-hidden="true"></i>
+									</button>
+								</div>
 								<div class="col-auto mb-1 g-1 form-group {{ $errors->has('staffspouse.*.spouse') ? 'has-error' : '' }}">
-									<input type="text" name="staffspouse[1][spouse]" id="spo" value="{{ $spouse->spouse }}" class="form-control form-control-sm" placeholder="Spouse">
+									<input type="text" name="staffspouse[{{ $i }}][spouse]" id="spo" value="{{ $spouse->spouse }}" class="form-control form-control-sm" placeholder="Spouse">
 								</div>
-
 								<div class="col-auto mb-1 g-1 form-group {{ $errors->has('staffspouse.*.phone') ? 'has-error' : '' }}">
-									<input type="text" name="staffspouse[1][phone]" id="pho" class="form-control form-control-sm" placeholder="Spouse Phone">
+									<input type="text" name="staffspouse[{{ $i }}][phone]" value="{{ $spouse->phone }}" id="pho" class="form-control form-control-sm" placeholder="Spouse Phone">
 								</div>
-
 								<div class="col-auto mb-1 g-1 form-group {{ $errors->has('staffspouse.*.profession') ? 'has-error' : '' }}">
-									<input type="text" name="staffspouse[1][profession]" id="pro" class="form-control form-control-sm" placeholder="Spouse Profession">
+									<input type="text" name="staffspouse[{{ $i }}][profession]" value="{{ $spouse->profession }}" id="pro" class="form-control form-control-sm" placeholder="Spouse Profession">
 								</div>
-							@endforeach
-						@endif
-
-					</div>
+							</div>
+							<?php $i++ ?>
+						@endforeach
+					@endif
 				</div>
 			</div>
 			<p>&nbsp;</p>
@@ -218,41 +216,56 @@ use App\Models\HumanResources\HRLeaveApprovalFlow;
 					</div>
 				</div>
 				<div class="row mb-1 g-1 children_wrap">
-					<div class="row children_row">
-						<div class="col-auto mb-1 g-1 ">
-							<button class="btn btn-sm btn-outline-secondary children_remove" type="button">
-								<i class="fas fa-trash" aria-hidden="true"></i>
-							</button>
-						</div>
+					@if($staff->hasmanychildren()->get()->count())
+						<?php $i=1 ?>
+						@foreach($staff->hasmanychildren()->get() as $child)
+							<div class="row children_row">
+								<div class="col-auto mb-1 g-1 ">
+									<button class="btn btn-sm btn-outline-secondary children_delete" data-id="{{ $child->id }}" type="button">
+										<i class="fas fa-trash" aria-hidden="true"></i>
+									</button>
+								</div>
+								<div class="col-auto mb-1 g-1 form-group {{ $errors->has('staffchildren.*.children') ? 'has-error' : '' }}">
+									<input type="text" name="staffchildren[{{ $i }}][children]" value="{{ $child->children }}" id="chi_1" class="form-control form-control-sm" placeholder="Children">
+								</div>
+								<div class="col-auto mb-1 g-1 form-group {{ $errors->has('staffchildren.*.gender_id') ? 'has-error' : '' }}">
+									<select name="staffchildren[{{ $i }}][gender_id]" id="cge_{{ $i }}" class="form-select form-select-sm" placeholder="Gender">
+									@foreach(\App\Models\HumanResources\OptGender::all() as $g)
+										<option id="{{ $g->id }}" {{ ($g->id == $child->gender_id)?'selected':NULL }}>{{ $g->gender }}</option>
+									@endforeach
+									</select>
+								</div>
+								<div class="col-auto mb-1 g-1 form-group {{ $errors->has('staffchildren.*.education_level_id') ? 'has-error' : '' }}">
+									<select name="staffchildren[{{ $i }}][education_level_id]" id="cel_{{ $i }}" class="form-select form-select-sm" placeholder="Education Level">
+									@foreach(\App\Models\HumanResources\OptEducationLevel::all() as $el)
+										<option id="{{ $el->id }}" {{ ($el->id == $child->education_level_id)?'selected':NULL }}>{{ $el->education_level }}</option>
+									@endforeach
+									</select>
+								</div>
+								<div class="col-auto mb-1 gx-6 form-group {{ $errors->has('staffchildren.*.health_status_id') ? 'has-error' : '' }}">
+									<select name="staffchildren[{{ $i }}][health_status_id]" id="chs_{{ $i }}" class="form-select form-select-sm" placeholder="Health Status">
+									@foreach(\App\Models\HumanResources\OptHealthStatus::all() as $hs)
+										<option id="{{ $hs->id }}" {{ ($hs->id == $child->health_status_id)?'selected':NULL }}>{{ $hs->health_status }}</option>
+									@endforeach
+									</select>
+								</div>
+								<div class="form-group form-check col-auto mb-1 gx-6 {{ $errors->has('staffchildren.*.tax_exemption') ? 'has-error' : '' }}">
+									<input type="hidden" name="staffchildren[{{ $i }}][tax_exemption]" class="form-check-input" value="0">
+									<input type="checkbox" name="staffchildren[{{ $i }}][tax_exemption]" class="form-check-input" value="1" id="cte_{{ $i }}" {{ ($child->tax_exemption)?'checked':NULL }}>
+									<label class="form-check-label" for="cte_{{ $i }}">Valid for Tax Exemption?</label>
+								</div>
+								<div class="col-auto mb-1 g-1 form-group {{ $errors->has('staffchildren.*.tax_exemption_percentage_id') ? 'has-error' : '' }}">
+									<select name="staffchildren[{{ $i }}][tax_exemption_percentage_id]" id="ctep_{{ $i }}" class="form-select form-select-sm" placeholder="Tax Exemption Percentage">
+									@foreach(\App\Models\HumanResources\OptTaxExemptionPercentage::all() as $tep)
+										<option id="{{ $tep->id }}" {{ ($tep->id == $child->tax_exemption_percentage_id)?'selected':NULL }}>{{ $tep->tax_exemption_percentage }}</option>
+									@endforeach
+									</select>
+								</div>
 
-						<div class="col-auto mb-1 g-1 form-group {{ $errors->has('staffchildren.*.children') ? 'has-error' : '' }}">
-							<input type="text" name="staffchildren[1][children]" id="chi_1" class="form-control form-control-sm" placeholder="Children">
-						</div>
-
-						<div class="col-auto mb-1 g-1 form-group {{ $errors->has('staffchildren.*.gender_id') ? 'has-error' : '' }}">
-							<select name="staffchildren[1][gender_id]" id="cge_1" class="form-select form-select-sm" placeholder="Gender"></select>
-						</div>
-
-						<div class="col-auto mb-1 g-1 form-group {{ $errors->has('staffchildren.*.education_level_id') ? 'has-error' : '' }}">
-							<select name="staffchildren[1][education_level_id]" id="cel_1" class="form-select form-select-sm" placeholder="Education Level"></select>
-						</div>
-
-						<div class="col-auto mb-1 gx-6 form-group {{ $errors->has('staffchildren.*.health_status_id') ? 'has-error' : '' }}">
-							<select name="staffchildren[1][health_status_id]" id="chs_1" class="form-select form-select-sm" placeholder="Health Status"></select>
-						</div>
-
-						<div class="form-group form-check col-auto mb-1 gx-6 {{ $errors->has('staffchildren.*.tax_exemption') ? 'has-error' : '' }}">
-							<input type="hidden" name="staffchildren[1][tax_exemption]" class="form-check-input" value="No">
-							<input type="checkbox" name="staffchildren[1][tax_exemption]" class="form-check-input" value="Yes" id="cte_1">
-							<label class="form-check-label" for="cte_1">Valid for Tax Exemption?</label>
-						</div>
-
-
-						<div class="col-auto mb-1 g-1 form-group {{ $errors->has('staffchildren.*.tax_exemption_percentage_id') ? 'has-error' : '' }}">
-							<select name="staffchildren[1][tax_exemption_percentage_id]" id="ctep_1" class="form-select form-select-sm" placeholder="Tax Exemption Percentage"></select>
-						</div>
-
-					</div>
+							</div>
+							<?php $i++ ?>
+						@endforeach
+					@endif
 				</div>
 			</div>
 
@@ -269,25 +282,35 @@ use App\Models\HumanResources\HRLeaveApprovalFlow;
 					</div>
 				</div>
 				<div class="row mb-1 g-1 emergency_wrap">
-					<div class="row emergency_row">
-						<div class="col-auto mb-1 g-1 ">
-							<button class="btn btn-sm btn-outline-secondary emergency_remove" type="button">
-								<i class="fas fa-trash" aria-hidden="true"></i>
-							</button>
-						</div>
-						<div class="col-auto mb-1 g-1 form-group {{ $errors->has('staffemergency.*.contact_person') ? 'has-error' : '' }}">
-							<input type="text" name="staffemergency[1][contact_person]" id="ecp_1" class="form-control form-control-sm" placeholder="Emergency Contact">
-						</div>
-						<div class="col-auto mb-1 g-1 form-group {{ $errors->has('staffemergency.*.phone') ? 'has-error' : '' }}">
-							<input type="text" name="staffemergency[1][phone]" id="epp_1" class="form-control form-control-sm" placeholder="Phone">
-						</div>
-						<div class="col-auto mb-1 g-1 form-group {{ $errors->has('staffemergency.*.relationship_id') ? 'has-error' : '' }}">
-							<select name="staffemergency[1][relationship_id]" id="ere_1" class="form-select form-select-sm" placeholder="Relationship"></select>
-						</div>
-						<div class="col-auto mb-1 gx-1 form-group {{ $errors->has('staffemergency.*.address') ? 'has-error' : '' }}">
-							<input type="textarea" name="staffemergency[1][address]" id="ead_1" class="form-control form-control-sm" placeholder="Address">
-						</div>
-					</div>
+					@if($staff->hasmanyemergency()->get()->count())
+						<?php $i=1 ?>
+						@foreach($staff->hasmanyemergency()->get() as $emerg)
+							<div class="row emergency_row">
+								<div class="col-auto mb-1 g-1 ">
+									<button class="btn btn-sm btn-outline-secondary emergency_delete" data-id="{{ $emerg->id }}" type="button">
+										<i class="fas fa-trash" aria-hidden="true"></i>
+									</button>
+								</div>
+								<div class="col-auto mb-1 g-1 form-group {{ $errors->has('staffemergency.*.contact_person') ? 'has-error' : '' }}">
+									<input type="text" name="staffemergency[{{ $i }}][contact_person]" value="{{ $emerg->contact_person }}" id="ecp_{{ $i }}" class="form-control form-control-sm" placeholder="Emergency Contact">
+								</div>
+								<div class="col-auto mb-1 g-1 form-group {{ $errors->has('staffemergency.*.phone') ? 'has-error' : '' }}">
+									<input type="text" name="staffemergency[{{ $i }}][phone]" value="{{ $emerg->phone }}" id="epp_{{ $i }}" class="form-control form-control-sm" placeholder="Phone">
+								</div>
+								<div class="col-auto mb-1 g-1 form-group {{ $errors->has('staffemergency.*.relationship_id') ? 'has-error' : '' }}">
+									<select name="staffemergency[{{ $i }}][relationship_id]" id="ere_{{ $i }}" class="form-select form-select-sm" placeholder="Relationship">
+										@foreach(\App\Models\HumanResources\OptRelationship::all() as $rel)
+											<option id="{{ $rel->id }}" {{ ($rel->id == $emerg->relationship_id)?'selected':NULL }}>{{ $rel->relationship }}</option>
+										@endforeach
+									</select>
+								</div>
+								<div class="col-auto mb-1 gx-1 form-group {{ $errors->has('staffemergency.*.address') ? 'has-error' : '' }}">
+									<input type="textarea" name="staffemergency[{{ $i }}][address]" value="{{ $emerg->address }}" id="ead_{{ $i }}" class="form-control form-control-sm" placeholder="Address">
+								</div>
+							</div>
+							<?php $i++ ?>
+						@endforeach
+					@endif
 				</div>
 			</div>
 		</div>
@@ -367,39 +390,31 @@ use App\Models\HumanResources\HRLeaveApprovalFlow;
 			@endforeach
 			</div>
 
-<?php
-$r = $staff->crossbackupto()?->wherePivot('active', 1)->first()?->belongstomanydepartment()?->wherePivot('main', 1)->first()->category_id;
-$o = $staff->crossbackupto()?->wherePivot('active', 1)->first()?->belongstomanydepartment()?->wherePivot('main', 1)->first()->branch_id;
-$n = $staff->crossbackupto()?->wherePivot('active', 1)->first()?->belongstomanydepartment()?->wherePivot('main', 1)->first()->id;
-$m = $staff->crossbackupto()?->wherePivot('active', 1)->first()?->id;
-// dd($n);
-?>
-
-			<div class="form-group row mb-3 {{ $errors->has('category_id_cb') ? 'has-error' : '' }}">
-				{{ Form::label( 'cat1', 'Cross Backup Category : ', ['class' => 'col-sm-4 col-form-label'] ) }}
-				<div class="col-auto">
-					{{ Form::select('category_id_cb', \App\Models\HumanResources\OptCategory::pluck('category', 'id')->toArray(), $r, ['class' => 'form-select form-select-sm', 'placeholder' => 'Cross Backup Category', 'id' => 'cat1']) }}
+			<div class="col-auto row">
+				<div class="row">
+					<div class="col-auto">
+						<h6>Staff Cross Backup</h6>
+					</div>
+					<div class="col-auto">
+						<button type="button" class="col-auto btn btn-sm btn-outline-secondary crossbackup_add">
+							<i class="fas fa-plus" aria-hidden="true"></i>&nbsp;Add Cross Backup
+						</button>
+					</div>
 				</div>
-			</div>
-
-			<div class="form-group row mb-3 {{ $errors->has('branch_id_cb') ? 'has-error' : '' }}">
-				{{ Form::label( 'bra1', 'Cross Backup Branch : ', ['class' => 'col-sm-4 col-form-label'] ) }}
-				<div class="col-auto">
-					{{ Form::select('branch_id_cb', \App\Models\HumanResources\OptBranch::pluck('location', 'id')->toArray(), $o, ['class' => 'form-select form-select-sm', 'placeholder' => 'Cross Backup Branch', 'id' => 'bra1']) }}
-				</div>
-			</div>
-
-			<div class="form-group row mb-3 {{ $errors->has('pivot_dept_id_cb') ? 'has-error' : '' }}">
-				{{ Form::label( 'dep1', 'Cross Backup Department : ', ['class' => 'col-sm-4 col-form-label'] ) }}
-				<div class="col-auto">
-					{{ Form::select('pivot_dept_id_cb', \App\Models\HumanResources\DepartmentPivot::pluck('department', 'id')->toArray(), $n, ['class' => 'form-select form-select-sm', 'placeholder' => 'Cross Backup Department', 'id' => 'dep1']) }}
-				</div>
-			</div>
-
-			<div class="form-group row mb-3 {{ $errors->has('staff_id') ? 'has-error' : '' }}">
-				{{ Form::label( 'sta1', 'Cross Backup Personnel : ', ['class' => 'col-sm-4 col-form-label'] ) }}
-				<div class="col-auto">
-					{{ Form::select('staff_id', \App\Models\Staff::pluck('name', 'id')->toArray(), $m, ['class' => 'form-select form-select-sm', 'placeholder' => 'Cross Backup Personnel', 'id' => 'sta1']) }}
+				<div class="row mb-1 g-1 crossbackup_wrap">
+					<div class="row crossbackup_row">
+						<div class="form-group row mb-1 g-1 {{ $errors->has('crossbackup.*.staff_id') ? 'has-error' : '' }}">
+							<div class="col-auto mb-1 g-1 ">
+								<button class="btn btn-sm btn-outline-secondary crossbackup_remove" type="button">
+									<i class="fas fa-trash" aria-hidden="true"></i>
+								</button>
+							</div>
+							<label for="sta_1" class="col-sm-4 col-form-label">Cross Backup Personnel :</label>
+							<div class="col-auto">
+								<select name="crossbackup[][staff_id]" id="sta_1" class="form-select form-select-sm" placeholder="Cross Backup Personnel"></select>
+							</div>
+						</div>
+					</div>
 				</div>
 			</div>
 
@@ -444,6 +459,159 @@ $m = $staff->crossbackupto()?->wherePivot('active', 1)->first()?->id;
 @endsection
 
 @section('js')
+/////////////////////////////////////////////////////////////////////////////////////////
+// delete spouse
+$(document).on('click', '.spouse_delete', function(e){
+	var spouseId = $(this).data('id');
+	SwalDelete(spouseId);
+	e.preventDefault();
+});
+
+function SwalDelete(spouseId){
+	swal.fire({
+		title: 'Are you sure?',
+		text: "It will be deleted permanently!",
+		type: 'warning',
+		showCancelButton: true,
+		confirmButtonColor: '#3085d6',
+		cancelButtonColor: '#d33',
+		confirmButtonText: 'Yes, delete it!',
+		showLoaderOnConfirm: true,
+
+		preConfirm: function() {
+			return new Promise(function(resolve) {
+				$.ajax({
+					type: 'DELETE',
+					url: '{{ url('spouse') }}' + '/' + spouseId,
+					data: {
+							_token : $('meta[name=csrf-token]').attr('content'),
+							id: spouseId,
+					},
+					dataType: 'json'
+				})
+				.done(function(response){
+					swal.fire('Deleted!', response.message, response.status)
+					.then(function(){
+						window.location.reload(true);
+					});
+					//$('#disable_user_' + spouseId).parent().parent().remove();
+				})
+				.fail(function(){
+					swal.fire('Oops...', 'Something went wrong with ajax !', 'error');
+				})
+			});
+		},
+		allowOutsideClick: false
+	})
+	.then((result) => {
+		if (result.dismiss === swal.DismissReason.cancel) {
+			swal.fire('Cancelled', 'Your data is safe from delete', 'info')
+		}
+	});
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////
+// delete children
+$(document).on('click', '.children_delete', function(e){
+	var childrenId = $(this).data('id');
+	SwalChildDelete(childrenId);
+	e.preventDefault();
+});
+
+function SwalChildDelete(childrenId){
+	swal.fire({
+		title: 'Are you sure?',
+		text: "It will be deleted permanently!",
+		type: 'warning',
+		showCancelButton: true,
+		confirmButtonColor: '#3085d6',
+		cancelButtonColor: '#d33',
+		confirmButtonText: 'Yes, delete it!',
+		showLoaderOnConfirm: true,
+
+		preConfirm: function() {
+			return new Promise(function(resolve) {
+				$.ajax({
+					type: 'DELETE',
+					url: '{{ url('children') }}' + '/' + childrenId,
+					data: {
+							_token : $('meta[name=csrf-token]').attr('content'),
+							id: childrenId,
+					},
+					dataType: 'json'
+				})
+				.done(function(response){
+					swal.fire('Deleted!', response.message, response.status)
+					.then(function(){
+						window.location.reload(true);
+					});
+					//$('#disable_user_' + childrenId).parent().parent().remove();
+				})
+				.fail(function(){
+					swal.fire('Oops...', 'Something went wrong with ajax !', 'error');
+				})
+			});
+		},
+		allowOutsideClick: false
+	})
+	.then((result) => {
+		if (result.dismiss === swal.DismissReason.cancel) {
+			swal.fire('Cancelled', 'Your data is safe from delete', 'info')
+		}
+	});
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////
+// delete emergency contact
+$(document).on('click', '.emergency_delete', function(e){
+	var emergencyId = $(this).data('id');
+	SwalEmergDelete(emergencyId);
+	e.preventDefault();
+});
+
+function SwalEmergDelete(emergencyId){
+	swal.fire({
+		title: 'Are you sure?',
+		text: "It will be deleted permanently!",
+		type: 'warning',
+		showCancelButton: true,
+		confirmButtonColor: '#3085d6',
+		cancelButtonColor: '#d33',
+		confirmButtonText: 'Yes, delete it!',
+		showLoaderOnConfirm: true,
+
+		preConfirm: function() {
+			return new Promise(function(resolve) {
+				$.ajax({
+					type: 'DELETE',
+					url: '{{ url('emergencycontact') }}' + '/' + emergencyId,
+					data: {
+							_token : $('meta[name=csrf-token]').attr('content'),
+							id: emergencyId,
+					},
+					dataType: 'json'
+				})
+				.done(function(response){
+					swal.fire('Deleted!', response.message, response.status)
+					.then(function(){
+						window.location.reload(true);
+					});
+					//$('#disable_user_' + emergencyId).parent().parent().remove();
+				})
+				.fail(function(){
+					swal.fire('Oops...', 'Something went wrong with ajax !', 'error');
+				})
+			});
+		},
+		allowOutsideClick: false
+	})
+	.then((result) => {
+		if (result.dismiss === swal.DismissReason.cancel) {
+			swal.fire('Cancelled', 'Your data is safe from delete', 'info')
+		}
+	});
+}
+
 /////////////////////////////////////////////////////////////////////////////////////////
 $('#dob, #jpo').datetimepicker({
 	icons: {
@@ -532,11 +700,9 @@ $('#cat').select2({
 	// },
 });
 $('#cat').on("select2:select", function (e) {
-	console.log("select2:select", e);
 	$('#dep').val(null).trigger('change');
 });
 $('#cat').on("select2:unselect", function (e) {
-	console.log("select2:unselect", e);
 	$('#dep').val(null).trigger('change');
 });
 
@@ -558,11 +724,9 @@ $('#bra').select2({
 	// },
 });
 $('#bra').on("select2:select", function (e) {
-	console.log("select2:select", e);
 	$('#dep').val(null).trigger('change');
 });
 $('#bra').on("select2:unselect", function (e) {
-	console.log("select2:unselect", e);
 	$('#dep').val(null).trigger('change');
 });
 
@@ -580,6 +744,7 @@ $('#dep').select2({
 				branch_id: $('#bra').val(),
 				category_id: $('#cat').val(),
 				_token: '{!! csrf_token() !!}',
+				search: params.term,
 			}
 			return query;
 		}
@@ -604,11 +769,9 @@ $('#cat1').select2({
 	// },
 });
 $('#cat1').on("select2:select", function (e) {
-	console.log("select2:select", e);
 	$('#dep1').val(null).trigger('change');
 });
 $('#cat1').on("select2:unselect", function (e) {
-	console.log("select2:unselect", e);
 	$('#dep1').val(null).trigger('change');
 });
 
@@ -630,11 +793,9 @@ $('#bra1').select2({
 	// },
 });
 $('#bra1').on("select2:select", function (e) {
-	console.log("select2:select", e);
 	$('#dep1').val(null).trigger('change');
 });
 $('#bra1').on("select2:unselect", function (e) {
-	console.log("select2:unselect", e);
 	$('#dep1').val(null).trigger('change');
 });
 
@@ -652,21 +813,20 @@ $('#dep1').select2({
 				branch_id: $('#bra1').val(),
 				category_id: $('#cat1').val(),
 				_token: '{!! csrf_token() !!}',
+				search: params.term,
 			}
 			return query;
 		}
 	},
 });
 $('#dep1').on("select2:select", function (e) {
-	console.log("select2:select", e);
 	$('#sta1').val(null).trigger('change');
 });
 $('#dep1').on("select2:unselect", function (e) {
-	console.log("select2:unselect", e);
 	$('#sta1').val(null).trigger('change');
 });
 
-$('#sta1').select2({
+$('#sta_1').select2({
 	placeholder: 'Please Select',
 	width: '100%',
 	allowClear: true,
@@ -675,13 +835,13 @@ $('#sta1').select2({
 		url: '{{ route('staffcrossbackup.staffcrossbackup') }}',
 		type: 'POST',
 		dataType: 'json',
-		data: function (params) {
-			var query = {
-				pivot_dept_id: $('#dep1').val(),
-				_token: '{!! csrf_token() !!}',
+		data: function(params){
+				var query = {
+					_token: '{!! csrf_token() !!}',
+					search: params.term,
+				}
+				return query;
 			}
-			return query;
-		}
 	},
 });
 
@@ -697,6 +857,7 @@ $('#rdg').select2({
 		data: function (params) {
 			var query = {
 				_token: '{!! csrf_token() !!}',
+				search: params.term,
 			}
 			return query;
 		}
@@ -704,95 +865,106 @@ $('#rdg').select2({
 });
 
 /////////////////////////////////////////////////////////////////////////////////////////
-$('#cge_1').select2({
-	placeholder: 'Gender',
-	width: '100%',
-	allowClear: true,
-	closeOnSelect: true,
-	ajax: {
-		url: '{{ route('gender.gender') }}',
-		type: 'POST',
-		dataType: 'json',
-		data: function (params) {
-			var query = {
-				_token: '{!! csrf_token() !!}',
-			}
-			return query;
-		}
-	},
-});
+@if($staff->hasmanychildren()->get()->count())
+	<?php $i=1 ?>
+	@foreach($staff->hasmanychildren()->get() as $child)
+// 	$('#cge_{{ $i }}').select2({
+// 			placeholder: 'Gender',
+// 			width: '100%',
+// 			allowClear: true,
+// 			closeOnSelect: true,
+// 			// ajax: {
+// 			// 	url: '{{ route('gender.gender') }}',
+// 			// 	type: 'POST',
+// 			// 	dataType: 'json',
+// 			// 	data: function (params) {
+// 			// 		var query = {
+// 			// 			_token: '{!! csrf_token() !!}',
+// 			// 			search: params.term,
+// 			// 		}
+// 			// 		return query;
+// 			// 	}
+// 			// },
+// 	});
 
-$('#cel_1').select2({
-	placeholder: 'Education Level',
-	width: '100%',
-	allowClear: true,
-	closeOnSelect: true,
-	ajax: {
-		url: '{{ route('educationlevel.educationlevel') }}',
-		type: 'POST',
-		dataType: 'json',
-		data: function (params) {
-			var query = {
-				_token: '{!! csrf_token() !!}',
-			}
-			return query;
-		}
-	},
-});
+// 	$('#cel_{{ $i }}').select2({
+// 			placeholder: 'Education Level',
+// 			width: '100%',
+// 			allowClear: true,
+// 			closeOnSelect: true,
+// 			// ajax: {
+// 			// 	url: '{{ route('educationlevel.educationlevel') }}',
+// 			// 	type: 'POST',
+// 			// 	dataType: 'json',
+// 			// 	data: function (params) {
+// 			// 		var query = {
+// 			// 			_token: '{!! csrf_token() !!}',
+// 			// 			search: params.term,
+// 			// 		}
+// 			// 		return query;
+// 			// 	}
+// 			// },
+// 	});
 
-$('#chs_1').select2({
-	placeholder: 'Health Status',
-	width: '100%',
-	allowClear: true,
-	closeOnSelect: true,
-	ajax: {
-		url: '{{ route('healthstatus.healthstatus') }}',
-		type: 'POST',
-		dataType: 'json',
-		data: function (params) {
-			var query = {
-				_token: '{!! csrf_token() !!}',
-			}
-			return query;
-		}
-	},
-});
+// 	$('#chs_{{ $i }}').select2({
+// 			placeholder: 'Health Status',
+// 			width: '100%',
+// 			allowClear: true,
+// 			closeOnSelect: true,
+// 			// ajax: {
+// 			// 	url: '{{ route('healthstatus.healthstatus') }}',
+// 			// 	type: 'POST',
+// 			// 	dataType: 'json',
+// 			// 	data: function (params) {
+// 			// 		var query = {
+// 			// 			_token: '{!! csrf_token() !!}',
+// 			// 			search: params.term,
+// 			// 		}
+// 			// 		return query;
+// 			// 	}
+// 			// },
+// 	});
 
-$('#ctep_1').select2({
-	placeholder: 'Tax Exemption Percentage',
-	width: '100%',
-	allowClear: true,
-	closeOnSelect: true,
-	ajax: {
-		url: '{{ route('taxexemptionpercentage.taxexemptionpercentage') }}',
-		type: 'POST',
-		dataType: 'json',
-		data: function (params) {
-			var query = {
-				_token: '{!! csrf_token() !!}',
-			}
-			return query;
-		}
-	},
-});
+// 	$('#ctep_{{ $i }}').select2({
+// 			placeholder: 'Tax Exemption Percentage',
+// 			width: '100%',
+// 			allowClear: true,
+// 			closeOnSelect: true,
+// 			// ajax: {
+// 			// 	url: '{{ route('taxexemptionpercentage.taxexemptionpercentage') }}',
+// 			// 	type: 'POST',
+// 			// 	dataType: 'json',
+// 			// 	data: function (params) {
+// 			// 		var query = {
+// 			// 			_token: '{!! csrf_token() !!}',
+// 			// 			search: params.term,
+// 			// 		}
+// 			// 		return query;
+// 			// 	}
+// 			// },
+// 	});
+		<?php $i++ ?>
+	@endforeach
+@endif
 
-$('#ere_1').select2({
-	placeholder: 'Relationship',
-	width: '100%',
-	allowClear: true,
-	closeOnSelect: true,
-	ajax: {
-		url: '{{ route('relationship.relationship') }}',
-		type: 'POST',
-		dataType: 'json',
-		data: function (params) {
-			var query = {
-				_token: '{!! csrf_token() !!}',
-			}
-			return query;
-		}
-	},
-});
+// $('#ere_1').select2({
+// 	placeholder: 'Relationship',
+// 	width: '100%',
+// 	allowClear: true,
+// 	closeOnSelect: true,
+// 	ajax: {
+// 		url: '{{ route('relationship.relationship') }}',
+// 		type: 'POST',
+// 		dataType: 'json',
+// 		data: function (params) {
+// 			var query = {
+// 				_token: '{!! csrf_token() !!}',
+// 				search: params.term,
+// 			}
+// 			return query;
+// 		}
+// 	},
+// });
 
 /////////////////////////////////////////////////////////////////////////////////////////
 // add spouse : add and remove row
@@ -801,7 +973,7 @@ var max_fields  = 4;						//maximum input boxes allowed
 var add_buttons	= $(".spouse_add");
 var wrappers	= $(".spouse_wrap");
 
-var xs = 1;
+var xs = {{ ($staff->hasmanyspouse()->get()->isNotEmpty())?$staff->hasmanyspouse()->get()->count():1 }};
 $(add_buttons).click(function(){
 	// e.preventDefault();
 
@@ -859,7 +1031,7 @@ var cmax_fields  = 12;						//maximum input boxes allowed
 var cadd_buttons	= $(".children_add");
 var cwrappers	= $(".children_wrap");
 
-var xc = 1;
+var xc = {{ ($staff->hasmanychildren()->get()->isNotEmpty())?$staff->hasmanychildren()->get()->count():1 }};
 $(cadd_buttons).click(function(){
 	// e.preventDefault();
 
@@ -908,6 +1080,7 @@ $(cadd_buttons).click(function(){
 				data: function (params) {
 					var query = {
 						_token: '{!! csrf_token() !!}',
+						search: params.term,
 					}
 					return query;
 				}
@@ -926,6 +1099,7 @@ $(cadd_buttons).click(function(){
 				data: function (params) {
 					var query = {
 						_token: '{!! csrf_token() !!}',
+						search: params.term,
 					}
 					return query;
 				}
@@ -944,6 +1118,7 @@ $(cadd_buttons).click(function(){
 				data: function (params) {
 					var query = {
 						_token: '{!! csrf_token() !!}',
+						search: params.term,
 					}
 					return query;
 				}
@@ -962,6 +1137,7 @@ $(cadd_buttons).click(function(){
 				data: function (params) {
 					var query = {
 						_token: '{!! csrf_token() !!}',
+						search: params.term,
 					}
 					return query;
 				}
@@ -998,7 +1174,7 @@ var emax_fields = 3;						//maximum input boxes allowed
 var eadd_buttons = $(".emergency_add");
 var ewrappers = $(".emergency_wrap");
 
-var xe = 1;
+var xe = {{ ($staff->hasmanyemergency()->get()->isNotEmpty())?$staff->hasmanyemergency()->get()->count():1 }};;
 $(eadd_buttons).click(function(){
 	// e.preventDefault();
 
@@ -1028,7 +1204,7 @@ $(eadd_buttons).click(function(){
 		); //add input box
 
 		$('#ere_' + xe +'').select2({
-			placeholder: 'Gender',
+			placeholder: 'Relationship',
 			width: '100%',
 			allowClear: true,
 			closeOnSelect: true,
@@ -1039,6 +1215,7 @@ $(eadd_buttons).click(function(){
 				data: function (params) {
 					var query = {
 						_token: '{!! csrf_token() !!}',
+						search: params.term,
 					}
 					return query;
 				}
@@ -1070,6 +1247,82 @@ $(ewrappers).on("click",".children_remove", function(e){
 	$('#form').bootstrapValidator('removeField', $option4);
 	console.log();
 	xe--;
+})
+
+/////////////////////////////////////////////////////////////////////////////////////////
+// add cross backup : add and remove row
+
+var crb_max_fields = 5;						//maximum input boxes allowed
+var crb_add_buttons = $(".crossbackup_add");
+var crb_wrappers = $(".crossbackup_wrap");
+
+var xcrb = 1;
+$(crb_add_buttons).click(function(){
+	// e.preventDefault();
+
+	//max input box allowed
+	if(xcrb < crb_max_fields){
+		xcrb++;
+		crb_wrappers.append(
+			'<div class="row crossbackup_row">' +
+				'<div class="form-group row mb-1 g-1 {{ $errors->has('crossbackup.*.staff_id') ? 'has-error' : '' }}">' +
+					'<div class="col-auto mb-1 g-1 ">' +
+						'<button class="btn btn-sm btn-outline-secondary crossbackup_remove" type="button">' +
+							'<i class="fas fa-trash" aria-hidden="true"></i>' +
+						'</button>' +
+					'</div>' +
+					'<label for="sta_1" class="col-sm-4 col-form-label">Cross Backup Personnel :</label>' +
+					'<div class="col-auto">' +
+						'<select name="crossbackup[' + xcrb + '][staff_id]" id="sta_' + xcrb + '" class="form-select form-select-sm" placeholder="Cross Backup Personnel"></select>' +
+					'</div>' +
+				'</div>' +
+			'</div>'
+		);
+
+		$('#sta_' + xcrb ).select2({
+			placeholder: 'Please Select',
+			width: '100%',
+			allowClear: true,
+			closeOnSelect: true,
+			ajax: {
+				url: '{{ route('staffcrossbackup.staffcrossbackup') }}',
+				type: 'POST',
+				dataType: 'json',
+				data: function (params) {
+					var query = {
+						_token: '{!! csrf_token() !!}',
+						search: params.term,
+					}
+					return query;
+				}
+			},
+		});
+
+
+		//bootstrap validate
+		$('#form').bootstrapValidator('addField',	$('.children_row')	.find('[name="staffemergency['+ xcrb +'][contact_person]"]'));
+		$('#form').bootstrapValidator('addField',	$('.children_row')	.find('[name="staffemergency['+ xcrb +'][phone]"]'));
+		$('#form').bootstrapValidator('addField',	$('.children_row')	.find('[name="staffemergency['+ xcrb +'][relationship_id]"]'));
+		$('#form').bootstrapValidator('addField',	$('.children_row')	.find('[name="staffemergency['+ xcrb +'][address]"]'));
+	}
+})
+
+$(crb_wrappers).on("click",".children_remove", function(e){
+	//user click on remove text
+	e.preventDefault();
+	var $row = $(this).parent().parent();
+	var $option1 = $row.find('[name="staffemergency[' + xcrb + '][contact_person]"]');
+	var $option2 = $row.find('[name="staffemergency[' + xcrb + '][phone]"]');
+	var $option3 = $row.find('[name="staffemergency[' + xcrb + '][relationship_id]"]');
+	var $option4 = $row.find('[name="staffemergency[' + xcrb + '][address]"]');
+	$row.remove();
+
+	$('#form').bootstrapValidator('removeField', $option1);
+	$('#form').bootstrapValidator('removeField', $option2);
+	$('#form').bootstrapValidator('removeField', $option3);
+	$('#form').bootstrapValidator('removeField', $option4);
+	console.log();
+	xcrb--;
 })
 
 /////////////////////////////////////////////////////////////////////////////////////////

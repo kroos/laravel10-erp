@@ -7,6 +7,9 @@ use App\Http\Controllers\HumanResources\HRDept\HRDeptController;
 use App\Http\Controllers\HumanResources\HRDept\StaffController;
 use App\Http\Controllers\HumanResources\HRDept\AttendanceController;
 use App\Http\Controllers\HumanResources\HRDept\LeaveController;
+use App\Http\Controllers\HumanResources\HRDept\SpouseController;
+use App\Http\Controllers\HumanResources\HRDept\ChildrenController;
+use App\Http\Controllers\HumanResources\HRDept\EmergencyContactController;
 
 Route::resources([
 	'leave' => HRLeaveController::class,
@@ -15,5 +18,8 @@ Route::resources([
 	'staff' => StaffController::class,
 	'attendance' => AttendanceController::class,
 	'hrleave' => LeaveController::class,
+	'spouse' => SpouseController::class,
+	'children' => ChildrenController::class,
+	'emergencycontact' => EmergencyContactController::class,
 ]);
 

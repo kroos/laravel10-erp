@@ -382,15 +382,12 @@ class AjaxDBController extends Controller
 
 	public function staffcrossbackup(Request $request)
 	{
-		$dept = DepartmentPivot::findOrFail($request->pivot_dept_id);
-		$depts = $dept->belongstomanystaff()->wherePivot('main', 1)->get();
-		foreach ($depts as $v) {
-			if ($v->active == 1) {
+		$s = Staff::where('active', 1)->where('name','LIKE','%'.$request->search.'%')->get();
+		foreach ($s as $v) {
 				$ls['results'][] = [
 										'id' => $v->id,
 										'text' => $v->name
 									];
-			}
 		}
 		return response()->json($ls);
 	}
@@ -414,7 +411,7 @@ class AjaxDBController extends Controller
 
 	public function restdaygroup(Request $request)
 	{
-		$au = OptRestdayGroup::all();
+		$au = OptRestdayGroup::where('group','LIKE','%'.$request->search.'%')->get();
 		foreach ($au as $key) {
 			$cuti['results'][] = [
 									'id' => $key->id,
@@ -426,10 +423,10 @@ class AjaxDBController extends Controller
 		return response()->json( $cuti );
 	}
 
-	public function authorise()
+	public function authorise(Request $request)
 	{
 		// https://select2.org/data-sources/formats
-		$au = OptAuthorise::all();
+		$au = OptAuthorise::where('group','LIKE','%'.$request->search.'%')->get();
 		foreach ($au as $key) {
 			$cuti['results'][] = [
 									'id' => $key->id,
@@ -440,10 +437,10 @@ class AjaxDBController extends Controller
 		return response()->json( $cuti );
 	}
 
-	public function branch()
+	public function branch(Request $request)
 	{
 		// https://select2.org/data-sources/formats
-		$au = OptBranch::all();
+		$au = OptBranch::where('location','LIKE','%'.$request->search.'%')->get();
 		foreach ($au as $key) {
 			$cuti['results'][] = [
 									'id' => $key->id,
@@ -454,10 +451,10 @@ class AjaxDBController extends Controller
 		return response()->json( $cuti );
 	}
 
-	public function country()
+	public function country(Request $request)
 	{
 		// https://select2.org/data-sources/formats
-		$au = OptCountry::all();
+		$au = OptCountry::where('country','LIKE','%'.$request->search.'%')->get();
 		foreach ($au as $key) {
 			$cuti['results'][] = [
 									'id' => $key->id,
@@ -468,10 +465,10 @@ class AjaxDBController extends Controller
 		return response()->json( $cuti );
 	}
 
-	public function division()
+	public function division(Request $request)
 	{
 		// https://select2.org/data-sources/formats
-		$au = OptDivision::all();
+		$au = OptDivision::where('div','LIKE','%'.$request->search.'%')->get();
 		foreach ($au as $key) {
 			$cuti['results'][] = [
 									'id' => $key->id,
@@ -482,10 +479,10 @@ class AjaxDBController extends Controller
 		return response()->json( $cuti );
 	}
 
-	public function educationlevel()
+	public function educationlevel(Request $request)
 	{
 		// https://select2.org/data-sources/formats
-		$au = OptEducationLevel::all();
+		$au = OptEducationLevel::where('education_level','LIKE','%'.$request->search.'%')->get();
 		foreach ($au as $key) {
 			$cuti['results'][] = [
 									'id' => $key->id,
@@ -496,10 +493,10 @@ class AjaxDBController extends Controller
 		return response()->json( $cuti );
 	}
 
-	public function gender()
+	public function gender(Request $request)
 	{
 		// https://select2.org/data-sources/formats
-		$au = OptGender::all();
+		$au = OptGender::where('gender','LIKE','%'.$request->search.'%')->get();
 		foreach ($au as $key) {
 			$cuti['results'][] = [
 									'id' => $key->id,
@@ -510,10 +507,10 @@ class AjaxDBController extends Controller
 		return response()->json( $cuti );
 	}
 
-	public function status()
+	public function status(Request $request)
 	{
 		// https://select2.org/data-sources/formats
-		$au = OptStatus::all();
+		$au = OptStatus::where('status','LIKE','%'.$request->search.'%')->get();
 		foreach ($au as $key) {
 			$cuti['results'][] = [
 									'id' => $key->id,
@@ -524,10 +521,10 @@ class AjaxDBController extends Controller
 		return response()->json( $cuti );
 	}
 
-	public function category()
+	public function category(Request $request)
 	{
 		// https://select2.org/data-sources/formats
-		$au = OptCategory::all();
+		$au = OptCategory::where('category','LIKE','%'.$request->search.'%')->get();
 		foreach ($au as $key) {
 			$cuti['results'][] = [
 									'id' => $key->id,
@@ -538,10 +535,10 @@ class AjaxDBController extends Controller
 		return response()->json( $cuti );
 	}
 
-	public function healthstatus()
+	public function healthstatus(Request $request)
 	{
 		// https://select2.org/data-sources/formats
-		$au = OptHealthStatus::all();
+		$au = OptHealthStatus::where('health_status','LIKE','%'.$request->search.'%')->get();
 		foreach ($au as $key) {
 			$cuti['results'][] = [
 									'id' => $key->id,
@@ -552,10 +549,10 @@ class AjaxDBController extends Controller
 		return response()->json( $cuti );
 	}
 
-	public function maritalstatus()
+	public function maritalstatus(Request $request)
 	{
 		// https://select2.org/data-sources/formats
-		$au = OptMaritalStatus::all();
+		$au = OptMaritalStatus::where('marital_status','LIKE','%'.$request->search.'%')->get();
 		foreach ($au as $key) {
 			$cuti['results'][] = [
 									'id' => $key->id,
@@ -566,10 +563,10 @@ class AjaxDBController extends Controller
 		return response()->json( $cuti );
 	}
 
-	public function race()
+	public function race(Request $request)
 	{
 		// https://select2.org/data-sources/formats
-		$au = OptRace::all();
+		$au = OptRace::where('race','LIKE','%'.$request->search.'%')->get();
 		foreach ($au as $key) {
 			$cuti['results'][] = [
 									'id' => $key->id,
@@ -580,10 +577,10 @@ class AjaxDBController extends Controller
 		return response()->json( $cuti );
 	}
 
-	public function religion()
+	public function religion(Request $request)
 	{
 		// https://select2.org/data-sources/formats
-		$au = OptReligion::all();
+		$au = OptReligion::where('religion','LIKE','%'.$request->search.'%')->get();
 		foreach ($au as $key) {
 			$cuti['results'][] = [
 									'id' => $key->id,
@@ -594,10 +591,10 @@ class AjaxDBController extends Controller
 		return response()->json( $cuti );
 	}
 
-	public function taxexemptionpercentage()
+	public function taxexemptionpercentage(Request $request)
 	{
 		// https://select2.org/data-sources/formats
-		$au = OptTaxExemptionPercentage::all();
+		$au = OptTaxExemptionPercentage::where('tax_exemption_percentage','LIKE','%'.$request->search.'%')->get();
 		foreach ($au as $key) {
 			$cuti['results'][] = [
 									'id' => $key->id,
@@ -608,10 +605,10 @@ class AjaxDBController extends Controller
 		return response()->json( $cuti );
 	}
 
-	public function relationship()
+	public function relationship(Request $request)
 	{
 		// https://select2.org/data-sources/formats
-		$au = OptRelationship::all();
+		$au = OptRelationship::where('relationship','LIKE','%'.$request->search.'%')->get();
 		foreach ($au as $key) {
 			$cuti['results'][] = [
 									'id' => $key->id,
@@ -622,7 +619,7 @@ class AjaxDBController extends Controller
 		return response()->json( $cuti );
 	}
 
-	public function leaveevents()
+	public function leaveevents(Request $request)
 	{
 		// please note that the full calendar for end date is EXCLUSIVE
 		// https://fullcalendar.io/docs/event-object
