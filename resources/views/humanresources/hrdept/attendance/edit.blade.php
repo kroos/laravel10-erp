@@ -221,11 +221,26 @@ useCurrent: false,
 
   if (timeRegex.test(inTime) && timeRegex.test(breakTime) && timeRegex.test(resumeTime) && timeRegex.test(outTime)) {
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     if (inTime != '00:00' && breakTime != '00:00' && outTime == '00:00') {
       var startTimeStr = inTime;
       var endTimeStr = breakTime;
 
-    
       // Split the time strings into hours and minutes
       var startTimeParts = startTimeStr.split(':');
       var endTimeParts = endTimeStr.split(':');
@@ -251,6 +266,10 @@ useCurrent: false,
     } 
 
 
+
+
+
+    
 
 
 
