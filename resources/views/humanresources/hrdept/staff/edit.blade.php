@@ -1145,9 +1145,12 @@ $(cadd_buttons).click(function(){
 		});
 
 		//bootstrap validate
-		$('#form').bootstrapValidator('addField',	$('.children_row')	.find('[name="staffchildren['+ xc +'][spouse]"]'));
-		$('#form').bootstrapValidator('addField',	$('.children_row')	.find('[name="staffchildren['+ xc +'][phone]"]'));
-		$('#form').bootstrapValidator('addField',	$('.children_row')	.find('[name="staffchildren['+ xc +'][profession]"]'));
+		$('#form').bootstrapValidator('addField',	$('.children_row')	.find('[name="staffchildren['+ xc +'][children]"]'));
+		$('#form').bootstrapValidator('addField',	$('.children_row')	.find('[name="staffchildren['+ xc +'][gender_id]"]'));
+		$('#form').bootstrapValidator('addField',	$('.children_row')	.find('[name="staffchildren['+ xc +'][education_level_id]"]'));
+		$('#form').bootstrapValidator('addField',	$('.children_row')	.find('[name="staffchildren['+ xc +'][health_status_id]"]'));
+		$('#form').bootstrapValidator('addField',	$('.children_row')	.find('[name="staffchildren['+ xc +'][tax_exemption]"]'));
+		$('#form').bootstrapValidator('addField',	$('.children_row')	.find('[name="staffchildren['+ xc +'][tax_exemption_percentage_id]"]'));
 	}
 })
 
@@ -1155,14 +1158,20 @@ $(cwrappers).on("click",".children_remove", function(e){
 	//user click on remove text
 	e.preventDefault();
 	var $row = $(this).parent().parent();
-	var $option1 = $row.find('[name="staffchildren[' + xc + '][spouse]"]');
-	var $option2 = $row.find('[name="staffchildren[' + xc + '][phone]"]');
-	var $option3 = $row.find('[name="staffchildren[' + xc + '][profession]"]');
+	var $option1 = $row.find('[name="staffchildren[' + xc + '][children]"]');
+	var $option2 = $row.find('[name="staffchildren[' + xc + '][gender_id]"]');
+	var $option3 = $row.find('[name="staffchildren[' + xc + '][education_level_id]"]');
+	var $option4 = $row.find('[name="staffchildren[' + xc + '][health_status_id]"]');
+	var $option5 = $row.find('[name="staffchildren[' + xc + '][tax_exemption]"]');
+	var $option6 = $row.find('[name="staffchildren[' + xc + '][tax_exemption_percentage_id]"]');
 	$row.remove();
 
 	$('#form').bootstrapValidator('removeField', $option1);
 	$('#form').bootstrapValidator('removeField', $option2);
 	$('#form').bootstrapValidator('removeField', $option3);
+	$('#form').bootstrapValidator('removeField', $option4);
+	$('#form').bootstrapValidator('removeField', $option5);
+	$('#form').bootstrapValidator('removeField', $option6);
 	console.log();
 	xc--;
 })
@@ -1174,7 +1183,7 @@ var emax_fields = 3;						//maximum input boxes allowed
 var eadd_buttons = $(".emergency_add");
 var ewrappers = $(".emergency_wrap");
 
-var xe = {{ ($staff->hasmanyemergency()->get()->isNotEmpty())?$staff->hasmanyemergency()->get()->count():1 }};;
+var xe = {{ ($staff->hasmanyemergency()->get()->isNotEmpty())?$staff->hasmanyemergency()->get()->count():1 }};
 $(eadd_buttons).click(function(){
 	// e.preventDefault();
 
@@ -1256,7 +1265,7 @@ var crb_max_fields = 5;						//maximum input boxes allowed
 var crb_add_buttons = $(".crossbackup_add");
 var crb_wrappers = $(".crossbackup_wrap");
 
-var xcrb = 1;
+var xcrb = {{ ($staff->crossbackupto()->get()->isnotEmpty())?$staff->crossbackupto()->get()->count():1 }};
 $(crb_add_buttons).click(function(){
 	// e.preventDefault();
 
@@ -1300,34 +1309,23 @@ $(crb_add_buttons).click(function(){
 
 
 		//bootstrap validate
-		$('#form').bootstrapValidator('addField',	$('.children_row')	.find('[name="staffemergency['+ xcrb +'][contact_person]"]'));
-		$('#form').bootstrapValidator('addField',	$('.children_row')	.find('[name="staffemergency['+ xcrb +'][phone]"]'));
-		$('#form').bootstrapValidator('addField',	$('.children_row')	.find('[name="staffemergency['+ xcrb +'][relationship_id]"]'));
-		$('#form').bootstrapValidator('addField',	$('.children_row')	.find('[name="staffemergency['+ xcrb +'][address]"]'));
+		$('#form').bootstrapValidator('addField',	$('.children_row')	.find('[name="crossbackup['+ xcrb +'][staff_id]"]'));
 	}
 })
 
-$(crb_wrappers).on("click",".children_remove", function(e){
+$(crb_wrappers).on("click",".crossbackup_remove", function(e){
 	//user click on remove text
 	e.preventDefault();
 	var $row = $(this).parent().parent();
-	var $option1 = $row.find('[name="staffemergency[' + xcrb + '][contact_person]"]');
-	var $option2 = $row.find('[name="staffemergency[' + xcrb + '][phone]"]');
-	var $option3 = $row.find('[name="staffemergency[' + xcrb + '][relationship_id]"]');
-	var $option4 = $row.find('[name="staffemergency[' + xcrb + '][address]"]');
+	var $option1 = $row.find('[name="crossbackup[' + xcrb + '][staff_id]"]');
 	$row.remove();
 
 	$('#form').bootstrapValidator('removeField', $option1);
-	$('#form').bootstrapValidator('removeField', $option2);
-	$('#form').bootstrapValidator('removeField', $option3);
-	$('#form').bootstrapValidator('removeField', $option4);
-	console.log();
 	xcrb--;
 })
 
 /////////////////////////////////////////////////////////////////////////////////////////
 // bootstrap validator
-
 $('#form').bootstrapValidator({
 	feedbackIcons: {
 		valid: '',
@@ -1467,24 +1465,6 @@ $('#form').bootstrapValidator({
 				// },
 			}
 		},
-		staff_id: {
-			validators: {
-				// notEmpty: {
-				// 	message: 'Please choose. '
-				// },
-			}
-		},
-
-
-
-
-
-
-
-
-
-
-
 		name: {
 			validators: {
 				notEmpty: {
@@ -1497,6 +1477,9 @@ $('#form').bootstrapValidator({
 				notEmpty: {
 					message: 'Please insert Identity Card or Passport. '
 				},
+				// digits: {
+				// 	message: 'Only numbers '
+				// },
 			}
 		},
 		religion_id: {
@@ -1539,6 +1522,9 @@ $('#form').bootstrapValidator({
 				notEmpty: {
 					message: 'Please insert email. '
 				},
+				emailAddress: {
+					message: 'Please insert valid email '
+				},
 			}
 		},
 		address: {
@@ -1553,6 +1539,9 @@ $('#form').bootstrapValidator({
 				notEmpty: {
 					message: 'Please insert mobile. '
 				},
+				digits: {
+					message: 'Please insert valid mobile number '
+				},
 			}
 		},
 		phone: {
@@ -1560,6 +1549,9 @@ $('#form').bootstrapValidator({
 				// notEmpty: {
 				// 	message: 'Please insert phone. '
 				// },
+				digits: {
+					message: 'Please insert valid mobile number '
+				},
 			}
 		},
 		dob: {
@@ -1567,6 +1559,10 @@ $('#form').bootstrapValidator({
 				// notEmpty: {
 				// 	message: 'Please insert phone. '
 				// },
+				date: {
+					format: 'YYYY-MM-DD',
+					message: 'Please insert valid mobile number '
+				},
 			}
 		},
 		cimb_account: {
@@ -1574,6 +1570,9 @@ $('#form').bootstrapValidator({
 				// notEmpty: {
 				// 	message: 'Please insert phone. '
 				// },
+				digits: {
+					message: 'Please insert valid mobile number '
+				},
 			}
 		},
 		epf_account: {
@@ -1581,12 +1580,18 @@ $('#form').bootstrapValidator({
 				// notEmpty: {
 				// 	message: 'Please insert phone. '
 				// },
+				digits: {
+					message: 'Please insert valid mobile number '
+				},
 			}
 		},
 		income_tax_no: {
 			validators: {
 				// notEmpty: {
 				// 	message: 'Please insert phone. '
+				// },
+				// digits: {
+				// 	message: 'Please insert valid mobile number '
 				// },
 			}
 		},
@@ -1595,6 +1600,9 @@ $('#form').bootstrapValidator({
 				// notEmpty: {
 				// 	message: 'Please insert phone. '
 				// },
+				digits: {
+					message: 'Please insert valid mobile number '
+				},
 			}
 		},
 		weight: {
@@ -1602,6 +1610,10 @@ $('#form').bootstrapValidator({
 				// notEmpty: {
 				// 	message: 'Please insert phone. '
 				// },
+				numeric: {
+					separator: '.',
+					message: 'Only numbers. '
+				},
 			}
 		},
 		height: {
@@ -1609,6 +1621,10 @@ $('#form').bootstrapValidator({
 				// notEmpty: {
 				// 	message: 'Please insert phone. '
 				// },
+				numeric: {
+					separator: '.',
+					message: 'Only numbers. '
+				}
 			}
 		},
 		join: {
@@ -1658,7 +1674,7 @@ $('#form').bootstrapValidator({
 				// notEmpty: {
 				// 	message: 'Please insert spouse phone. '
 				// },
-				numeric: {
+				digits: {
 					message: 'Only numbers. '
 				},
 			}
@@ -1733,6 +1749,9 @@ $('#form').bootstrapValidator({
 				// notEmpty: {
 				// 	message: 'Please insert spouse phone. '
 				// },
+				digits: {
+					message: 'Please insert valid phone number '
+				},
 			}
 		},
 		'staffemergency[{{ $ie }}][relationship_id]': {
@@ -1746,6 +1765,15 @@ $('#form').bootstrapValidator({
 			validators: {
 				// notEmpty: {
 				// 	message: 'Please insert spouse profession. '
+				// },
+			}
+		},
+@endfor
+@for ($ie = 1; $ie <= 5; $ie++)
+		'crossbackup[{{ $ie }}][staff_id]': {
+			validators: {
+				// notEmpty: {
+				// 	message: 'Please choose '
 				// },
 			}
 		},

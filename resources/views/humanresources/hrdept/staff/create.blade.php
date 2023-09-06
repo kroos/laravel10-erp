@@ -104,7 +104,7 @@ use App\Models\HumanResources\HRLeaveApprovalFlow;
 				</div>
 			</div>
 
-			<div class="form-group row mb-3 {{ $errors->has('dob') ? 'has-error' : '' }}">
+			<div class="form-group row mb-3 {{ $errors->has('dob') ? 'has-error' : '' }}" style="position: relative">
 				{{ Form::label( 'dob', 'Date Of Birth : ', ['class' => 'col-sm-4 col-form-label'] ) }}
 				<div class="col-auto">
 					{{ Form::text('dob', @$value, ['class' => 'form-control form-control-sm col-auto', 'id' => 'dob', 'placeholder' => 'Date Of Birth', 'autocomplete' => 'off']) }}
@@ -153,7 +153,7 @@ use App\Models\HumanResources\HRLeaveApprovalFlow;
 				</div>
 			</div>
 
-			<div class="form-group row mb-3 {{ $errors->has('join') ? 'has-error' : '' }}">
+			<div class="form-group row mb-3 {{ $errors->has('join') ? 'has-error' : '' }}" style="position: relative">
 				{{ form::label( 'jpo', 'Date Join : ', ['class' => 'col-sm-4 col-form-label'] ) }}
 				<div class="col-auto">
 					{{ form::text('join', @$value, ['class' => 'form-control form-control-sm col-auto', 'id' => 'jpo', 'placeholder' => 'Date Join', 'autocomplete' => 'off']) }}
@@ -179,25 +179,6 @@ use App\Models\HumanResources\HRLeaveApprovalFlow;
 					</div>
 				</div>
 				<div class="row mb-1 g-1 spouse_wrap">
-					<div class="row spouse_row">
-						<div class="col-auto mb-1 g-1 ">
-							<button class="btn btn-sm btn-outline-secondary spouse_remove" type="button">
-								<i class="fas fa-trash" aria-hidden="true"></i>
-							</button>
-						</div>
-
-						<div class="col-auto mb-1 g-1 form-group {{ $errors->has('staffspouse.*.spouse') ? 'has-error' : '' }}">
-							<input type="text" name="staffspouse[1][spouse]" id="spo" class="form-control form-control-sm" placeholder="Spouse">
-						</div>
-
-						<div class="col-auto mb-1 g-1 form-group {{ $errors->has('staffspouse.*.phone') ? 'has-error' : '' }}">
-							<input type="text" name="staffspouse[1][phone]" id="pho" class="form-control form-control-sm" placeholder="Spouse Phone">
-						</div>
-
-						<div class="col-auto mb-1 g-1 form-group {{ $errors->has('staffspouse.*.profession') ? 'has-error' : '' }}">
-							<input type="text" name="staffspouse[1][profession]" id="pro" class="form-control form-control-sm" placeholder="Spouse Profession">
-						</div>
-					</div>
 				</div>
 			</div>
 			<p>&nbsp;</p>
@@ -212,43 +193,7 @@ use App\Models\HumanResources\HRLeaveApprovalFlow;
 						</button>
 					</div>
 				</div>
-				<div class="row mb-1 g-1 children_wrap">
-					<div class="row children_row">
-						<div class="col-auto mb-1 g-1 ">
-							<button class="btn btn-sm btn-outline-secondary children_remove" type="button">
-								<i class="fas fa-trash" aria-hidden="true"></i>
-							</button>
-						</div>
-
-						<div class="col-auto mb-1 g-1 form-group {{ $errors->has('staffchildren.*.children') ? 'has-error' : '' }}">
-							<input type="text" name="staffchildren[1][children]" id="chi_1" class="form-control form-control-sm" placeholder="Children">
-						</div>
-
-						<div class="col-auto mb-1 g-1 form-group {{ $errors->has('staffchildren.*.gender_id') ? 'has-error' : '' }}">
-							<select name="staffchildren[1][gender_id]" id="cge_1" class="form-select form-select-sm" placeholder="Gender"></select>
-						</div>
-
-						<div class="col-auto mb-1 g-1 form-group {{ $errors->has('staffchildren.*.education_level_id') ? 'has-error' : '' }}">
-							<select name="staffchildren[1][education_level_id]" id="cel_1" class="form-select form-select-sm" placeholder="Education Level"></select>
-						</div>
-
-						<div class="col-auto mb-1 gx-6 form-group {{ $errors->has('staffchildren.*.health_status_id') ? 'has-error' : '' }}">
-							<select name="staffchildren[1][health_status_id]" id="chs_1" class="form-select form-select-sm" placeholder="Health Status"></select>
-						</div>
-
-						<div class="form-group form-check col-auto mb-1 gx-6 {{ $errors->has('staffchildren.*.tax_exemption') ? 'has-error' : '' }}">
-							<input type="hidden" name="staffchildren[1][tax_exemption]" class="form-check-input" value="0">
-							<input type="checkbox" name="staffchildren[1][tax_exemption]" class="form-check-input" value="1" id="cte_1">
-							<label class="form-check-label" for="cte_1">Valid for Tax Exemption?</label>
-						</div>
-
-
-						<div class="col-auto mb-1 g-1 form-group {{ $errors->has('staffchildren.*.tax_exemption_percentage_id') ? 'has-error' : '' }}">
-							<select name="staffchildren[1][tax_exemption_percentage_id]" id="ctep_1" class="form-select form-select-sm" placeholder="Tax Exemption Percentage"></select>
-						</div>
-
-					</div>
-				</div>
+				<div class="row mb-1 g-1 children_wrap"></div>
 			</div>
 
 			<p>&nbsp;</p>
@@ -374,21 +319,7 @@ use App\Models\HumanResources\HRLeaveApprovalFlow;
 						</button>
 					</div>
 				</div>
-				<div class="row mb-1 g-1 crossbackup_wrap">
-					<div class="row crossbackup_row">
-						<div class="form-group row mb-1 g-1 {{ $errors->has('crossbackup.*.staff_id') ? 'has-error' : '' }}">
-							<div class="col-auto mb-1 g-1 ">
-								<button class="btn btn-sm btn-outline-secondary crossbackup_remove" type="button">
-									<i class="fas fa-trash" aria-hidden="true"></i>
-								</button>
-							</div>
-							<label for="sta_1" class="col-sm-4 col-form-label">Cross Backup Personnel :</label>
-							<div class="col-auto">
-								<select name="crossbackup[][staff_id]" id="sta_1" class="form-select form-select-sm" placeholder="Cross Backup Personnel"></select>
-							</div>
-						</div>
-					</div>
-				</div>
+				<div class="row mb-1 g-1 crossbackup_wrap"></div>
 			</div>
 
 
@@ -707,7 +638,7 @@ var max_fields  = 4;						//maximum input boxes allowed
 var add_buttons	= $(".spouse_add");
 var wrappers	= $(".spouse_wrap");
 
-var xs = 1;
+var xs = 0;
 $(add_buttons).click(function(){
 	// e.preventDefault();
 
@@ -765,7 +696,7 @@ var cmax_fields  = 12;						//maximum input boxes allowed
 var cadd_buttons	= $(".children_add");
 var cwrappers	= $(".children_wrap");
 
-var xc = 1;
+var xc = 0;
 $(cadd_buttons).click(function(){
 	// e.preventDefault();
 
@@ -1055,7 +986,6 @@ $(crb_wrappers).on("click",".crossbackup_remove", function(e){
 
 /////////////////////////////////////////////////////////////////////////////////////////
 // bootstrap validator
-
 $('#form').bootstrapValidator({
 	feedbackIcons: {
 		valid: '',
@@ -1188,31 +1118,6 @@ $('#form').bootstrapValidator({
 				},
 			}
 		},
-		authorise_id: {
-			validators: {
-				// notEmpty: {
-				// 	message: 'Please choose. '
-				// },
-			}
-		},
-		staff_id: {
-			validators: {
-				// notEmpty: {
-				// 	message: 'Please choose. '
-				// },
-			}
-		},
-
-
-
-
-
-
-
-
-
-
-
 		name: {
 			validators: {
 				notEmpty: {
@@ -1225,13 +1130,16 @@ $('#form').bootstrapValidator({
 				notEmpty: {
 					message: 'Please insert Identity Card or Passport. '
 				},
+				// digits: {
+				// 	message: 'Only numbers '
+				// },
 			}
 		},
 		religion_id: {
 			validators: {
-				notEmpty: {
-					message: 'Please select. '
-				},
+				// notEmpty: {
+				// 	message: 'Please select. '
+				// },
 			}
 		},
 		gender_id: {
@@ -1243,9 +1151,9 @@ $('#form').bootstrapValidator({
 		},
 		race_id: {
 			validators: {
-				notEmpty: {
-					message: 'Please select. '
-				},
+				// notEmpty: {
+				// 	message: 'Please select. '
+				// },
 			}
 		},
 		nationality_id: {
@@ -1267,6 +1175,9 @@ $('#form').bootstrapValidator({
 				notEmpty: {
 					message: 'Please insert email. '
 				},
+				emailAddress: {
+					message: 'Please insert valid email '
+				},
 			}
 		},
 		address: {
@@ -1281,6 +1192,9 @@ $('#form').bootstrapValidator({
 				notEmpty: {
 					message: 'Please insert mobile. '
 				},
+				digits: {
+					message: 'Please insert valid mobile number '
+				},
 			}
 		},
 		phone: {
@@ -1288,6 +1202,9 @@ $('#form').bootstrapValidator({
 				// notEmpty: {
 				// 	message: 'Please insert phone. '
 				// },
+				digits: {
+					message: 'Please insert valid mobile number '
+				},
 			}
 		},
 		dob: {
@@ -1295,6 +1212,10 @@ $('#form').bootstrapValidator({
 				// notEmpty: {
 				// 	message: 'Please insert phone. '
 				// },
+				date: {
+					format: 'YYYY-MM-DD',
+					message: 'Invalid date '
+				},
 			}
 		},
 		cimb_account: {
@@ -1302,6 +1223,9 @@ $('#form').bootstrapValidator({
 				// notEmpty: {
 				// 	message: 'Please insert phone. '
 				// },
+				digits: {
+					message: 'Please insert valid mobile number '
+				},
 			}
 		},
 		epf_account: {
@@ -1309,12 +1233,18 @@ $('#form').bootstrapValidator({
 				// notEmpty: {
 				// 	message: 'Please insert phone. '
 				// },
+				digits: {
+					message: 'Please insert valid mobile number '
+				},
 			}
 		},
 		income_tax_no: {
 			validators: {
 				// notEmpty: {
 				// 	message: 'Please insert phone. '
+				// },
+				// digits: {
+				// 	message: 'Please insert valid mobile number '
 				// },
 			}
 		},
@@ -1323,6 +1253,9 @@ $('#form').bootstrapValidator({
 				// notEmpty: {
 				// 	message: 'Please insert phone. '
 				// },
+				digits: {
+					message: 'Please insert valid mobile number '
+				},
 			}
 		},
 		weight: {
@@ -1330,6 +1263,10 @@ $('#form').bootstrapValidator({
 				// notEmpty: {
 				// 	message: 'Please insert phone. '
 				// },
+				numeric: {
+					separator: '.',
+					message: 'Only numbers. '
+				},
 			}
 		},
 		height: {
@@ -1337,13 +1274,10 @@ $('#form').bootstrapValidator({
 				// notEmpty: {
 				// 	message: 'Please insert phone. '
 				// },
-			}
-		},
-		join: {
-			validators: {
-				// notEmpty: {
-				// 	message: 'Please insert phone. '
-				// },
+				numeric: {
+					separator: '.',
+					message: 'Only numbers. '
+				},
 			}
 		},
 		join: {
@@ -1353,7 +1287,7 @@ $('#form').bootstrapValidator({
 				// },
 				date: {
 					format: 'YYYY-MM-DD',
-					message: 'The value is not a valid date. '
+					message: 'Invalid date '
 				},
 			}
 		},
@@ -1372,9 +1306,9 @@ $('#form').bootstrapValidator({
 @for ($ie = 1; $ie <= 4; $ie++)
 		'staffspouse[{{ $ie }}][spouse]': {
 			validators: {
-				notEmpty: {
-					message: 'Please insert spouse. '
-				},
+				// notEmpty: {
+				// 	message: 'Please insert spouse. '
+				// },
 				regexp: {
 					regexp: /^[a-z\s\'\@]+$/i,
 					message: 'The full name can consist of alphabetical characters, \', @ and spaces only'
@@ -1386,8 +1320,8 @@ $('#form').bootstrapValidator({
 				// notEmpty: {
 				// 	message: 'Please insert spouse phone. '
 				// },
-				numeric: {
-					message: 'Only numbers. '
+				digits: {
+					message: 'Please insert valid phone number '
 				},
 			}
 		},
@@ -1403,9 +1337,9 @@ $('#form').bootstrapValidator({
 @for ($ic = 1; $ic <= 4; $ic++)
 		'staffchildren[{{ $ic }}][children]': {
 			validators: {
-				notEmpty: {
-					message: 'Please insert spouse. '
-				},
+				// notEmpty: {
+				// 	message: 'Please insert spouse. '
+				// },
 				regexp: {
 					regexp: /^[a-z\s\'\@]+$/i,
 					message: 'The full name can consist of alphabetical characters, \', @ and spaces only'
@@ -1414,32 +1348,29 @@ $('#form').bootstrapValidator({
 		},
 		'staffchildren[{{ $ic }}][gender_id]': {
 			validators: {
-				notEmpty: {
-					message: 'Please choose. '
-				},
+				// notEmpty: {
+				// 	message: 'Please choose. '
+				// },
 			}
 		},
 		'staffchildren[{{ $ic }}][education_level_id]': {
 			validators: {
-				notEmpty: {
-					message: 'Please choose. '
-				},
+				// notEmpty: {
+				// 	message: 'Please choose. '
+				// },
 			}
 		},
 		'staffchildren[{{ $ic }}][health_status_id]': {
 			validators: {
-				notEmpty: {
-					message: 'Please choose. '
-				},
+				// notEmpty: {
+				// 	message: 'Please choose. '
+				// },
 			}
 		},
 		'staffchildren[{{ $ic }}][tax_exemption]': {
 			validators: {
 				// notEmpty: {
-				// 	message: 'Please insert spouse profession. '
-				// },
-				// numeric: {
-				// 	message: 'Only numbers. '
+				// 	message: 'Please insert children profession. '
 				// },
 			}
 		},
@@ -1448,7 +1379,7 @@ $('#form').bootstrapValidator({
 		'staffemergency[{{ $ie }}][contact_person]': {
 			validators: {
 				notEmpty: {
-					message: 'Please insert spouse. '
+					message: 'Please insert emergency contact person '
 				},
 				regexp: {
 					regexp: /^[a-z\s\'\@]+$/i,
@@ -1458,25 +1389,25 @@ $('#form').bootstrapValidator({
 		},
 		'staffemergency[{{ $ie }}][phone]': {
 			validators: {
-				// notEmpty: {
-				// 	message: 'Please insert spouse phone. '
-				// },
-				numeric: {
-					message: 'Only numbers. '
+				notEmpty: {
+					message: 'Please insert emergency contact person phone. '
+				},
+				digits: {
+					message: 'Please insert valid phone number '
 				},
 			}
 		},
 		'staffemergency[{{ $ie }}][relationship_id]': {
 			validators: {
-				// notEmpty: {
-				// 	message: 'Please insert spouse profession. '
-				// },
+				notEmpty: {
+					message: 'Please insert emergency contact person profession. '
+				},
 			}
 		},
 		'staffemergency[{{ $ie }}][address]': {
 			validators: {
 				// notEmpty: {
-				// 	message: 'Please insert spouse profession. '
+				// 	message: 'Please insert emergency contact person profession. '
 				// },
 			}
 		},
@@ -1485,7 +1416,7 @@ $('#form').bootstrapValidator({
 		'crossbackup[{{ $ie }}][staff_id]': {
 			validators: {
 				// notEmpty: {
-				// 	message: 'Please insert spouse profession. '
+				// 	message: 'Please choose '
 				// },
 			}
 		},
