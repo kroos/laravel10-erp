@@ -21,6 +21,8 @@ if ($attendance->time_work_hour != NULL || $attendance->time_work_hour != '') {
   $time_work_hour = '00:00';
 }
 
+$working_hour = $staff->belongstomanydepartment()->get()->first()->belongstowhgroup()->where('effective_date_start', '<=', $attendance->attend_date)->where('effective_date_end', '>=', $attendance->attend_date)->where()->get()->first();
+echo $working_hour->id;
 ?>
 
 <div class="col-12">
@@ -215,6 +217,7 @@ useCurrent: false,
   var breakTime = $('#break').val();
   var resumeTime = $('#resume').val();
   var outTime = $('#out').val();
+  
 
   // Validate input format (HH:mm)
   var timeRegex = /^([01]\d|2[0-3]):([0-5]\d)$/;
@@ -238,6 +241,8 @@ useCurrent: false,
 
 
     if (inTime != '00:00' && breakTime != '00:00' && outTime == '00:00') {
+
+
       var startTimeStr = inTime;
       var endTimeStr = breakTime;
 
