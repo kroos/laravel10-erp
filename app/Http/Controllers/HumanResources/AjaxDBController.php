@@ -465,20 +465,6 @@ class AjaxDBController extends Controller
 		return response()->json( $cuti );
 	}
 
-	public function division(Request $request)
-	{
-		// https://select2.org/data-sources/formats
-		$au = OptDivision::where('div','LIKE','%'.$request->search.'%')->get();
-		foreach ($au as $key) {
-			$cuti['results'][] = [
-									'id' => $key->id,
-									'text' => $key->div,
-								];
-			// $cuti['pagination'] = ['more' => true];
-		}
-		return response()->json( $cuti );
-	}
-
 	public function educationlevel(Request $request)
 	{
 		// https://select2.org/data-sources/formats
@@ -613,6 +599,20 @@ class AjaxDBController extends Controller
 			$cuti['results'][] = [
 									'id' => $key->id,
 									'text' => $key->relationship,
+								];
+			// $cuti['pagination'] = ['more' => true];
+		}
+		return response()->json( $cuti );
+	}
+
+	public function division(Request $request)
+	{
+		// https://select2.org/data-sources/formats
+		$au = OptDivision::where('div','LIKE','%'.$request->search.'%')->get();
+		foreach ($au as $key) {
+			$cuti['results'][] = [
+									'id' => $key->id,
+									'text' => $key->div,
 								];
 			// $cuti['pagination'] = ['more' => true];
 		}

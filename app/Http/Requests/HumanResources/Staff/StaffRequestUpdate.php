@@ -4,7 +4,7 @@ namespace App\Http\Requests\HumanResources\Staff;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StaffRequestStore extends FormRequest
+class StaffRequestUpdate extends FormRequest
 {
 	/**
 	 * Determine if the user is authorized to make this request.
@@ -23,21 +23,21 @@ class StaffRequestStore extends FormRequest
 	{
 		return [
 			'name' => 'required',
-			'ic' => 'required|unique:staffs,ic',
+			'ic' => 'required|unique:staffs,ic,'.$this->staff['id'],
 			'religion_id' => 'nullable',
 			'gender_id' => 'required',
 			'race_id' => 'nullable',
 			'nationality_id' => 'nullable',
 			'marital_status_id' => 'required',
-			'email' => 'nullable|email|unique:staffs,email',
+			'email' => 'nullable|email|unique:staffs,email,'.$this->staff['id'],
 			'address' => 'required',
-			'mobile' => 'required',
+			'mobile' => 'required|unique:staffs,mobile,'.$this->staff['id'],
 			'phone' => 'nullable',
 			'dob' => 'nullable',
-			'cimb_account' => 'nullable|unique:staffs,cimb_account',
-			'epf_account' => 'nullable|unique:staffs,epf_account',
-			'income_tax_no' => 'nullable|unique:staffs,income_tax_no',
-			'socso_no' => 'nullable|unique:staffs,socso_no',
+			'cimb_account' => 'nullable|unique:staffs,cimb_account,'.$this->staff['id'],
+			'epf_account' => 'nullable|unique:staffs,epf_account,'.$this->staff['id'],
+			'income_tax_no' => 'nullable|unique:staffs,income_tax_no,'.$this->staff['id'],
+			'socso_no' => 'nullable|unique:staffs,socso_no,'.$this->staff['id'],
 			'weight' => 'nullable',
 			'height' => 'nullable',
 			'join' => 'nullable',
@@ -50,11 +50,11 @@ class StaffRequestStore extends FormRequest
 			'image' => 'nullable|file|max:5120|mimes:jpeg,jpg,png,bmp',
 			// 'document' => 'sometimes|file|max:5120|mimes:jpeg,jpg,png,bmp,pdf,doc,docx',
 
-			'username' => 'required|alpha_num:ascii|unique:logins,username',
-			'password' => 'required',
-			'annual_leave' => 'nullable',
-			'mc_leave' => 'nullable',
-			'maternity_leave' => 'nullable',
+			'username' => 'required|alpha_num:ascii|unique:logins,username,'.$this->staff['id'],
+			'password' => 'nullable',
+			'annual_leave' => 'required',
+			'mc_leave' => 'required',
+			'maternity_leave' => 'sometimes',
 
 			'staffspouse.*.spouse' => 'sometimes',
 			'staffspouse.*.phone' => 'required_with:staffspouse.*.spouse',

@@ -40,6 +40,7 @@ Route::post('/restdaygroup', [AjaxDBController::class, 'restdaygroup'])->name('r
 Route::post('/staffcrossbackup', [AjaxDBController::class, 'staffcrossbackup'])->name('staffcrossbackup.staffcrossbackup');
 Route::post('/unblockhalfdayleave', [AjaxDBController::class, 'unblockhalfdayleave'])->name('unblockhalfdayleave.unblockhalfdayleave');
 Route::post('/leaveevents', [AjaxDBController::class, 'leaveevents'])->name('leaveevents');
+Route::post('/division', [AjaxDBController::class, 'division'])->name('division');
 
 // Route::get('/login/{login}', [
 // 	'as' => 'login.edit',

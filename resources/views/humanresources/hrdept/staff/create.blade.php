@@ -179,6 +179,22 @@ use App\Models\HumanResources\HRLeaveApprovalFlow;
 					</div>
 				</div>
 				<div class="row mb-1 g-1 spouse_wrap">
+					<div class="row spouse_row">
+						<div class="col-auto mb-1 g-1 ">
+							<button class="btn btn-sm btn-outline-secondary spouse_remove" type="button">
+								<i class="fas fa-trash" aria-hidden="true"></i>
+							</button>
+						</div>
+						<div class="col-auto mb-1 g-1 form-group {{ $errors->has('staffspouse.*.spouse') ? 'has-error' : '' }}">
+							<input type="text" name="staffspouse[1][spouse]" id="spo" class="form-control form-control-sm" placeholder="Spouse">
+						</div>
+						<div class="col-auto mb-1 g-1 form-group {{ $errors->has('staffspouse.*.phone') ? 'has-error' : '' }}">
+							<input type="text" name="staffspouse[1][phone]" id="pho" class="form-control form-control-sm" placeholder="Spouse Phone">
+						</div>
+						<div class="col-auto mb-1 g-1 form-group {{ $errors->has('staffspouse.*.profession') ? 'has-error' : '' }}">
+							<input type="text" name="staffspouse[1][profession]" id="pro" class="form-control form-control-sm" placeholder="Spouse Profession">
+						</div>
+					</div>
 				</div>
 			</div>
 			<p>&nbsp;</p>
@@ -193,7 +209,35 @@ use App\Models\HumanResources\HRLeaveApprovalFlow;
 						</button>
 					</div>
 				</div>
-				<div class="row mb-1 g-1 children_wrap"></div>
+				<div class="row mb-1 g-1 children_wrap">
+					<div class="row children_row">
+						<div class="col-auto mb-1 g-1 ">
+							<button class="btn btn-sm btn-outline-secondary children_remove" type="button">
+								<i class="fas fa-trash" aria-hidden="true"></i>
+							</button>
+						</div>
+						<div class="col-auto mb-1 g-1 form-group {{ $errors->has('staffchildren.*.children') ? 'has-error' : '' }}">
+							<input type="text" name="staffchildren[1][children]" id="chi_1" class="form-control form-control-sm" placeholder="Children">
+						</div>
+						<div class="col-auto mb-1 g-1 form-group {{ $errors->has('staffchildren.*.gender_id') ? 'has-error' : '' }}">
+							<select name="staffchildren[1][gender_id]" id="cge_1" class="form-select form-select-sm" placeholder="Gender"></select>
+						</div>
+						<div class="col-auto mb-1 g-1 form-group {{ $errors->has('staffchildren.*.education_level_id') ? 'has-error' : '' }}">
+							<select name="staffchildren[1][education_level_id]" id="cel_1" class="form-select form-select-sm" placeholder="Education Level"></select>
+						</div>
+						<div class="col-auto mb-1 gx-6 form-group {{ $errors->has('staffchildren.*.health_status_id') ? 'has-error' : '' }}">
+							<select name="staffchildren[1][health_status_id]" id="chs_1" class="form-select form-select-sm" placeholder="Health Status"></select>
+						</div>
+						<div class="form-group form-check col-auto mb-1 gx-6 {{ $errors->has('staffchildren.*.tax_exemption') ? 'has-error' : '' }}">
+							<input type="hidden" name="staffchildren[1][tax_exemption]" class="form-check-input" value="0">
+							<input type="checkbox" name="staffchildren[1][tax_exemption]" class="form-check-input" value="1" id="cte_1">
+							<label class="form-check-label" for="cte_1">Valid for Tax Exemption?</label>
+						</div>
+						<div class="col-auto mb-1 g-1 form-group {{ $errors->has('staffchildren.*.tax_exemption_percentage_id') ? 'has-error' : '' }}">
+							<select name="staffchildren[1][tax_exemption_percentage_id]" id="ctep_1" class="form-select form-select-sm" placeholder="Tax Exemption Percentage"></select>
+						</div>
+					</div>
+				</div>
 			</div>
 
 			<p>&nbsp;</p>
@@ -287,10 +331,17 @@ use App\Models\HumanResources\HRLeaveApprovalFlow;
 				</div>
 			</div>
 
+			<div class="form-group row mb-3 {{ $errors->has('div_id') ? 'has-error' : '' }}">
+				{{ Form::label( 'him', 'Management : ', ['class' => 'col-sm-4 col-form-label'] ) }}
+				<div class="col-auto">
+					<select name="div_id" id="him" class="form-select form-select-sm" placeholder="Management"></select>
+				</div>
+			</div>
+
 			<div class="form-group row mb-3 {{ $errors->has('restday_group_id') ? 'has-error' : '' }}">
 				{{ Form::label( 'rdg', 'Rest Day Group : ', ['class' => 'col-sm-4 col-form-label'] ) }}
 				<div class="col-auto">
-					<select name="restday_group_id" id="rdg" class="form-select form-select-sm" placeholder="Department"></select>
+					<select name="restday_group_id" id="rdg" class="form-select form-select-sm" placeholder="Please Select"></select>
 				</div>
 			</div>
 
@@ -319,7 +370,21 @@ use App\Models\HumanResources\HRLeaveApprovalFlow;
 						</button>
 					</div>
 				</div>
-				<div class="row mb-1 g-1 crossbackup_wrap"></div>
+				<div class="row mb-1 g-1 crossbackup_wrap">
+					<div class="row crossbackup_row">
+						<div class="form-group row mb-1 g-1 {{ $errors->has('crossbackup.*.backup_staff_id') ? 'has-error' : '' }}">
+							<div class="col-auto mb-1 g-1 ">
+								<button class="btn btn-sm btn-outline-secondary crossbackup_remove" type="button">
+									<i class="fas fa-trash" aria-hidden="true"></i>
+								</button>
+							</div>
+							<label for="sta_1" class="col-sm-4 col-form-label">Cross Backup Personnel :</label>
+							<div class="col-auto">
+								<select name="crossbackup[1][backup_staff_id]" id="sta_1" class="form-select form-select-sm" placeholder="Cross Backup Personnel"></select>
+							</div>
+						</div>
+					</div>
+				</div>
 			</div>
 
 
@@ -338,7 +403,16 @@ use App\Models\HumanResources\HRLeaveApprovalFlow;
 				</div>
 			</div>
 
-			<div id="wrapmaternity"></div>
+			<div id="wrapmaternity">
+				<div id="append">
+					<div class="form-group row mb-3 {{ $errors->has('maternity_leave') ? 'has-error' : '' }}">
+						<label for="matl" id="matl" class="col-sm-4 col-form-label">Maternity Leave : </label>
+						<div class="col-auto">
+							{{ Form::text('maternity_leave', @$value, ['class' => 'form-control form-control-sm col-auto', 'id' => 'matl', 'placeholder' => 'Maternity Leave', 'autocomplete' => 'off']) }}
+						</div>
+					</div>
+				</div>
+			</div>
 
 		</div>
 	</div>
@@ -386,11 +460,12 @@ $('#gen_1').on('change', function () {
 						'<div class="form-group row mb-3 {{ $errors->has('maternity_leave') ? 'has-error' : '' }}">' +
 							'<label for="matl" id="matl" class="col-sm-4 col-form-label">Maternity Leave : </label>' +
 							'<div class="col-auto">' +
-								'{{ Form::text('maternity_leave', @$value, ['class' => 'form-control form-control-sm col-auto', 'id' => 'matl', 'placeholder' => 'Maternity Leave', 'autocomplete' => 'off']) }}' +
+								'{{ Form::text('maternity_leave', 60, ['class' => 'form-control form-control-sm col-auto', 'id' => 'matl', 'placeholder' => 'Maternity Leave', 'autocomplete' => 'off']) }}' +
 							'</div>' +
 						'</div>' +
 					'</div>'
 				);
+				// this will bring issue once they push submit and didnt put any value
 				$('#form').bootstrapValidator('addField', $('#append').find('[name="maternity_leave"]'));
 			}
 		}
@@ -489,6 +564,25 @@ $('#dep').select2({
 			var query = {
 				branch_id: $('#bra').val(),
 				category_id: $('#cat').val(),
+				_token: '{!! csrf_token() !!}',
+				search: params.term,
+			}
+			return query;
+		}
+	},
+});
+
+$('#him').select2({
+	placeholder: 'Please Select',
+	width: '100%',
+	allowClear: true,
+	closeOnSelect: true,
+	ajax: {
+		url: '{{ route('division') }}',
+		type: 'POST',
+		dataType: 'json',
+		data: function (params) {
+			var query = {
 				_token: '{!! csrf_token() !!}',
 				search: params.term,
 			}
@@ -638,7 +732,7 @@ var max_fields  = 4;						//maximum input boxes allowed
 var add_buttons	= $(".spouse_add");
 var wrappers	= $(".spouse_wrap");
 
-var xs = 0;
+var xs = 1;
 $(add_buttons).click(function(){
 	// e.preventDefault();
 
@@ -696,7 +790,7 @@ var cmax_fields  = 12;						//maximum input boxes allowed
 var cadd_buttons	= $(".children_add");
 var cwrappers	= $(".children_wrap");
 
-var xc = 0;
+var xc = 1;
 $(cadd_buttons).click(function(){
 	// e.preventDefault();
 
@@ -868,7 +962,7 @@ $(eadd_buttons).click(function(){
 					'<select name="staffemergency[' + xe + '][relationship_id]" id="ere_' + xe + '" class="form-select form-select-sm" placeholder="Relationship"></select>' +
 				'</div>' +
 				'<div class="col-auto mb-1 gx-1 form-group {{ $errors->has('staffemergency.*.address') ? 'has-error' : '' }}">' +
-					'<input type="textarea" name="staffemergency[' + xe + '][address]" id="ead_' + xe + '" class="form-control form-control-sm" placeholder="Health Status">' +
+					'<input type="textarea" name="staffemergency[' + xe + '][address]" id="ead_' + xe + '" class="form-control form-control-sm" placeholder="Address">' +
 				'</div>' +
 			'</div>'
 		); //add input box
@@ -935,7 +1029,7 @@ $(crb_add_buttons).click(function(){
 		xcrb++;
 		crb_wrappers.append(
 			'<div class="row crossbackup_row">' +
-				'<div class="form-group row mb-1 g-1 {{ $errors->has('crossbackup.*.staff_id') ? 'has-error' : '' }}">' +
+				'<div class="form-group row mb-1 g-1 {{ $errors->has('crossbackup.*.backup_staff_id') ? 'has-error' : '' }}">' +
 					'<div class="col-auto mb-1 g-1 ">' +
 						'<button class="btn btn-sm btn-outline-secondary crossbackup_remove" type="button">' +
 							'<i class="fas fa-trash" aria-hidden="true"></i>' +
@@ -943,7 +1037,7 @@ $(crb_add_buttons).click(function(){
 					'</div>' +
 					'<label for="sta_1" class="col-sm-4 col-form-label">Cross Backup Personnel :</label>' +
 					'<div class="col-auto">' +
-						'<select name="crossbackup[' + xcrb + '][staff_id]" id="sta_' + xcrb + '" class="form-select form-select-sm" placeholder="Cross Backup Personnel"></select>' +
+						'<select name="crossbackup[' + xcrb + '][backup_staff_id]" id="sta_' + xcrb + '" class="form-select form-select-sm" placeholder="Cross Backup Personnel"></select>' +
 					'</div>' +
 				'</div>' +
 			'</div>'
@@ -969,7 +1063,7 @@ $(crb_add_buttons).click(function(){
 		});
 
 		//bootstrap validate
-		$('#form').bootstrapValidator('addField',	$('.crossbackup_row')	.find('[name="crossbackup['+ xcrb +'][staff_id]"]'));
+		$('#form').bootstrapValidator('addField',	$('.crossbackup_row')	.find('[name="crossbackup['+ xcrb +'][backup_staff_id]"]'));
 	}
 })
 
@@ -977,7 +1071,7 @@ $(crb_wrappers).on("click",".crossbackup_remove", function(e){
 	//user click on remove text
 	e.preventDefault();
 	var $row = $(this).parent().parent();
-	var $option1 = $row.find('[name="crossbackup[' + xcrb + '][staff_id]"]');
+	var $option1 = $row.find('[name="crossbackup[' + xcrb + '][backup_staff_id]"]');
 	$row.remove();
 
 	$('#form').bootstrapValidator('removeField', $option1);
@@ -1001,7 +1095,7 @@ $('#form').bootstrapValidator({
 				remote: {
 					type: 'POST',
 					url: '{{ route('loginuser.loginuser') }}',
-					message: 'Username exist. Please use another userame. ',
+					message: 'Username exist. Please use another username. ',
 					data: function(validator) {
 								return {
 											_token: '{!! csrf_token() !!}',
@@ -1047,6 +1141,14 @@ $('#form').bootstrapValidator({
 					field: 'category_id',
 					message: 'Please choose. '
 				},
+			}
+		},
+		div_id: {
+			validators: {
+				// notEmpty: {
+				// 	field: 'pivot_dept_id',
+				// 	message: 'Please choose. '
+				// },
 			}
 		},
 		restday_group_id: {
@@ -1413,7 +1515,7 @@ $('#form').bootstrapValidator({
 		},
 @endfor
 @for ($ie = 1; $ie <= 5; $ie++)
-		'crossbackup[{{ $ie }}][staff_id]': {
+		'crossbackup[{{ $ie }}][backup_staff_id]': {
 			validators: {
 				// notEmpty: {
 				// 	message: 'Please choose '
