@@ -149,7 +149,7 @@ class StaffController extends Controller
 	/**
 	 * Update the specified resource in storage.
 	 */
-	public function update(StaffRequestUpdate $request, Staff $staff): RedirectResponse
+	public function update(StaffRequestUpdate $request, Staff $staff)/*: RedirectResponse*/
 	{
 		$data = $request->only(['name', 'ic', 'gender_id', 'marital_status_id']);
 
@@ -263,46 +263,26 @@ class StaffController extends Controller
 		if($request->has('staffspouse')) {
 			foreach($request->staffspouse as $k => $v) {
 				$staff->hasmanyspouse()->updateOrCreate([
-												'id' => $v['id']
-											],
-											[
-												'spouse' => $v['spouse'],
-												'phone' => $v['phone'],
-												'profession' => $v['profession'],
-											]);
+						'id' => $v['id']
+					], Arr::except($v, ['id']));
 			}
 		}
 
 		if($request->has('staffchildren')) {
 			foreach($request->staffchildren as $k => $v) {
 				$staff->hasmanychildren()->updateOrCreate([
-												'id' => $v['id']
-											],
-											[
-												'children' => $v['children'],
-												'gender_id' => $v['gender_id'],
-												'education_level_id' => $v['education_level_id'],
-												'health_status_id' => $v['health_status_id'],
-												'tax_exemption' => $v['tax_exemption'],
-												'tax_exemption_percentage_id' => $v['tax_exemption_percentage_id'],
-											]);
+						'id' => $v['id']
+					], Arr::except($v, ['id']));
 			}
 		}
 
 		if($request->has('staffemergency')) {
 			foreach($request->staffemergency as $k => $v) {
 				$staff->hasmanyemergency()->updateOrCreate([
-												'id' => $v['id']
-											],
-											[
-												'contact_person' => $v['contact_person'],
-												'phone' => $v['phone'],
-												'relationship_id' => $v['relationship_id'],
-												'address' => $v['address'],
-											]);
+						'id' => $v['id']
+					], Arr::except($v, ['id']));
 			}
 		}
-
 
 		Session::flash('flash_message', 'Successfully Edit Staff.');
 		return redirect()->route('staff.index');

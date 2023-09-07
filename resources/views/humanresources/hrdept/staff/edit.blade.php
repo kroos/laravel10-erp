@@ -1082,8 +1082,8 @@ $(cadd_buttons).click(function(){
 					'<select name="staffchildren[' + xc + '][health_status_id]" id="chs_' + xc + '" class="form-select form-select-sm" placeholder="Health Status"></select>' +
 				'</div>' +
 				'<div class="form-group form-check col-auto mb-1 gx-6 {{ $errors->has('staffchildren.*.tax_exemption') ? 'has-error' : '' }}">' +
-					'<input type="hidden" name="staffchildren[' + xc + '][tax_exemption]" class="form-check-input" value="No">' +
-					'<input type="checkbox" name="staffchildren[' + xc + '][tax_exemption]" class="form-check-input" value="Yes" id="cte_' + xc + '">' +
+					'<input type="hidden" name="staffchildren[' + xc + '][tax_exemption]" class="form-check-input" value="0">' +
+					'<input type="checkbox" name="staffchildren[' + xc + '][tax_exemption]" class="form-check-input" value="1" id="cte_' + xc + '">' +
 					'<label class="form-check-label" for="cte_' + xc + '">Valid for Tax Exemption?</label>' +
 				'</div>' +
 				'<div class="col-auto mb-1 g-1 form-group {{ $errors->has('staffchildren.*.tax_exemption_percentage_id') ? 'has-error' : '' }}">' +
@@ -1446,9 +1446,9 @@ $('#form').bootstrapValidator({
 		},
 		annual_leave: {
 			validators: {
-				// notEmpty: {
-				// 	message: 'Please choose. '
-				// },
+				notEmpty: {
+					message: 'Please choose. '
+				},
 				numeric: {
 					separator: '.',
 					message: 'Numbers must be in decimal ',
@@ -1462,9 +1462,9 @@ $('#form').bootstrapValidator({
 		},
 		mc_leave: {
 			validators: {
-				// notEmpty: {
-				// 	message: 'Please choose. '
-				// },
+				notEmpty: {
+					message: 'Please choose. '
+				},
 				numeric: {
 					separator: '.',
 					message: 'Numbers must be in decimal ',
