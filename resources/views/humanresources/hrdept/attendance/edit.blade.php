@@ -21,6 +21,8 @@ if ($attendance->time_work_hour != NULL || $attendance->time_work_hour != '') {
   $time_work_hour = '00:00';
 }
 
+$working_hour = $staff->belongstomanydepartment()->get()->first()->belongstowhgroup()->where('effective_date_start', '<=', $attendance->attend_date)->where('effective_date_end', '>=', $attendance->attend_date)->where()->get()->first();
+echo $working_hour->id;
 ?>
 
 <div class="col-12">
@@ -211,37 +213,85 @@ useCurrent: false,
 })
 .on('dp.change dp.update', function(e) {
   
-  const startTimeStr = $('#in').val();
-    const endTimeStr = $('#out').val();
+  var inTime = $('#in').val();
+  var breakTime = $('#break').val();
+  var resumeTime = $('#resume').val();
+  var outTime = $('#out').val();
+  
 
-    // Validate input format (HH:mm)
-    const timeRegex = /^([01]\d|2[0-3]):([0-5]\d)$/;
+  // Validate input format (HH:mm)
+  var timeRegex = /^([01]\d|2[0-3]):([0-5]\d)$/;
 
-    if (timeRegex.test(startTimeStr) && timeRegex.test(endTimeStr)) {
-        // Split the time strings into hours and minutes
-        const startTimeParts = startTimeStr.split(':');
-        const endTimeParts = endTimeStr.split(':');
+  if (timeRegex.test(inTime) && timeRegex.test(breakTime) && timeRegex.test(resumeTime) && timeRegex.test(outTime)) {
 
-        const startHours = parseInt(startTimeParts[0], 10);
-        const startMinutes = parseInt(startTimeParts[1], 10);
-        const endHours = parseInt(endTimeParts[0], 10);
-        const endMinutes = parseInt(endTimeParts[1], 10);
 
-        // Calculate time difference
-        const hoursDiff = endHours - startHours;
-        const minutesDiff = endMinutes - startMinutes;
 
-        // Ensure minutes are between 0 and 59
-        if (minutesDiff < 0) {
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    if (inTime != '00:00' && breakTime != '00:00' && outTime == '00:00') {
+
+
+      var startTimeStr = inTime;
+      var endTimeStr = breakTime;
+
+      // Split the time strings into hours and minutes
+      var startTimeParts = startTimeStr.split(':');
+      var endTimeParts = endTimeStr.split(':');
+
+      var startHours = parseInt(startTimeParts[0], 10);
+      var startMinutes = parseInt(startTimeParts[1], 10);
+      var endHours = parseInt(endTimeParts[0], 10);
+      var endMinutes = parseInt(endTimeParts[1], 10);
+
+      // Calculate time difference
+      var hoursDiff = endHours - startHours;
+      var minutesDiff = endMinutes - startMinutes;
+
+      // Ensure minutes are between 0 and 59
+      if (minutesDiff < 0) {
             hoursDiff--;
             minutesDiff += 60;
-        }
+      }
 
-        const formattedTimeDifference = `${hoursDiff.toString().padStart(2, '0')}:${minutesDiff.toString().padStart(2, '0')}`;
-        $('#time_work_hour').text(formattedTimeDifference);
-    } else {
-        $('#time_work_hour').text('Invalid Time Format');
-    }
+      var formattedTimeDifference = `${hoursDiff.toString().padStart(2, '0')}:${minutesDiff.toString().padStart(2, '0')}`;
+      $('#time_work_hour').text(formattedTimeDifference);
+    
+    } 
+
+
+
+
+
+    
+
+
+
+
+
+
+
+
+
+    
+  } else {
+    $('#time_work_hour').text('Invalid Time Format');
+  }
+    
+
+
+
 
 });
 
