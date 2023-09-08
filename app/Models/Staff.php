@@ -121,7 +121,7 @@ class Staff extends Authenticatable
 
 	public function hasmanyemergency(): HasMany
 	{
-		return $this->hasMany(\App\Models\HumanResources\HREmergency::class, 'staff_id');
+		return $this->hasMany(\App\Models\HumanResources\HRStaffEmergency::class, 'staff_id');
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
