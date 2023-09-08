@@ -67,8 +67,8 @@
 					<tbody>
 					@foreach($staff->hasmanyspouse()?->get() as $sp)
 						<tr>
-							<td>$sp->spouse</td>
-							<td>$sp->phone</td>
+							<td>{{ $sp->spouse }}</td>
+							<td>{{ $sp->phone }}</td>
 						</tr>
 					@endforeach
 					</tbody>

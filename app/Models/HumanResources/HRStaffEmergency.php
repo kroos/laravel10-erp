@@ -15,10 +15,10 @@ use App\Models\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 // use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-class HREmergency extends Model
+class HRStaffEmergency extends Model
 {
 	use HasFactory;
-	protected $connection = 'mysql';
+	// protected $connection = 'mysql';
 	protected $table = 'hr_emergency';
 
 	/////////////////////////////////////////////////////////////////////////////////////////

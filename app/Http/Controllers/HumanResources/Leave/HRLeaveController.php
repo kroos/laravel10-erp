@@ -19,6 +19,7 @@ use App\Models\HumanResources\DepartmentPivot;
 
 // load array helper
 use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 
 // load custom helper
 use App\Helpers\UnavailableDateTime;
@@ -63,16 +64,16 @@ class HRLeaveController extends Controller
 		// return $request->all();
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// initial setup for create a leave
-		$user = \Auth::user()->belongstostaff;																										// for specific user
-		$daStart = Carbon::parse($request->date_time_start);																						// date start : for manipulation
+		$user = \Auth::user()->belongstostaff;																			// for specific user
+		$daStart = Carbon::parse($request->date_time_start);															// date start : for manipulation
 
-		if( empty( $request->date_time_end ) ) {																									// in time off, there only date_time_start so...
+		if( empty( $request->date_time_end ) ) {																		// in time off, there only date_time_start so...
 			$request->date_time_end = $request->date_time_start;
 		}
 
-		$row = HRLeave::whereYear('date_time_start', $request->date_time_start)->get()->count();													// count rows for particular year based on $request->date_time_start
+		$row = HRLeave::whereYear('date_time_start', $request->date_time_start)->get()->count();						// count rows for particular year based on $request->date_time_start
 		$row += 1;
-		$ye = $daStart->format('y');																												// strip down to 2 digits
+		$ye = $daStart->format('y');																					// strip down to 2 digits
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// if a user select more than 1 day and setting double date is on, we need to count the remaining day that is not overlapping
@@ -94,8 +95,8 @@ class HRLeaveController extends Controller
 				}
 			}
 		}
-		$filtered = array_diff($lea, $leav);																										// get all the dates that is not overlapped
-		$totaldayfiltered = count($filtered);																										// total days
+		$filtered = array_diff($lea, $leav);																			// get all the dates that is not overlapped
+		$totaldayfiltered = count($filtered);																			// total days
 
 		// return $filtered;
 		// return $totaldayfiltered;
@@ -103,9 +104,9 @@ class HRLeaveController extends Controller
 
 		$dateStartEnd = [];
 		if($totalday == $totaldayfiltered){
-			$noOverlap = true;																														// meaning we CAN take $request->date_time_end $request->date_time_start as is to be insert in database
+			$noOverlap = true;																							// meaning we CAN take $request->date_time_end $request->date_time_start as is to be insert in database
 		} else {
-			$noOverlap = false;																														// meaning we CANT take $request->date_time_end $request->date_time_start as is to be insert in database, instead we need to separate it row by row to be inserted into database.
+			$noOverlap = false;																							// meaning we CANT take $request->date_time_end $request->date_time_start as is to be insert in database, instead we need to separate it row by row to be inserted into database.
 			// we need to loop entire date which is available 1 by 1
 			foreach($filtered as $d){
 				$dateStartEnd[] = ['date_time_start' => $d, 'date_time_end' => $d];
