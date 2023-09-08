@@ -3,7 +3,15 @@
 @section('content')
 <div class="col-sm-12 row justify-content-center align-items-start">
 @include('humanresources.hrdept.navhr')
-	<h4 class="align-items-center">Profile {{ $staff->name }} <a href="{{ route('staff.edit', $staff->id) }}" class="btn btn-sm btn-outline-secondary"><i class="bi bi-person-lines-fill"></i> Edit</a></h4>
+	<h4 class="align-items-center">Profile {{ $staff->name }}
+		<a href="{{ route('staff.edit', $staff->id) }}" class="btn btn-sm btn-outline-secondary">
+			<i class="bi bi-person-lines-fill"></i> Edit
+		</a>
+		&nbsp;
+		<a href="#" class="btn btn-sm btn-outline-secondary text-danger deactivate" data-id="{{ $staff->id }}">
+			<i class="bi bi-person-fill-dash"></i> Deactivate
+		</a>
+	</h4>
 	<div class="d-flex flex-column align-items-center text-center p-3 py-5">
 		<img class="rounded-5 mt-3" width="180px" src="{{ asset('storage/user_profile/' . $staff->image) }}">
 		<span class="font-weight-bold">{{ $staff->name }}</span>
@@ -344,6 +352,8 @@ if ( ($ls->leave_type_id == 9) || ($ls->leave_type_id != 9 && $ls->half_type_id 
 					@endforeach
 				</tbody>
 			</table>
+			@else
+			<p>No Leave Yet</p>
 			@endif
 		</div>
 	</div>
@@ -351,6 +361,57 @@ if ( ($ls->leave_type_id == 9) || ($ls->leave_type_id != 9 && $ls->half_type_id 
 @endsection
 
 @section('js')
+/////////////////////////////////////////////////////////////////////////////////////////
+$(document).on('click', '.deactivate', function(e){
+	var staffId = $(this).data('id');
+	DeactivateStaff(staffId);
+	e.preventDefault();
+});
+
+function DeactivateStaff(staffId){
+	swal.fire({
+		title: 'Are you sure?',
+		text: "Please take note, this action will deactivate {{ $staff->name }}.",
+		icon: 'warning',
+		showCancelButton: true,
+		confirmButtonColor: '#3085d6',
+		cancelButtonColor: '#d33',
+		confirmButtonText: 'Yes, deactivate',
+		showLoaderOnConfirm: true,
+
+		preConfirm: function() {
+			return new Promise(function(resolve) {
+				$.ajax({
+					type: 'PATCH',
+					url: '{{ url('deactivatestaff') }}' + '/' + staffId,
+					data: {
+							_token : $('meta[name=csrf-token]').attr('content'),
+							id: staffId,
+					},
+					dataType: 'json'
+				})
+				.done(function(response){
+					swal.fire('Deleted!', response.message, response.status)
+					.then(function(){
+						window.location.reload(true);
+					});
+					//$('#disable_user_' + staffId).parent().parent().remove();
+					window.location.replace('{{ route('staff.index') }}');
+				})
+				.fail(function(){
+					swal.fire('Oops...', 'Something went wrong with system! Please try again later', 'error');
+				})
+			});
+		},
+		allowOutsideClick: false
+	})
+	.then((result) => {
+		if (result.dismiss === swal.DismissReason.cancel) {
+			swal.fire('Cancelled', 'Your {{ $staff->name }} is safe from deactivate', 'info')
+		}
+	});
+}
+
 /////////////////////////////////////////////////////////////////////////////////////////
 // tooltip on reason
 $(document).ready(function(){

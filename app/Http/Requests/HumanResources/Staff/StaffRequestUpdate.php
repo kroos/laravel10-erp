@@ -60,6 +60,7 @@ class StaffRequestUpdate extends FormRequest
 			'staffspouse.*.phone' => 'required_with:staffspouse.*.spouse',
 			'staffspouse.*.profession' => 'nullable',
 			'staffchildren.*.children' => 'sometimes',
+			'staffchildren.*.dob' => 'sometimes|date',
 			'staffchildren.*.gender_id' => 'required_with:staffchildren.*.children',
 			'staffchildren.*.education_level_id' => 'nullable',
 			'staffchildren.*.health_status_id' => 'nullable',

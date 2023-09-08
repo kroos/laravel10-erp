@@ -5,6 +5,12 @@ namespace App\Http\Controllers\HumanResources;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
+// for controller output
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\View\View;
+
 // load model
 use App\Models\Setting;
 

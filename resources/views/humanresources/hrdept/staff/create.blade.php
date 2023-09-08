@@ -219,6 +219,9 @@ use App\Models\HumanResources\HRLeaveApprovalFlow;
 						<div class="col-auto mb-1 g-1 form-group {{ $errors->has('staffchildren.*.children') ? 'has-error' : '' }}">
 							<input type="text" name="staffchildren[1][children]" id="chi_1" class="form-control form-control-sm" placeholder="Children">
 						</div>
+						<div class="col-auto mb-1 g-1 form-group {{ $errors->has('staffchildren.*.dob') ? 'has-error' : '' }}">
+							<input type="text" name="staffchildren[1][dob]" id="cdo_1" class="form-control form-control-sm" placeholder="Date Of Birth">
+						</div>
 						<div class="col-auto mb-1 g-1 form-group {{ $errors->has('staffchildren.*.gender_id') ? 'has-error' : '' }}">
 							<select name="staffchildren[1][gender_id]" id="cge_1" class="form-select form-select-sm" placeholder="Gender"></select>
 						</div>
@@ -380,6 +383,7 @@ use App\Models\HumanResources\HRLeaveApprovalFlow;
 							</div>
 							<label for="sta_1" class="col-sm-4 col-form-label">Cross Backup Personnel :</label>
 							<div class="col-auto">
+								<input type="hidden" name="crossbackup[1][active]" value="1">
 								<select name="crossbackup[1][backup_staff_id]" id="sta_1" class="form-select form-select-sm" placeholder="Cross Backup Personnel"></select>
 							</div>
 						</div>
@@ -630,6 +634,23 @@ $('#rdg').select2({
 });
 
 /////////////////////////////////////////////////////////////////////////////////////////
+$('#cdo_1').datetimepicker({
+	icons: {
+		time: "fas fas-regular fa-clock fa-beat",
+		date: "fas fas-regular fa-calendar fa-beat",
+		up: "fa-regular fa-circle-up fa-beat",
+		down: "fa-regular fa-circle-down fa-beat",
+		previous: 'fas fas-regular fa-arrow-left fa-beat',
+		next: 'fas fas-regular fa-arrow-right fa-beat',
+		today: 'fas fas-regular fa-calenday-day fa-beat',
+		clear: 'fas fas-regular fa-broom-wide fa-beat',
+		close: 'fas fas-regular fa-rectangle-xmark fa-beat'
+	},
+	format: 'YYYY-MM-DD',
+	useCurrent: true,
+});
+
+
 $('#cge_1').select2({
 	placeholder: 'Gender',
 	width: '100%',
@@ -807,6 +828,9 @@ $(cadd_buttons).click(function(){
 				'<div class="col-auto mb-1 g-1 form-group {{ $errors->has('staffchildren.*.children') ? 'has-error' : '' }}">' +
 					'<input type="text" name="staffchildren[' + xc + '][children]" id="chi_' + xc + '" class="form-control form-control-sm" placeholder="Children">' +
 				'</div>' +
+				'<div class="col-auto mb-1 g-1 form-group {{ $errors->has('staffchildren.*.dob') ? 'has-error' : '' }}">' +
+					'<input type="text" name="staffchildren[1][dob]" id="cdo_' + xc + '" class="form-control form-control-sm" placeholder="Date Of Birth">' +
+				'</div>' +
 				'<div class="col-auto mb-1 g-1 form-group {{ $errors->has('staffchildren.*.gender_id') ? 'has-error' : '' }}">' +
 					'<select name="staffchildren[' + xc + '][gender_id]" id="cge_' + xc + '" class="form-select form-select-sm" placeholder="Gender"></select>' +
 				'</div>' +
@@ -826,6 +850,22 @@ $(cadd_buttons).click(function(){
 				'</div>' +
 			'</div>'
 		); //add input box
+
+		$('#cdo_' + xc).datetimepicker({
+			icons: {
+				time: "fas fas-regular fa-clock fa-beat",
+				date: "fas fas-regular fa-calendar fa-beat",
+				up: "fa-regular fa-circle-up fa-beat",
+				down: "fa-regular fa-circle-down fa-beat",
+				previous: 'fas fas-regular fa-arrow-left fa-beat',
+				next: 'fas fas-regular fa-arrow-right fa-beat',
+				today: 'fas fas-regular fa-calenday-day fa-beat',
+				clear: 'fas fas-regular fa-broom-wide fa-beat',
+				close: 'fas fas-regular fa-rectangle-xmark fa-beat'
+			},
+			format: 'YYYY-MM-DD',
+			useCurrent: true,
+		});
 
 		$('#cge_' + xc +'').select2({
 			placeholder: 'Gender',
@@ -1037,6 +1077,7 @@ $(crb_add_buttons).click(function(){
 					'</div>' +
 					'<label for="sta_1" class="col-sm-4 col-form-label">Cross Backup Personnel :</label>' +
 					'<div class="col-auto">' +
+						'<input type="hidden" name="crossbackup[' + xcrb + '][active]" value="1">' +
 						'<select name="crossbackup[' + xcrb + '][backup_staff_id]" id="sta_' + xcrb + '" class="form-select form-select-sm" placeholder="Cross Backup Personnel"></select>' +
 					'</div>' +
 				'</div>' +

@@ -6,16 +6,15 @@ use Illuminate\Http\Request;
 
 // for controller output
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
-
-// load validation
-use App\Http\Requests\HumanResources\Leave\HRLeaveRequestStore;
 
 // load models
 use App\Models\Staff;
 
 // load validation
+use App\Http\Requests\HumanResources\Leave\HRLeaveRequestStore;
 use App\Http\Requests\HumanResources\Staff\StaffRequestStore;
 use App\Http\Requests\HumanResources\Staff\StaffRequestUpdate;
 
@@ -58,12 +57,14 @@ class StaffController extends Controller
 	/**
 	 * Store a newly created resource in storage.
 	 */
-	public function store(StaffRequestStore $request): RedirectResponse
+	public function store(StaffRequestStore $request)/*: RedirectResponse*/
 	{
 		// dd($request->all());
-		$data = $request->except(['_token', 'username', 'password', 'category_id', 'branch_id', 'pivot_dept_id', 'image', 'annual_leave', 'mc_leave', 'maternity_leave', 'staffspouse', 'staffchildren', 'staffemergency']);
-
+		$data = $request->only(['ic', 'religion_id', 'gender_id', 'race_id', 'nationality_id', 'marital_status_id', 'mobile', 'phone', 'dob', 'cimb_account', 'epf_account', 'income_tax_no', 'socso_no', 'weight', 'height', 'join', 'div_id', 'restday_group_id', 'leave_flow_id', 'status_id', 'active', 'authorise_id']);
 		$data += ['active' => 1];
+		$data += ['name' => Str::of(Str::of($request->name)->lower())->ucfirst()];
+		$data += ['address' => Str::of(Str::of($request->address)->lower())->ucfirst()];
+		$data += ['email' => Str::of($request->address)->lower()];
 
 		if($request->file('image')){
 			// $file = $request->file('image')->getClientOriginalName();
@@ -84,43 +85,52 @@ class StaffController extends Controller
 			}
 		}
 
+		$signin = $request->only(['password']);
+		$signin += ['username' => Str::of($request->address)->upper()];
+		$signin += ['active' => 1];
+
 		$s = Staff::create($data);
 
-		$s->hasmanylogin()->create(Arr::add( $request->only(['username', 'password']), 'active', 1 ));
+		$s->hasmanylogin()->create($signin);
 		$s->belongstomanydepartment()->attach($request->only(['pivot_dept_id']), ['main' => 1]);
-		$s->crossbackupto()->attach($request->only(['backup_staff_id'], ['active' => 1]));
+		$s->hasmanyleaveannual()->whereYear('year', now())->updateOrCreate([
+																					'year' => Carbon::now()->format('Y'),
+																					'annual_leave' => $request->annual_leave,
+																					'annual_leave_balance' => $request->annual_leave,
+																				]);
+		$s->hasmanyleavemc()->whereYear('year', now())->updateOrCreate([
+																					'year' => Carbon::now()->format('Y'),
+																					'mc_leave' => $request->mc_leave,
+																					'mc_leave_balance' => $request->mc_leave,
+																				]);
+		$s->hasmanyleavematernity()->whereYear('year', now())->updateOrCreate([
+																					'year' => Carbon::now()->format('Y'),
+																					'maternity_leave' => $request->maternity_leave,
+																					'maternity_leave_balance' => $request->maternity_leave,
+																				]);
+		if ($reqest->has('crossbackup')) {
+			foreach ($request->crossbackup as $k => $v) {
+				$s->crossbackupto()->attach([
+												$v['backup_staff_id'] => ['active' => 1]
+											]);
+			}
+		}
 
 		if($request->has('staffspouse')) {
 			foreach($request->staffspouse as $k => $v) {
-				$s->hasmanyspouse()->create([
-												'spouse' => $v['spouse'],
-												'phone' => $v['phone'],
-												'profession' => $v['profession'],
-											]);
+				$s->hasmanyspouse()->create($v);
 			}
 		}
 
 		if($request->has('staffchildren')) {
 			foreach($request->staffchildren as $k => $v) {
-				$s->hasmanychildren()->create([
-												'children' => $v['children'],
-												'gender_id' => $v['gender_id'],
-												'education_level_id' => $v['education_level_id'],
-												'health_status_id' => $v['health_status_id'],
-												'tax_exemption' => $v['tax_exemption'],
-												'tax_exemption_percentage_id' => $v['tax_exemption_percentage_id'],
-											]);
+				$s->hasmanychildren()->create($v);
 			}
 		}
 
 		if($request->has('staffemergency')) {
 			foreach($request->staffemergency as $k => $v) {
-				$s->hasmanyemergency()->create([
-												'contact_person' => $v['contact_person'],
-												'phone' => $v['phone'],
-												'relationship_id' => $v['relationship_id'],
-												'address' => $v['address'],
-											]);
+				$s->hasmanyemergency()->create($v);
 			}
 		}
 
@@ -149,10 +159,13 @@ class StaffController extends Controller
 	/**
 	 * Update the specified resource in storage.
 	 */
-	public function update(StaffRequestUpdate $request, Staff $staff)/*: RedirectResponse*/
+	public function update(StaffRequestUpdate $request, Staff $staff): RedirectResponse
 	{
-		$data = $request->only(['name', 'ic', 'gender_id', 'marital_status_id']);
+		$data = $request->only(['ic', 'gender_id', 'marital_status_id']);
 
+		if(!is_null($request->name)){
+			$data += ['name' => Str::of(Str::of($request->name)->lower())->ucfirst()];
+		}
 		if(!is_null($request->race_id)){
 			$data += ['race_id' => $request->race_id];
 		}
@@ -211,8 +224,6 @@ class StaffController extends Controller
 			$data += ['leave_flow_id' => $request->leave_flow_id];
 		}
 
-// 'status_id', 'pivot_dept_id'
-
 		// $data += ['active' => 1];
 		if($request->file('image')){
 			// $file = $request->file('image')->getClientOriginalName();
@@ -241,8 +252,8 @@ class StaffController extends Controller
 		if(!is_null($request->password)) {
 			$login += ['password' => $request->password];
 		}
+
 		// ensure to disable the other 1, and checking also
-		$staff->status_id;
 		$upgrade = $staff->hasmanylogin()->where('active', 1)->first();
 		if(($request->status_id != $staff->status_id && $request->username != $upgrade->username) && ($request->status_id == 1 && $staff->status_id != 1)) {		// which means there is an upgrade
 			$staff->hasmanylogin()->update(['active' => 0]);																										// disable old login
@@ -259,6 +270,32 @@ class StaffController extends Controller
 		}
 
 		$staff->belongstomanydepartment()->sync($request->only(['pivot_dept_id']), ['main' => 1]);
+		$staff->crossbackupto()->sync($request->only(['backup_staff_id'], ['active' => 1]));
+		$staff->hasmanyleaveannual()->whereYear('year', now())->updateOrCreate([
+																					'year' => Carbon::now()->format('Y'),
+																					'annual_leave' => $request->annual_leave,
+																					'annual_leave_balance' => $request->annual_leave,
+																				]);
+		$staff->hasmanyleavemc()->whereYear('year', now())->updateOrCreate([
+																					'year' => Carbon::now()->format('Y'),
+																					'mc_leave' => $request->mc_leave,
+																					'mc_leave_balance' => $request->mc_leave,
+																				]);
+		$staff->hasmanyleavematernity()->whereYear('year', now())->updateOrCreate([
+																					'year' => Carbon::now()->format('Y'),
+																					'maternity_leave' => $request->maternity_leave,
+																					'maternity_leave_balance' => $request->maternity_leave,
+																				]);
+		if ($reqest->has('crossbackup')) {
+			// syncWithPivotValues([1, 2, 3], ['active' => true])
+			// foreach ($request->crossbackup as $k => $v) {
+			// 	$s->crossbackupto()->sync([
+			// 									$v['backup_staff_id'] => ['active' => 1]
+			// 								]);
+			// }
+		}
+
+
 
 		if($request->has('staffspouse')) {
 			foreach($request->staffspouse as $k => $v) {

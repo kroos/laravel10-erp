@@ -33,10 +33,10 @@ use App\Models\HumanResources\HRLeaveApprovalFlow;
 				</div>
 			</div>
 
-			<div class="form-group row mb-3 {{ $errors->has('religion_id') ? 'has-error' : '' }}">
-				{{ Form::label( 'rel', 'Religion : ', ['class' => 'col-sm-4 col-form-label'] ) }}
+			<div class="form-group row mb-3 {{ $errors->has('dob') ? 'has-error' : '' }}">
+				{{ Form::label( 'dob', 'Date Of Birth : ', ['class' => 'col-sm-4 col-form-label'] ) }}
 				<div class="col-auto">
-					{{ Form::select('religion_id', OptReligion::pluck('religion', 'id')->toArray(), @$value, ['class' => 'form-control form-select form-select-sm col-auto', 'id' => 'rel', 'placeholder' => 'Religion', 'autocomplete' => 'off']) }}
+					{{ Form::text('dob', @$value, ['class' => 'form-control form-control-sm col-auto', 'id' => 'dob', 'placeholder' => 'Date Of Birth', 'autocomplete' => 'off']) }}
 				</div>
 			</div>
 
@@ -51,21 +51,6 @@ use App\Models\HumanResources\HRLeaveApprovalFlow;
 					</div>
 					<?php $i++ ?>
 					@endforeach
-
-				</div>
-			</div>
-
-			<div class="form-group row mb-3 {{ $errors->has('race_id') ? 'has-error' : '' }}">
-				{{ Form::label( 'rac', 'Race : ', ['class' => 'col-sm-4 col-form-label'] ) }}
-				<div class="col-auto">
-					{{ Form::select('race_id', OptRace::pluck('race', 'id')->toArray(), @$value, ['class' => 'form-control form-select col-auto', 'id' => 'rac', 'placeholder' => 'Race', 'autocomplete' => 'off']) }}
-				</div>
-			</div>
-
-			<div class="form-group row mb-3 {{ $errors->has('nationality_id') ? 'has-error' : '' }}">
-				{{ Form::label( 'nat', 'Nationality : ', ['class' => 'col-sm-4 col-form-label'] ) }}
-				<div class="col-auto">
-					{{ Form::select('nationality_id', OptCountry::pluck('country', 'id')->toArray(), @$value, ['class' => 'form-control form-select col-auto', 'id' => 'nat', 'placeholder' => 'Nationality', 'autocomplete' => 'off']) }}
 				</div>
 			</div>
 
@@ -104,10 +89,24 @@ use App\Models\HumanResources\HRLeaveApprovalFlow;
 				</div>
 			</div>
 
-			<div class="form-group row mb-3 {{ $errors->has('dob') ? 'has-error' : '' }}">
-				{{ Form::label( 'dob', 'Date Of Birth : ', ['class' => 'col-sm-4 col-form-label'] ) }}
+			<div class="form-group row mb-3 {{ $errors->has('religion_id') ? 'has-error' : '' }}">
+				{{ Form::label( 'rel', 'Religion : ', ['class' => 'col-sm-4 col-form-label'] ) }}
 				<div class="col-auto">
-					{{ Form::text('dob', @$value, ['class' => 'form-control form-control-sm col-auto', 'id' => 'dob', 'placeholder' => 'Date Of Birth', 'autocomplete' => 'off']) }}
+					{{ Form::select('religion_id', OptReligion::pluck('religion', 'id')->toArray(), @$value, ['class' => 'form-control form-select form-select-sm col-auto', 'id' => 'rel', 'placeholder' => 'Religion', 'autocomplete' => 'off']) }}
+				</div>
+			</div>
+
+			<div class="form-group row mb-3 {{ $errors->has('race_id') ? 'has-error' : '' }}">
+				{{ Form::label( 'rac', 'Race : ', ['class' => 'col-sm-4 col-form-label'] ) }}
+				<div class="col-auto">
+					{{ Form::select('race_id', OptRace::pluck('race', 'id')->toArray(), @$value, ['class' => 'form-control form-select col-auto', 'id' => 'rac', 'placeholder' => 'Race', 'autocomplete' => 'off']) }}
+				</div>
+			</div>
+
+			<div class="form-group row mb-3 {{ $errors->has('nationality_id') ? 'has-error' : '' }}">
+				{{ Form::label( 'nat', 'Nationality : ', ['class' => 'col-sm-4 col-form-label'] ) }}
+				<div class="col-auto">
+					{{ Form::select('nationality_id', OptCountry::pluck('country', 'id')->toArray(), @$value, ['class' => 'form-control form-select col-auto', 'id' => 'nat', 'placeholder' => 'Nationality', 'autocomplete' => 'off']) }}
 				</div>
 			</div>
 
@@ -228,7 +227,10 @@ use App\Models\HumanResources\HRLeaveApprovalFlow;
 								</div>
 								<div class="col-auto mb-1 g-1 form-group {{ $errors->has('staffchildren.*.children') ? 'has-error' : '' }}">
 									{{ Form::hidden('staffchildren['.$i.'][id]', $child->id) }}
-									<input type="text" name="staffchildren[{{ $i }}][children]" value="{{ $child->children }}" id="chi_1" class="form-control form-control-sm" placeholder="Children">
+									<input type="text" name="staffchildren[{{ $i }}][children]" value="{{ $child->children }}" id="chi_{{ $i }}" class="form-control form-control-sm" placeholder="Children">
+								</div>
+								<div class="col-auto mb-1 g-1 form-group {{ $errors->has('staffchildren.*.dob') ? 'has-error' : '' }}">
+									<input type="text" name="staffchildren[1][dob]" value="{{ old('staffchildren[$i][dob]', $child->dob) }}" id="cdo_{{ $i }}" class="form-control form-control-sm" placeholder="Date Of Birth">
 								</div>
 								<div class="col-auto mb-1 g-1 form-group {{ $errors->has('staffchildren.*.gender_id') ? 'has-error' : '' }}">
 									<select name="staffchildren[{{ $i }}][gender_id]" id="cge_{{ $i }}" class="form-select form-select-sm" placeholder="Gender">
@@ -417,19 +419,31 @@ use App\Models\HumanResources\HRLeaveApprovalFlow;
 					</div>
 				</div>
 				<div class="row mb-1 g-1 crossbackup_wrap">
-					<div class="row crossbackup_row">
-						<div class="form-group row mb-1 g-1 {{ $errors->has('crossbackup.*.backup_staff_id') ? 'has-error' : '' }}">
-							<div class="col-auto mb-1 g-1 ">
-								<button class="btn btn-sm btn-outline-secondary crossbackup_remove" type="button">
-									<i class="fas fa-trash" aria-hidden="true"></i>
-								</button>
+					@if($staff->crossbackupto()->wherePivot('active', 1)->get()->count())
+						<?php $i=1 ?>
+						@foreach($staff->crossbackupto()->wherePivot('active', 1)->get() as $cb)
+							<div class="row crossbackup_row">
+								<div class="form-group row mb-1 g-1 {{ $errors->has('crossbackup.*.backup_staff_id') ? 'has-error' : '' }}">
+									<div class="col-auto mb-1 g-1 ">
+										<button type="button" class="btn btn-sm btn-outline-secondary crossbackup_delete" data-id="{{ $cb->id }}">
+											<i class="fas fa-trash" aria-hidden="true"></i>
+										</button>
+									</div>
+									<label for="sta_{{ $i }}" class="col-sm-4 col-form-label">Cross Backup Personnel :</label>
+									<div class="col-auto">
+										<input type="hidden" name="crossbackup[{{ $i }}][active]" value="1">
+										<select name="crossbackup[{{ $i }}][backup_staff_id]" id="sta_{{ $i }}" class="form-select form-select-sm" placeholder="Cross Backup Personnel">
+											<option value="">Cross Backup Personnel</option>
+											@foreach(Staff::where('active', 1)->get() as $st)
+												<option value="{{ $st->id }}" {{ ($st->id == $cb->id)?'selected':NULL }}>{{ $st->name }}</option>
+											@endforeach
+										</select>
+									</div>
+								</div>
 							</div>
-							<label for="sta_1" class="col-sm-4 col-form-label">Cross Backup Personnel :</label>
-							<div class="col-auto">
-								<select name="crossbackup[][backup_staff_id]" id="sta_1" class="form-select form-select-sm" placeholder="Cross Backup Personnel"></select>
-							</div>
-						</div>
-					</div>
+							<?php $i++ ?>
+						@endforeach
+					@endif
 				</div>
 			</div>
 
@@ -628,6 +642,57 @@ function SwalEmergDelete(emergencyId){
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
+// delete crossbackup
+$(document).on('click', '.crossbackup_delete', function(e){
+	var crossbackupId = $(this).data('id');
+	DeleteCrossBackUp(crossbackupId);
+	e.preventDefault();
+});
+
+function DeleteCrossBackUp(crossbackupId){
+	swal.fire({
+		title: 'Are you sure?',
+		text: "It will be deleted permanently!",
+		icon: 'warning',
+		showCancelButton: true,
+		confirmButtonColor: '#3085d6',
+		cancelButtonColor: '#d33',
+		confirmButtonText: 'Yes, delete it!',
+		showLoaderOnConfirm: true,
+
+		preConfirm: function() {
+			return new Promise(function(resolve) {
+				$.ajax({
+					type: 'DELETE',
+					url: '{{ url('deletecrossbackup') }}' + '/' + {{ $staff->id }},
+					data: {
+							_token : $('meta[name=csrf-token]').attr('content'),
+							id: crossbackupId,
+					},
+					dataType: 'json'
+				})
+				.done(function(response){
+					swal.fire('Deleted!', response.message, response.status)
+					.then(function(){
+						window.location.reload(true);
+					});
+					//$('#disable_user_' + crossbackupId).parent().parent().remove();
+				})
+				.fail(function(){
+					swal.fire('Oops...', 'Something went wrong with ajax !', 'error');
+				})
+			});
+		},
+		allowOutsideClick: false
+	})
+	.then((result) => {
+		if (result.dismiss === swal.DismissReason.cancel) {
+			swal.fire('Cancelled', 'Your data is safe from delete', 'info')
+		}
+	});
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////
 $('#dob, #jpo').datetimepicker({
 	icons: {
 		time: "fas fas-regular fa-clock fa-beat",
@@ -683,17 +748,6 @@ $('#sta').select2({
 	width: '100%',
 	allowClear: true,
 	closeOnSelect: true,
-	// theme: 'bootstrap-5',
-	// dropdownParent: $(this).parent(),
-	// ajax: {
-	// 	url: '{{ route('status.status') }}',
-	// 	type: 'POST',
-	// 	dataType: 'json',
-	// 	data: { _token: '{!! csrf_token() !!}' },
-	// 	success: function(data) {
-	// 		data
-	// 	},
-	// },
 })
 
 
@@ -702,17 +756,6 @@ $('#cat').select2({
 	width: '100%',
 	allowClear: true,
 	closeOnSelect: true,
-	// ajax: {
-	// 	url: '{{ route('category.category') }}',
-	// 	type: 'POST',
-	// 	dataType: 'json',
-	// 	data: function (params) {
-	// 		var query = {
-	// 			_token: '{!! csrf_token() !!}',
-	// 		}
-	// 		return query;
-	// 	}
-	// },
 });
 $('#cat').on("select2:select", function (e) {
 	$('#dep').val(null).trigger('change');
@@ -726,17 +769,6 @@ $('#bra').select2({
 	width: '100%',
 	allowClear: true,
 	closeOnSelect: true,
-	// ajax: {
-	// 	url: '{{ route('branch.branch') }}',
-	// 	type: 'POST',
-	// 	dataType: 'json',
-	// 	data: function (params) {
-	// 		var query = {
-	// 			_token: '{!! csrf_token() !!}',
-	// 		}
-	// 		return query;
-	// 	}
-	// },
 });
 $('#bra').on("select2:select", function (e) {
 	$('#dep').val(null).trigger('change');
@@ -766,81 +798,6 @@ $('#dep').select2({
 	},
 });
 
-$('#cat1').select2({
-	placeholder: 'Please Select',
-	width: '100%',
-	allowClear: true,
-	closeOnSelect: true,
-	// ajax: {
-	// 	url: '{{ route('category.category') }}',
-	// 	type: 'POST',
-	// 	dataType: 'json',
-	// 	data: function (params) {
-	// 		var query = {
-	// 			_token: '{!! csrf_token() !!}',
-	// 		}
-	// 		return query;
-	// 	}
-	// },
-});
-$('#cat1').on("select2:select", function (e) {
-	$('#dep1').val(null).trigger('change');
-});
-$('#cat1').on("select2:unselect", function (e) {
-	$('#dep1').val(null).trigger('change');
-});
-
-$('#bra1').select2({
-	placeholder: 'Please Select',
-	width: '100%',
-	allowClear: true,
-	closeOnSelect: true,
-	// ajax: {
-	// 	url: '{{ route('branch.branch') }}',
-	// 	type: 'POST',
-	// 	dataType: 'json',
-	// 	data: function (params) {
-	// 		var query = {
-	// 			_token: '{!! csrf_token() !!}',
-	// 		}
-	// 		return query;
-	// 	}
-	// },
-});
-$('#bra1').on("select2:select", function (e) {
-	$('#dep1').val(null).trigger('change');
-});
-$('#bra1').on("select2:unselect", function (e) {
-	$('#dep1').val(null).trigger('change');
-});
-
-$('#dep1').select2({
-	placeholder: 'Please Select',
-	width: '100%',
-	allowClear: true,
-	closeOnSelect: true,
-	ajax: {
-		url: '{{ route('department.department') }}',
-		type: 'POST',
-		dataType: 'json',
-		data: function (params) {
-			var query = {
-				branch_id: $('#bra1').val(),
-				category_id: $('#cat1').val(),
-				_token: '{!! csrf_token() !!}',
-				search: params.term,
-			}
-			return query;
-		}
-	},
-});
-$('#dep1').on("select2:select", function (e) {
-	$('#sta1').val(null).trigger('change');
-});
-$('#dep1').on("select2:unselect", function (e) {
-	$('#sta1').val(null).trigger('change');
-});
-
 $('#him').select2({
 	placeholder: 'Please Select',
 	width: '100%',
@@ -848,24 +805,30 @@ $('#him').select2({
 	closeOnSelect: true,
 });
 
-$('#sta_1').select2({
-	placeholder: 'Please Select',
-	width: '100%',
-	allowClear: true,
-	closeOnSelect: true,
-	ajax: {
-		url: '{{ route('staffcrossbackup.staffcrossbackup') }}',
-		type: 'POST',
-		dataType: 'json',
-		data: function(params){
-				var query = {
-					_token: '{!! csrf_token() !!}',
-					search: params.term,
-				}
-				return query;
-			}
-	},
-});
+@if($staff->crossbackupto()->wherePivot('active', 1)->get()->count())
+<?php $i=1 ?>
+	@foreach($staff->crossbackupto()->wherePivot('active', 1)->get() as $st)
+		$('#sta_{{ $i }}').select2({
+			placeholder: 'Please Select',
+			width: '100%',
+			allowClear: true,
+			closeOnSelect: true,
+			//ajax: {
+			//	url: '{{ route('staffcrossbackup.staffcrossbackup') }}',
+			//	type: 'POST',
+			//	dataType: 'json',
+			//	data: function(params){
+			//			var query = {
+			//				_token: '{!! csrf_token() !!}',
+			//				search: params.term,
+			//			}
+			//			return query;
+			//		}
+			//},
+		});
+	<?php $i++ ?>
+	@endforeach
+@endif
 
 $('#rdg').select2({
 	placeholder: 'Please Select',
@@ -890,6 +853,22 @@ $('#rdg').select2({
 @if($staff->hasmanychildren()->get()->count())
 	<?php $i=1 ?>
 	@foreach($staff->hasmanychildren()->get() as $child)
+		$('#cdo_{{ $i }}').datetimepicker({
+			icons: {
+				time: "fas fas-regular fa-clock fa-beat",
+				date: "fas fas-regular fa-calendar fa-beat",
+				up: "fa-regular fa-circle-up fa-beat",
+				down: "fa-regular fa-circle-down fa-beat",
+				previous: 'fas fas-regular fa-arrow-left fa-beat',
+				next: 'fas fas-regular fa-arrow-right fa-beat',
+				today: 'fas fas-regular fa-calenday-day fa-beat',
+				clear: 'fas fas-regular fa-broom-wide fa-beat',
+				close: 'fas fas-regular fa-rectangle-xmark fa-beat'
+			},
+			format: 'YYYY-MM-DD',
+			useCurrent: true,
+		});
+
 // 	$('#cge_{{ $i }}').select2({
 // 			placeholder: 'Gender',
 // 			width: '100%',
@@ -1072,6 +1051,9 @@ $(cadd_buttons).click(function(){
 					'<input type="hidden" name="staffchildren[' + xc + '][id]" value="">' +
 					'<input type="text" name="staffchildren[' + xc + '][children]" id="chi_' + xc + '" class="form-control form-control-sm" placeholder="Children">' +
 				'</div>' +
+				'<div class="col-auto mb-1 g-1 form-group {{ $errors->has('staffchildren.*.dob') ? 'has-error' : '' }}">' +
+					'<input type="text" name="staffchildren[' + xc + '][dob]" value="" id="cdo_' + xc + '" class="form-control form-control-sm" placeholder="Date Of Birth">' +
+				'</div>' +
 				'<div class="col-auto mb-1 g-1 form-group {{ $errors->has('staffchildren.*.gender_id') ? 'has-error' : '' }}">' +
 					'<select name="staffchildren[' + xc + '][gender_id]" id="cge_' + xc + '" class="form-select form-select-sm" placeholder="Gender"></select>' +
 				'</div>' +
@@ -1128,6 +1110,22 @@ $(cadd_buttons).click(function(){
 					return query;
 				}
 			},
+		});
+
+		$('#cdo_' + xc).datetimepicker({
+			icons: {
+				time: "fas fas-regular fa-clock fa-beat",
+				date: "fas fas-regular fa-calendar fa-beat",
+				up: "fa-regular fa-circle-up fa-beat",
+				down: "fa-regular fa-circle-down fa-beat",
+				previous: 'fas fas-regular fa-arrow-left fa-beat',
+				next: 'fas fas-regular fa-arrow-right fa-beat',
+				today: 'fas fas-regular fa-calenday-day fa-beat',
+				clear: 'fas fas-regular fa-broom-wide fa-beat',
+				close: 'fas fas-regular fa-rectangle-xmark fa-beat'
+			},
+			format: 'YYYY-MM-DD',
+			useCurrent: true,
 		});
 
 		$('#chs_' + xc +'').select2({
@@ -1305,9 +1303,10 @@ $(crb_add_buttons).click(function(){
 							'<i class="fas fa-trash" aria-hidden="true"></i>' +
 						'</button>' +
 					'</div>' +
-					'<label for="sta_1" class="col-sm-4 col-form-label">Cross Backup Personnel :</label>' +
+					'<label for="sta_' + xcrb + '" class="col-sm-4 col-form-label">Cross Backup Personnel :</label>' +
 					'<div class="col-auto">' +
 						'<input type="hidden" name="crossbackup[' + xcrb + '][id]" value="">' +
+						'<input type="hidden" name="crossbackup[' + xcrb + '][active]" value="1">' +
 						'<select name="crossbackup[' + xcrb + '][backup_staff_id]" id="sta_' + xcrb + '" class="form-select form-select-sm" placeholder="Cross Backup Personnel"></select>' +
 					'</div>' +
 				'</div>' +
