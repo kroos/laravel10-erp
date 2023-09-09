@@ -224,69 +224,45 @@
 			</div>
 			@endif
 			@if($staff->gender_id == 2)
-			@if($staff->hasmanyleavematernity()?->get()->count())
-			<div class="col-5">Maternity Leave :</div>
-			<div class="col-7">
-				<table class="table table-sm table-hover" style="font-size:12px;">
-					<thead>
-						<tr>
-							<th>Year</th>
-							<th>Maternity Leave</th>
-							<th>Maternity Leave Adjustment</th>
-							<th>Maternity Leave Utilize</th>
-							<th>Maternity Leave Balance</th>
-						</tr>
-					</thead>
-					<tbody>
-					@foreach($staff->hasmanyleavematernity()->orderBy('year', 'DESC')->get() as $al)
-						<tr>
-							<td>{{ $al->year }}</td>
-							<td>{{ $al->maternity_leave }}</td>
-							<td>{{ $al->maternity_leave_adjustment }}</td>
-							<td>{{ $al->maternity_leave_utilize }}</td>
-							<td>{{ $al->maternity_leave_balance }}</td>
-						</tr>
-					@endforeach
-					</tbody>
-				</table>
-			</div>
+				@if($staff->hasmanyleavematernity()?->get()->count())
+				<div class="col-5">Maternity Leave :</div>
+				<div class="col-7">
+					<table class="table table-sm table-hover" style="font-size:12px;">
+						<thead>
+							<tr>
+								<th>Year</th>
+								<th>Maternity Leave</th>
+								<th>Maternity Leave Adjustment</th>
+								<th>Maternity Leave Utilize</th>
+								<th>Maternity Leave Balance</th>
+							</tr>
+						</thead>
+						<tbody>
+						@foreach($staff->hasmanyleavematernity()->orderBy('year', 'DESC')->get() as $al)
+							<tr>
+								<td>{{ $al->year }}</td>
+								<td>{{ $al->maternity_leave }}</td>
+								<td>{{ $al->maternity_leave_adjustment }}</td>
+								<td>{{ $al->maternity_leave_utilize }}</td>
+								<td>{{ $al->maternity_leave_balance }}</td>
+							</tr>
+						@endforeach
+						</tbody>
+					</table>
+				</div>
+				@endif
 			@endif
-			@endif
-			@if($staff->hasmanyleavereplacement()?->get()->count())
-			<div class="col-5">Replacement Leave :</div>
-			<div class="col-7">
-				<table class="table table-sm table-hover" style="font-size:12px;" id="replacementleave">
-					<thead>
-						<tr>
-							<th>From</th>
-							<th>To</th>
-							<th>Location</th>
-							<th>Reason</th>
-							<th>Total Day/s</th>
-							<th>Leave Utilize</th>
-							<th>Leave Balance</th>
-						</tr>
-					</thead>
-					<tbody>
-					@foreach($staff->hasmanyleavereplacement()->orderBy('date_start', 'DESC')->get() as $al)
-						<tr>
-							<td>{{ \Carbon\Carbon::parse($al->date_start)->format('j M Y') }}</td>
-							<td>{{ \Carbon\Carbon::parse($al->date_end)->format('j M Y') }}</td>
-							<td>{{ $al->location }}</td>
-							<td>{{ $al->reason }}</td>
-							<td>{{ $al->leave_total }}</td>
-							<td>{{ $al->leave_utilize }}</td>
-							<td>{{ $al->leave_balance }}</td>
-						</tr>
-					@endforeach
-					</tbody>
-				</table>
-			</div>
-			@endif
+
 		</div>
 	</div>
+
+	<p>&nbsp;</p>
 	<div class="row justify-content-center">
-		<p></p>
+		<div id="calendar"></div>
+	</div>
+
+	<p>&nbsp;</p>
+	<div class="row justify-content-center">
 		<div class="col-sm-12 row gy-1 gx-1 align-items-start">
 			<h4 class="align-items-center">Leave</h4>
 			@if(\App\Models\HumanResources\HRLeave::where('staff_id', $staff->id)->get()->count())
@@ -356,6 +332,41 @@ if ( ($ls->leave_type_id == 9) || ($ls->leave_type_id != 9 && $ls->half_type_id 
 			@endif
 		</div>
 	</div>
+
+	<p>&nbsp;</p>
+	<div class="row justify-content-center">
+		<div class="col-sm-12 row gy-1 gx-1 align-items-start">
+			<h4 class="align-items-center">Replacewment Leave</h4>
+				@if($staff->hasmanyleavereplacement()?->get()->count())
+					<table class="table table-sm table-hover" style="font-size:12px;" id="replacementleave">
+						<thead>
+							<tr>
+								<th>From</th>
+								<th>To</th>
+								<th>Location</th>
+								<th>Reason</th>
+								<th>Total Day/s</th>
+								<th>Leave Utilize</th>
+								<th>Leave Balance</th>
+							</tr>
+						</thead>
+						<tbody>
+						@foreach($staff->hasmanyleavereplacement()->orderBy('date_start', 'DESC')->get() as $al)
+							<tr>
+								<td>{{ \Carbon\Carbon::parse($al->date_start)->format('j M Y') }}</td>
+								<td>{{ \Carbon\Carbon::parse($al->date_end)->format('j M Y') }}</td>
+								<td>{{ $al->location }}</td>
+								<td>{{ $al->reason }}</td>
+								<td>{{ $al->leave_total }}</td>
+								<td>{{ $al->leave_utilize }}</td>
+								<td>{{ $al->leave_balance }}</td>
+							</tr>
+						@endforeach
+						</tbody>
+					</table>
+				@endif
+			</div>
+		</div>
 </div>
 @endsection
 
@@ -444,5 +455,35 @@ $('#replacementleave').DataTable({
 		$('[data-bs-toggle="tooltip"]').tooltip();
 	});}
 );
+
+@endsection
+
+@section('fullcalendar')
+/////////////////////////////////////////////////////////////////////////////////////////
+// fullcalendar cant use jquery
+document.addEventListener('DOMContentLoaded', function() {
+	var calendarEl = document.getElementById('calendar');
+	var calendar = new FullCalendar.Calendar(calendarEl, {
+		aspectRatio: 1.0,
+		initialView: 'dayGridMonth',
+		weekNumbers: true,
+		themeSystem: 'bootstrap',
+		events: {
+			url: '{{ route('staffattendance') }}',
+			method: 'GET',
+			extraParams: {
+				_token: '{!! csrf_token() !!}',
+				staff_id: '{{ $staff->id }}',
+			},
+		},
+		failure: function() {
+			alert('There was an error while fetching leaves!');
+		},
+	});
+	calendar.render();
+	console.log(calendar.getOption('aspectRatio'));
+});
+
+/////////////////////////////////////////////////////////////////////////////////////////
 
 @endsection

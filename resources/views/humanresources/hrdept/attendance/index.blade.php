@@ -44,7 +44,7 @@ use App\Helpers\UnavailableDateTime;
 // load lib
 use \Carbon\Carbon;
 
-// who am i?
+// who am i? ppl who can see only his staff in same department
 $me1 = \Auth::user()->belongstostaff->div_id == 1;		// hod
 $me2 = \Auth::user()->belongstostaff->div_id == 5;		// hod assistant
 $me3 = \Auth::user()->belongstostaff->div_id == 4;		// supervisor
