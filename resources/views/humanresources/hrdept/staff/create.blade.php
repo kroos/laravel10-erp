@@ -33,10 +33,10 @@ use App\Models\HumanResources\HRLeaveApprovalFlow;
 				</div>
 			</div>
 
-			<div class="form-group row mb-3 {{ $errors->has('religion_id') ? 'has-error' : '' }}">
-				{{ Form::label( 'rel', 'Religion : ', ['class' => 'col-sm-4 col-form-label'] ) }}
+			<div class="form-group row mb-3 {{ $errors->has('email') ? 'has-error' : '' }}">
+				{{ Form::label( 'ema', 'Email : ', ['class' => 'col-sm-4 col-form-label'] ) }}
 				<div class="col-auto">
-					{{ Form::select('religion_id', OptReligion::pluck('religion', 'id')->toArray(), @$value, ['class' => 'form-control form-select form-select-sm col-auto', 'id' => 'rel', 'placeholder' => 'Religion', 'autocomplete' => 'off']) }}
+					{{ Form::text('email', @$value, ['class' => 'form-control form-control-sm col-auto', 'id' => 'ema', 'placeholder' => 'Email', 'autocomplete' => 'off']) }}
 				</div>
 			</div>
 
@@ -51,21 +51,6 @@ use App\Models\HumanResources\HRLeaveApprovalFlow;
 					</div>
 					<?php $i++ ?>
 					@endforeach
-
-				</div>
-			</div>
-
-			<div class="form-group row mb-3 {{ $errors->has('race_id') ? 'has-error' : '' }}">
-				{{ Form::label( 'rac', 'Race : ', ['class' => 'col-sm-4 col-form-label'] ) }}
-				<div class="col-auto">
-					{{ Form::select('race_id', OptRace::pluck('race', 'id')->toArray(), @$value, ['class' => 'form-control form-select col-auto', 'id' => 'rac', 'placeholder' => 'Race', 'autocomplete' => 'off']) }}
-				</div>
-			</div>
-
-			<div class="form-group row mb-3 {{ $errors->has('nationality_id') ? 'has-error' : '' }}">
-				{{ Form::label( 'nat', 'Nationality : ', ['class' => 'col-sm-4 col-form-label'] ) }}
-				<div class="col-auto">
-					{{ Form::select('nationality_id', OptCountry::pluck('country', 'id')->toArray(), @$value, ['class' => 'form-control form-select col-auto', 'id' => 'nat', 'placeholder' => 'Nationality', 'autocomplete' => 'off']) }}
 				</div>
 			</div>
 
@@ -76,10 +61,10 @@ use App\Models\HumanResources\HRLeaveApprovalFlow;
 				</div>
 			</div>
 
-			<div class="form-group row mb-3 {{ $errors->has('email') ? 'has-error' : '' }}">
-				{{ Form::label( 'ema', 'Email : ', ['class' => 'col-sm-4 col-form-label'] ) }}
+			<div class="form-group row mb-3 {{ $errors->has('dob') ? 'has-error' : '' }}" style="position: relative">
+				{{ Form::label( 'dob', 'Date Of Birth : ', ['class' => 'col-sm-4 col-form-label'] ) }}
 				<div class="col-auto">
-					{{ Form::text('email', @$value, ['class' => 'form-control form-control-sm col-auto', 'id' => 'ema', 'placeholder' => 'Email', 'autocomplete' => 'off']) }}
+					{{ Form::text('dob', @$value, ['class' => 'form-control form-control-sm col-auto', 'id' => 'dob', 'placeholder' => 'Date Of Birth', 'autocomplete' => 'off']) }}
 				</div>
 			</div>
 
@@ -104,10 +89,24 @@ use App\Models\HumanResources\HRLeaveApprovalFlow;
 				</div>
 			</div>
 
-			<div class="form-group row mb-3 {{ $errors->has('dob') ? 'has-error' : '' }}" style="position: relative">
-				{{ Form::label( 'dob', 'Date Of Birth : ', ['class' => 'col-sm-4 col-form-label'] ) }}
+			<div class="form-group row mb-3 {{ $errors->has('religion_id') ? 'has-error' : '' }}">
+				{{ Form::label( 'rel', 'Religion : ', ['class' => 'col-sm-4 col-form-label'] ) }}
 				<div class="col-auto">
-					{{ Form::text('dob', @$value, ['class' => 'form-control form-control-sm col-auto', 'id' => 'dob', 'placeholder' => 'Date Of Birth', 'autocomplete' => 'off']) }}
+					{{ Form::select('religion_id', OptReligion::pluck('religion', 'id')->toArray(), @$value, ['class' => 'form-control form-select form-select-sm col-auto', 'id' => 'rel', 'placeholder' => 'Religion', 'autocomplete' => 'off']) }}
+				</div>
+			</div>
+
+			<div class="form-group row mb-3 {{ $errors->has('race_id') ? 'has-error' : '' }}">
+				{{ Form::label( 'rac', 'Race : ', ['class' => 'col-sm-4 col-form-label'] ) }}
+				<div class="col-auto">
+					{{ Form::select('race_id', OptRace::pluck('race', 'id')->toArray(), @$value, ['class' => 'form-control form-select col-auto', 'id' => 'rac', 'placeholder' => 'Race', 'autocomplete' => 'off']) }}
+				</div>
+			</div>
+
+			<div class="form-group row mb-3 {{ $errors->has('nationality_id') ? 'has-error' : '' }}">
+				{{ Form::label( 'nat', 'Nationality : ', ['class' => 'col-sm-4 col-form-label'] ) }}
+				<div class="col-auto">
+					{{ Form::select('nationality_id', OptCountry::pluck('country', 'id')->toArray(), @$value, ['class' => 'form-control form-select col-auto', 'id' => 'nat', 'placeholder' => 'Nationality', 'autocomplete' => 'off']) }}
 				</div>
 			</div>
 
@@ -167,7 +166,42 @@ use App\Models\HumanResources\HRLeaveApprovalFlow;
 				</div>
 			</div>
 
+			<p>&nbsp;</p>
 			<div class="col-auto row">
+				<div class="row">
+					<div class="col-auto">
+						<h6>Staff Emergency Contact</h6>
+					</div>
+					<div class="col-auto">
+						<button type="button" class="col-auto btn btn-sm btn-outline-secondary emergency_add">
+							<i class="fas fa-plus" aria-hidden="true"></i>&nbsp;Add Emergency Contact
+						</button>
+					</div>
+				</div>
+				<div class="row mb-1 g-1 emergency_wrap">
+					<div class="row emergency_row">
+						<div class="col-auto mb-1 g-1 ">
+							<button class="btn btn-sm btn-outline-secondary emergency_remove" type="button">
+								<i class="fas fa-trash" aria-hidden="true"></i>
+							</button>
+						</div>
+						<div class="col-auto mb-1 g-1 form-group {{ $errors->has('staffemergency.*.contact_person') ? 'has-error' : '' }}">
+							<input type="text" name="staffemergency[1][contact_person]" id="ecp_1" class="form-control form-control-sm" placeholder="Emergency Contact">
+						</div>
+						<div class="col-auto mb-1 g-1 form-group {{ $errors->has('staffemergency.*.phone') ? 'has-error' : '' }}">
+							<input type="text" name="staffemergency[1][phone]" id="epp_1" class="form-control form-control-sm" placeholder="Phone">
+						</div>
+						<div class="col-auto mb-1 g-1 form-group {{ $errors->has('staffemergency.*.relationship_id') ? 'has-error' : '' }}">
+							<select name="staffemergency[1][relationship_id]" id="ere_1" class="form-select form-select-sm" placeholder="Relationship"></select>
+						</div>
+						<div class="col-auto mb-1 gx-1 form-group {{ $errors->has('staffemergency.*.address') ? 'has-error' : '' }}">
+							<input type="textarea" name="staffemergency[1][address]" id="ead_1" class="form-control form-control-sm" placeholder="Address">
+						</div>
+					</div>
+				</div>
+			</div>
+			<p>&nbsp;</p>
+			<div class="col-auto row wrap_spouse">
 				<div class="row">
 					<div class="col-auto">
 						<h6>Staff Spouse</h6>
@@ -197,8 +231,9 @@ use App\Models\HumanResources\HRLeaveApprovalFlow;
 					</div>
 				</div>
 			</div>
+
 			<p>&nbsp;</p>
-			<div class="col-auto row">
+			<div class="col-auto row wrap_children">
 				<div class="row">
 					<div class="col-auto">
 						<h6>Staff Children</h6>
@@ -241,46 +276,11 @@ use App\Models\HumanResources\HRLeaveApprovalFlow;
 						</div>
 					</div>
 				</div>
-			</div>
 
-			<p>&nbsp;</p>
-			<div class="col-auto row">
-				<div class="row">
-					<div class="col-auto">
-						<h6>Staff Emergency Contact</h6>
-					</div>
-					<div class="col-auto">
-						<button type="button" class="col-auto btn btn-sm btn-outline-secondary emergency_add">
-							<i class="fas fa-plus" aria-hidden="true"></i>&nbsp;Add Emergency Contact
-						</button>
-					</div>
-				</div>
-				<div class="row mb-1 g-1 emergency_wrap">
-					<div class="row emergency_row">
-						<div class="col-auto mb-1 g-1 ">
-							<button class="btn btn-sm btn-outline-secondary emergency_remove" type="button">
-								<i class="fas fa-trash" aria-hidden="true"></i>
-							</button>
-						</div>
-						<div class="col-auto mb-1 g-1 form-group {{ $errors->has('staffemergency.*.contact_person') ? 'has-error' : '' }}">
-							<input type="text" name="staffemergency[1][contact_person]" id="ecp_1" class="form-control form-control-sm" placeholder="Emergency Contact">
-						</div>
-						<div class="col-auto mb-1 g-1 form-group {{ $errors->has('staffemergency.*.phone') ? 'has-error' : '' }}">
-							<input type="text" name="staffemergency[1][phone]" id="epp_1" class="form-control form-control-sm" placeholder="Phone">
-						</div>
-						<div class="col-auto mb-1 g-1 form-group {{ $errors->has('staffemergency.*.relationship_id') ? 'has-error' : '' }}">
-							<select name="staffemergency[1][relationship_id]" id="ere_1" class="form-select form-select-sm" placeholder="Relationship"></select>
-						</div>
-						<div class="col-auto mb-1 gx-1 form-group {{ $errors->has('staffemergency.*.address') ? 'has-error' : '' }}">
-							<input type="textarea" name="staffemergency[1][address]" id="ead_1" class="form-control form-control-sm" placeholder="Address">
-						</div>
-					</div>
-				</div>
 			</div>
-
 		</div>
-		<div class="col-sm-6 gy-1 gx-1 align-items-start">
 
+		<div class="col-sm-6 gy-1 gx-1 align-items-start">
 			<div class="offset-sm-4 form-check mb-3 {{ $errors->has('authorise_id') ? 'has-error' : '' }}">
 				<div class="pretty p-icon p-curve p-tada">
 					<input type="hidden" name="authorise_id" value="">
@@ -361,7 +361,6 @@ use App\Models\HumanResources\HRLeaveApprovalFlow;
 			@endforeach
 			</div>
 
-
 			<div class="col-auto row">
 				<div class="row">
 					<div class="col-auto">
@@ -390,8 +389,6 @@ use App\Models\HumanResources\HRLeaveApprovalFlow;
 					</div>
 				</div>
 			</div>
-
-
 
 			<div class="form-group row mb-3 {{ $errors->has('annual_leave') ? 'has-error' : '' }}">
 				{{ Form::label( 'annu', 'Annual Leave : ', ['class' => 'col-sm-4 col-form-label'] ) }}
@@ -448,12 +445,37 @@ $('#dob, #jpo').datetimepicker({
 });
 
 // select2 on supposed to be
-$('#rel, #gen, #rac, #nat, #mar').select2({
+$('#rel, #gen, #rac, #nat').select2({
 	placeholder: 'Please Select',
 	width: '100%',
 	allowClear: true,
 	closeOnSelect: true,
 });
+
+$('#mar').select2({
+	placeholder: 'Please Select',
+	width: '100%',
+	allowClear: true,
+	closeOnSelect: true,
+});
+
+// $('#mar').on("select2:select", function (e) {
+// 	// console.log($(this).val());
+// 	console.log($('.wrap_spouse').children().length);
+// 	console.log($('.wrap_children').children().length);
+// 	if($(this).val() == 2) {
+// 		if($('.wrap_spouse').children().length == 0) {
+// 			console.log('testspouse');
+// 			$('.wrap_spouse').append(
+// 			);
+// 		}
+// 		if($('.wrap_children').children().length === 0) {
+// 			console.log('testchildren');
+// 			$('.wrap_children').append(
+// 			);
+// 		}
+// 	}
+// });
 
 $('#gen_1').on('change', function () {
 		if( $(this).val() == 2 ) {

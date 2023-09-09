@@ -678,7 +678,7 @@ class AjaxController extends Controller
 		$staff->hasmanylogin()->where('active', 1)->update(['active' => 0]);
 		return response()->json([
 			'status' => 'success',
-			'message' => 'Cross backup successfully been detached from '.$staff->name,
+			'message' => 'Staff '.$staff->name.' successfully deactivated',
 		]);
 	}
 
@@ -687,7 +687,7 @@ class AjaxController extends Controller
 		$staff->crossbackupto()->detach($request->id);
 		return response()->json([
 			'status' => 'success',
-			'message' => 'Staff '.$staff->name.' been deactivated.',
+			'message' => 'Cross backup for '.$staff->name.' been deactivated.',
 		]);
 	}
 }

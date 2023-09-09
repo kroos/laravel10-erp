@@ -1305,8 +1305,6 @@ $(crb_add_buttons).click(function(){
 					'</div>' +
 					'<label for="sta_' + xcrb + '" class="col-sm-4 col-form-label">Cross Backup Personnel :</label>' +
 					'<div class="col-auto">' +
-						'<input type="hidden" name="crossbackup[' + xcrb + '][id]" value="">' +
-						'<input type="hidden" name="crossbackup[' + xcrb + '][active]" value="1">' +
 						'<select name="crossbackup[' + xcrb + '][backup_staff_id]" id="sta_' + xcrb + '" class="form-select form-select-sm" placeholder="Cross Backup Personnel"></select>' +
 					'</div>' +
 				'</div>' +

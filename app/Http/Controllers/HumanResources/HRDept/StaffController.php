@@ -62,12 +62,11 @@ class StaffController extends Controller
 		// dd($request->all());
 		$data = $request->only(['ic', 'religion_id', 'gender_id', 'race_id', 'nationality_id', 'marital_status_id', 'mobile', 'phone', 'dob', 'cimb_account', 'epf_account', 'income_tax_no', 'socso_no', 'weight', 'height', 'join', 'div_id', 'restday_group_id', 'leave_flow_id', 'status_id', 'active', 'authorise_id']);
 		$data += ['active' => 1];
-		$data += ['name' => Str::of(Str::of($request->name)->lower())->ucfirst()];
-		$data += ['address' => Str::of(Str::of($request->address)->lower())->ucfirst()];
-		$data += ['email' => Str::of($request->address)->lower()];
+		$data += ['name' => ucwords(Str::of($request->name)->lower())];
+		$data += ['address' => ucwords(Str::of($request->address)->lower())];
+		$data += ['email' => Str::of($request->email)->lower()];
 
 		if($request->file('image')){
-			// $file = $request->file('image')->getClientOriginalName();
 			$fil = $request->file('image')->getClientOriginalName();
 			$file = Str::of($fil)->trim();
 			$ext = $request->file('image')->getClientOriginalExtension();
@@ -108,7 +107,7 @@ class StaffController extends Controller
 																					'maternity_leave' => $request->maternity_leave,
 																					'maternity_leave_balance' => $request->maternity_leave,
 																				]);
-		if ($reqest->has('crossbackup')) {
+		if ($request->has('crossbackup')) {
 			foreach ($request->crossbackup as $k => $v) {
 				$s->crossbackupto()->attach([
 												$v['backup_staff_id'] => ['active' => 1]
@@ -159,69 +158,20 @@ class StaffController extends Controller
 	/**
 	 * Update the specified resource in storage.
 	 */
-	public function update(StaffRequestUpdate $request, Staff $staff): RedirectResponse
+	public function update(StaffRequestUpdate $request, Staff $staff)/*: RedirectResponse*/
 	{
-		$data = $request->only(['ic', 'gender_id', 'marital_status_id']);
+		// foreach ($request->crossbackup as $k => $v) {
+		// 	dump($v['backup_staff_id']);
+		// }
+		// dd($request->all());
+		$data = $request->only(['ic', 'gender_id', 'marital_status_id', 'race_id', 'religion_id', 'mobile', 'email', 'phone', 'dob', 'nationality_id', 'cimb_account', 'epf_account', 'income_tax_no', 'socso_no', 'weight', 'height', 'authorise_id', 'div_id', 'join', 'restday_group_id', 'leave_flow_id']);
 
-		if(!is_null($request->name)){
-			$data += ['name' => Str::of(Str::of($request->name)->lower())->ucfirst()];
+		if($request->name){
+			$data += ['name' => ucwords(Str::of($request->name)->lower())];
 		}
-		if(!is_null($request->race_id)){
-			$data += ['race_id' => $request->race_id];
-		}
-		if(!is_null($request->religion_id)){
-			$data += ['religion_id' => $request->religion_id];
-		}
-		if(!is_null($request->mobile)){
-			$data += ['mobile' => $request->mobile];
-		}
-		if(!is_null($request->email)){
-			$data += ['email' => $request->email];
-		}
-		if(!is_null($request->address)){
-			$data += ['address' => Str::of(Str::of($request->address)->lower())->ucfirst()];
-		}
-		if(!is_null($request->phone)){
-			$data += ['phone' => $request->phone];
-		}
-		if(!is_null($request->dob)){
-			$data += ['dob' => $request->dob];
-		}
-		if(!is_null($request->nationality_id)){
-			$data += ['nationality_id' => $request->nationality_id];
-		}
-		if(!is_null($request->cimb_account)){
-			$data += ['cimb_account' => $request->cimb_account];
-		}
-		if(!is_null($request->epf_account)){
-			$data += ['epf_account' => $request->epf_account];
-		}
-		if(!is_null($request->income_tax_no)){
-			$data += ['income_tax_no' => $request->income_tax_no];
-		}
-		if(!is_null($request->socso_no)){
-			$data += ['socso_no' => $request->socso_no];
-		}
-		if(!is_null($request->weight)){
-			$data += ['weight' => $request->weight];
-		}
-		if(!is_null($request->height)){
-			$data += ['height' => $request->height];
-		}
-		if(!is_null($request->authorise_id)) {
-			$data += ['authorise_id' => $request->authorise_id];
-		}
-		if(!is_null($request->div_id)) {
-			$data += ['div_id' => $request->div_id];
-		}
-		if(!is_null($request->join)) {
-			$data += ['join' => $request->join];
-		}
-		if(!is_null($request->restday_group_id)) {
-			$data += ['restday_group_id' => $request->restday_group_id];
-		}
-		if(!is_null($request->leave_flow_id)) {
-			$data += ['leave_flow_id' => $request->leave_flow_id];
+
+		if($request->address){
+			$data += ['address' => ucwords(Str::of($request->address)->lower())];
 		}
 
 		// $data += ['active' => 1];
@@ -244,12 +194,10 @@ class StaffController extends Controller
 			}
 		}
 
-		// dd($data);
-
 		$s = $staff->update($data);
 
 		$login = $request->only(['username']);
-		if(!is_null($request->password)) {
+		if($request->password) {
 			$login += ['password' => $request->password];
 		}
 
@@ -286,13 +234,11 @@ class StaffController extends Controller
 																					'maternity_leave' => $request->maternity_leave,
 																					'maternity_leave_balance' => $request->maternity_leave,
 																				]);
-		if ($reqest->has('crossbackup')) {
+		if ($request->has('crossbackup')) {
 			// syncWithPivotValues([1, 2, 3], ['active' => true])
-			// foreach ($request->crossbackup as $k => $v) {
-			// 	$s->crossbackupto()->sync([
-			// 									$v['backup_staff_id'] => ['active' => 1]
-			// 								]);
-			// }
+			foreach ($request->crossbackup as $k => $v) {
+				$staff->crossbackupto()->syncWithoutDetaching([$v['backup_staff_id'] => ['active' => 1]]);
+			}
 		}
 
 

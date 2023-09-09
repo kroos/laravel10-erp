@@ -255,7 +255,7 @@
 			@if($staff->hasmanyleavereplacement()?->get()->count())
 			<div class="col-5">Replacement Leave :</div>
 			<div class="col-7">
-				<table class="table table-sm table-hover" style="font-size:12px;">
+				<table class="table table-sm table-hover" style="font-size:12px;" id="replacementleave">
 					<thead>
 						<tr>
 							<th>From</th>
@@ -274,7 +274,6 @@
 							<td>{{ \Carbon\Carbon::parse($al->date_end)->format('j M Y') }}</td>
 							<td>{{ $al->location }}</td>
 							<td>{{ $al->reason }}</td>
-							<td>{{ $al->maternity_leave_balance }}</td>
 							<td>{{ $al->leave_total }}</td>
 							<td>{{ $al->leave_utilize }}</td>
 							<td>{{ $al->leave_balance }}</td>
@@ -424,9 +423,21 @@ $(document).ready(function(){
 $.fn.dataTable.moment( 'D MMM YYYY h:mm a' );
 $('#leave').DataTable({
 	"lengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "All"] ],
-	"columnDefs": [ { type: 'date', 'targets': [2] } ],
+	"columnDefs": [ { type: 'date', 'targets': [2,3] } ],
 	"order": [[2, "desc" ]],	// sorting the 6th column descending
 	responsive: true
+})
+.on( 'length.dt page.dt order.dt search.dt', function ( e, settings, len ) {
+	$(document).ready(function(){
+		$('[data-bs-toggle="tooltip"]').tooltip();
+	});}
+);
+
+$('#replacementleave').DataTable({
+	"lengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "All"] ],
+	"columnDefs": [ { type: 'date', 'targets': [0,1] } ],
+	"order": [[0, "desc" ]],	// sorting the 6th column descending
+	// responsive: true
 })
 .on( 'length.dt page.dt order.dt search.dt', function ( e, settings, len ) {
 	$(document).ready(function(){
