@@ -46,6 +46,7 @@ $('#attendance').DataTable({
 document.addEventListener('DOMContentLoaded', function() {
 	var calendarEl = document.getElementById('calendar');
 	var calendar = new FullCalendar.Calendar(calendarEl, {
+		aspectRatio: 1.0,
 		initialView: 'dayGridMonth',
 		weekNumbers: true,
 		themeSystem: 'bootstrap',
@@ -61,6 +62,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		},
 	});
 	calendar.render();
+	console.log(calendar.getOption('aspectRatio'));
 });
 
 /////////////////////////////////////////////////////////////////////////////////////////

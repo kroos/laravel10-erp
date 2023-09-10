@@ -33,10 +33,10 @@ use App\Models\HumanResources\HRLeaveApprovalFlow;
 				</div>
 			</div>
 
-			<div class="form-group row mb-3 {{ $errors->has('religion_id') ? 'has-error' : '' }}">
-				{{ Form::label( 'rel', 'Religion : ', ['class' => 'col-sm-4 col-form-label'] ) }}
+			<div class="form-group row mb-3 {{ $errors->has('email') ? 'has-error' : '' }}">
+				{{ Form::label( 'ema', 'Email : ', ['class' => 'col-sm-4 col-form-label'] ) }}
 				<div class="col-auto">
-					{{ Form::select('religion_id', OptReligion::pluck('religion', 'id')->toArray(), @$value, ['class' => 'form-control form-select form-select-sm col-auto', 'id' => 'rel', 'placeholder' => 'Religion', 'autocomplete' => 'off']) }}
+					{{ Form::text('email', @$value, ['class' => 'form-control form-control-sm col-auto', 'id' => 'ema', 'placeholder' => 'Email', 'autocomplete' => 'off']) }}
 				</div>
 			</div>
 
@@ -51,21 +51,6 @@ use App\Models\HumanResources\HRLeaveApprovalFlow;
 					</div>
 					<?php $i++ ?>
 					@endforeach
-
-				</div>
-			</div>
-
-			<div class="form-group row mb-3 {{ $errors->has('race_id') ? 'has-error' : '' }}">
-				{{ Form::label( 'rac', 'Race : ', ['class' => 'col-sm-4 col-form-label'] ) }}
-				<div class="col-auto">
-					{{ Form::select('race_id', OptRace::pluck('race', 'id')->toArray(), @$value, ['class' => 'form-control form-select col-auto', 'id' => 'rac', 'placeholder' => 'Race', 'autocomplete' => 'off']) }}
-				</div>
-			</div>
-
-			<div class="form-group row mb-3 {{ $errors->has('nationality_id') ? 'has-error' : '' }}">
-				{{ Form::label( 'nat', 'Nationality : ', ['class' => 'col-sm-4 col-form-label'] ) }}
-				<div class="col-auto">
-					{{ Form::select('nationality_id', OptCountry::pluck('country', 'id')->toArray(), @$value, ['class' => 'form-control form-select col-auto', 'id' => 'nat', 'placeholder' => 'Nationality', 'autocomplete' => 'off']) }}
 				</div>
 			</div>
 
@@ -76,10 +61,10 @@ use App\Models\HumanResources\HRLeaveApprovalFlow;
 				</div>
 			</div>
 
-			<div class="form-group row mb-3 {{ $errors->has('email') ? 'has-error' : '' }}">
-				{{ Form::label( 'ema', 'Email : ', ['class' => 'col-sm-4 col-form-label'] ) }}
+			<div class="form-group row mb-3 {{ $errors->has('dob') ? 'has-error' : '' }}" style="position: relative">
+				{{ Form::label( 'dob', 'Date Of Birth : ', ['class' => 'col-sm-4 col-form-label'] ) }}
 				<div class="col-auto">
-					{{ Form::text('email', @$value, ['class' => 'form-control form-control-sm col-auto', 'id' => 'ema', 'placeholder' => 'Email', 'autocomplete' => 'off']) }}
+					{{ Form::text('dob', @$value, ['class' => 'form-control form-control-sm col-auto', 'id' => 'dob', 'placeholder' => 'Date Of Birth', 'autocomplete' => 'off']) }}
 				</div>
 			</div>
 
@@ -104,10 +89,24 @@ use App\Models\HumanResources\HRLeaveApprovalFlow;
 				</div>
 			</div>
 
-			<div class="form-group row mb-3 {{ $errors->has('dob') ? 'has-error' : '' }}" style="position: relative">
-				{{ Form::label( 'dob', 'Date Of Birth : ', ['class' => 'col-sm-4 col-form-label'] ) }}
+			<div class="form-group row mb-3 {{ $errors->has('religion_id') ? 'has-error' : '' }}">
+				{{ Form::label( 'rel', 'Religion : ', ['class' => 'col-sm-4 col-form-label'] ) }}
 				<div class="col-auto">
-					{{ Form::text('dob', @$value, ['class' => 'form-control form-control-sm col-auto', 'id' => 'dob', 'placeholder' => 'Date Of Birth', 'autocomplete' => 'off']) }}
+					{{ Form::select('religion_id', OptReligion::pluck('religion', 'id')->toArray(), @$value, ['class' => 'form-control form-select form-select-sm col-auto', 'id' => 'rel', 'placeholder' => 'Religion', 'autocomplete' => 'off']) }}
+				</div>
+			</div>
+
+			<div class="form-group row mb-3 {{ $errors->has('race_id') ? 'has-error' : '' }}">
+				{{ Form::label( 'rac', 'Race : ', ['class' => 'col-sm-4 col-form-label'] ) }}
+				<div class="col-auto">
+					{{ Form::select('race_id', OptRace::pluck('race', 'id')->toArray(), @$value, ['class' => 'form-control form-select col-auto', 'id' => 'rac', 'placeholder' => 'Race', 'autocomplete' => 'off']) }}
+				</div>
+			</div>
+
+			<div class="form-group row mb-3 {{ $errors->has('nationality_id') ? 'has-error' : '' }}">
+				{{ Form::label( 'nat', 'Nationality : ', ['class' => 'col-sm-4 col-form-label'] ) }}
+				<div class="col-auto">
+					{{ Form::select('nationality_id', OptCountry::pluck('country', 'id')->toArray(), @$value, ['class' => 'form-control form-select col-auto', 'id' => 'nat', 'placeholder' => 'Nationality', 'autocomplete' => 'off']) }}
 				</div>
 			</div>
 
@@ -167,79 +166,6 @@ use App\Models\HumanResources\HRLeaveApprovalFlow;
 				</div>
 			</div>
 
-			<div class="col-auto row">
-				<div class="row">
-					<div class="col-auto">
-						<h6>Staff Spouse</h6>
-					</div>
-					<div class="col-auto">
-						<button type="button" class="col-auto btn btn-sm btn-outline-secondary spouse_add">
-							<i class="fas fa-plus" aria-hidden="true"></i>&nbsp;Add Spouse
-						</button>
-					</div>
-				</div>
-				<div class="row mb-1 g-1 spouse_wrap">
-					<div class="row spouse_row">
-						<div class="col-auto mb-1 g-1 ">
-							<button class="btn btn-sm btn-outline-secondary spouse_remove" type="button">
-								<i class="fas fa-trash" aria-hidden="true"></i>
-							</button>
-						</div>
-						<div class="col-auto mb-1 g-1 form-group {{ $errors->has('staffspouse.*.spouse') ? 'has-error' : '' }}">
-							<input type="text" name="staffspouse[1][spouse]" id="spo" class="form-control form-control-sm" placeholder="Spouse">
-						</div>
-						<div class="col-auto mb-1 g-1 form-group {{ $errors->has('staffspouse.*.phone') ? 'has-error' : '' }}">
-							<input type="text" name="staffspouse[1][phone]" id="pho" class="form-control form-control-sm" placeholder="Spouse Phone">
-						</div>
-						<div class="col-auto mb-1 g-1 form-group {{ $errors->has('staffspouse.*.profession') ? 'has-error' : '' }}">
-							<input type="text" name="staffspouse[1][profession]" id="pro" class="form-control form-control-sm" placeholder="Spouse Profession">
-						</div>
-					</div>
-				</div>
-			</div>
-			<p>&nbsp;</p>
-			<div class="col-auto row">
-				<div class="row">
-					<div class="col-auto">
-						<h6>Staff Children</h6>
-					</div>
-					<div class="col-auto">
-						<button type="button" class="col-auto btn btn-sm btn-outline-secondary children_add">
-							<i class="fas fa-plus" aria-hidden="true"></i>&nbsp;Add Children
-						</button>
-					</div>
-				</div>
-				<div class="row mb-1 g-1 children_wrap">
-					<div class="row children_row">
-						<div class="col-auto mb-1 g-1 ">
-							<button class="btn btn-sm btn-outline-secondary children_remove" type="button">
-								<i class="fas fa-trash" aria-hidden="true"></i>
-							</button>
-						</div>
-						<div class="col-auto mb-1 g-1 form-group {{ $errors->has('staffchildren.*.children') ? 'has-error' : '' }}">
-							<input type="text" name="staffchildren[1][children]" id="chi_1" class="form-control form-control-sm" placeholder="Children">
-						</div>
-						<div class="col-auto mb-1 g-1 form-group {{ $errors->has('staffchildren.*.gender_id') ? 'has-error' : '' }}">
-							<select name="staffchildren[1][gender_id]" id="cge_1" class="form-select form-select-sm" placeholder="Gender"></select>
-						</div>
-						<div class="col-auto mb-1 g-1 form-group {{ $errors->has('staffchildren.*.education_level_id') ? 'has-error' : '' }}">
-							<select name="staffchildren[1][education_level_id]" id="cel_1" class="form-select form-select-sm" placeholder="Education Level"></select>
-						</div>
-						<div class="col-auto mb-1 gx-6 form-group {{ $errors->has('staffchildren.*.health_status_id') ? 'has-error' : '' }}">
-							<select name="staffchildren[1][health_status_id]" id="chs_1" class="form-select form-select-sm" placeholder="Health Status"></select>
-						</div>
-						<div class="form-group form-check col-auto mb-1 gx-6 {{ $errors->has('staffchildren.*.tax_exemption') ? 'has-error' : '' }}">
-							<input type="hidden" name="staffchildren[1][tax_exemption]" class="form-check-input" value="0">
-							<input type="checkbox" name="staffchildren[1][tax_exemption]" class="form-check-input" value="1" id="cte_1">
-							<label class="form-check-label" for="cte_1">Valid for Tax Exemption?</label>
-						</div>
-						<div class="col-auto mb-1 g-1 form-group {{ $errors->has('staffchildren.*.tax_exemption_percentage_id') ? 'has-error' : '' }}">
-							<select name="staffchildren[1][tax_exemption_percentage_id]" id="ctep_1" class="form-select form-select-sm" placeholder="Tax Exemption Percentage"></select>
-						</div>
-					</div>
-				</div>
-			</div>
-
 			<p>&nbsp;</p>
 			<div class="col-auto row">
 				<div class="row">
@@ -274,10 +200,87 @@ use App\Models\HumanResources\HRLeaveApprovalFlow;
 					</div>
 				</div>
 			</div>
+			<p>&nbsp;</p>
+			<div class="col-auto row wrap_spouse">
+				<div class="row">
+					<div class="col-auto">
+						<h6>Staff Spouse</h6>
+					</div>
+					<div class="col-auto">
+						<button type="button" class="col-auto btn btn-sm btn-outline-secondary spouse_add">
+							<i class="fas fa-plus" aria-hidden="true"></i>&nbsp;Add Spouse
+						</button>
+					</div>
+				</div>
+				<div class="row mb-1 g-1 spouse_wrap">
+					<div class="row spouse_row">
+						<div class="col-auto mb-1 g-1 ">
+							<button class="btn btn-sm btn-outline-secondary spouse_remove" type="button">
+								<i class="fas fa-trash" aria-hidden="true"></i>
+							</button>
+						</div>
+						<div class="col-auto mb-1 g-1 form-group {{ $errors->has('staffspouse.*.spouse') ? 'has-error' : '' }}">
+							<input type="text" name="staffspouse[1][spouse]" id="spo" class="form-control form-control-sm" placeholder="Spouse">
+						</div>
+						<div class="col-auto mb-1 g-1 form-group {{ $errors->has('staffspouse.*.phone') ? 'has-error' : '' }}">
+							<input type="text" name="staffspouse[1][phone]" id="pho" class="form-control form-control-sm" placeholder="Spouse Phone">
+						</div>
+						<div class="col-auto mb-1 g-1 form-group {{ $errors->has('staffspouse.*.profession') ? 'has-error' : '' }}">
+							<input type="text" name="staffspouse[1][profession]" id="pro" class="form-control form-control-sm" placeholder="Spouse Profession">
+						</div>
+					</div>
+				</div>
+			</div>
 
+			<p>&nbsp;</p>
+			<div class="col-auto row wrap_children">
+				<div class="row">
+					<div class="col-auto">
+						<h6>Staff Children</h6>
+					</div>
+					<div class="col-auto">
+						<button type="button" class="col-auto btn btn-sm btn-outline-secondary children_add">
+							<i class="fas fa-plus" aria-hidden="true"></i>&nbsp;Add Children
+						</button>
+					</div>
+				</div>
+				<div class="row mb-1 g-1 children_wrap">
+					<div class="row children_row">
+						<div class="col-auto mb-1 g-1 ">
+							<button class="btn btn-sm btn-outline-secondary children_remove" type="button">
+								<i class="fas fa-trash" aria-hidden="true"></i>
+							</button>
+						</div>
+						<div class="col-auto mb-1 g-1 form-group {{ $errors->has('staffchildren.*.children') ? 'has-error' : '' }}">
+							<input type="text" name="staffchildren[1][children]" id="chi_1" class="form-control form-control-sm" placeholder="Children">
+						</div>
+						<div class="col-auto mb-1 g-1 form-group {{ $errors->has('staffchildren.*.dob') ? 'has-error' : '' }}">
+							<input type="text" name="staffchildren[1][dob]" id="cdo_1" class="form-control form-control-sm" placeholder="Date Of Birth">
+						</div>
+						<div class="col-auto mb-1 g-1 form-group {{ $errors->has('staffchildren.*.gender_id') ? 'has-error' : '' }}">
+							<select name="staffchildren[1][gender_id]" id="cge_1" class="form-select form-select-sm" placeholder="Gender"></select>
+						</div>
+						<div class="col-auto mb-1 g-1 form-group {{ $errors->has('staffchildren.*.education_level_id') ? 'has-error' : '' }}">
+							<select name="staffchildren[1][education_level_id]" id="cel_1" class="form-select form-select-sm" placeholder="Education Level"></select>
+						</div>
+						<div class="col-auto mb-1 gx-6 form-group {{ $errors->has('staffchildren.*.health_status_id') ? 'has-error' : '' }}">
+							<select name="staffchildren[1][health_status_id]" id="chs_1" class="form-select form-select-sm" placeholder="Health Status"></select>
+						</div>
+						<div class="form-group form-check col-auto mb-1 gx-6 {{ $errors->has('staffchildren.*.tax_exemption') ? 'has-error' : '' }}">
+							<input type="hidden" name="staffchildren[1][tax_exemption]" class="form-check-input" value="0">
+							<input type="checkbox" name="staffchildren[1][tax_exemption]" class="form-check-input" value="1" id="cte_1">
+							<label class="form-check-label" for="cte_1">Valid for Tax Exemption?</label>
+						</div>
+						<div class="col-auto mb-1 g-1 form-group {{ $errors->has('staffchildren.*.tax_exemption_percentage_id') ? 'has-error' : '' }}">
+							<select name="staffchildren[1][tax_exemption_percentage_id]" id="ctep_1" class="form-select form-select-sm" placeholder="Tax Exemption Percentage"></select>
+						</div>
+					</div>
+				</div>
+
+			</div>
 		</div>
-		<div class="col-sm-6 gy-1 gx-1 align-items-start">
 
+		<div class="col-sm-6 gy-1 gx-1 align-items-start">
 			<div class="offset-sm-4 form-check mb-3 {{ $errors->has('authorise_id') ? 'has-error' : '' }}">
 				<div class="pretty p-icon p-curve p-tada">
 					<input type="hidden" name="authorise_id" value="">
@@ -358,7 +361,6 @@ use App\Models\HumanResources\HRLeaveApprovalFlow;
 			@endforeach
 			</div>
 
-
 			<div class="col-auto row">
 				<div class="row">
 					<div class="col-auto">
@@ -380,14 +382,13 @@ use App\Models\HumanResources\HRLeaveApprovalFlow;
 							</div>
 							<label for="sta_1" class="col-sm-4 col-form-label">Cross Backup Personnel :</label>
 							<div class="col-auto">
+								<input type="hidden" name="crossbackup[1][active]" value="1">
 								<select name="crossbackup[1][backup_staff_id]" id="sta_1" class="form-select form-select-sm" placeholder="Cross Backup Personnel"></select>
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
-
-
 
 			<div class="form-group row mb-3 {{ $errors->has('annual_leave') ? 'has-error' : '' }}">
 				{{ Form::label( 'annu', 'Annual Leave : ', ['class' => 'col-sm-4 col-form-label'] ) }}
@@ -444,12 +445,37 @@ $('#dob, #jpo').datetimepicker({
 });
 
 // select2 on supposed to be
-$('#rel, #gen, #rac, #nat, #mar').select2({
+$('#rel, #gen, #rac, #nat').select2({
 	placeholder: 'Please Select',
 	width: '100%',
 	allowClear: true,
 	closeOnSelect: true,
 });
+
+$('#mar').select2({
+	placeholder: 'Please Select',
+	width: '100%',
+	allowClear: true,
+	closeOnSelect: true,
+});
+
+// $('#mar').on("select2:select", function (e) {
+// 	// console.log($(this).val());
+// 	console.log($('.wrap_spouse').children().length);
+// 	console.log($('.wrap_children').children().length);
+// 	if($(this).val() == 2) {
+// 		if($('.wrap_spouse').children().length == 0) {
+// 			console.log('testspouse');
+// 			$('.wrap_spouse').append(
+// 			);
+// 		}
+// 		if($('.wrap_children').children().length === 0) {
+// 			console.log('testchildren');
+// 			$('.wrap_children').append(
+// 			);
+// 		}
+// 	}
+// });
 
 $('#gen_1').on('change', function () {
 		if( $(this).val() == 2 ) {
@@ -630,6 +656,23 @@ $('#rdg').select2({
 });
 
 /////////////////////////////////////////////////////////////////////////////////////////
+$('#cdo_1').datetimepicker({
+	icons: {
+		time: "fas fas-regular fa-clock fa-beat",
+		date: "fas fas-regular fa-calendar fa-beat",
+		up: "fa-regular fa-circle-up fa-beat",
+		down: "fa-regular fa-circle-down fa-beat",
+		previous: 'fas fas-regular fa-arrow-left fa-beat',
+		next: 'fas fas-regular fa-arrow-right fa-beat',
+		today: 'fas fas-regular fa-calenday-day fa-beat',
+		clear: 'fas fas-regular fa-broom-wide fa-beat',
+		close: 'fas fas-regular fa-rectangle-xmark fa-beat'
+	},
+	format: 'YYYY-MM-DD',
+	useCurrent: true,
+});
+
+
 $('#cge_1').select2({
 	placeholder: 'Gender',
 	width: '100%',
@@ -807,6 +850,9 @@ $(cadd_buttons).click(function(){
 				'<div class="col-auto mb-1 g-1 form-group {{ $errors->has('staffchildren.*.children') ? 'has-error' : '' }}">' +
 					'<input type="text" name="staffchildren[' + xc + '][children]" id="chi_' + xc + '" class="form-control form-control-sm" placeholder="Children">' +
 				'</div>' +
+				'<div class="col-auto mb-1 g-1 form-group {{ $errors->has('staffchildren.*.dob') ? 'has-error' : '' }}">' +
+					'<input type="text" name="staffchildren[1][dob]" id="cdo_' + xc + '" class="form-control form-control-sm" placeholder="Date Of Birth">' +
+				'</div>' +
 				'<div class="col-auto mb-1 g-1 form-group {{ $errors->has('staffchildren.*.gender_id') ? 'has-error' : '' }}">' +
 					'<select name="staffchildren[' + xc + '][gender_id]" id="cge_' + xc + '" class="form-select form-select-sm" placeholder="Gender"></select>' +
 				'</div>' +
@@ -826,6 +872,22 @@ $(cadd_buttons).click(function(){
 				'</div>' +
 			'</div>'
 		); //add input box
+
+		$('#cdo_' + xc).datetimepicker({
+			icons: {
+				time: "fas fas-regular fa-clock fa-beat",
+				date: "fas fas-regular fa-calendar fa-beat",
+				up: "fa-regular fa-circle-up fa-beat",
+				down: "fa-regular fa-circle-down fa-beat",
+				previous: 'fas fas-regular fa-arrow-left fa-beat',
+				next: 'fas fas-regular fa-arrow-right fa-beat',
+				today: 'fas fas-regular fa-calenday-day fa-beat',
+				clear: 'fas fas-regular fa-broom-wide fa-beat',
+				close: 'fas fas-regular fa-rectangle-xmark fa-beat'
+			},
+			format: 'YYYY-MM-DD',
+			useCurrent: true,
+		});
 
 		$('#cge_' + xc +'').select2({
 			placeholder: 'Gender',
@@ -1037,6 +1099,7 @@ $(crb_add_buttons).click(function(){
 					'</div>' +
 					'<label for="sta_1" class="col-sm-4 col-form-label">Cross Backup Personnel :</label>' +
 					'<div class="col-auto">' +
+						'<input type="hidden" name="crossbackup[' + xcrb + '][active]" value="1">' +
 						'<select name="crossbackup[' + xcrb + '][backup_staff_id]" id="sta_' + xcrb + '" class="form-select form-select-sm" placeholder="Cross Backup Personnel"></select>' +
 					'</div>' +
 				'</div>' +

@@ -5,6 +5,12 @@ namespace App\Http\Controllers\HumanResources;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
+// for controller output
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\View\View;
+
 // load model
 use App\Models\Setting;
 
@@ -663,5 +669,25 @@ class AjaxController extends Controller
 		}
 		Session::flash('flash_message', 'Successfully make an approval for user.');
 		return redirect()->route('leave.index');
+	}
+
+	public function deactivatestaff(Request $request, Staff $staff): JsonResponse
+	{
+		// dd($request->all());
+		$staff->update(['active' => 0]);
+		$staff->hasmanylogin()->where('active', 1)->update(['active' => 0]);
+		return response()->json([
+			'status' => 'success',
+			'message' => 'Staff '.$staff->name.' successfully deactivated',
+		]);
+	}
+
+	public function deletecrossbackup(Request $request, Staff $staff): JsonResponse
+	{
+		$staff->crossbackupto()->detach($request->id);
+		return response()->json([
+			'status' => 'success',
+			'message' => 'Cross backup for '.$staff->name.' been deactivated.',
+		]);
 	}
 }
