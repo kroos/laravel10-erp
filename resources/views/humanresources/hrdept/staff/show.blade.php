@@ -3,7 +3,15 @@
 @section('content')
 <div class="col-sm-12 row justify-content-center align-items-start">
 @include('humanresources.hrdept.navhr')
-	<h4 class="align-items-center">Profile {{ $staff->name }} <a href="{{ route('staff.edit', $staff->id) }}" class="btn btn-sm btn-outline-secondary"><i class="bi bi-person-lines-fill"></i> Edit</a></h4>
+	<h4 class="align-items-center">Profile {{ $staff->name }}
+		<a href="{{ route('staff.edit', $staff->id) }}" class="btn btn-sm btn-outline-secondary">
+			<i class="bi bi-person-lines-fill"></i> Edit
+		</a>
+		&nbsp;
+		<a href="#" class="btn btn-sm btn-outline-secondary text-danger deactivate" data-id="{{ $staff->id }}">
+			<i class="bi bi-person-fill-dash"></i> Deactivate
+		</a>
+	</h4>
 	<div class="d-flex flex-column align-items-center text-center p-3 py-5">
 		<img class="rounded-5 mt-3" width="180px" src="{{ asset('storage/user_profile/' . $staff->image) }}">
 		<span class="font-weight-bold">{{ $staff->name }}</span>
@@ -216,70 +224,45 @@
 			</div>
 			@endif
 			@if($staff->gender_id == 2)
-			@if($staff->hasmanyleavematernity()?->get()->count())
-			<div class="col-5">Maternity Leave :</div>
-			<div class="col-7">
-				<table class="table table-sm table-hover" style="font-size:12px;">
-					<thead>
-						<tr>
-							<th>Year</th>
-							<th>Maternity Leave</th>
-							<th>Maternity Leave Adjustment</th>
-							<th>Maternity Leave Utilize</th>
-							<th>Maternity Leave Balance</th>
-						</tr>
-					</thead>
-					<tbody>
-					@foreach($staff->hasmanyleavematernity()->orderBy('year', 'DESC')->get() as $al)
-						<tr>
-							<td>{{ $al->year }}</td>
-							<td>{{ $al->maternity_leave }}</td>
-							<td>{{ $al->maternity_leave_adjustment }}</td>
-							<td>{{ $al->maternity_leave_utilize }}</td>
-							<td>{{ $al->maternity_leave_balance }}</td>
-						</tr>
-					@endforeach
-					</tbody>
-				</table>
-			</div>
+				@if($staff->hasmanyleavematernity()?->get()->count())
+				<div class="col-5">Maternity Leave :</div>
+				<div class="col-7">
+					<table class="table table-sm table-hover" style="font-size:12px;">
+						<thead>
+							<tr>
+								<th>Year</th>
+								<th>Maternity Leave</th>
+								<th>Maternity Leave Adjustment</th>
+								<th>Maternity Leave Utilize</th>
+								<th>Maternity Leave Balance</th>
+							</tr>
+						</thead>
+						<tbody>
+						@foreach($staff->hasmanyleavematernity()->orderBy('year', 'DESC')->get() as $al)
+							<tr>
+								<td>{{ $al->year }}</td>
+								<td>{{ $al->maternity_leave }}</td>
+								<td>{{ $al->maternity_leave_adjustment }}</td>
+								<td>{{ $al->maternity_leave_utilize }}</td>
+								<td>{{ $al->maternity_leave_balance }}</td>
+							</tr>
+						@endforeach
+						</tbody>
+					</table>
+				</div>
+				@endif
 			@endif
-			@endif
-			@if($staff->hasmanyleavereplacement()?->get()->count())
-			<div class="col-5">Replacement Leave :</div>
-			<div class="col-7">
-				<table class="table table-sm table-hover" style="font-size:12px;">
-					<thead>
-						<tr>
-							<th>From</th>
-							<th>To</th>
-							<th>Location</th>
-							<th>Reason</th>
-							<th>Total Day/s</th>
-							<th>Leave Utilize</th>
-							<th>Leave Balance</th>
-						</tr>
-					</thead>
-					<tbody>
-					@foreach($staff->hasmanyleavereplacement()->orderBy('date_start', 'DESC')->get() as $al)
-						<tr>
-							<td>{{ \Carbon\Carbon::parse($al->date_start)->format('j M Y') }}</td>
-							<td>{{ \Carbon\Carbon::parse($al->date_end)->format('j M Y') }}</td>
-							<td>{{ $al->location }}</td>
-							<td>{{ $al->reason }}</td>
-							<td>{{ $al->maternity_leave_balance }}</td>
-							<td>{{ $al->leave_total }}</td>
-							<td>{{ $al->leave_utilize }}</td>
-							<td>{{ $al->leave_balance }}</td>
-						</tr>
-					@endforeach
-					</tbody>
-				</table>
-			</div>
-			@endif
+
 		</div>
 	</div>
+
+	<p>&nbsp;</p>
 	<div class="row justify-content-center">
-		<p></p>
+		<div id="calendar"></div>
+	</div>
+
+	<p>&nbsp;</p>
+	<div class="row justify-content-center">
 		<div class="col-sm-12 row gy-1 gx-1 align-items-start">
 			<h4 class="align-items-center">Leave</h4>
 			@if(\App\Models\HumanResources\HRLeave::where('staff_id', $staff->id)->get()->count())
@@ -344,13 +327,101 @@ if ( ($ls->leave_type_id == 9) || ($ls->leave_type_id != 9 && $ls->half_type_id 
 					@endforeach
 				</tbody>
 			</table>
+			@else
+			<p>No Leave Yet</p>
 			@endif
 		</div>
 	</div>
+
+	<p>&nbsp;</p>
+	<div class="row justify-content-center">
+		<div class="col-sm-12 row gy-1 gx-1 align-items-start">
+			<h4 class="align-items-center">Replacewment Leave</h4>
+				@if($staff->hasmanyleavereplacement()?->get()->count())
+					<table class="table table-sm table-hover" style="font-size:12px;" id="replacementleave">
+						<thead>
+							<tr>
+								<th>From</th>
+								<th>To</th>
+								<th>Location</th>
+								<th>Reason</th>
+								<th>Total Day/s</th>
+								<th>Leave Utilize</th>
+								<th>Leave Balance</th>
+							</tr>
+						</thead>
+						<tbody>
+						@foreach($staff->hasmanyleavereplacement()->orderBy('date_start', 'DESC')->get() as $al)
+							<tr>
+								<td>{{ \Carbon\Carbon::parse($al->date_start)->format('j M Y') }}</td>
+								<td>{{ \Carbon\Carbon::parse($al->date_end)->format('j M Y') }}</td>
+								<td>{{ $al->location }}</td>
+								<td>{{ $al->reason }}</td>
+								<td>{{ $al->leave_total }}</td>
+								<td>{{ $al->leave_utilize }}</td>
+								<td>{{ $al->leave_balance }}</td>
+							</tr>
+						@endforeach
+						</tbody>
+					</table>
+				@endif
+			</div>
+		</div>
 </div>
 @endsection
 
 @section('js')
+/////////////////////////////////////////////////////////////////////////////////////////
+$(document).on('click', '.deactivate', function(e){
+	var staffId = $(this).data('id');
+	DeactivateStaff(staffId);
+	e.preventDefault();
+});
+
+function DeactivateStaff(staffId){
+	swal.fire({
+		title: 'Are you sure?',
+		text: "Please take note, this action will deactivate {{ $staff->name }}.",
+		icon: 'warning',
+		showCancelButton: true,
+		confirmButtonColor: '#3085d6',
+		cancelButtonColor: '#d33',
+		confirmButtonText: 'Yes, deactivate',
+		showLoaderOnConfirm: true,
+
+		preConfirm: function() {
+			return new Promise(function(resolve) {
+				$.ajax({
+					type: 'PATCH',
+					url: '{{ url('deactivatestaff') }}' + '/' + staffId,
+					data: {
+							_token : $('meta[name=csrf-token]').attr('content'),
+							id: staffId,
+					},
+					dataType: 'json'
+				})
+				.done(function(response){
+					swal.fire('Deleted!', response.message, response.status)
+					.then(function(){
+						window.location.reload(true);
+					});
+					//$('#disable_user_' + staffId).parent().parent().remove();
+					window.location.replace('{{ route('staff.index') }}');
+				})
+				.fail(function(){
+					swal.fire('Oops...', 'Something went wrong with system! Please try again later', 'error');
+				})
+			});
+		},
+		allowOutsideClick: false
+	})
+	.then((result) => {
+		if (result.dismiss === swal.DismissReason.cancel) {
+			swal.fire('Cancelled', 'Your {{ $staff->name }} is safe from deactivate', 'info')
+		}
+	});
+}
+
 /////////////////////////////////////////////////////////////////////////////////////////
 // tooltip on reason
 $(document).ready(function(){
@@ -363,7 +434,7 @@ $(document).ready(function(){
 $.fn.dataTable.moment( 'D MMM YYYY h:mm a' );
 $('#leave').DataTable({
 	"lengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "All"] ],
-	"columnDefs": [ { type: 'date', 'targets': [2] } ],
+	"columnDefs": [ { type: 'date', 'targets': [2,3] } ],
 	"order": [[2, "desc" ]],	// sorting the 6th column descending
 	responsive: true
 })
@@ -372,5 +443,47 @@ $('#leave').DataTable({
 		$('[data-bs-toggle="tooltip"]').tooltip();
 	});}
 );
+
+$('#replacementleave').DataTable({
+	"lengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "All"] ],
+	"columnDefs": [ { type: 'date', 'targets': [0,1] } ],
+	"order": [[0, "desc" ]],	// sorting the 6th column descending
+	// responsive: true
+})
+.on( 'length.dt page.dt order.dt search.dt', function ( e, settings, len ) {
+	$(document).ready(function(){
+		$('[data-bs-toggle="tooltip"]').tooltip();
+	});}
+);
+
+@endsection
+
+@section('fullcalendar')
+/////////////////////////////////////////////////////////////////////////////////////////
+// fullcalendar cant use jquery
+document.addEventListener('DOMContentLoaded', function() {
+	var calendarEl = document.getElementById('calendar');
+	var calendar = new FullCalendar.Calendar(calendarEl, {
+		aspectRatio: 1.0,
+		initialView: 'dayGridMonth',
+		weekNumbers: true,
+		themeSystem: 'bootstrap',
+		events: {
+			url: '{{ route('staffattendance') }}',
+			method: 'GET',
+			extraParams: {
+				_token: '{!! csrf_token() !!}',
+				staff_id: '{{ $staff->id }}',
+			},
+		},
+		failure: function() {
+			alert('There was an error while fetching leaves!');
+		},
+	});
+	calendar.render();
+	console.log(calendar.getOption('aspectRatio'));
+});
+
+/////////////////////////////////////////////////////////////////////////////////////////
 
 @endsection

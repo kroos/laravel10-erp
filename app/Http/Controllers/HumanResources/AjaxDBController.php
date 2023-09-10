@@ -5,6 +5,12 @@ namespace App\Http\Controllers\HumanResources;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
+// for controller output
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\View\View;
+
 // load model
 use App\Models\Setting;
 
@@ -14,6 +20,7 @@ use App\Models\HumanResources\HRHolidayCalendar;
 use App\Models\HumanResources\HRLeaveEntitlement;
 use App\Models\HumanResources\HRLeaveApprovalBackup;
 use App\Models\HumanResources\HRLeaveApprovalSupervisor;
+use App\Models\HumanResources\HRAttendance;
 
 use App\Models\HumanResources\OptAuthorise;
 use App\Models\HumanResources\OptBranch;
@@ -671,9 +678,52 @@ class AjaxDBController extends Controller
 					];
 			}
 		}
-		return response()->json( $l2 );
+			return response()->json( $l2 );
 	}
 
+	public function staffattendance(Request $request): JsonResponse
+	{
+		// get the attandence 1st
+		HRAttendance::where('staff_id', $request->staff_id)->whereYear('attend_date', now())->get();
+
+		// get unavaiolable date
+		$wh = UnavailableDateTime::workinghourtime($s->attend_date, $request->staff_id)->first();
+
+		// looking for leave of each staff
+		$l = Staff::where('id', $request->staff_id)->hasmanyleave()
+		->where(function (Builder $query) {
+			$query->whereIn('leave_status_id', [5,6])->orWhereNull('leave_status_id');
+		})
+		->where(function (Builder $query) use ($s){
+			$query->whereDate('date_time_start', '<=', $s->attend_date)
+			->whereDate('date_time_end', '>=', $s->attend_date);
+		})
+		->first();
+
+		// looking for RESTDAY, WORKDAY & HOLIDAY
+		$sun = Carbon::parse($s->attend_date)->dayOfWeek == 7;
+		$sat = Carbon::parse($s->attend_date)->dayOfWeek == 6;
+		$hdate = HRHolidayCalendar::
+				where(function (Builder $query) use ($s){
+					$query->whereDate('date_start', '<=', $s->attend_date)
+					->whereDate('date_end', '>=', $s->attend_date);
+				})
+				->get();
+
+
+
+
+
+
+
+
+
+
+
+
+
+		return response()->json( $l2 );
+	}
 
 
 

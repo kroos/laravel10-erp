@@ -4,13 +4,16 @@ use App\Http\Controllers\HumanResources\AjaxController;
 use App\Http\Controllers\HumanResources\AjaxDBController;
 use Illuminate\Support\Facades\Route;
 
-// Ajax Controller : to CRUD data to DB
+// Ajax Controller : to CRUD data on the DB
 Route::patch('/leavecancel/{hrleave}', [AjaxController::class, 'leavecancel'])->name('leavecancel.leavecancel');
 Route::patch('/leaverapprove/{hrleaveapprovalbackup}', [AjaxController::class, 'leaverapprove'])->name('leaverapprove.leaverapprove');
 Route::patch('/supervisorstatus', [AjaxController::class, 'supervisorstatus'])->name('leavestatus.supervisorstatus');
 Route::patch('/hodstatus', [AjaxController::class, 'hodstatus'])->name('leavestatus.hodstatus');
 Route::patch('/dirstatus', [AjaxController::class, 'dirstatus'])->name('leavestatus.dirstatus');
 Route::patch('/hrstatus', [AjaxController::class, 'hrstatus'])->name('leavestatus.hrstatus');
+Route::patch('/deactivatestaff/{staff}', [AjaxController::class, 'deactivatestaff'])->name('deactivatestaff');
+Route::delete('/deletecrossbackup/{staff}', [AjaxController::class, 'deletecrossbackup'])->name('deletecrossbackup');
+
 
 // Ajax DB Controller : only to retrieve data from db
 Route::post('/loginuser', [AjaxDBController::class, 'loginuser'])->name('loginuser.loginuser');
@@ -41,6 +44,7 @@ Route::post('/staffcrossbackup', [AjaxDBController::class, 'staffcrossbackup'])-
 Route::post('/unblockhalfdayleave', [AjaxDBController::class, 'unblockhalfdayleave'])->name('unblockhalfdayleave.unblockhalfdayleave');
 Route::post('/leaveevents', [AjaxDBController::class, 'leaveevents'])->name('leaveevents');
 Route::post('/division', [AjaxDBController::class, 'division'])->name('division');
+Route::get('/staffattendance', [AjaxDBController::class, 'staffattendance'])->name('staffattendance');
 
 // Route::get('/login/{login}', [
 // 	'as' => 'login.edit',
