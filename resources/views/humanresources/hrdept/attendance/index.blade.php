@@ -157,6 +157,9 @@ if($hdate->isNotEmpty()) {											// date holiday
 $o = HROvertime::where([['staff_id', $s->belongstostaff->id], ['ot_date', $s->attend_date], ['active', 1]])->first();
 // dump($o);
 
+// checking for outstation
+// dd('need to check outstation');
+
 // detect absent
 if ($dtype) {																									// working
 	if ($l) {																									// working | leave

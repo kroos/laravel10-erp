@@ -336,7 +336,7 @@ if ( ($ls->leave_type_id == 9) || ($ls->leave_type_id != 9 && $ls->half_type_id 
 	<p>&nbsp;</p>
 	<div class="row justify-content-center">
 		<div class="col-sm-12 row gy-1 gx-1 align-items-start">
-			<h4 class="align-items-center">Replacewment Leave</h4>
+			<h4 class="align-items-center">Replacement Leave</h4>
 				@if($staff->hasmanyleavereplacement()?->get()->count())
 					<table class="table table-sm table-hover" style="font-size:12px;" id="replacementleave">
 						<thead>
@@ -364,6 +364,8 @@ if ( ($ls->leave_type_id == 9) || ($ls->leave_type_id != 9 && $ls->half_type_id 
 						@endforeach
 						</tbody>
 					</table>
+				@else
+					<p>No Leave Yet</p>
 				@endif
 			</div>
 		</div>
@@ -463,6 +465,7 @@ $('#replacementleave').DataTable({
 // fullcalendar cant use jquery
 document.addEventListener('DOMContentLoaded', function() {
 	var calendarEl = document.getElementById('calendar');
+
 	var calendar = new FullCalendar.Calendar(calendarEl, {
 		aspectRatio: 1.0,
 		initialView: 'dayGridMonth',
@@ -470,18 +473,31 @@ document.addEventListener('DOMContentLoaded', function() {
 		themeSystem: 'bootstrap',
 		events: {
 			url: '{{ route('staffattendance') }}',
-			method: 'GET',
+			method: 'POST',
 			extraParams: {
 				_token: '{!! csrf_token() !!}',
 				staff_id: '{{ $staff->id }}',
 			},
 		},
-		failure: function() {
-			alert('There was an error while fetching leaves!');
+		// failure: function() {
+		// 	alert('There was an error while fetching leaves!');
+		// },
+		eventDidMount: function(info) {
+				var tooltip = new Tooltip(info.el, {
+					title: info.event.extendedProps.description,
+					placement: 'top',
+					trigger: 'hover',
+					container: 'body'
+				});
 		},
+		eventTimeFormat: { // like '14:30:00'
+			hour: '2-digit',
+			minute: '2-digit',
+			second: '2-digit',
+			hour12: true
+		}
 	});
 	calendar.render();
-	console.log(calendar.getOption('aspectRatio'));
 });
 
 /////////////////////////////////////////////////////////////////////////////////////////
