@@ -6,22 +6,25 @@
   div {
     border: 1px solid black;
   }
+  $attendance->time_work_hour
 </style> -->
 
 <?php
 $day_type = App\Models\HumanResources\OptDayType::pluck('daytype', 'id')->sortKeys()->toArray();
 $tcms = App\Models\HumanResources\OptTcms::pluck('leave_short', 'id')->sortKeys()->toArray();
 
-$staff = $attendance->belongstostaff()->get()->first();
+$staff = $attendance->belongstostaff;
 $login = $staff->hasmanylogin()->where('active', '1')->get()->first();
+dd($staff);
 
 if ($attendance->time_work_hour != NULL || $attendance->time_work_hour != '') {
-  $time_work_hour = $attendance->time_work_hour;
+  $time_work_hour = '';
+
 } else {
   $time_work_hour = '00:00';
 }
 
-$working_hour = $staff->belongstomanydepartment()->get()->first()->belongstowhgroup()->where('effective_date_start', '<=', $attendance->attend_date)->where('effective_date_end', '>=', $attendance->attend_date)->where()->get()->first();
+$working_hour = $staff->belongstomanydepartment()->wherePivot('main', 1)->get()->first()->belongstowhgroup()->where('effective_date_start', '<=', $attendance->attend_date)->where('effective_date_end', '>=', $attendance->attend_date)->where()->get()->first();
 echo $working_hour->id;
 ?>
 
