@@ -685,6 +685,7 @@ class AjaxDBController extends Controller
 
 	public function staffattendance(Request $request)/*: JsonResponse*/
 	{
+		// this is for fullcalendar, its NOT INCLUSIVE for the last date
 		// get the attandence 1st
 		$attendance = HRAttendance::where('staff_id', $request->staff_id)->get();
 		foreach ($attendance as $s) {
@@ -746,7 +747,7 @@ class AjaxDBController extends Controller
 				$l1[] = [
 							'title' => $v->holiday,
 							'start' => $v->date_start,
-							'end' => $v->date_end,
+							'end' => Carbon::parse($v->date_end)->addDay(),
 							// 'url' => ,
 							'allDay' => true,
 							'description' => $v->holiday,
@@ -790,7 +791,7 @@ class AjaxDBController extends Controller
 								// 'description' => 'test',
 								'color' => 'purple',
 								'textColor' => 'white',
-								'borderColor' => 'red',
+								'borderColor' => 'purple',
 						];
 
 				} else {
@@ -820,7 +821,7 @@ class AjaxDBController extends Controller
 				$l5[] = [
 							'title' => 'Outstation',
 							'start' => $v->date_from,
-							'end' => $v->date_to,
+							'end' => Carbon::parse($v->date_to)->addDay(),
 							// 'url' => route('hrleave.show', $v->id),
 							'allDay' => true,
 							// 'extendedProps' => [
@@ -839,8 +840,20 @@ class AjaxDBController extends Controller
 		return response()->json( $l0 );
 	}
 
-
-
+	public function staffattendancelist(Request $request)
+	{
+		$sa = \App\Models\HumanResources\HRAttendance::select('staff_id')
+			->where(function (Builder $query) use ($request){
+				$query->whereDate('attend_date', '>=', $request->from)
+				->whereDate('attend_date', '<=', $request->to);
+			})
+			->groupBy('hr_attendances.staff_id')
+			->get();
+		foreach ($sa as $v) {
+			$l0[] = ['id' => $v->staff_id, 'name' => Staff::where('id', $v->staff_id)->first()->name];
+		}
+		return response()->json( $l0 );
+	}
 
 
 

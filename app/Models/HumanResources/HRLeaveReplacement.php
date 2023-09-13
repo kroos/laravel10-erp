@@ -38,4 +38,9 @@ class HRLeaveReplacement extends Model
 	{
 		return $this->belongsTo(\App\Models\Staff::class, 'staff_id');
 	}
+
+	public function belongstocustomer(): BelongsTo
+	{
+		return $this->belongsTo(\App\Models\Customer::class, 'customer_id');
+	}
 }

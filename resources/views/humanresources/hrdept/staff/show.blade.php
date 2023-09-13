@@ -18,7 +18,7 @@
 		<span class="font-weight-bold">{{ $staff->hasmanylogin()->where('active', 1)->first()->username }}</span>
 		<span> </span>
 	</div>
-	<div class="row justify-content-center">
+	<div class="row align-items-start justify-content-center">
 		<div class="col-sm-6 row gy-1 gx-1 align-items-start">
 			<div class="col-5">Name :</div>
 			<div class="col-7">{{ $staff->name }}</div>
@@ -258,6 +258,13 @@
 
 	<p>&nbsp;</p>
 	<div class="row justify-content-center">
+		<div class="col-sm-12">
+			<canvas id="myChart"></canvas>
+		</div>
+	</div>
+
+	<p>&nbsp;</p>
+	<div class="row justify-content-center">
 		<div id="calendar"></div>
 	</div>
 
@@ -355,7 +362,7 @@ if ( ($ls->leave_type_id == 9) || ($ls->leave_type_id != 9 && $ls->half_type_id 
 							<tr>
 								<td>{{ \Carbon\Carbon::parse($al->date_start)->format('j M Y') }}</td>
 								<td>{{ \Carbon\Carbon::parse($al->date_end)->format('j M Y') }}</td>
-								<td>{{ $al->location }}</td>
+								<td>{{ $al->belongstocustomer?->customer }}</td>
 								<td>{{ $al->reason }}</td>
 								<td>{{ $al->leave_total }}</td>
 								<td>{{ $al->leave_utilize }}</td>
@@ -460,7 +467,7 @@ $('#replacementleave').DataTable({
 
 @endsection
 
-@section('fullcalendar')
+@section('nonjquery')
 /////////////////////////////////////////////////////////////////////////////////////////
 // fullcalendar cant use jquery
 document.addEventListener('DOMContentLoaded', function() {
@@ -468,6 +475,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 	var calendar = new FullCalendar.Calendar(calendarEl, {
 		aspectRatio: 1.0,
+		height: 700,
 		initialView: 'dayGridMonth',
 		weekNumbers: true,
 		themeSystem: 'bootstrap',
@@ -501,5 +509,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 /////////////////////////////////////////////////////////////////////////////////////////
+// chartjs also dont use jquery
 
+/////////////////////////////////////////////////////////////////////////////////////////
 @endsection

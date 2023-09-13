@@ -376,7 +376,7 @@
 	})(jQuery);
 </script>
 <script>
-	@section('fullcalendar')
+	@section('nonjquery')
 	@show
 </script>
 </html>
