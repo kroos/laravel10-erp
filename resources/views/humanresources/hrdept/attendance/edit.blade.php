@@ -69,7 +69,7 @@ $time_end_pm = \Carbon\Carbon::parse($working_hour->time_end_pm)->format('H:i');
           {!! Form::label( 'date', 'DATE', ['class' => 'form-control border-0'] ) !!}
         </div>
         <div class="col-md-9">
-          {!! Form::label( 'attend_date', @$attendance->attend_date, ['class' => 'form-control', 'id' => 'attend_date'] ) !!}
+          {!! Form::text( 'attend_date', @$attendance->attend_date, ['class' => 'form-control', 'id' => 'attend_date', 'readonly' => 'readonly']) !!}
         </div>
       </div>
 
@@ -223,111 +223,112 @@ useCurrent: false,
 })
 .on('dp.change dp.update', function(e) {
   
-//   var a = moment.duration(08:30, 'HH:mm');
-// var b = moment.duration(14:25, 'HH:mm');
-// var test = a.subtract(b).hours(); // 1
+  var attend_date = $('#attend_date').val();
+  var breakStr = {!! json_encode($time_end_am) !!};
+  var breakEnd = {!! json_encode($time_start_pm) !!};
 
-// $('#time_work_hour').text(test);
+  if ($('#in').val() > {!! json_encode($time_start_am) !!}) {
+    var inTime = $('#in').val();
+  } else if ($('#in').val() == '00:00') {
+    var inTime = '00:00';
+  } else {
+    var inTime = {!! json_encode($time_start_am) !!};
+  }
+
+  if ($('#break').val() < {!! json_encode($time_end_am) !!}) {
+    var breakTime = $('#break').val();
+  } else if ($('#break').val() == '00:00') {
+    var breakTime = '00:00';
+  } else {
+    var breakTime = {!! json_encode($time_end_am) !!};
+  }
+
+  if ($('#resume').val() > {!! json_encode($time_start_pm) !!}) {
+    var resumeTime = $('#resume').val();
+  } else if ($('#resume').val() == '00:00') {
+    var resumeTime = '00:00';
+  } else {
+    var resumeTime = {!! json_encode($time_start_pm) !!};
+  }
+
+  if ($('#out').val() < {!! json_encode($time_end_pm) !!}) {
+    var outTime = $('#out').val();
+  } else if ($('#out').val() == '00:00') {
+    var outTime = '00:00';
+  } else {
+    var outTime = {!! json_encode($time_end_pm) !!};
+  }
+
+  // Validate input format (HH:mm)
+  var timeRegex = /^([01]\d|2[0-3]):([0-5]\d)$/;
+
+  if (timeRegex.test(inTime) && timeRegex.test(breakTime) && timeRegex.test(resumeTime) && timeRegex.test(outTime)) {
+
+    if (inTime != '00:00' && breakTime != '00:00' && outTime == '00:00') {
+      var startTimeStr = inTime;
+      var endTimeStr = breakTime;
+
+      // TEA BREAK
+      if (startTimeStr > '10:15') {
+        var teaTime = '00:00';
+      } else {
+        var teaTime = '00:15';
+      }
+
+    } else if (inTime != '00:00' && outTime != '00:00') {
+      var startTimeStr = inTime;
+      var endTimeStr = outTime;
+
+      // TEA BREAK
+      if (startTimeStr > '10:15') {
+        var teaTime = '00:00';
+      } else {
+        var teaTime = '00:15';
+      }
+
+      // LUNCH BREAK
+      var lunchStr = moment(`${attend_date} ${breakStr}`);
+      var lunchEnd = moment(`${attend_date} ${breakEnd}`);
+
+      var duration_break = moment.duration(lunchEnd.diff(lunchStr));
+
+      var hours_break = duration_break.hours();
+      var minutes_break = duration_break.minutes(); 
+
+    } else if (inTime == '00:00' && resumeTime != '00:00' && outTime != '00:00') {
+      var startTimeStr = resumeTime;
+      var endTimeStr = outTime;
+
+      // TEA BREAK
+      if (startTimeStr > '10:15') {
+        var teaTime = '00:00';
+      } else {
+        var teaTime = '00:15';
+      }
+    }
+
+    var startTime = moment(`${attend_date} ${startTimeStr}`);
+    var endTime = moment(`${attend_date} ${endTimeStr}`);
+
+    var duration = moment.duration(endTime.diff(startTime));
+
+    var hours = duration.hours();
+    var minutes = duration.minutes();
+
+    var formattedDuration = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
 
 
+    var helo = moment('09:30', 'HH:mm');
 
-var a = moment($(this).val());
-var b = moment($('#break').val());
-var test = b.subtract(a); // 1
-console.log(test);
+    var test = helo.subtract(1, 'hours');
+    
 
-$('#time_work_hour').text(test);
+    console.log(test);
 
-
-
-
-  // if ($('#in').val() > {!! json_encode($time_start_am) !!}) {
-  //   var inTime = $('#in').val();
-  // } else if ($('#in').val() == '00:00') {
-  //   var inTime = '00:00';
-  // } else {
-  //   var inTime = {!! json_encode($time_start_am) !!};
-  // }
-
-  // if ($('#break').val() < {!! json_encode($time_end_am) !!}) {
-  //   var breakTime = $('#break').val();
-  // } else if ($('#break').val() == '00:00') {
-  //   var breakTime = '00:00';
-  // } else {
-  //   var breakTime = {!! json_encode($time_end_am) !!};
-  // }
-
-  // if ($('#resume').val() > {!! json_encode($time_start_pm) !!}) {
-  //   var resumeTime = $('#resume').val();
-  // } else if ($('#resume').val() == '00:00') {
-  //   var resumeTime = '00:00';
-  // } else {
-  //   var resumeTime = {!! json_encode($time_start_pm) !!};
-  // }
-
-  // if ($('#out').val() < {!! json_encode($time_end_pm) !!}) {
-  //   var outTime = $('#out').val();
-  // } else if ($('#out').val() == '00:00') {
-  //   var outTime = '00:00';
-  // } else {
-  //   var outTime = {!! json_encode($time_end_pm) !!};
-  // }
-  
-  // // Validate input format (HH:mm)
-  // var timeRegex = /^([01]\d|2[0-3]):([0-5]\d)$/;
-
-  // if (timeRegex.test(inTime) && timeRegex.test(breakTime) && timeRegex.test(resumeTime) && timeRegex.test(outTime)) {
-
-  //   if (inTime != '00:00' && breakTime != '00:00' && outTime == '00:00') {
-
-  //     var startTimeStr = inTime;
-  //     var endTimeStr = breakTime;
-  //     var teabreak = '00:15';
-
-  //   } else if (inTime != '00:00' && outTime != '00:00') {
-
-  //     var startTimeStr = inTime;
-  //     var endTimeStr = outTime;
-
-  //     if () {
-  //     var teabreak = '00:15';
-  //     }
-
-
-  //   } else if (inTime == '00:00' && resumeTime != '00:00' && outTime != '00:00') {
-
-  //     var startTimeStr = resumeTime;
-  //     var endTimeStr = outTime;
-
-  //   }
-
-
-
-  //     // Split the time strings into hours and minutes
-  //     var startTimeParts = startTimeStr.split(':');
-  //     var endTimeParts = endTimeStr.split(':');
-
-  //     var startHours = parseInt(startTimeParts[0], 10);
-  //     var startMinutes = parseInt(startTimeParts[1], 10);
-  //     var endHours = parseInt(endTimeParts[0], 10);
-  //     var endMinutes = parseInt(endTimeParts[1], 10);
-
-  //     // Calculate time difference
-  //     var hoursDiff = endHours - startHours;
-  //     var minutesDiff = endMinutes - startMinutes;
-
-  //     // Ensure minutes are between 0 and 59
-  //     if (minutesDiff < 0) {
-  //           hoursDiff--;
-  //           minutesDiff += 60;
-  //     }
-
-  //       var formattedTimeDifference = `${hoursDiff.toString().padStart(2, '0')}:${minutesDiff.toString().padStart(2, '0')}`;
-
-  //     $('#time_work_hour').text(formattedTimeDifference);
-  //   } else {
-  //     $('#time_work_hour').text('Invalid Time Format');
-  //   }
+    $('#time_work_hour').text(test);
+  } else {
+    $('#time_work_hour').text('Invalid Time Format');
+  }
 });
 
 
