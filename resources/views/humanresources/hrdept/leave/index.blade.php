@@ -40,7 +40,7 @@ $('#attendance').DataTable({
 
 @endsection
 
-@section('fullcalendar')
+@section('nonjquery')
 /////////////////////////////////////////////////////////////////////////////////////////
 // fullcalendar cant use jquery
 document.addEventListener('DOMContentLoaded', function() {

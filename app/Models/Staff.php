@@ -124,6 +124,11 @@ class Staff extends Authenticatable
 		return $this->hasMany(\App\Models\HumanResources\HRStaffEmergency::class, 'staff_id');
 	}
 
+	public function hasmanyoutstation(): HasMany
+	{
+		return $this->hasMany(\App\Models\HumanResources\HROutstation::class, 'staff_id');
+	}
+
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
 	// db relation belongsToMany
 	public function belongstomanydepartment(): BelongsToMany
