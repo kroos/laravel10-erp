@@ -45,6 +45,7 @@ class AttendanceRequestUpdate extends FormRequest
       'break' => 'Break Time',
       'resume' => 'Resume Time',
       'out' => 'Out Time',
+      'time_work_hour' => 'Duration',
     ];
   }
 }
