@@ -44,10 +44,13 @@ $('#from').datetimepicker({
 		close: 'fas fas-regular fa-rectangle-xmark fa-beat'
 	},
 	format: 'YYYY-MM-DD',
-	useCurrent: true,
+	// useCurrent: true,
 })
 .on('dp.change', function(e) {
 	$('#to').datetimepicker('minDate', $('#from').val());
+	if($('.remove_checkbox').length !== 0) {		// remove any checkbox if there is any to put a new 1
+		$('.remove_checkbox').remove();
+	}
 	if($('#to').val().length !== 0) {			// to ensure the to must be filled
 		var a = $.ajax({
 							url: "{{ route('staffattendancelist') }}",
@@ -71,19 +74,27 @@ $('#from').datetimepicker({
 
 		// convert data10 into json
 		var obj = $.parseJSON( a );
-		console.log($('.remove_checkbox').length);
 		var i = 1;
-		$.each( obj, function() {
-			if($('.wrap_checkbox').length === 0) {
+		if($('.wrap_checkbox').children().length === 0) {
+			$('.wrap_checkbox').append(
+											'<div class="form-check mb-1 g-3 remove_checkbox">' +
+												'<input class="form-check-input" type="checkbox" value="" id="checkAll" checked>' +
+												'<label class="form-check-label" for="checkAll">Name</label>' +
+											'</div>'
+			);
+			$.each( obj, function() {
 				$('.wrap_checkbox').append(
-							'<div class="form-check remove_checkbox">' +
-								'<input class="form-check-input" name="staff_id" type="checkbox" value="' + this.id + '" id="staff_' + i + '">' +
-								'<label class="form-check-label" for="staff_' + i + '">' + this.name + '</label>' +
-							'</div>'
+											'<div class="form-check mb-1 g-3 remove_checkbox">' +
+												'<input class="form-check-input" name="staff_id" type="checkbox" value="' + this.id + '" id="staff_' + i + '" checked>' +
+												'<label class="form-check-label" for="staff_' + i + '">' + this.name + '</label>' +
+											'</div>'
 				);
 				i++
-			}
-		});
+			});
+			$("#checkAll").change(function () {
+				$("input:checkbox").prop('checked', this.checked);
+			});
+		}
 	}
 });
 
@@ -100,10 +111,13 @@ $('#to').datetimepicker({
 		close: 'fas fas-regular fa-rectangle-xmark fa-beat'
 	},
 	format: 'YYYY-MM-DD',
-	useCurrent: true,
+	// useCurrent: true,
 })
 .on('dp.change', function(e) {
 	$('#from').datetimepicker('maxDate', $('#to').val());
+	if($('.remove_checkbox').length !== 0) {		// remove any checkbox if there is any to put a new 1
+		$('.remove_checkbox').remove();
+	}
 	if($('#from').val().length !== 0) {				// to ensure the from must be filled
 		var a = $.ajax({
 							url: "{{ route('staffattendancelist') }}",
@@ -127,17 +141,27 @@ $('#to').datetimepicker({
 
 		// convert data10 into json
 		var obj = $.parseJSON( a );
-		console.log($('.remove_checkbox').length);
 		var i = 1;
-		$.each( obj, function( key, value ) {
+		if($('.wrap_checkbox').children().length === 0) {
 			$('.wrap_checkbox').append(
-						'<div class="form-check remove_checkbox">' +
-							'<input class="form-check-input" name="staff_id" type="checkbox" value="' + this.id + '" id="staff_' + i + '">' +
-							'<label class="form-check-label" for="staff_' + i + '">' + this.name + '</label>' +
-						'</div>'
+											'<div class="form-check mb-1 g-3 remove_checkbox">' +
+												'<input class="form-check-input" type="checkbox" value="" id="checkAll" checked>' +
+												'<label class="form-check-label" for="checkAll">Name</label>' +
+											'</div>'
 			);
-			i++
-		});
+			$.each( obj, function() {
+				$('.wrap_checkbox').append(
+							'<div class="form-check mb-1 g-3 remove_checkbox">' +
+								'<input class="form-check-input" name="staff_id[]" type="checkbox" value="' + this.id + '" id="staff_' + i + '" checked>' +
+								'<label class="form-check-label" for="staff_' + i + '">' + this.name + '</label>' +
+							'</div>'
+				);
+				i++
+			});
+			$("#checkAll").change(function () {
+				$("input:checkbox").prop('checked', this.checked);
+			});
+		}
 	}
 });
 
