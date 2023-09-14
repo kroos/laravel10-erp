@@ -12,7 +12,7 @@
 $day_type = App\Models\HumanResources\OptDayType::pluck('daytype', 'id')->sortKeys()->toArray();
 $tcms = App\Models\HumanResources\OptTcms::pluck('leave_short', 'id')->sortKeys()->toArray();
 
-$staff = $attendance->belongstostaff()->get()->first();
+$staff = $attendance->belongstostaff;
 $login = $staff->hasmanylogin()->where('active', '1')->get()->first();
 
 if ($attendance->time_work_hour != NULL || $attendance->time_work_hour != '') {
@@ -21,8 +21,18 @@ if ($attendance->time_work_hour != NULL || $attendance->time_work_hour != '') {
   $time_work_hour = '00:00';
 }
 
-$working_hour = $staff->belongstomanydepartment()->get()->first()->belongstowhgroup()->where('effective_date_start', '<=', $attendance->attend_date)->where('effective_date_end', '>=', $attendance->attend_date)->where()->get()->first();
-echo $working_hour->id;
+$dayName = \Carbon\Carbon::parse($attendance->attend_date)->format('l');
+
+if ($dayName == 'Friday') {
+  $working_hour = $staff->belongstomanydepartment()->wherePivot('main', 1)->get()->first()->belongstowhgroup()->where('effective_date_start', '<=', $attendance->attend_date)->where('effective_date_end', '>=', $attendance->attend_date)->where('category', 3)->get()->first();
+} else {
+  $working_hour = $staff->belongstomanydepartment()->wherePivot('main', 1)->get()->first()->belongstowhgroup()->where('effective_date_start', '<=', $attendance->attend_date)->where('effective_date_end', '>=', $attendance->attend_date)->where('category', '!=', 3)->get()->first();
+}
+
+$time_start_am = \Carbon\Carbon::parse($working_hour->time_start_am)->format('H:i');
+$time_end_am = \Carbon\Carbon::parse($working_hour->time_end_am)->format('H:i');
+$time_start_pm = \Carbon\Carbon::parse($working_hour->time_start_pm)->format('H:i');
+$time_end_pm = \Carbon\Carbon::parse($working_hour->time_end_pm)->format('H:i');
 ?>
 
 <div class="col-12">
@@ -59,7 +69,7 @@ echo $working_hour->id;
           {!! Form::label( 'date', 'DATE', ['class' => 'form-control border-0'] ) !!}
         </div>
         <div class="col-md-9">
-          {!! Form::label( 'attend_date', @$attendance->attend_date, ['class' => 'form-control', 'id' => 'attend_date'] ) !!}
+          {!! Form::text( 'attend_date', @$attendance->attend_date, ['class' => 'form-control', 'id' => 'attend_date', 'readonly' => 'readonly']) !!}
         </div>
       </div>
 
@@ -196,7 +206,7 @@ echo $working_hour->id;
 @section('js')
 /////////////////////////////////////////////////////////////////////////////////////////
 // DATE PICKER IN
-$('.in-input').datetimepicker({
+$('#in').datetimepicker({
 icons: {
 time: "fas fas-regular fa-clock fa-beat",
 date: "fas fas-regular fa-calendar fa-beat",
@@ -213,86 +223,112 @@ useCurrent: false,
 })
 .on('dp.change dp.update', function(e) {
   
-  var inTime = $('#in').val();
-  var breakTime = $('#break').val();
-  var resumeTime = $('#resume').val();
-  var outTime = $('#out').val();
-  
+  var attend_date = $('#attend_date').val();
+  var breakStr = {!! json_encode($time_end_am) !!};
+  var breakEnd = {!! json_encode($time_start_pm) !!};
+
+  if ($('#in').val() > {!! json_encode($time_start_am) !!}) {
+    var inTime = $('#in').val();
+  } else if ($('#in').val() == '00:00') {
+    var inTime = '00:00';
+  } else {
+    var inTime = {!! json_encode($time_start_am) !!};
+  }
+
+  if ($('#break').val() < {!! json_encode($time_end_am) !!}) {
+    var breakTime = $('#break').val();
+  } else if ($('#break').val() == '00:00') {
+    var breakTime = '00:00';
+  } else {
+    var breakTime = {!! json_encode($time_end_am) !!};
+  }
+
+  if ($('#resume').val() > {!! json_encode($time_start_pm) !!}) {
+    var resumeTime = $('#resume').val();
+  } else if ($('#resume').val() == '00:00') {
+    var resumeTime = '00:00';
+  } else {
+    var resumeTime = {!! json_encode($time_start_pm) !!};
+  }
+
+  if ($('#out').val() < {!! json_encode($time_end_pm) !!}) {
+    var outTime = $('#out').val();
+  } else if ($('#out').val() == '00:00') {
+    var outTime = '00:00';
+  } else {
+    var outTime = {!! json_encode($time_end_pm) !!};
+  }
 
   // Validate input format (HH:mm)
   var timeRegex = /^([01]\d|2[0-3]):([0-5]\d)$/;
 
   if (timeRegex.test(inTime) && timeRegex.test(breakTime) && timeRegex.test(resumeTime) && timeRegex.test(outTime)) {
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     if (inTime != '00:00' && breakTime != '00:00' && outTime == '00:00') {
-
-
       var startTimeStr = inTime;
       var endTimeStr = breakTime;
 
-      // Split the time strings into hours and minutes
-      var startTimeParts = startTimeStr.split(':');
-      var endTimeParts = endTimeStr.split(':');
-
-      var startHours = parseInt(startTimeParts[0], 10);
-      var startMinutes = parseInt(startTimeParts[1], 10);
-      var endHours = parseInt(endTimeParts[0], 10);
-      var endMinutes = parseInt(endTimeParts[1], 10);
-
-      // Calculate time difference
-      var hoursDiff = endHours - startHours;
-      var minutesDiff = endMinutes - startMinutes;
-
-      // Ensure minutes are between 0 and 59
-      if (minutesDiff < 0) {
-            hoursDiff--;
-            minutesDiff += 60;
+      // TEA BREAK
+      if (startTimeStr > '10:15') {
+        var teaTime = '00:00';
+      } else {
+        var teaTime = '00:15';
       }
 
-      var formattedTimeDifference = `${hoursDiff.toString().padStart(2, '0')}:${minutesDiff.toString().padStart(2, '0')}`;
-      $('#time_work_hour').text(formattedTimeDifference);
+    } else if (inTime != '00:00' && outTime != '00:00') {
+      var startTimeStr = inTime;
+      var endTimeStr = outTime;
+
+      // TEA BREAK
+      if (startTimeStr > '10:15') {
+        var teaTime = '00:00';
+      } else {
+        var teaTime = '00:15';
+      }
+
+      // LUNCH BREAK
+      var lunchStr = moment(`${attend_date} ${breakStr}`);
+      var lunchEnd = moment(`${attend_date} ${breakEnd}`);
+
+      var duration_break = moment.duration(lunchEnd.diff(lunchStr));
+
+      var hours_break = duration_break.hours();
+      var minutes_break = duration_break.minutes(); 
+
+    } else if (inTime == '00:00' && resumeTime != '00:00' && outTime != '00:00') {
+      var startTimeStr = resumeTime;
+      var endTimeStr = outTime;
+
+      // TEA BREAK
+      if (startTimeStr > '10:15') {
+        var teaTime = '00:00';
+      } else {
+        var teaTime = '00:15';
+      }
+    }
+
+    var startTime = moment(`${attend_date} ${startTimeStr}`);
+    var endTime = moment(`${attend_date} ${endTimeStr}`);
+
+    var duration = moment.duration(endTime.diff(startTime));
+
+    var hours = duration.hours();
+    var minutes = duration.minutes();
+
+    var formattedDuration = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+
+
+    var helo = moment('09:30', 'HH:mm');
+
+    var test = helo.subtract(1, 'hours');
     
-    } 
 
+    console.log(test);
 
-
-
-
-    
-
-
-
-
-
-
-
-
-
-    
+    $('#time_work_hour').text(test);
   } else {
     $('#time_work_hour').text('Invalid Time Format');
   }
-    
-
-
-
-
 });
 
 
