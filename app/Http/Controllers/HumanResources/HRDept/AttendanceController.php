@@ -108,7 +108,7 @@ class AttendanceController extends Controller
 	 */
 	public function update(AttendanceRequestUpdate $request, HRAttendance $attendance): RedirectResponse
 	{
-		// dd($request->all());
+		//dd($request->all());
 
 		$exception = (!request()->has('exception') == '1' ? '0' : '1');
 
@@ -119,6 +119,7 @@ class AttendanceController extends Controller
 			'break' => $request->break,
 			'resume' => $request->resume,
 			'out' => $request->out,
+			'time_work_hour' => $request->time_work_hour,
 			'remark' => $request->remark,
 			'hr_remark' => $request->hr_remark,
 			'exception' => $exception,
