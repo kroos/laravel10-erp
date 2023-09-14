@@ -1056,7 +1056,7 @@ if($l) {
 						</span></td>
 					<td>{{ $s->time_work_hour }}</td>
 					<td>{{ $o?->belongstoovertimerange?->where('active', 1)->first()->total_time }}</td>
-					<td>{{ $s->remarks }}</td>
+					<td>{{ $s->remarks }} <span class="text-danger">{{ $s->hr_remarks }}</td>
 					<td>{{ $s->exception }}</td>
 				</tr>
 			@endif

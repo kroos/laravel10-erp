@@ -12,7 +12,6 @@ try {
     require('../../node_modules/bootstrap/dist/js/bootstrap');
 	require('@claviska/jquery-minicolors');
     require('@fortawesome/fontawesome-free');
-    require('chart.js');
 	require('datatables.net');
     require('datatables.net-autofill');
     require('datatables.net-colreorder');
@@ -23,7 +22,10 @@ try {
     require('datatables.net-colreorder-bs5');
     require('datatables.net-fixedheader-bs5');
     require('datatables.net-responsive-bs5');
+
+    these are different breed of javascript which previously compatible with jquery... hareyyyyy
     // require('fullcalendar');
+    // require('chart.js');
 
     require('pc-bootstrap4-datetimepicker');
     require('../../node_modules/jquery-chained/jquery.chained');
