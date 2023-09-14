@@ -16,6 +16,7 @@ use App\Models\Setting;
 
 use App\Models\Staff;
 use App\Models\HumanResources\HRLeave;
+use App\Models\HumanResources\HROutstation;
 use App\Models\HumanResources\HRHolidayCalendar;
 use App\Models\HumanResources\HRLeaveEntitlement;
 use App\Models\HumanResources\HRLeaveApprovalBackup;
@@ -44,6 +45,7 @@ use App\Models\HumanResources\OptTcms;
 use App\Models\HumanResources\OptWorkingHour;
 use App\Models\HumanResources\OptStatus;
 use App\Models\HumanResources\DepartmentPivot;
+use App\Models\HumanResources\HROvertime;
 
 use Illuminate\Database\Eloquent\Builder;
 
@@ -681,52 +683,177 @@ class AjaxDBController extends Controller
 			return response()->json( $l2 );
 	}
 
-	public function staffattendance(Request $request): JsonResponse
+	public function staffattendance(Request $request)/*: JsonResponse*/
 	{
+		// this is for fullcalendar, its NOT INCLUSIVE for the last date
 		// get the attandence 1st
-		HRAttendance::where('staff_id', $request->staff_id)->whereYear('attend_date', now())->get();
+		$attendance = HRAttendance::where('staff_id', $request->staff_id)->get();
+		foreach ($attendance as $s) {
 
-		// get unavaiolable date
-		$wh = UnavailableDateTime::workinghourtime($s->attend_date, $request->staff_id)->first();
+		}
+
+		// mark sunday as a rest day
+		$sun = Carbon::parse('2020-01-01')->toPeriod(Carbon::now()->addYear());
+		foreach ($sun as $v) {
+			if($v->dayOfWeek == 0){
+				$l3[] = [
+							'title' => 'RESTDAY',
+							'start' => Carbon::parse($v)->format('Y-m-d'),
+							'end' => Carbon::parse($v)->format('Y-m-d'),
+							// 'url' => ,
+							'allDay' => true,
+							// 'description' => '',
+							// 'extendedProps' => [
+							// 						'department' => 'BioChemistry'
+							// 					],
+							'color' => 'grey',
+							'textcolor' => 'white',
+					];
+			}
+		}
+
+		// mark saturday as restday
+		$sat = Staff::find($request->staff_id)->belongstorestdaygroup->hasmanyrestdaycalendar()->get();
+		if ($sat->isNotEmpty()) {
+			foreach ($sat as $v) {
+				$l4[] = [
+							'title' => 'RESTDAY',
+							'start' => Carbon::parse($v->saturday_date)->format('Y-m-d'),
+							'end' => Carbon::parse($v->saturday_date)->format('Y-m-d'),
+							// 'url' => ,
+							'allDay' => true,
+							// 'description' => '',
+							// 'extendedProps' => [
+							// 						'department' => 'BioChemistry'
+							// 					],
+							'color' => 'grey',
+							'textcolor' => 'white',
+					];
+			}
+		} else {
+			$l4[] = [];
+		}
+
+		// mark all holiday
+		$hdate = HRHolidayCalendar::
+				where(function (Builder $query) use ($s){
+					$query->whereYear('date_start', '<=', Carbon::now()->format('Y'))
+					->orWhereYear('date_end', '>=', Carbon::now()->addYear(1)->format('Y'));
+				})
+				->get();
+				// ->ddRawSql();
+		if ($hdate->isNotEmpty()) {
+			foreach ($hdate as $v) {
+				$l1[] = [
+							'title' => $v->holiday,
+							'start' => $v->date_start,
+							'end' => Carbon::parse($v->date_end)->addDay(),
+							// 'url' => ,
+							'allDay' => true,
+							'description' => $v->holiday,
+							// 'extendedProps' => [
+							// 						'department' => 'BioChemistry'
+							// 					],
+							'color' => 'blue',
+							'textColor' => 'white',
+					];
+			}
+		} else {
+			$l1[] = [];
+		}
 
 		// looking for leave of each staff
-		$l = Staff::where('id', $request->staff_id)->hasmanyleave()
+		$l = HRLeave::where('staff_id', $request->staff_id)
 		->where(function (Builder $query) {
 			$query->whereIn('leave_status_id', [5,6])->orWhereNull('leave_status_id');
 		})
-		->where(function (Builder $query) use ($s){
-			$query->whereDate('date_time_start', '<=', $s->attend_date)
-			->whereDate('date_time_end', '>=', $s->attend_date);
-		})
-		->first();
+		->get();
 
-		// looking for RESTDAY, WORKDAY & HOLIDAY
-		$sun = Carbon::parse($s->attend_date)->dayOfWeek == 7;
-		$sat = Carbon::parse($s->attend_date)->dayOfWeek == 6;
-		$hdate = HRHolidayCalendar::
-				where(function (Builder $query) use ($s){
-					$query->whereDate('date_start', '<=', $s->attend_date)
-					->whereDate('date_end', '>=', $s->attend_date);
-				})
-				->get();
+		if($l->isNotEmpty()) {
+			foreach ($l as $v) {
+				$dts = \Carbon\Carbon::parse($v->date_time_start)->format('Y');
+				$dte = \Carbon\Carbon::parse($v->date_time_end)->addDay()->format('j M Y g:i a');
+				$arr = str_split( $dts, 2 );
+				// only available if only now is before date_time_start and active is 1
+				$dtsl = \Carbon\Carbon::parse( $v->date_time_start );
+				$dt = \Carbon\Carbon::now()->lte( $dtsl );
 
+				if (($v->leave_type_id == 9) || ($v->leave_type_id != 9 && $v->half_type_id == 2) || ($v->leave_type_id != 9 && $v->half_type_id == 1)) {
+					$l2[] = [
+								'title' => 'HR9-'.str_pad( $v->leave_no, 5, "0", STR_PAD_LEFT ).'/'.$arr[1],
+								'start' => $v->date_time_start,
+								'end' => $v->date_time_end,
+								'url' => route('hrleave.show', $v->id),
+								'allDay' => false,
+								// 'extendedProps' => [
+								// 						'department' => 'BioChemistry'
+								// 					],
+								// 'description' => 'test',
+								'color' => 'purple',
+								'textColor' => 'white',
+								'borderColor' => 'purple',
+						];
 
+				} else {
+					$l2[] = [
+							'title' => 'HR9-'.str_pad( $v->leave_no, 5, "0", STR_PAD_LEFT ).'/'.$arr[1],
+							'start' => $v->date_time_start,
+							'end' => Carbon::parse($v->date_time_end)->addDay(),
+							'url' => route('hrleave.show', $v->id),
+							'allDay' => true,
+							// 'extendedProps' => [
+													// 'department' => 'BioChemistry'
+												// ],
+							// 'description' => 'test',
+							'color' => 'purple',
+							'textColor' => 'white',
+							'borderColor' => 'red',
+						];
+				}
+			}
+		} else {
+			$l2[] = [];
+		}
 
-
-
-
-
-
-
-
-
-
-
-		return response()->json( $l2 );
+		$outstation = HROutstation::where('staff_id', $request->staff_id)->where('active', 1)->get();
+		if ($outstation->isNotEmpty()) {
+			foreach ($outstation as $v) {
+				$l5[] = [
+							'title' => 'Outstation',
+							'start' => $v->date_from,
+							'end' => Carbon::parse($v->date_to)->addDay(),
+							// 'url' => route('hrleave.show', $v->id),
+							'allDay' => true,
+							// 'extendedProps' => [
+							// 						'department' => 'BioChemistry'
+							// 					],
+							// 'description' => 'test',
+							'color' => 'teal',
+							'textColor' => 'yellow',
+							'borderColor' => 'green',
+					];
+			}
+		} else {
+			$l5[] = [];
+		}
+		$l0 = array_merge($l1, $l2, $l3, $l4, $l5);
+		return response()->json( $l0 );
 	}
 
-
-
+	public function staffattendancelist(Request $request)
+	{
+		$sa = \App\Models\HumanResources\HRAttendance::select('staff_id')
+			->where(function (Builder $query) use ($request){
+				$query->whereDate('attend_date', '>=', $request->from)
+				->whereDate('attend_date', '<=', $request->to);
+			})
+			->groupBy('hr_attendances.staff_id')
+			->get();
+		foreach ($sa as $v) {
+			$l0[] = ['id' => $v->staff_id, 'name' => Staff::where('id', $v->staff_id)->first()->name];
+		}
+		return response()->json( $l0 );
+	}
 
 
 
