@@ -53,10 +53,11 @@ class AttendanceReportController extends Controller
 		return view('humanresources.hrdept.attendance.attendancereport.index');
 	}
 
-	public function create(Request $request)/*: View*/
+	public function create(Request $request): View
 	{
+		// dd($request->all());
 		$sa = \App\Models\HumanResources\HRAttendance::select('staff_id')
-					->where('staff_id', $request->id)
+					->whereIn('staff_id', $request->staff_id)
 					->where(function (Builder $query) use ($request){
 						$query->whereDate('attend_date', '>=', $request->from)
 						->whereDate('attend_date', '<=', $request->to);
