@@ -20,3 +20,4 @@ yarn-error.log
 /laravel10_erp.db
 /*.editorconfig
 /testweb.sql
+/*.log
