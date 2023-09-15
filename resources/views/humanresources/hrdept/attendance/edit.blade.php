@@ -26,6 +26,8 @@ $time_start_am = \Carbon\Carbon::parse($working_hour->time_start_am)->format('H:
 $time_end_am = \Carbon\Carbon::parse($working_hour->time_end_am)->format('H:i');
 $time_start_pm = \Carbon\Carbon::parse($working_hour->time_start_pm)->format('H:i');
 $time_end_pm = \Carbon\Carbon::parse($working_hour->time_end_pm)->format('H:i');
+
+$leave = App\Models\HumanResources\HRLeave::join('option_leave_types', 'hr_leaves.leave_type_id', '=', 'option_leave_types.id')->where('date_time_start', '<=', $attendance->attend_date)->where('date_time_end', '>=', $attendance->attend_date)->where('staff_id', '=', $staff->id)->pluck('option_leave_types.leave_type_code', 'hr_leaves.id')->sortKeys()->toArray();
 ?>
 
 <div class="col-12">
@@ -81,6 +83,15 @@ $time_end_pm = \Carbon\Carbon::parse($working_hour->time_end_pm)->format('H:i');
         </div>
         <div class="col-md-9 {{ $errors->has('attendance_type_id') ? 'has-error' : '' }}">
           {!! Form::select( 'attendance_type_id', $tcms, @$value, ['class' => 'form-control select-input', 'id' => 'attendance_type_id', 'placeholder' => ''] ) !!}
+        </div>
+      </div>
+
+      <div class="row mt-2">
+        <div class="col-md-3">
+          {!! Form::label( 'leave_id', 'LEAVE', ['class' => 'form-control border-0'] ) !!}
+        </div>
+        <div class="col-md-9 {{ $errors->has('leave_id') ? 'has-error' : '' }}">
+          {!! Form::select( 'leave_id', $leave, key($leave), ['class' => 'form-control', 'id' => 'leave_id', 'placeholder' => ''] ) !!}
         </div>
       </div>
 
@@ -174,6 +185,7 @@ $time_end_pm = \Carbon\Carbon::parse($working_hour->time_end_pm)->format('H:i');
   </div>
 </div>
 @endsection
+
 
 @section('js')
 /////////////////////////////////////////////////////////////////////////////////////////

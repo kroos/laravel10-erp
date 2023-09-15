@@ -115,6 +115,7 @@ class AttendanceController extends Controller
 		$attendance->update([
 			'daytype_id' => $request->daytype_id,
 			'attendance_type_id' => $request->attendance_type_id,
+			'leave_id' => $request->leave_id,
 			'in' => $request->in,
 			'break' => $request->break,
 			'resume' => $request->resume,
