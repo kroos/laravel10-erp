@@ -46,6 +46,7 @@ Route::post('/leaveevents', [AjaxDBController::class, 'leaveevents'])->name('lea
 Route::post('/division', [AjaxDBController::class, 'division'])->name('division');
 Route::post('/staffattendance', [AjaxDBController::class, 'staffattendance'])->name('staffattendance');
 Route::post('/staffattendancelist', [AjaxDBController::class, 'staffattendancelist'])->name('staffattendancelist');
+Route::get('/staffpercentage', [AjaxDBController::class, 'staffpercentage'])->name('staffpercentage');
 
 // Route::get('/login/{login}', [
 // 	'as' => 'login.edit',

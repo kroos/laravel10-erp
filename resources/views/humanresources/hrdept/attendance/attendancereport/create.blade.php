@@ -57,17 +57,15 @@ $wh = UnavailableDateTime::workinghourtime($v1->attend_date, $v->belongstostaff-
 
 // looking for leave of each staff
 // $l = $v->belongstostaff->hasmanyleave()
-$l = $v1->belongstoleave;
-dump($l);
-// HRLeave::where('staff_id', $v->staff_id)
-// 		->where(function (Builder $query) {
-// 			$query->whereIn('leave_status_id', [5, 6])->orWhereNull('leave_status_id');
-// 		})
-// 		->where(function (Builder $query) use ($v1){
-// 			$query->whereDate('date_time_start', '<=', $v1->attend_date)
-// 			->whereDate('date_time_end', '>=', $v1->attend_date);
-// 		})
-// 		->first();
+$l = HRLeave::where('staff_id', $v->staff_id)
+		->where(function (Builder $query) {
+			$query->whereIn('leave_status_id', [5, 6])->orWhereNull('leave_status_id');
+		})
+		->where(function (Builder $query) use ($v1){
+			$query->whereDate('date_time_start', '<=', $v1->attend_date)
+			->whereDate('date_time_end', '>=', $v1->attend_date);
+		})
+		->first();
 
 // dump($l);
 $in = Carbon::parse($v1->in)->equalTo('00:00:00');

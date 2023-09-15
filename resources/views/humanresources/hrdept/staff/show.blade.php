@@ -259,7 +259,7 @@
 	<p>&nbsp;</p>
 	<div class="row justify-content-center">
 		<div class="col-sm-12">
-			<canvas id="myChart"></canvas>
+			<canvas id="myChart" ></canvas>
 		</div>
 	</div>
 
@@ -523,7 +523,7 @@ document.addEventListener('DOMContentLoaded', function() {
 				];
 
 	new Chart(document.getElementById('myChart'), {
-		type: 'bar',
+		type: 'line',
 		data: {
 			labels: data.map(row => row.month),
 			datasets: [
@@ -532,7 +532,9 @@ document.addEventListener('DOMContentLoaded', function() {
 							data: data.map(row => row.count)
 						}
 			]
-		}
+		},
+		options: {},
+		plugins: [],
 	});
 })();
 /////////////////////////////////////////////////////////////////////////////////////////
