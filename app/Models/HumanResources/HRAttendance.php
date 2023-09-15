@@ -38,6 +38,11 @@ class HRAttendance extends Model
 		return $this->belongsTo(\App\Models\Staff::class, 'staff_id');
 	}
 
+	public function belongstoleave(): BelongsTo
+	{
+		return $this->belongsTo(\App\Models\HumanResources\HRLeave::class, 'leave_id');
+	}
+
 	public function belongstoopttcms(): BelongsTo
 	{
 		return $this->belongsTo(\App\Models\HumanResources\OptTcms::class, 'attendance_type_id');

@@ -24,7 +24,7 @@ class HRLeave extends Model
 
 	/////////////////////////////////////////////////////////////////////////////////////////
 	// hasmany relationship
-		
+
 	// public function hasmanyleavereplacement(): HasMany
 	// {
 	// 	return $this->hasMany(\App\Models\HumanResources\HRLeaveReplacement::class, 'leave_id');
@@ -58,6 +58,11 @@ class HRLeave extends Model
 	public function hasmanyleaveapprovalhr(): HasMany
 	{
 		return $this->hasMany(\App\Models\HumanResources\HRLeaveApprovalHR::class, 'leave_id');
+	}
+
+	public function hasmanyattendance(): HasMany
+	{
+		return $this->hasMany(\App\Models\HumanResources\HRAttendance::class, 'leave_id');
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////

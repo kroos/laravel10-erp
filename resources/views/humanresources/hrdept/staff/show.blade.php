@@ -259,7 +259,7 @@
 	<p>&nbsp;</p>
 	<div class="row justify-content-center">
 		<div class="col-sm-12">
-			<canvas id="myChart"></canvas>
+			<canvas id="myChart" ></canvas>
 		</div>
 	</div>
 
@@ -511,5 +511,31 @@ document.addEventListener('DOMContentLoaded', function() {
 /////////////////////////////////////////////////////////////////////////////////////////
 // chartjs also dont use jquery
 
+(async function() {
+	const data = [
+						{ month: 'January', count: 90 },
+						{ month: 'February', count: 93 },
+						{ month: 'March', count: 91 },
+						{ month: 'April', count: 93 },
+						{ month: 'May', count: 81 },
+						{ month: 'June', count: 79 },
+						{ month: 'July', count: 95 },
+				];
+
+	new Chart(document.getElementById('myChart'), {
+		type: 'line',
+		data: {
+			labels: data.map(row => row.month),
+			datasets: [
+						{
+							label: 'Attendance Percentage By Month',
+							data: data.map(row => row.count)
+						}
+			]
+		},
+		options: {},
+		plugins: [],
+	});
+})();
 /////////////////////////////////////////////////////////////////////////////////////////
 @endsection
