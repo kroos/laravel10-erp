@@ -855,7 +855,146 @@ class AjaxDBController extends Controller
 		return response()->json( $l0 );
 	}
 
+	public function staffpercentage(Request $request)
+	{
+		// $request->id = staff id
+		Carbon::setWeekendDays([
+			// Carbon::SATURDAY,
+			Carbon::SUNDAY,
+		]);
 
+		// $st = Staff::find($request->id);													// need to check date join
+		$st = Staff::find(17);																// need to check date join
+		$join = Carbon::parse($st->join);													// join date
+		dump($join);
+
+		$now = Carbon::now();																// todays date
+
+		$checkmonthsago = $join->diffInMonths($now);										// how many months ago?
+		dump($checkmonthsago);
+
+		$nowstartmonth = $now->startOfMonth();												// 1st day of month
+
+		$sixstart = $nowstartmonth->subMonths(6);											// getting start day of 6 months before
+		$sixend = $sixstart->copy()->endOfMonth();											// getting end day of 6 months before
+		$fivestart = $sixstart->copy()->addMonth();											// getting start day of 5 months before
+ 		$fiveend = $fivestart->copy()->endOfMonth();										// getting end day of 5 months before
+		$fourstart = $fivestart->copy()->addMonth();										// getting start day of 4 months before
+ 		$fourend = $fourstart->copy()->endOfMonth();										// getting end day of 4 months before
+		$threestart = $fourstart->copy()->addMonth();										// getting start day of 3 months before
+ 		$threeend = $threestart->copy()->endOfMonth();										// getting end day of 3 months before
+		$twostart = $threestart->copy()->addMonth();										// getting start day of 2 months before
+ 		$twoend = $twostart->copy()->endOfMonth();											// getting end day of 2 months before
+		$onestart = $twostart->copy()->addMonth();											// getting start day of 1 months before
+ 		$oneend = $onestart->copy()->endOfMonth();											// getting end day of 1 months before
+		dump($nowstartmonth);
+		dump([$sixstart, $sixend, $fivestart, $fiveend, $fourstart, $fourend, $threestart, $threeend, $twostart, $twoend, $onestart, $oneend]);
+		dump($checkmonthsago >= 6);
+		dump($join->gte($sixstart));
+
+
+		if ($checkmonthsago >= 6) {															// meaning he join 6 months ago
+			echo '6 months ago';
+			if ($join->gte($sixstart)) {													// check if he join in the same month, count from $join
+				$sixm = $join->toPeriod($sixend);											// 23 days
+				dump($sixm->count());														// 23 days
+				$nosixweekend = $join->diffInWeekdays($sixend);								// get weekend from above as we have only sunday as a weekend
+				dump($nosixweekend);														// 19 days
+
+				// saturday, probably this 1 could be a culprit because in the beginning, usually HR does not set restday_group_id
+				$satoff = $st->belongstorestdaygroup?->hasmanyrestdaycalendar()				// getting sat for staff, if null than only 26 days available for him, otherwise, its lower than that.
+							->where(function (Builder $query) use ($sixstart, $sixend){
+									$query->whereDate('saturday_date', '<=', $sixend)
+									->WhereDate('saturday_date', '>=', $sixstart);
+							})
+							->get()->count();
+							// ->ddRawSql();
+				dump($satoff);
+
+				// getting absent
+				$absent = HRAttendance::where('staff_id', $st->id)
+										->where('attendance_type_id', 1)
+										->where(function (Builder $query) use ($join, $sixend){
+											$query->whereDate('attend_date', '>=', $join)
+											->whereDate('attend_date', '<=', $sixend);
+										})
+										->get();
+										// ->ddRawSql();
+				$u = 0;
+				if ($absent->count()) {
+					foreach ($absent as $v) {
+						$u++;
+					}
+				}
+				dump($u);
+
+				$halfabsent = HRAttendance::where('staff_id', $st->id)
+										->where('attendance_type_id', 2)
+										->where(function (Builder $query) use ($join, $sixend){
+											$query->whereDate('attend_date', '>=', $join)
+											->whereDate('attend_date', '<=', $sixend);
+										})
+										->get();
+										// ->ddRawSql();
+				$p = 0;
+				if ($halfabsent->count()) {
+					foreach ($halfabsent as $v) {
+						$p =+ 0.5;
+					}
+				}
+				dump($p);
+
+				// getting leave for that months
+				$leave = HRLeave::where('staff_id', $st->id)							// get period from here
+							->where('leave_type_id', '<>', 9)
+							->where(function (Builder $query){
+								$query->whereIn('leave_status_id', [5,6])
+									->orWhereNull('leave_status_id');
+							})
+							->where(function (Builder $query) use ($sixend, $join){
+									$query->whereDate('date_time_start', '<=', $sixend)
+									->WhereDate('date_time_end', '>=', $join);
+							})
+							->get();
+							// ->ddRawSql();
+				dump($fulldayleave);
+				$i = 0;
+				foreach ($fulldayleave as $v) {
+					$i =+ $v->period_day;
+				}
+				dump($i);
+			} else {																		// count from $sixend
+
+			}
+		} elseif($checkmonthsago >= 5) {
+			echo '5 months ago';
+		} elseif ($checkmonthsago >= 4) {
+			echo '4 months ago';
+		} elseif ($checkmonthsago >= 3) {
+			echo '3 months ago';
+		} elseif ($checkmonthsago >= 2) {
+			echo '2 months ago';
+		} elseif ($checkmonthsago >= 1) {
+			echo '1 months ago';
+		} elseif ($checkmonthsago >= 0) {
+			echo '0 months ago';
+		}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		// return response()->json();
+	}
 
 
 }
