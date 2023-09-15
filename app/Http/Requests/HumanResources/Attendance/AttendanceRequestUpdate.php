@@ -41,6 +41,8 @@ class AttendanceRequestUpdate extends FormRequest
   {
     return [
       'daytype_id' => 'Day Type',
+      'attendance_type_id' => 'Cause',
+      'leave_id' => 'Leave',
       'in' => 'In Time',
       'break' => 'Break Time',
       'resume' => 'Resume Time',
