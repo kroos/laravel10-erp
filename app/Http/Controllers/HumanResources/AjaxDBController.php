@@ -689,7 +689,9 @@ class AjaxDBController extends Controller
 		// get the attandence 1st
 		$attendance = HRAttendance::where('staff_id', $request->staff_id)->get();
 		foreach ($attendance as $s) {
+			if (Carbon::parse($s->attend_date) != Carbon::SUNDAY) {
 
+			}
 		}
 
 		// mark sunday as a rest day
@@ -866,53 +868,86 @@ class AjaxDBController extends Controller
 		// $st = Staff::find($request->id);													// need to check date join
 		$st = Staff::find(17);																// need to check date join
 		$join = Carbon::parse($st->join);													// join date
-		dump($join);
+		// dump($join);																		//2023-03-09
 
 		$now = Carbon::now();																// todays date
 
-		$checkmonthsago = $join->diffInMonths($now);										// how many months ago?
-		dump($checkmonthsago);
+		$checkmonthsago = $join->copy()->diffInMonths($now);								// how many months ago?
+		// dump($checkmonthsago);																//6
 
-		$nowstartmonth = $now->startOfMonth();												// 1st day of month
+		$nowstartmonth = $now->copy()->startOfMonth();										// 1st day of month
+		// dump($nowstartmonth);																//
 
 		$sixstart = $nowstartmonth->subMonths(6);											// getting start day of 6 months before
 		$sixend = $sixstart->copy()->endOfMonth();											// getting end day of 6 months before
+		$sixmonthname = $sixstart->copy()->monthName;										// getting name of the 6 months before
+
 		$fivestart = $sixstart->copy()->addMonth();											// getting start day of 5 months before
  		$fiveend = $fivestart->copy()->endOfMonth();										// getting end day of 5 months before
+ 		$fivemonthname = $fivestart->copy()->monthName;									// getting name of the 6 months before
+
 		$fourstart = $fivestart->copy()->addMonth();										// getting start day of 4 months before
  		$fourend = $fourstart->copy()->endOfMonth();										// getting end day of 4 months before
+ 		$fourmonthname = $fourstart->copy()->monthName;									// getting name of the 6 months before
+
 		$threestart = $fourstart->copy()->addMonth();										// getting start day of 3 months before
  		$threeend = $threestart->copy()->endOfMonth();										// getting end day of 3 months before
+ 		$threemonthname = $threestart->copy()->monthName;									// getting name of the 6 months before
+
 		$twostart = $threestart->copy()->addMonth();										// getting start day of 2 months before
  		$twoend = $twostart->copy()->endOfMonth();											// getting end day of 2 months before
+ 		$twomonthname = $twostart->copy()->monthName;										// getting name of the 6 months before
+
 		$onestart = $twostart->copy()->addMonth();											// getting start day of 1 months before
  		$oneend = $onestart->copy()->endOfMonth();											// getting end day of 1 months before
-		dump($nowstartmonth);
-		dump([$sixstart, $sixend, $fivestart, $fiveend, $fourstart, $fourend, $threestart, $threeend, $twostart, $twoend, $onestart, $oneend]);
-		dump($checkmonthsago >= 6);
-		dump($join->gte($sixstart));
+ 		$onemonthname = $onestart->copy()->monthName;										// getting name of the 6 months before
+
+		// dump([$sixstart, $sixend, $fivestart, $fiveend, $fourstart, $fourend, $threestart, $threeend, $twostart, $twoend, $onestart, $oneend]);
+		// dump($checkmonthsago >= 6);														//true
+		// dump($join->gte($sixstart));														//true
 
 
 		if ($checkmonthsago >= 6) {															// meaning he join 6 months ago
-			echo '6 months ago';
 			if ($join->gte($sixstart)) {													// check if he join in the same month, count from $join
 				$sixm = $join->toPeriod($sixend);											// 23 days
-				dump($sixm->count());														// 23 days
-				$nosixweekend = $join->diffInWeekdays($sixend);								// get weekend from above as we have only sunday as a weekend
-				dump($nosixweekend);														// 19 days
+				// dump($sixm->count());													// 23 days
+				// dump($sixend);
+				$nosixweekend = $join->diffInWeekdays($sixend);								// get weekdays from above as we have only sunday as a weekend
+				// dump($nosixweekend + 1);													// 19 days : need to plus 1 for correct answer so it will be 20 days
 
-				// saturday, probably this 1 could be a culprit because in the beginning, usually HR does not set restday_group_id
+				// saturday, probably this 1 could be a culprit because in the beginning, usually HR does not set restday_group_id, must check on attendance also.
 				$satoff = $st->belongstorestdaygroup?->hasmanyrestdaycalendar()				// getting sat for staff, if null than only 26 days available for him, otherwise, its lower than that.
-							->where(function (Builder $query) use ($sixstart, $sixend){
+							->where(function (Builder $query) use ($join, $sixend){
 									$query->whereDate('saturday_date', '<=', $sixend)
-									->WhereDate('saturday_date', '>=', $sixstart);
+									->WhereDate('saturday_date', '>=', $join);
 							})
 							->get()->count();
 							// ->ddRawSql();
-				dump($satoff);
+				// dump($satoff);																// restday group 1
+
+				// getting saturday working
+				$saturdayatt = HRAttendance::where('staff_id', $st->id)
+										->where(function (Builder $query) use ($join, $sixend){
+											$query->whereDate('attend_date', '>=', $join)
+											->whereDate('attend_date', '<=', $sixend);
+										})
+										->where(function (Builder $query){
+											$query->whereRaw('DAYOFWEEK(hr_attendances.attend_date) = 7')
+											->where('daytype_id', 2);
+										})
+										->get()->count();
+										// ->ddRawSql();
+				// dump($saturdayatt);														// from $join to $sixend only on 11/3 he is RESTDAY
+				// need to get the most working days
+				if($satoff >= $saturdayatt) {												// meaning: according to attendance at that time, its not set yet
+					$sat = $saturdayatt;													// choose the smallest sat count which means more working days
+				} elseif ($satoff == $saturdayatt) {
+					$sat = $satoff;
+				}
+				// dump($sat);
 
 				// getting absent
-				$absent = HRAttendance::where('staff_id', $st->id)
+				$fullabsent = HRAttendance::where('staff_id', $st->id)
 										->where('attendance_type_id', 1)
 										->where(function (Builder $query) use ($join, $sixend){
 											$query->whereDate('attend_date', '>=', $join)
@@ -921,12 +956,12 @@ class AjaxDBController extends Controller
 										->get();
 										// ->ddRawSql();
 				$u = 0;
-				if ($absent->count()) {
-					foreach ($absent as $v) {
+				if ($fullabsent->count()) {
+					foreach ($fullabsent as $v) {
 						$u++;
 					}
 				}
-				dump($u);
+				// dump($u);
 
 				$halfabsent = HRAttendance::where('staff_id', $st->id)
 										->where('attendance_type_id', 2)
@@ -942,58 +977,1590 @@ class AjaxDBController extends Controller
 						$p =+ 0.5;
 					}
 				}
-				dump($p);
+				// dump($p);
 
-				// getting leave for that months
-				$leave = HRLeave::where('staff_id', $st->id)							// get period from here
-							->where('leave_type_id', '<>', 9)
-							->where(function (Builder $query){
-								$query->whereIn('leave_status_id', [5,6])
-									->orWhereNull('leave_status_id');
-							})
-							->where(function (Builder $query) use ($sixend, $join){
-									$query->whereDate('date_time_start', '<=', $sixend)
-									->WhereDate('date_time_end', '>=', $join);
-							})
-							->get();
-							// ->ddRawSql();
-				dump($fulldayleave);
+				// getting full day leave for that months
+				$fulldayleave = HRLeave::where('staff_id', $st->id)							// get period from here
+								->where(function (Builder $query){
+									$query->where('leave_type_id', '<>', 9)
+									->where(function (Builder $query){
+										$query->where('half_type_id', '<>', 2)
+										->orWhereNull('half_type_id');
+									});
+								})
+								->where(function (Builder $query){
+									$query->whereIn('leave_status_id', [5,6])
+										->orWhereNull('leave_status_id');
+								})
+								->where(function (Builder $query) use ($sixend, $join){
+										$query->whereDate('date_time_start', '<=', $sixend)
+										->WhereDate('date_time_end', '>=', $join);
+								})
+								->get();
+								// ->ddRawSql();
+				// dump($fulldayleave);
 				$i = 0;
 				foreach ($fulldayleave as $v) {
 					$i =+ $v->period_day;
 				}
-				dump($i);
-			} else {																		// count from $sixend
+				// dump($i);
 
+				// getting half day leave
+				$halfdayleave = HRLeave::where('staff_id', $st->id)							// get period from here
+										->where(function (Builder $query){
+											$query->where('leave_type_id', '<>', 9)
+											->where('half_type_id', 2);
+										})
+										->where(function (Builder $query) use ($sixend, $join){
+												$query->whereDate('date_time_start', '<=', $sixend)
+												->WhereDate('date_time_end', '>=', $join);
+										})
+										->where(function (Builder $query){
+											$query->whereIn('leave_status_id', [5,6])
+												->orWhereNull('leave_status_id');
+										})
+										->get();
+										// ->ddRawSql();
+
+				$r = 0;
+				foreach ($halfdayleave as $v) {
+					$r =+ $v->period_day;
+				}
+				// dump($r);
+
+				// start counting for this month
+				$month = $sixmonthname;
+				$workday = ($nosixweekend + 1) - $sat;
+				// dump($workday);
+				$absent = $u + $p;
+				// dump($absent);
+				$leave = $i + $r;
+				// dump($leave);
+
+				$attpercentage = number_format( ($workday - $absent - $leave) / ($workday) * 100, 2);
+				// dump($attpercentage);
+
+			} else {																		// count from $sixend
+				$sixm = $sixstart->toPeriod($sixend);										// 23 days
+				// dump($sixm->count());														// 23 days
+				// dump($sixend);
+				$nosixweekend = $sixstart->diffInWeekdays($sixend, true);					// get weekdays from above as we have only sunday as a weekend
+				// dump($nosixweekend + 1);													// 19 days : need to plus 1 for correct answer so it will be 20 days
+
+				// saturday, probably this 1 could be a culprit because in the beginning, usually HR does not set restday_group_id, must check on attendance also.
+				$satoff = $st->belongstorestdaygroup?->hasmanyrestdaycalendar()				// getting sat for staff, if null than only 26 days available for him, otherwise, its lower than that.
+							->where(function (Builder $query) use ($sixstart, $sixend){
+									$query->whereDate('saturday_date', '<=', $sixend)
+									->WhereDate('saturday_date', '>=', $sixstart);
+							})
+							->get()->count();
+							// ->ddRawSql();
+				// dump($satoff);																// restday group 1
+
+				// getting saturday working
+				$saturdayatt = HRAttendance::where('staff_id', $st->id)
+										->where(function (Builder $query) use ($sixstart, $sixend){
+											$query->whereDate('attend_date', '>=', $sixstart)
+											->whereDate('attend_date', '<=', $sixend);
+										})
+										->where(function (Builder $query){
+											$query->whereRaw('DAYOFWEEK(hr_attendances.attend_date) = 7')
+											->where('daytype_id', 2);
+										})
+										->get()->count();
+										// ->ddRawSql();
+				// dump($saturdayatt);															// from $sixstart to $sixend only on 11/3 he is RESTDAY
+				// need to get the most working days
+				if($satoff >= $saturdayatt) {												// meaning: according to attendance at that time, its not set yet
+					$sat = $saturdayatt;													// choose the smallest sat count which means more working days
+				} elseif ($satoff == $saturdayatt) {
+					$sat = $satoff;
+				}
+
+				// getting absent
+				$fullabsent = HRAttendance::where('staff_id', $st->id)
+										->where('attendance_type_id', 1)
+										->where(function (Builder $query) use ($sixstart, $sixend){
+											$query->whereDate('attend_date', '>=', $sixstart)
+											->whereDate('attend_date', '<=', $sixend);
+										})
+										->get();
+										// ->ddRawSql();
+				$u = 0;
+				if ($fullabsent->count()) {
+					foreach ($fullabsent as $v) {
+						$u++;
+					}
+				}
+				// dump($u);
+
+				$halfabsent = HRAttendance::where('staff_id', $st->id)
+										->where('attendance_type_id', 2)
+										->where(function (Builder $query) use ($sixstart, $sixend){
+											$query->whereDate('attend_date', '>=', $sixstart)
+											->whereDate('attend_date', '<=', $sixend);
+										})
+										->get();
+										// ->ddRawSql();
+				$p = 0;
+				if ($halfabsent->count()) {
+					foreach ($halfabsent as $v) {
+						$p =+ 0.5;
+					}
+				}
+				// dump($p);
+
+				// getting full day leave for that months
+				$fulldayleave = HRLeave::where('staff_id', $st->id)							// get period from here
+								->where(function (Builder $query){
+									$query->where('leave_type_id', '<>', 9)
+									->where(function (Builder $query){
+										$query->where('half_type_id', '<>', 2)
+										->orWhereNull('half_type_id');
+									});
+								})
+								->where(function (Builder $query){
+									$query->whereIn('leave_status_id', [5,6])
+										->orWhereNull('leave_status_id');
+								})
+								->where(function (Builder $query) use ($sixend, $sixstart){
+										$query->whereDate('date_time_start', '<=', $sixend)
+										->WhereDate('date_time_end', '>=', $sixstart);
+								})
+								->get();
+								// ->ddRawSql();
+				// dump($fulldayleave);
+				$i = 0;
+				foreach ($fulldayleave as $v) {
+					$i =+ $v->period_day;
+				}
+				// dump($i);
+
+				// getting half day leave
+				$halfdayleave = HRLeave::where('staff_id', $st->id)							// get period from here
+										->where(function (Builder $query){
+											$query->where('leave_type_id', '<>', 9)
+											->where('half_type_id', 2);
+										})
+										->where(function (Builder $query) use ($sixend, $sixstart){
+												$query->whereDate('date_time_start', '<=', $sixend)
+												->WhereDate('date_time_end', '>=', $sixstart);
+										})
+										->where(function (Builder $query){
+											$query->whereIn('leave_status_id', [5,6])
+												->orWhereNull('leave_status_id');
+										})
+										->get();
+										// ->ddRawSql();
+
+				$r = 0;
+				foreach ($halfdayleave as $v) {
+					$r =+ $v->period_day;
+				}
+				// dump($r);
+
+				// start counting for this month
+				$month = $sixmonthname;
+				$workday = ($nosixweekend + 1) - $sat;
+				// dump($workday);
+				$absent = $u + $p;
+				// dump($absent);
+				$leave = $i + $r;
+				// dump($leave);
+
+				$attpercentage = number_format( ($workday - $absent - $leave) / ($workday) * 100, 2);
+				// dump($attpercentage);
 			}
-		} elseif($checkmonthsago >= 5) {
-			echo '5 months ago';
-		} elseif ($checkmonthsago >= 4) {
-			echo '4 months ago';
-		} elseif ($checkmonthsago >= 3) {
-			echo '3 months ago';
-		} elseif ($checkmonthsago >= 2) {
-			echo '2 months ago';
-		} elseif ($checkmonthsago >= 1) {
-			echo '1 months ago';
-		} elseif ($checkmonthsago >= 0) {
-			echo '0 months ago';
+			$chartdata[] = [
+								'month' => $month,
+								'percentage' => $attpercentage,
+								'workdays' => $workday,
+								'leaves' => $leave,
+								'absents' => $absent,
+								'working days' => ($workday - $absent - $leave),
+							];
 		}
 
+		if($checkmonthsago >= 5) {
+			if ($join->gte($fivestart)) {													// check if he join in the same month, count from $join
+				$fivem = $join->toPeriod($fiveend);											// 23 days
+				// dump($fivem->count());													// 23 days
+				// dump($fiveend);
+				$nofiveweekend = $join->diffInWeekdays($fiveend);								// get weekdays from above as we have only sunday as a weekend
+				// dump($nofiveweekend + 1);													// 19 days : need to plus 1 for correct answer so it will be 20 days
 
+				// saturday, probably this 1 could be a culprit because in the beginning, usually HR does not set restday_group_id, must check on attendance also.
+				$satoff = $st->belongstorestdaygroup?->hasmanyrestdaycalendar()				// getting sat for staff, if null than only 26 days available for him, otherwise, its lower than that.
+							->where(function (Builder $query) use ($join, $fiveend){
+									$query->whereDate('saturday_date', '<=', $fiveend)
+									->WhereDate('saturday_date', '>=', $join);
+							})
+							->get()->count();
+							// ->ddRawSql();
+				// dump($satoff);																// restday group 1
 
+				// getting saturday working
+				$saturdayatt = HRAttendance::where('staff_id', $st->id)
+										->where(function (Builder $query) use ($join, $fiveend){
+											$query->whereDate('attend_date', '>=', $join)
+											->whereDate('attend_date', '<=', $fiveend);
+										})
+										->where(function (Builder $query){
+											$query->whereRaw('DAYOFWEEK(hr_attendances.attend_date) = 7')
+											->where('daytype_id', 2);
+										})
+										->get()->count();
+										// ->ddRawSql();
+				// dump($saturdayatt);														// from $join to $fiveend only on 11/3 he is RESTDAY
+				// need to get the most working days
+				if($satoff >= $saturdayatt) {												// meaning: according to attendance at that time, its not set yet
+					$sat = $saturdayatt;													// choose the smallest sat count which means more working days
+				} elseif ($satoff == $saturdayatt) {
+					$sat = $satoff;
+				}
+				// dump($sat);
 
+				// getting absent
+				$fullabsent = HRAttendance::where('staff_id', $st->id)
+										->where('attendance_type_id', 1)
+										->where(function (Builder $query) use ($join, $fiveend){
+											$query->whereDate('attend_date', '>=', $join)
+											->whereDate('attend_date', '<=', $fiveend);
+										})
+										->get();
+										// ->ddRawSql();
+				$u = 0;
+				if ($fullabsent->count()) {
+					foreach ($fullabsent as $v) {
+						$u++;
+					}
+				}
+				// dump($u);
 
+				$halfabsent = HRAttendance::where('staff_id', $st->id)
+										->where('attendance_type_id', 2)
+										->where(function (Builder $query) use ($join, $fiveend){
+											$query->whereDate('attend_date', '>=', $join)
+											->whereDate('attend_date', '<=', $fiveend);
+										})
+										->get();
+										// ->ddRawSql();
+				$p = 0;
+				if ($halfabsent->count()) {
+					foreach ($halfabsent as $v) {
+						$p =+ 0.5;
+					}
+				}
+				// dump($p);
 
+				// getting full day leave for that months
+				$fulldayleave = HRLeave::where('staff_id', $st->id)							// get period from here
+								->where(function (Builder $query){
+									$query->where('leave_type_id', '<>', 9)
+									->where(function (Builder $query){
+										$query->where('half_type_id', '<>', 2)
+										->orWhereNull('half_type_id');
+									});
+								})
+								->where(function (Builder $query){
+									$query->whereIn('leave_status_id', [5,6])
+										->orWhereNull('leave_status_id');
+								})
+								->where(function (Builder $query) use ($fiveend, $join){
+										$query->whereDate('date_time_start', '<=', $fiveend)
+										->WhereDate('date_time_end', '>=', $join);
+								})
+								->get();
+								// ->ddRawSql();
+				// dump($fulldayleave);
+				$i = 0;
+				foreach ($fulldayleave as $v) {
+					$i =+ $v->period_day;
+				}
+				// dump($i);
 
+				// getting half day leave
+				$halfdayleave = HRLeave::where('staff_id', $st->id)								// get period from here
+										->where(function (Builder $query){
+											$query->where('leave_type_id', '<>', 9)
+											->where('half_type_id', 2);
+										})
+										->where(function (Builder $query) use ($fiveend, $join){
+												$query->whereDate('date_time_start', '<=', $fiveend)
+												->WhereDate('date_time_end', '>=', $join);
+										})
+										->where(function (Builder $query){
+											$query->whereIn('leave_status_id', [5,6])
+												->orWhereNull('leave_status_id');
+										})
+										->get();
+										// ->ddRawSql();
 
+				$r = 0;
+				foreach ($halfdayleave as $v) {
+					$r =+ $v->period_day;
+				}
+				// dump($r);
 
+				// start counting for this month
+				$month = $fivemonthname;
+				$workday = ($nofiveweekend + 1) - $sat;
+				// dump($workday);
+				$absent = $u + $p;
+				// dump($absent);
+				$leave = $i + $r;
+				// dump($leave);
 
+				$attpercentage = number_format( ($workday - $absent - $leave) / ($workday) * 100, 2);
+				// dump($attpercentage);
 
+			} else {																			// count from $fiveend
+				$fivem = $fivestart->toPeriod($fiveend);										// 23 days
+				// dump($fivem->count());														// 23 days
+				// dump($fiveend);
+				$nofiveweekend = $fivestart->diffInWeekdays($fiveend, true);					// get weekdays from above as we have only sunday as a weekend
+				// dump($nofiveweekend + 1);													// 19 days : need to plus 1 for correct answer so it will be 20 days
 
+				// saturday, probably this 1 could be a culprit because in the beginning, usually HR does not set restday_group_id, must check on attendance also.
+				$satoff = $st->belongstorestdaygroup?->hasmanyrestdaycalendar()				// getting sat for staff, if null than only 26 days available for him, otherwise, its lower than that.
+							->where(function (Builder $query) use ($fivestart, $fiveend){
+									$query->whereDate('saturday_date', '<=', $fiveend)
+									->WhereDate('saturday_date', '>=', $fivestart);
+							})
+							->get()->count();
+							// ->ddRawSql();
+				// dump($satoff);																// restday group 1
 
+				// getting saturday working
+				$saturdayatt = HRAttendance::where('staff_id', $st->id)
+										->where(function (Builder $query) use ($fivestart, $fiveend){
+											$query->whereDate('attend_date', '>=', $fivestart)
+											->whereDate('attend_date', '<=', $fiveend);
+										})
+										->where(function (Builder $query){
+											$query->whereRaw('DAYOFWEEK(hr_attendances.attend_date) = 7')
+											->where('daytype_id', 2);
+										})
+										->get()->count();
+										// ->ddRawSql();
+				// dump($saturdayatt);															// from $fivestart to $fiveend only on 11/3 he is RESTDAY
+				// need to get the most working days
+				if($satoff >= $saturdayatt) {												// meaning: according to attendance at that time, its not set yet
+					$sat = $saturdayatt;													// choose the smallest sat count which means more working days
+				} elseif ($satoff == $saturdayatt) {
+					$sat = $satoff;
+				}
 
-		// return response()->json();
+				// getting absent
+				$fullabsent = HRAttendance::where('staff_id', $st->id)
+										->where('attendance_type_id', 1)
+										->where(function (Builder $query) use ($fivestart, $fiveend){
+											$query->whereDate('attend_date', '>=', $fivestart)
+											->whereDate('attend_date', '<=', $fiveend);
+										})
+										->get();
+										// ->ddRawSql();
+				$u = 0;
+				if ($fullabsent->count()) {
+					foreach ($fullabsent as $v) {
+						$u++;
+					}
+				}
+				// dump($u);
+
+				$halfabsent = HRAttendance::where('staff_id', $st->id)
+										->where('attendance_type_id', 2)
+										->where(function (Builder $query) use ($fivestart, $fiveend){
+											$query->whereDate('attend_date', '>=', $fivestart)
+											->whereDate('attend_date', '<=', $fiveend);
+										})
+										->get();
+										// ->ddRawSql();
+				$p = 0;
+				if ($halfabsent->count()) {
+					foreach ($halfabsent as $v) {
+						$p =+ 0.5;
+					}
+				}
+				// dump($p);
+
+				// getting full day leave for that months
+				$fulldayleave = HRLeave::where('staff_id', $st->id)							// get period from here
+								->where(function (Builder $query){
+									$query->where('leave_type_id', '<>', 9)
+									->where(function (Builder $query){
+										$query->where('half_type_id', '<>', 2)
+										->orWhereNull('half_type_id');
+									});
+								})
+								->where(function (Builder $query){
+									$query->whereIn('leave_status_id', [5,6])
+										->orWhereNull('leave_status_id');
+								})
+								->where(function (Builder $query) use ($fiveend, $fivestart){
+										$query->whereDate('date_time_start', '<=', $fiveend)
+										->WhereDate('date_time_end', '>=', $fivestart);
+								})
+								->get();
+								// ->ddRawSql();
+				// dump($fulldayleave);
+				$i = 0;
+				foreach ($fulldayleave as $v) {
+					$i =+ $v->period_day;
+				}
+				// dump($i);
+
+				// getting half day leave
+				$halfdayleave = HRLeave::where('staff_id', $st->id)							// get period from here
+										->where(function (Builder $query){
+											$query->where('leave_type_id', '<>', 9)
+											->where('half_type_id', 2);
+										})
+										->where(function (Builder $query) use ($fiveend, $fivestart){
+												$query->whereDate('date_time_start', '<=', $fiveend)
+												->WhereDate('date_time_end', '>=', $fivestart);
+										})
+										->where(function (Builder $query){
+											$query->whereIn('leave_status_id', [5,6])
+												->orWhereNull('leave_status_id');
+										})
+										->get();
+										// ->ddRawSql();
+
+				$r = 0;
+				foreach ($halfdayleave as $v) {
+					$r =+ $v->period_day;
+				}
+				// dump($r);
+
+				// start counting for this month
+				$month = $fivemonthname;
+				$workday = ($nofiveweekend + 1) - $sat;
+				// dump($workday);
+				$absent = $u + $p;
+				// dump($absent);
+				$leave = $i + $r;
+				// dump($leave);
+
+				$attpercentage = number_format( ($workday - $absent - $leave) / ($workday) * 100, 2);
+				// dump($attpercentage);
+			}
+			$chartdata[] = [
+								'month' => $month,
+								'percentage' => $attpercentage,
+								'workdays' => $workday,
+								'leaves' => $leave,
+								'absents' => $absent,
+								'working days' => ($workday - $absent - $leave),
+							];
+
+		}
+
+		if ($checkmonthsago >= 4) {
+			if ($join->gte($fourstart)) {													// check if he join in the same month, count from $join
+				$fourm = $join->toPeriod($fourend);											// 23 days
+				// dump($fourm->count());													// 23 days
+				// dump($fourend);
+				$nofiveweekend = $join->diffInWeekdays($fourend);								// get weekdays from above as we have only sunday as a weekend
+				// dump($nofiveweekend + 1);													// 19 days : need to plus 1 for correct answer so it will be 20 days
+
+				// saturday, probably this 1 could be a culprit because in the beginning, usually HR does not set restday_group_id, must check on attendance also.
+				$satoff = $st->belongstorestdaygroup?->hasmanyrestdaycalendar()				// getting sat for staff, if null than only 26 days available for him, otherwise, its lower than that.
+							->where(function (Builder $query) use ($join, $fourend){
+									$query->whereDate('saturday_date', '<=', $fourend)
+									->WhereDate('saturday_date', '>=', $join);
+							})
+							->get()->count();
+							// ->ddRawSql();
+				// dump($satoff);																// restday group 1
+
+				// getting saturday working
+				$saturdayatt = HRAttendance::where('staff_id', $st->id)
+										->where(function (Builder $query) use ($join, $fourend){
+											$query->whereDate('attend_date', '>=', $join)
+											->whereDate('attend_date', '<=', $fourend);
+										})
+										->where(function (Builder $query){
+											$query->whereRaw('DAYOFWEEK(hr_attendances.attend_date) = 7')
+											->where('daytype_id', 2);
+										})
+										->get()->count();
+										// ->ddRawSql();
+				// dump($saturdayatt);														// from $join to $fourend only on 11/3 he is RESTDAY
+				// need to get the most working days
+				if($satoff >= $saturdayatt) {												// meaning: according to attendance at that time, its not set yet
+					$sat = $saturdayatt;													// choose the smallest sat count which means more working days
+				} elseif ($satoff == $saturdayatt) {
+					$sat = $satoff;
+				}
+				// dump($sat);
+
+				// getting absent
+				$fullabsent = HRAttendance::where('staff_id', $st->id)
+										->where('attendance_type_id', 1)
+										->where(function (Builder $query) use ($join, $fourend){
+											$query->whereDate('attend_date', '>=', $join)
+											->whereDate('attend_date', '<=', $fourend);
+										})
+										->get();
+										// ->ddRawSql();
+				$u = 0;
+				if ($fullabsent->count()) {
+					foreach ($fullabsent as $v) {
+						$u++;
+					}
+				}
+				// dump($u);
+
+				$halfabsent = HRAttendance::where('staff_id', $st->id)
+										->where('attendance_type_id', 2)
+										->where(function (Builder $query) use ($join, $fourend){
+											$query->whereDate('attend_date', '>=', $join)
+											->whereDate('attend_date', '<=', $fourend);
+										})
+										->get();
+										// ->ddRawSql();
+				$p = 0;
+				if ($halfabsent->count()) {
+					foreach ($halfabsent as $v) {
+						$p =+ 0.5;
+					}
+				}
+				// dump($p);
+
+				// getting full day leave for that months
+				$fulldayleave = HRLeave::where('staff_id', $st->id)							// get period from here
+								->where(function (Builder $query){
+									$query->where('leave_type_id', '<>', 9)
+									->where(function (Builder $query){
+										$query->where('half_type_id', '<>', 2)
+										->orWhereNull('half_type_id');
+									});
+								})
+								->where(function (Builder $query){
+									$query->whereIn('leave_status_id', [5,6])
+										->orWhereNull('leave_status_id');
+								})
+								->where(function (Builder $query) use ($fourend, $join){
+										$query->whereDate('date_time_start', '<=', $fourend)
+										->WhereDate('date_time_end', '>=', $join);
+								})
+								->get();
+								// ->ddRawSql();
+				// dump($fulldayleave);
+				$i = 0;
+				foreach ($fulldayleave as $v) {
+					$i =+ $v->period_day;
+				}
+				// dump($i);
+
+				// getting half day leave
+				$halfdayleave = HRLeave::where('staff_id', $st->id)								// get period from here
+										->where(function (Builder $query){
+											$query->where('leave_type_id', '<>', 9)
+											->where('half_type_id', 2);
+										})
+										->where(function (Builder $query) use ($fourend, $join){
+												$query->whereDate('date_time_start', '<=', $fourend)
+												->WhereDate('date_time_end', '>=', $join);
+										})
+										->where(function (Builder $query){
+											$query->whereIn('leave_status_id', [5,6])
+												->orWhereNull('leave_status_id');
+										})
+										->get();
+										// ->ddRawSql();
+
+				$r = 0;
+				foreach ($halfdayleave as $v) {
+					$r =+ $v->period_day;
+				}
+				// dump($r);
+
+				// start counting for this month
+				$month = $fourmonthname;
+				$workday = ($nofiveweekend + 1) - $sat;
+				// dump($workday);
+				$absent = $u + $p;
+				// dump($absent);
+				$leave = $i + $r;
+				// dump($leave);
+
+				$attpercentage = number_format( ($workday - $absent - $leave) / ($workday) * 100, 2);
+				// dump($attpercentage);
+
+			} else {																			// count from $fourend
+				$fourm = $fourstart->toPeriod($fourend);										// 23 days
+				// dump($fourm->count());														// 23 days
+				// dump($fourend);
+				$nofiveweekend = $fourstart->diffInWeekdays($fourend, true);					// get weekdays from above as we have only sunday as a weekend
+				// dump($nofiveweekend + 1);													// 19 days : need to plus 1 for correct answer so it will be 20 days
+
+				// saturday, probably this 1 could be a culprit because in the beginning, usually HR does not set restday_group_id, must check on attendance also.
+				$satoff = $st->belongstorestdaygroup?->hasmanyrestdaycalendar()				// getting sat for staff, if null than only 26 days available for him, otherwise, its lower than that.
+							->where(function (Builder $query) use ($fourstart, $fourend){
+									$query->whereDate('saturday_date', '<=', $fourend)
+									->WhereDate('saturday_date', '>=', $fourstart);
+							})
+							->get()->count();
+							// ->ddRawSql();
+				// dump($satoff);																// restday group 1
+
+				// getting saturday working
+				$saturdayatt = HRAttendance::where('staff_id', $st->id)
+										->where(function (Builder $query) use ($fourstart, $fourend){
+											$query->whereDate('attend_date', '>=', $fourstart)
+											->whereDate('attend_date', '<=', $fourend);
+										})
+										->where(function (Builder $query){
+											$query->whereRaw('DAYOFWEEK(hr_attendances.attend_date) = 7')
+											->where('daytype_id', 2);
+										})
+										->get()->count();
+										// ->ddRawSql();
+				// dump($saturdayatt);															// from $fourstart to $fourend only on 11/3 he is RESTDAY
+				// need to get the most working days
+				if($satoff >= $saturdayatt) {												// meaning: according to attendance at that time, its not set yet
+					$sat = $saturdayatt;													// choose the smallest sat count which means more working days
+				} elseif ($satoff == $saturdayatt) {
+					$sat = $satoff;
+				}
+
+				// getting absent
+				$fullabsent = HRAttendance::where('staff_id', $st->id)
+										->where('attendance_type_id', 1)
+										->where(function (Builder $query) use ($fourstart, $fourend){
+											$query->whereDate('attend_date', '>=', $fourstart)
+											->whereDate('attend_date', '<=', $fourend);
+										})
+										->get();
+										// ->ddRawSql();
+				$u = 0;
+				if ($fullabsent->count()) {
+					foreach ($fullabsent as $v) {
+						$u++;
+					}
+				}
+				// dump($u);
+
+				$halfabsent = HRAttendance::where('staff_id', $st->id)
+										->where('attendance_type_id', 2)
+										->where(function (Builder $query) use ($fourstart, $fourend){
+											$query->whereDate('attend_date', '>=', $fourstart)
+											->whereDate('attend_date', '<=', $fourend);
+										})
+										->get();
+										// ->ddRawSql();
+				$p = 0;
+				if ($halfabsent->count()) {
+					foreach ($halfabsent as $v) {
+						$p =+ 0.5;
+					}
+				}
+				// dump($p);
+
+				// getting full day leave for that months
+				$fulldayleave = HRLeave::where('staff_id', $st->id)							// get period from here
+								->where(function (Builder $query){
+									$query->where('leave_type_id', '<>', 9)
+									->where(function (Builder $query){
+										$query->where('half_type_id', '<>', 2)
+										->orWhereNull('half_type_id');
+									});
+								})
+								->where(function (Builder $query){
+									$query->whereIn('leave_status_id', [5,6])
+										->orWhereNull('leave_status_id');
+								})
+								->where(function (Builder $query) use ($fourend, $fourstart){
+										$query->whereDate('date_time_start', '<=', $fourend)
+										->WhereDate('date_time_end', '>=', $fourstart);
+								})
+								->get();
+								// ->ddRawSql();
+				// dump($fulldayleave);
+				$i = 0;
+				foreach ($fulldayleave as $v) {
+					$i =+ $v->period_day;
+				}
+				// dump($i);
+
+				// getting half day leave
+				$halfdayleave = HRLeave::where('staff_id', $st->id)							// get period from here
+										->where(function (Builder $query){
+											$query->where('leave_type_id', '<>', 9)
+											->where('half_type_id', 2);
+										})
+										->where(function (Builder $query) use ($fourend, $fourstart){
+												$query->whereDate('date_time_start', '<=', $fourend)
+												->WhereDate('date_time_end', '>=', $fourstart);
+										})
+										->where(function (Builder $query){
+											$query->whereIn('leave_status_id', [5,6])
+												->orWhereNull('leave_status_id');
+										})
+										->get();
+										// ->ddRawSql();
+
+				$r = 0;
+				foreach ($halfdayleave as $v) {
+					$r =+ $v->period_day;
+				}
+				// dump($r);
+
+				// start counting for this month
+				$month = $fourmonthname;
+				$workday = ($nofiveweekend + 1) - $sat;
+				// dump($workday);
+				$absent = $u + $p;
+				// dump($absent);
+				$leave = $i + $r;
+				// dump($leave);
+
+				$attpercentage = number_format( ($workday - $absent - $leave) / ($workday) * 100, 2);
+				// dump($attpercentage);
+			}
+			$chartdata[] = [
+								'month' => $month,
+								'percentage' => $attpercentage,
+								'workdays' => $workday,
+								'leaves' => $leave,
+								'absents' => $absent,
+								'working days' => ($workday - $absent - $leave),
+							];
+
+		}
+
+		if ($checkmonthsago >= 3) {
+			if ($join->gte($threestart)) {													// check if he join in the same month, count from $join
+				$threem = $join->toPeriod($threeend);											// 23 days
+				// dump($threem->count());													// 23 days
+				// dump($threeend);
+				$nofiveweekend = $join->diffInWeekdays($threeend);								// get weekdays from above as we have only sunday as a weekend
+				// dump($nofiveweekend + 1);													// 19 days : need to plus 1 for correct answer so it will be 20 days
+
+				// saturday, probably this 1 could be a culprit because in the beginning, usually HR does not set restday_group_id, must check on attendance also.
+				$satoff = $st->belongstorestdaygroup?->hasmanyrestdaycalendar()				// getting sat for staff, if null than only 26 days available for him, otherwise, its lower than that.
+							->where(function (Builder $query) use ($join, $threeend){
+									$query->whereDate('saturday_date', '<=', $threeend)
+									->WhereDate('saturday_date', '>=', $join);
+							})
+							->get()->count();
+							// ->ddRawSql();
+				// dump($satoff);																// restday group 1
+
+				// getting saturday working
+				$saturdayatt = HRAttendance::where('staff_id', $st->id)
+										->where(function (Builder $query) use ($join, $threeend){
+											$query->whereDate('attend_date', '>=', $join)
+											->whereDate('attend_date', '<=', $threeend);
+										})
+										->where(function (Builder $query){
+											$query->whereRaw('DAYOFWEEK(hr_attendances.attend_date) = 7')
+											->where('daytype_id', 2);
+										})
+										->get()->count();
+										// ->ddRawSql();
+				// dump($saturdayatt);														// from $join to $threeend only on 11/3 he is RESTDAY
+				// need to get the most working days
+				if($satoff >= $saturdayatt) {												// meaning: according to attendance at that time, its not set yet
+					$sat = $saturdayatt;													// choose the smallest sat count which means more working days
+				} elseif ($satoff == $saturdayatt) {
+					$sat = $satoff;
+				}
+				// dump($sat);
+
+				// getting absent
+				$fullabsent = HRAttendance::where('staff_id', $st->id)
+										->where('attendance_type_id', 1)
+										->where(function (Builder $query) use ($join, $threeend){
+											$query->whereDate('attend_date', '>=', $join)
+											->whereDate('attend_date', '<=', $threeend);
+										})
+										->get();
+										// ->ddRawSql();
+				$u = 0;
+				if ($fullabsent->count()) {
+					foreach ($fullabsent as $v) {
+						$u++;
+					}
+				}
+				// dump($u);
+
+				$halfabsent = HRAttendance::where('staff_id', $st->id)
+										->where('attendance_type_id', 2)
+										->where(function (Builder $query) use ($join, $threeend){
+											$query->whereDate('attend_date', '>=', $join)
+											->whereDate('attend_date', '<=', $threeend);
+										})
+										->get();
+										// ->ddRawSql();
+				$p = 0;
+				if ($halfabsent->count()) {
+					foreach ($halfabsent as $v) {
+						$p =+ 0.5;
+					}
+				}
+				// dump($p);
+
+				// getting full day leave for that months
+				$fulldayleave = HRLeave::where('staff_id', $st->id)							// get period from here
+								->where(function (Builder $query){
+									$query->where('leave_type_id', '<>', 9)
+									->where(function (Builder $query){
+										$query->where('half_type_id', '<>', 2)
+										->orWhereNull('half_type_id');
+									});
+								})
+								->where(function (Builder $query){
+									$query->whereIn('leave_status_id', [5,6])
+										->orWhereNull('leave_status_id');
+								})
+								->where(function (Builder $query) use ($threeend, $join){
+										$query->whereDate('date_time_start', '<=', $threeend)
+										->WhereDate('date_time_end', '>=', $join);
+								})
+								->get();
+								// ->ddRawSql();
+				// dump($fulldayleave);
+				$i = 0;
+				foreach ($fulldayleave as $v) {
+					$i =+ $v->period_day;
+				}
+				// dump($i);
+
+				// getting half day leave
+				$halfdayleave = HRLeave::where('staff_id', $st->id)								// get period from here
+										->where(function (Builder $query){
+											$query->where('leave_type_id', '<>', 9)
+											->where('half_type_id', 2);
+										})
+										->where(function (Builder $query) use ($threeend, $join){
+												$query->whereDate('date_time_start', '<=', $threeend)
+												->WhereDate('date_time_end', '>=', $join);
+										})
+										->where(function (Builder $query){
+											$query->whereIn('leave_status_id', [5,6])
+												->orWhereNull('leave_status_id');
+										})
+										->get();
+										// ->ddRawSql();
+
+				$r = 0;
+				foreach ($halfdayleave as $v) {
+					$r =+ $v->period_day;
+				}
+				// dump($r);
+
+				// start counting for this month
+				$month = $threemonthname;
+				$workday = ($nofiveweekend + 1) - $sat;
+				// dump($workday);
+				$absent = $u + $p;
+				// dump($absent);
+				$leave = $i + $r;
+				// dump($leave);
+
+				$attpercentage = number_format( ($workday - $absent - $leave) / ($workday) * 100, 2);
+				// dump($attpercentage);
+
+			} else {																			// count from $threeend
+				$threem = $threestart->toPeriod($threeend);										// 23 days
+				// dump($threem->count());														// 23 days
+				// dump($threeend);
+				$nofiveweekend = $threestart->diffInWeekdays($threeend, true);					// get weekdays from above as we have only sunday as a weekend
+				// dump($nofiveweekend + 1);													// 19 days : need to plus 1 for correct answer so it will be 20 days
+
+				// saturday, probably this 1 could be a culprit because in the beginning, usually HR does not set restday_group_id, must check on attendance also.
+				$satoff = $st->belongstorestdaygroup?->hasmanyrestdaycalendar()				// getting sat for staff, if null than only 26 days available for him, otherwise, its lower than that.
+							->where(function (Builder $query) use ($threestart, $threeend){
+									$query->whereDate('saturday_date', '<=', $threeend)
+									->WhereDate('saturday_date', '>=', $threestart);
+							})
+							->get()->count();
+							// ->ddRawSql();
+				// dump($satoff);																// restday group 1
+
+				// getting saturday working
+				$saturdayatt = HRAttendance::where('staff_id', $st->id)
+										->where(function (Builder $query) use ($threestart, $threeend){
+											$query->whereDate('attend_date', '>=', $threestart)
+											->whereDate('attend_date', '<=', $threeend);
+										})
+										->where(function (Builder $query){
+											$query->whereRaw('DAYOFWEEK(hr_attendances.attend_date) = 7')
+											->where('daytype_id', 2);
+										})
+										->get()->count();
+										// ->ddRawSql();
+				// dump($saturdayatt);															// from $threestart to $threeend only on 11/3 he is RESTDAY
+				// need to get the most working days
+				if($satoff >= $saturdayatt) {												// meaning: according to attendance at that time, its not set yet
+					$sat = $saturdayatt;													// choose the smallest sat count which means more working days
+				} elseif ($satoff == $saturdayatt) {
+					$sat = $satoff;
+				}
+
+				// getting absent
+				$fullabsent = HRAttendance::where('staff_id', $st->id)
+										->where('attendance_type_id', 1)
+										->where(function (Builder $query) use ($threestart, $threeend){
+											$query->whereDate('attend_date', '>=', $threestart)
+											->whereDate('attend_date', '<=', $threeend);
+										})
+										->get();
+										// ->ddRawSql();
+				$u = 0;
+				if ($fullabsent->count()) {
+					foreach ($fullabsent as $v) {
+						$u++;
+					}
+				}
+				// dump($u);
+
+				$halfabsent = HRAttendance::where('staff_id', $st->id)
+										->where('attendance_type_id', 2)
+										->where(function (Builder $query) use ($threestart, $threeend){
+											$query->whereDate('attend_date', '>=', $threestart)
+											->whereDate('attend_date', '<=', $threeend);
+										})
+										->get();
+										// ->ddRawSql();
+				$p = 0;
+				if ($halfabsent->count()) {
+					foreach ($halfabsent as $v) {
+						$p =+ 0.5;
+					}
+				}
+				// dump($p);
+
+				// getting full day leave for that months
+				$fulldayleave = HRLeave::where('staff_id', $st->id)							// get period from here
+								->where(function (Builder $query){
+									$query->where('leave_type_id', '<>', 9)
+									->where(function (Builder $query){
+										$query->where('half_type_id', '<>', 2)
+										->orWhereNull('half_type_id');
+									});
+								})
+								->where(function (Builder $query){
+									$query->whereIn('leave_status_id', [5,6])
+										->orWhereNull('leave_status_id');
+								})
+								->where(function (Builder $query) use ($threeend, $threestart){
+										$query->whereDate('date_time_start', '<=', $threeend)
+										->WhereDate('date_time_end', '>=', $threestart);
+								})
+								->get();
+								// ->ddRawSql();
+				// dump($fulldayleave);
+				$i = 0;
+				foreach ($fulldayleave as $v) {
+					$i =+ $v->period_day;
+				}
+				// dump($i);
+
+				// getting half day leave
+				$halfdayleave = HRLeave::where('staff_id', $st->id)							// get period from here
+										->where(function (Builder $query){
+											$query->where('leave_type_id', '<>', 9)
+											->where('half_type_id', 2);
+										})
+										->where(function (Builder $query) use ($threeend, $threestart){
+												$query->whereDate('date_time_start', '<=', $threeend)
+												->WhereDate('date_time_end', '>=', $threestart);
+										})
+										->where(function (Builder $query){
+											$query->whereIn('leave_status_id', [5,6])
+												->orWhereNull('leave_status_id');
+										})
+										->get();
+										// ->ddRawSql();
+
+				$r = 0;
+				foreach ($halfdayleave as $v) {
+					$r =+ $v->period_day;
+				}
+				// dump($r);
+
+				// start counting for this month
+				$month = $threemonthname;
+				$workday = ($nofiveweekend + 1) - $sat;
+				// dump($workday);
+				$absent = $u + $p;
+				// dump($absent);
+				$leave = $i + $r;
+				// dump($leave);
+
+				$attpercentage = number_format( ($workday - $absent - $leave) / ($workday) * 100, 2);
+				// dump($attpercentage);
+			}
+			$chartdata[] = [
+								'month' => $month,
+								'percentage' => $attpercentage,
+								'workdays' => $workday,
+								'leaves' => $leave,
+								'absents' => $absent,
+								'working days' => ($workday - $absent - $leave),
+							];
+
+		}
+
+		if ($checkmonthsago >= 2) {
+			if ($join->gte($twostart)) {													// check if he join in the same month, count from $join
+				$twom = $join->toPeriod($twoend);											// 23 days
+				// dump($twom->count());													// 23 days
+				// dump($twoend);
+				$nofiveweekend = $join->diffInWeekdays($twoend);								// get weekdays from above as we have only sunday as a weekend
+				// dump($nofiveweekend + 1);													// 19 days : need to plus 1 for correct answer so it will be 20 days
+
+				// saturday, probably this 1 could be a culprit because in the beginning, usually HR does not set restday_group_id, must check on attendance also.
+				$satoff = $st->belongstorestdaygroup?->hasmanyrestdaycalendar()				// getting sat for staff, if null than only 26 days available for him, otherwise, its lower than that.
+							->where(function (Builder $query) use ($join, $twoend){
+									$query->whereDate('saturday_date', '<=', $twoend)
+									->WhereDate('saturday_date', '>=', $join);
+							})
+							->get()->count();
+							// ->ddRawSql();
+				// dump($satoff);																// restday group 1
+
+				// getting saturday working
+				$saturdayatt = HRAttendance::where('staff_id', $st->id)
+										->where(function (Builder $query) use ($join, $twoend){
+											$query->whereDate('attend_date', '>=', $join)
+											->whereDate('attend_date', '<=', $twoend);
+										})
+										->where(function (Builder $query){
+											$query->whereRaw('DAYOFWEEK(hr_attendances.attend_date) = 7')
+											->where('daytype_id', 2);
+										})
+										->get()->count();
+										// ->ddRawSql();
+				// dump($saturdayatt);														// from $join to $twoend only on 11/3 he is RESTDAY
+				// need to get the most working days
+				if($satoff >= $saturdayatt) {												// meaning: according to attendance at that time, its not set yet
+					$sat = $saturdayatt;													// choose the smallest sat count which means more working days
+				} elseif ($satoff == $saturdayatt) {
+					$sat = $satoff;
+				}
+				// dump($sat);
+
+				// getting absent
+				$fullabsent = HRAttendance::where('staff_id', $st->id)
+										->where('attendance_type_id', 1)
+										->where(function (Builder $query) use ($join, $twoend){
+											$query->whereDate('attend_date', '>=', $join)
+											->whereDate('attend_date', '<=', $twoend);
+										})
+										->get();
+										// ->ddRawSql();
+				$u = 0;
+				if ($fullabsent->count()) {
+					foreach ($fullabsent as $v) {
+						$u++;
+					}
+				}
+				// dump($u);
+
+				$halfabsent = HRAttendance::where('staff_id', $st->id)
+										->where('attendance_type_id', 2)
+										->where(function (Builder $query) use ($join, $twoend){
+											$query->whereDate('attend_date', '>=', $join)
+											->whereDate('attend_date', '<=', $twoend);
+										})
+										->get();
+										// ->ddRawSql();
+				$p = 0;
+				if ($halfabsent->count()) {
+					foreach ($halfabsent as $v) {
+						$p =+ 0.5;
+					}
+				}
+				// dump($p);
+
+				// getting full day leave for that months
+				$fulldayleave = HRLeave::where('staff_id', $st->id)							// get period from here
+								->where(function (Builder $query){
+									$query->where('leave_type_id', '<>', 9)
+									->where(function (Builder $query){
+										$query->where('half_type_id', '<>', 2)
+										->orWhereNull('half_type_id');
+									});
+								})
+								->where(function (Builder $query){
+									$query->whereIn('leave_status_id', [5,6])
+										->orWhereNull('leave_status_id');
+								})
+								->where(function (Builder $query) use ($twoend, $join){
+										$query->whereDate('date_time_start', '<=', $twoend)
+										->WhereDate('date_time_end', '>=', $join);
+								})
+								->get();
+								// ->ddRawSql();
+				// dump($fulldayleave);
+				$i = 0;
+				foreach ($fulldayleave as $v) {
+					$i =+ $v->period_day;
+				}
+				// dump($i);
+
+				// getting half day leave
+				$halfdayleave = HRLeave::where('staff_id', $st->id)								// get period from here
+										->where(function (Builder $query){
+											$query->where('leave_type_id', '<>', 9)
+											->where('half_type_id', 2);
+										})
+										->where(function (Builder $query) use ($twoend, $join){
+												$query->whereDate('date_time_start', '<=', $twoend)
+												->WhereDate('date_time_end', '>=', $join);
+										})
+										->where(function (Builder $query){
+											$query->whereIn('leave_status_id', [5,6])
+												->orWhereNull('leave_status_id');
+										})
+										->get();
+										// ->ddRawSql();
+
+				$r = 0;
+				foreach ($halfdayleave as $v) {
+					$r =+ $v->period_day;
+				}
+				// dump($r);
+
+				// start counting for this month
+				$month = $twomonthname;
+				$workday = ($nofiveweekend + 1) - $sat;
+				// dump($workday);
+				$absent = $u + $p;
+				// dump($absent);
+				$leave = $i + $r;
+				// dump($leave);
+
+				$attpercentage = number_format( ($workday - $absent - $leave) / ($workday) * 100, 2);
+				// dump($attpercentage);
+
+			} else {																			// count from $twoend
+				$twom = $twostart->toPeriod($twoend);										// 23 days
+				// dump($twom->count());														// 23 days
+				// dump($twoend);
+				$nofiveweekend = $twostart->diffInWeekdays($twoend, true);					// get weekdays from above as we have only sunday as a weekend
+				// dump($nofiveweekend + 1);													// 19 days : need to plus 1 for correct answer so it will be 20 days
+
+				// saturday, probably this 1 could be a culprit because in the beginning, usually HR does not set restday_group_id, must check on attendance also.
+				$satoff = $st->belongstorestdaygroup?->hasmanyrestdaycalendar()				// getting sat for staff, if null than only 26 days available for him, otherwise, its lower than that.
+							->where(function (Builder $query) use ($twostart, $twoend){
+									$query->whereDate('saturday_date', '<=', $twoend)
+									->WhereDate('saturday_date', '>=', $twostart);
+							})
+							->get()->count();
+							// ->ddRawSql();
+				// dump($satoff);																// restday group 1
+
+				// getting saturday working
+				$saturdayatt = HRAttendance::where('staff_id', $st->id)
+										->where(function (Builder $query) use ($twostart, $twoend){
+											$query->whereDate('attend_date', '>=', $twostart)
+											->whereDate('attend_date', '<=', $twoend);
+										})
+										->where(function (Builder $query){
+											$query->whereRaw('DAYOFWEEK(hr_attendances.attend_date) = 7')
+											->where('daytype_id', 2);
+										})
+										->get()->count();
+										// ->ddRawSql();
+				// dump($saturdayatt);															// from $twostart to $twoend only on 11/3 he is RESTDAY
+				// need to get the most working days
+				if($satoff >= $saturdayatt) {												// meaning: according to attendance at that time, its not set yet
+					$sat = $saturdayatt;													// choose the smallest sat count which means more working days
+				} elseif ($satoff == $saturdayatt) {
+					$sat = $satoff;
+				}
+
+				// getting absent
+				$fullabsent = HRAttendance::where('staff_id', $st->id)
+										->where('attendance_type_id', 1)
+										->where(function (Builder $query) use ($twostart, $twoend){
+											$query->whereDate('attend_date', '>=', $twostart)
+											->whereDate('attend_date', '<=', $twoend);
+										})
+										->get();
+										// ->ddRawSql();
+				$u = 0;
+				if ($fullabsent->count()) {
+					foreach ($fullabsent as $v) {
+						$u++;
+					}
+				}
+				// dump($u);
+
+				$halfabsent = HRAttendance::where('staff_id', $st->id)
+										->where('attendance_type_id', 2)
+										->where(function (Builder $query) use ($twostart, $twoend){
+											$query->whereDate('attend_date', '>=', $twostart)
+											->whereDate('attend_date', '<=', $twoend);
+										})
+										->get();
+										// ->ddRawSql();
+				$p = 0;
+				if ($halfabsent->count()) {
+					foreach ($halfabsent as $v) {
+						$p =+ 0.5;
+					}
+				}
+				// dump($p);
+
+				// getting full day leave for that months
+				$fulldayleave = HRLeave::where('staff_id', $st->id)							// get period from here
+								->where(function (Builder $query){
+									$query->where('leave_type_id', '<>', 9)
+									->where(function (Builder $query){
+										$query->where('half_type_id', '<>', 2)
+										->orWhereNull('half_type_id');
+									});
+								})
+								->where(function (Builder $query){
+									$query->whereIn('leave_status_id', [5,6])
+										->orWhereNull('leave_status_id');
+								})
+								->where(function (Builder $query) use ($twoend, $twostart){
+										$query->whereDate('date_time_start', '<=', $twoend)
+										->WhereDate('date_time_end', '>=', $twostart);
+								})
+								->get();
+								// ->ddRawSql();
+				// dump($fulldayleave);
+				$i = 0;
+				foreach ($fulldayleave as $v) {
+					$i =+ $v->period_day;
+				}
+				// dump($i);
+
+				// getting half day leave
+				$halfdayleave = HRLeave::where('staff_id', $st->id)							// get period from here
+										->where(function (Builder $query){
+											$query->where('leave_type_id', '<>', 9)
+											->where('half_type_id', 2);
+										})
+										->where(function (Builder $query) use ($twoend, $twostart){
+												$query->whereDate('date_time_start', '<=', $twoend)
+												->WhereDate('date_time_end', '>=', $twostart);
+										})
+										->where(function (Builder $query){
+											$query->whereIn('leave_status_id', [5,6])
+												->orWhereNull('leave_status_id');
+										})
+										->get();
+										// ->ddRawSql();
+
+				$r = 0;
+				foreach ($halfdayleave as $v) {
+					$r =+ $v->period_day;
+				}
+				// dump($r);
+
+				// start counting for this month
+				$month = $twomonthname;
+				$workday = ($nofiveweekend + 1) - $sat;
+				// dump($workday);
+				$absent = $u + $p;
+				// dump($absent);
+				$leave = $i + $r;
+				// dump($leave);
+
+				$attpercentage = number_format( ($workday - $absent - $leave) / ($workday) * 100, 2);
+				// dump($attpercentage);
+			}
+			$chartdata[] = [
+								'month' => $month,
+								'percentage' => $attpercentage,
+								'workdays' => $workday,
+								'leaves' => $leave,
+								'absents' => $absent,
+								'working days' => ($workday - $absent - $leave),
+							];
+
+		}
+
+		if ($checkmonthsago >= 1) {
+			if ($join->gte($onestart)) {													// check if he join in the same month, count from $join
+				$onem = $join->toPeriod($oneend);											// 23 days
+				// dump($onem->count());													// 23 days
+				// dump($oneend);
+				$nofiveweekend = $join->diffInWeekdays($oneend);								// get weekdays from above as we have only sunday as a weekend
+				// dump($nofiveweekend + 1);													// 19 days : need to plus 1 for correct answer so it will be 20 days
+
+				// saturday, probably this 1 could be a culprit because in the beginning, usually HR does not set restday_group_id, must check on attendance also.
+				$satoff = $st->belongstorestdaygroup?->hasmanyrestdaycalendar()				// getting sat for staff, if null than only 26 days available for him, otherwise, its lower than that.
+							->where(function (Builder $query) use ($join, $oneend){
+									$query->whereDate('saturday_date', '<=', $oneend)
+									->WhereDate('saturday_date', '>=', $join);
+							})
+							->get()->count();
+							// ->ddRawSql();
+				// dump($satoff);																// restday group 1
+
+				// getting saturday working
+				$saturdayatt = HRAttendance::where('staff_id', $st->id)
+										->where(function (Builder $query) use ($join, $oneend){
+											$query->whereDate('attend_date', '>=', $join)
+											->whereDate('attend_date', '<=', $oneend);
+										})
+										->where(function (Builder $query){
+											$query->whereRaw('DAYOFWEEK(hr_attendances.attend_date) = 7')
+											->where('daytype_id', 2);
+										})
+										->get()->count();
+										// ->ddRawSql();
+				// dump($saturdayatt);														// from $join to $oneend only on 11/3 he is RESTDAY
+				// need to get the most working days
+				if($satoff >= $saturdayatt) {												// meaning: according to attendance at that time, its not set yet
+					$sat = $saturdayatt;													// choose the smallest sat count which means more working days
+				} elseif ($satoff == $saturdayatt) {
+					$sat = $satoff;
+				}
+				// dump($sat);
+
+				// getting absent
+				$fullabsent = HRAttendance::where('staff_id', $st->id)
+										->where('attendance_type_id', 1)
+										->where(function (Builder $query) use ($join, $oneend){
+											$query->whereDate('attend_date', '>=', $join)
+											->whereDate('attend_date', '<=', $oneend);
+										})
+										->get();
+										// ->ddRawSql();
+				$u = 0;
+				if ($fullabsent->count()) {
+					foreach ($fullabsent as $v) {
+						$u++;
+					}
+				}
+				// dump($u);
+
+				$halfabsent = HRAttendance::where('staff_id', $st->id)
+										->where('attendance_type_id', 2)
+										->where(function (Builder $query) use ($join, $oneend){
+											$query->whereDate('attend_date', '>=', $join)
+											->whereDate('attend_date', '<=', $oneend);
+										})
+										->get();
+										// ->ddRawSql();
+				$p = 0;
+				if ($halfabsent->count()) {
+					foreach ($halfabsent as $v) {
+						$p =+ 0.5;
+					}
+				}
+				// dump($p);
+
+				// getting full day leave for that months
+				$fulldayleave = HRLeave::where('staff_id', $st->id)							// get period from here
+								->where(function (Builder $query){
+									$query->where('leave_type_id', '<>', 9)
+									->where(function (Builder $query){
+										$query->where('half_type_id', '<>', 2)
+										->orWhereNull('half_type_id');
+									});
+								})
+								->where(function (Builder $query){
+									$query->whereIn('leave_status_id', [5,6])
+										->orWhereNull('leave_status_id');
+								})
+								->where(function (Builder $query) use ($oneend, $join){
+										$query->whereDate('date_time_start', '<=', $oneend)
+										->WhereDate('date_time_end', '>=', $join);
+								})
+								->get();
+								// ->ddRawSql();
+				// dump($fulldayleave);
+				$i = 0;
+				foreach ($fulldayleave as $v) {
+					$i =+ $v->period_day;
+				}
+				// dump($i);
+
+				// getting half day leave
+				$halfdayleave = HRLeave::where('staff_id', $st->id)								// get period from here
+										->where(function (Builder $query){
+											$query->where('leave_type_id', '<>', 9)
+											->where('half_type_id', 2);
+										})
+										->where(function (Builder $query) use ($oneend, $join){
+												$query->whereDate('date_time_start', '<=', $oneend)
+												->WhereDate('date_time_end', '>=', $join);
+										})
+										->where(function (Builder $query){
+											$query->whereIn('leave_status_id', [5,6])
+												->orWhereNull('leave_status_id');
+										})
+										->get();
+										// ->ddRawSql();
+
+				$r = 0;
+				foreach ($halfdayleave as $v) {
+					$r =+ $v->period_day;
+				}
+				// dump($r);
+
+				// start counting for this month
+				$month = $onemonthname;
+				$workday = ($nofiveweekend + 1) - $sat;
+				// dump($workday);
+				$absent = $u + $p;
+				// dump($absent);
+				$leave = $i + $r;
+				// dump($leave);
+
+				$attpercentage = number_format( ($workday - $absent - $leave) / ($workday) * 100, 2);
+				// dump($attpercentage);
+
+			} else {																			// count from $oneend
+				$onem = $onestart->toPeriod($oneend);										// 23 days
+				// dump($onem->count());														// 23 days
+				// dump($oneend);
+				$nofiveweekend = $onestart->diffInWeekdays($oneend, true);					// get weekdays from above as we have only sunday as a weekend
+				// dump($nofiveweekend + 1);													// 19 days : need to plus 1 for correct answer so it will be 20 days
+
+				// saturday, probably this 1 could be a culprit because in the beginning, usually HR does not set restday_group_id, must check on attendance also.
+				$satoff = $st->belongstorestdaygroup?->hasmanyrestdaycalendar()				// getting sat for staff, if null than only 26 days available for him, otherwise, its lower than that.
+							->where(function (Builder $query) use ($onestart, $oneend){
+									$query->whereDate('saturday_date', '<=', $oneend)
+									->WhereDate('saturday_date', '>=', $onestart);
+							})
+							->get()->count();
+							// ->ddRawSql();
+				// dump($satoff);																// restday group 1
+
+				// getting saturday working
+				$saturdayatt = HRAttendance::where('staff_id', $st->id)
+										->where(function (Builder $query) use ($onestart, $oneend){
+											$query->whereDate('attend_date', '>=', $onestart)
+											->whereDate('attend_date', '<=', $oneend);
+										})
+										->where(function (Builder $query){
+											$query->whereRaw('DAYOFWEEK(hr_attendances.attend_date) = 7')
+											->where('daytype_id', 2);
+										})
+										->get()->count();
+										// ->ddRawSql();
+				// dump($saturdayatt);															// from $onestart to $oneend only on 11/3 he is RESTDAY
+				// need to get the most working days
+				if($satoff >= $saturdayatt) {												// meaning: according to attendance at that time, its not set yet
+					$sat = $saturdayatt;													// choose the smallest sat count which means more working days
+				} elseif ($satoff == $saturdayatt) {
+					$sat = $satoff;
+				}
+
+				// getting absent
+				$fullabsent = HRAttendance::where('staff_id', $st->id)
+										->where('attendance_type_id', 1)
+										->where(function (Builder $query) use ($onestart, $oneend){
+											$query->whereDate('attend_date', '>=', $onestart)
+											->whereDate('attend_date', '<=', $oneend);
+										})
+										->get();
+										// ->ddRawSql();
+				$u = 0;
+				if ($fullabsent->count()) {
+					foreach ($fullabsent as $v) {
+						$u++;
+					}
+				}
+				// dump($u);
+
+				$halfabsent = HRAttendance::where('staff_id', $st->id)
+										->where('attendance_type_id', 2)
+										->where(function (Builder $query) use ($onestart, $oneend){
+											$query->whereDate('attend_date', '>=', $onestart)
+											->whereDate('attend_date', '<=', $oneend);
+										})
+										->get();
+										// ->ddRawSql();
+				$p = 0;
+				if ($halfabsent->count()) {
+					foreach ($halfabsent as $v) {
+						$p =+ 0.5;
+					}
+				}
+				// dump($p);
+
+				// getting full day leave for that months
+				$fulldayleave = HRLeave::where('staff_id', $st->id)							// get period from here
+								->where(function (Builder $query){
+									$query->where('leave_type_id', '<>', 9)
+									->where(function (Builder $query){
+										$query->where('half_type_id', '<>', 2)
+										->orWhereNull('half_type_id');
+									});
+								})
+								->where(function (Builder $query){
+									$query->whereIn('leave_status_id', [5,6])
+										->orWhereNull('leave_status_id');
+								})
+								->where(function (Builder $query) use ($oneend, $onestart){
+										$query->whereDate('date_time_start', '<=', $oneend)
+										->WhereDate('date_time_end', '>=', $onestart);
+								})
+								->get();
+								// ->ddRawSql();
+				// dump($fulldayleave);
+				$i = 0;
+				foreach ($fulldayleave as $v) {
+					$i =+ $v->period_day;
+				}
+				// dump($i);
+
+				// getting half day leave
+				$halfdayleave = HRLeave::where('staff_id', $st->id)							// get period from here
+										->where(function (Builder $query){
+											$query->where('leave_type_id', '<>', 9)
+											->where('half_type_id', 2);
+										})
+										->where(function (Builder $query) use ($oneend, $onestart){
+												$query->whereDate('date_time_start', '<=', $oneend)
+												->WhereDate('date_time_end', '>=', $onestart);
+										})
+										->where(function (Builder $query){
+											$query->whereIn('leave_status_id', [5,6])
+												->orWhereNull('leave_status_id');
+										})
+										->get();
+										// ->ddRawSql();
+
+				$r = 0;
+				foreach ($halfdayleave as $v) {
+					$r =+ $v->period_day;
+				}
+				// dump($r);
+
+				// start counting for this month
+				$month = $onemonthname;
+				$workday = ($nofiveweekend + 1) - $sat;
+				// dump($workday);
+				$absent = $u + $p;
+				// dump($absent);
+				$leave = $i + $r;
+				// dump($leave);
+
+				$attpercentage = number_format( ($workday - $absent - $leave) / ($workday) * 100, 2);
+				// dump($attpercentage);
+			}
+			$chartdata[] = [
+								'month' => $month,
+								'percentage' => $attpercentage,
+								'workdays' => $workday,
+								'leaves' => $leave,
+								'absents' => $absent,
+								'working days' => ($workday - $absent - $leave),
+							];
+
+		}
+
+		if ($checkmonthsago >= 0) {
+
+		}
+
+		return response()->json($chartdata);
 	}
 
 

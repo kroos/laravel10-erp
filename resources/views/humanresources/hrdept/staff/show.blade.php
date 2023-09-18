@@ -512,15 +512,36 @@ document.addEventListener('DOMContentLoaded', function() {
 // chartjs also dont use jquery
 
 (async function() {
-	const data = [
-						{ month: 'January', count: 90 },
-						{ month: 'February', count: 93 },
-						{ month: 'March', count: 91 },
-						{ month: 'April', count: 93 },
-						{ month: 'May', count: 81 },
-						{ month: 'June', count: 79 },
-						{ month: 'July', count: 95 },
-				];
+	// const data = [
+	// 					{ month: 'January', percentage: 90, workdays: 31, leaves: 1, absents: 1, working_days: 25 },
+	// 					{ month: 'February', percentage: 93, workdays: 28, leaves: 1, absents: 1, working_days: 25 },
+	// 					{ month: 'March', percentage: 91, workdays: 31, leaves: 1, absents: 1, working_days: 25 },
+	// 					{ month: 'April', percentage: 93, workdays: 30, leaves: 1, absents: 1, working_days: 25 },
+	// 					{ month: 'May', percentage: 81, workdays: 31, leaves: 1, absents: 1, working_days: 25 },
+	// 					{ month: 'June', percentage: 79, workdays: 30, leaves: 1, absents: 1, working_days: 25 },
+	// 					{ month: 'July', percentage: 95, workdays: 31, leaves: 1, absents: 1, working_days: 25 },
+	// 			];
+	const data = $.ajax({
+							url: "{{ route('staffpercentage') }}",
+							type: "GET",
+							data: {
+									id: {{ $staff->id }},
+									_token: '{!! csrf_token() !!}',
+								},
+							dataType: 'json',
+							global: false,
+							async:false,
+							success: function (response) {
+								// you will get response from your php page (what you echo or print)
+								return response;
+							},
+							error: function(jqXHR, textStatus, errorThrown) {
+								console.log(textStatus, errorThrown);
+							}
+						}).responseText;
+
+						// convert data10 into json
+						var objtime = $.parseJSON( data10 );
 
 	new Chart(document.getElementById('myChart'), {
 		type: 'line',
@@ -528,13 +549,48 @@ document.addEventListener('DOMContentLoaded', function() {
 			labels: data.map(row => row.month),
 			datasets: [
 						{
-							label: 'Attendance Percentage By Month',
-							data: data.map(row => row.count)
-						}
+							label: 'Attendance Percentage By Month(%)',
+							data: data.map(row => row.percentage)
+						},
+						{
+							label: 'Work Days By Month',
+							data: data.map(row => row.workdays)
+						},
+						{
+							label: 'Working Days By Month (Person Available)',
+							data: data.map(row => row.working_days)
+						},
+						{
+							label: 'Leaves By Month',
+							data: data.map(row => row.leaves)
+						},
+						{
+							label: 'Absents By Month',
+							data: data.map(row => row.absents)
+						},
 			]
 		},
-		options: {},
-		plugins: [],
+		options: {
+			responsive: true,
+			scales: {
+				y: {
+					beginAtZero: true
+				}
+			},
+			interaction: {
+				intersect: false,
+				mode: 'index',
+			},
+		},
+		plugins: {
+			legend: {
+				position: 'top',
+			},
+			title: {
+				display: true,
+				text: 'Attendance Statistic'
+			},
+		},
 	});
 })();
 /////////////////////////////////////////////////////////////////////////////////////////
