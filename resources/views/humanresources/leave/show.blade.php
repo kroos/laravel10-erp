@@ -13,6 +13,10 @@
       visibility: hidden;
     }
 
+    #printPageButton {
+      display: none;
+    }
+
     .table-container {
       visibility: visible;
       position: absolute;
@@ -78,6 +82,12 @@
   .theme {
     background-color: #e6e6e6;
   }
+
+.table-cell-test {
+  display: table-cell;
+  border: 1px solid #b3b3b3;
+  
+}
 </style>
 
 <?php
@@ -95,7 +105,6 @@ $supervisor = $leave->hasmanyleaveapprovalsupervisor->first();
 $hod = $leave->hasmanyleaveapprovalhod->first();
 $director = $leave->hasmanyleaveapprovaldir->first();
 $hr = $leave->hasmanyleaveapprovalhr->first();
-
 
 if ($supervisor) {
   $count++;
@@ -117,7 +126,11 @@ if ($hr) {
   $hr_no = $count;
 }
 
-$width = 100 / $count;
+if ($count != 0) {
+  $width = 100 / $count;
+} else {
+  $width = 100;
+}
 
 if ((\Carbon\Carbon::parse($leave->date_time_start)->format('H:i')) == '00:00') {
   $date_start = \Carbon\Carbon::parse($leave->date_time_start)->format('d F Y');
@@ -137,16 +150,17 @@ if ($leave->period_day !== 0.0 && $leave->period_time == NULL) {
   $total_leave = $leave->period_time;
 }
 
-if (($backup->belongstostaff->name) != NULL) {
+if ($backup) {
   $backup_name = $backup->belongstostaff->name;
+
+  if ($backup->created_at == $backup->updated_at) {
+    $approved_date = '-';
+  } else {
+    $approved_date = \Carbon\Carbon::parse($backup->updated_at)->format('d F Y h:i a');
+  }
 } else {
   $backup_name = '-';
-}
-
-if ($backup->created_at == $backup->updated_at) {
   $approved_date = '-';
-} else {
-  $approved_date = \Carbon\Carbon::parse($backup->updated_at)->format('d F Y h:i a');
 }
 
 // if ($supervisor->) {
@@ -199,9 +213,7 @@ if ($backup->created_at == $backup->updated_at) {
 
   <div class="table">
     <div class="table-row">
-    @for ($a = 1; $a <= $count; $a++) 
-    @if ($supervisor_no==$a) 
-    <div class="table-cell-top" style="width: {{ $width }}%; text-align: center; background-color: #f2f2f2; font-size: 18px;">SUPERVISOR</div>
+      @for ($a = 1; $a <= $count; $a++) @if ($supervisor_no==$a) <div class="table-cell-top" style="width: {{ $width }}%; text-align: center; background-color: #f2f2f2; font-size: 18px;">SUPERVISOR</div>
     @elseif ($hod_no == $a)
     <div class="table-cell-top" style="width: {{ $width }}%; text-align: center; background-color: #f2f2f2; font-size: 18px;">HOD</div>
     @elseif ($director_no == $a)
@@ -213,38 +225,87 @@ if ($backup->created_at == $backup->updated_at) {
   </div>
 </div>
 
-  <div class="table" style="height: 40px;">
-    <div class="table-row">
-    @for ($a = 1; $a <= $count; $a++) 
-    @if ($supervisor_no==$a) 
-    <div class="table-cell-top" style="width: {{ $width }}%; vertical-align: bottom;">{{ @$supervisor->staff_id }}</div>
-    @elseif ($hod_no == $a)
-    <div class="table-cell-top" style="width: {{ $width }}%; vertical-align: bottom;">{{ @$hod->staff_id }}</div>
-    @elseif ($director_no == $a)
-    <div class="table-cell-top" style="width: {{ $width }}%; vertical-align: bottom;">{{ @$director->staff_id }}</div>
-    @elseif ($hr_no == $a)
-    <div class="table-cell-top" style="width: {{ $width }}%; vertical-align: bottom;">{{ @$hr->staff_id }}</div>
-    @endif
-    @endfor
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="table">
+  <div class="table-row" style="height: 50px;">
+  @for ($a = 1; $a <= $count; $a++) 
+  @if ($supervisor_no==$a) 
+  <div class="table-cell-top" style="width: {{ $width }}%; vertical-align: bottom;">{{ @$supervisor->belongstostaff->name }}<br /></div>
+  @elseif ($hod_no == $a)
+  <div class="table-cell-top" style="width: {{ $width }}%; vertical-align: bottom;">{{ @$hod->belongstostaff->name }}</div>
+  @elseif ($director_no == $a)
+  <div class="table-cell-top" style="width: {{ $width }}%; vertical-align: bottom;">{{ @$director->belongstostaff->name }}</div>
+  @elseif ($hr_no == $a)
+  <div class="table-cell-top" style="width: {{ $width }}%; vertical-align: bottom;">{{ @$hr->belongstostaff->name }}</div>
+  @endif
+  @endfor
+  </div>
+  <div class="table-row">
+  @for ($a = 1; $a <= $count; $a++) 
+  @if ($supervisor_no==$a) 
+  <div class="table-cell-test">____________________________________<br/>2023-09-08</div>
+  @elseif ($hod_no == $a)
+  <div class="table-cell-test">____________________________________<br/>2023-09-08</div>
+  @elseif ($director_no == $a)
+  <div class="table-cell-test">____________________________________<br/>2023-09-08</div>
+  @elseif ($hr_no == $a)
+  <div class="table-cell-test">____________________________________<br/>2023-09-08</div>
+  @endif
+  @endfor
   </div>
 </div>
 
 
-  <div class="table" style="height: 2px;">
-    <div class="table-row">
-    @for ($a = 1; $a <= $count; $a++) 
-    @if ($supervisor_no==$a) 
-    <div class="table-cell-top" style="width: {{ $width }}%; text-align: center; padding:0px;">____________________________________</div>
-    @elseif ($hod_no == $a)
-    <div class="table-cell-top" style="width: {{ $width }}%; text-align: center; padding:0px;">____________________________________</div>
-    @elseif ($director_no == $a)
-    <div class="table-cell-top" style="width: {{ $width }}%; text-align: center; padding:0px;">____________________________________</div>
-    @elseif ($hr_no == $a)
-    <div class="table-cell-top" style="width: {{ $width }}%; text-align: center; padding:0px;">____________________________________</div>
-    @endif
-    @endfor
-  </div>
-</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -257,7 +318,7 @@ if ($backup->created_at == $backup->updated_at) {
 
 <div class="table">
   <div class="table-row">
-    <div class="table-cell-hidden" style="width: 100%; text-align: center;"><button onclick="printPage()" class="btn btn-sm btn-outline-secondary">Print</button></div>
+    <div class="table-cell-hidden" style="width: 100%; text-align: center;"><button onclick="printPage()" class="btn btn-sm btn-outline-secondary" id="printPageButton">Print</button></div>
   </div>
 </div>
 
