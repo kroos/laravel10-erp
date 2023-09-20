@@ -5,6 +5,10 @@
   function printPage() {
     window.print();
   }
+
+    function back() {
+   window.history.back();
+  }
 </script>
 
 <style>
@@ -13,7 +17,7 @@
       visibility: hidden;
     }
 
-    #printPageButton {
+    #printPageButton, #back {
       display: none;
     }
 
@@ -65,7 +69,7 @@
     border: 1px solid #b3b3b3;
     border-top: none;
     border-bottom: none;
-    padding: 4px;
+    padding: 0px;
     box-sizing: border-box;
   }
 
@@ -83,11 +87,13 @@
     background-color: #e6e6e6;
   }
 
-.table-cell-test {
-  display: table-cell;
-  border: 1px solid #b3b3b3;
-  
-}
+  .table-cell-top1 {
+    display: table-cell;
+    border: 1px solid #b3b3b3;
+    border-top: none;
+    padding: 0px;
+    box-sizing: border-box;
+  }
 </style>
 
 <?php
@@ -162,16 +168,12 @@ if ($backup) {
   $backup_name = '-';
   $approved_date = '-';
 }
-
-// if ($supervisor->) {
-
-// }
 ?>
 
 <div class="table-container">
   <div class="table">
     <div class="table-row header">
-      <div class="table-cell" style="width: 40%; background-color: #f2f2f2;">IPMA INDUSTRY SDN.BHD.</div>
+      <div class="table-cell" style="width: 40%; background-color: #99ff99;">IPMA INDUSTRY SDN.BHD.</div>
       <div class="table-cell" style="width: 60%; background-color: #e6e6e6;">LEAVE APPLICATION FORM</div>
     </div>
   </div>
@@ -193,124 +195,62 @@ if ($backup) {
 
   <div class="table">
     <div class="table-row">
-      <div class="table-cell-top" style="width: 45%;">LEAVE TYPE : {{ @$leave->belongstooptleavetype->leave_type_code }} ({{ @$leave->belongstooptleavetype->leave_type }})</div>
-      <div class="table-cell-top" style="width: 55%;">REASON : {{ @$leave->reason }} </div>
+      <div class="table-cell-top text-wrap" style="width: 45%;">LEAVE TYPE : {{ @$leave->belongstooptleavetype->leave_type_code }} ({{ @$leave->belongstooptleavetype->leave_type }})</div>
+      <div class="table-cell-top text-wrap" style="width: 55%;">REASON : {{ @$leave->reason }} </div>
     </div>
   </div>
 
   <div class="table">
     <div class="table-row">
-      <div class="table-cell-top" style="width: 60%;">BACKUP : {{ @$backup_name }}</div>
+      <div class="table-cell-top text-wrap" style="width: 60%;">BACKUP : {{ @$backup_name }}</div>
       <div class="table-cell-top" style="width: 40%;">DATE APPROVED : {{ @$approved_date }} </div>
     </div>
   </div>
 
   <div class="table">
     <div class="table-row">
-      <div class="table-cell-top" style="width: 100%; background-color: #e6e6e6; text-align: center; font-size: 18px;">SIGNATURE / APPROVALS</div>
+      <div class="table-cell-top text-center" style="width: 100%; background-color: #ffcc99; font-size: 18px;">SIGNATURE / APPROVALS</div>
     </div>
   </div>
 
   <div class="table">
     <div class="table-row">
-      @for ($a = 1; $a <= $count; $a++) @if ($supervisor_no==$a) <div class="table-cell-top" style="width: {{ $width }}%; text-align: center; background-color: #f2f2f2; font-size: 18px;">SUPERVISOR</div>
+      @for ($a = 1; $a <= $count; $a++) @if ($supervisor_no==$a) <div class="table-cell-top text-center" style="width: {{ $width }}%; background-color: #f2f2f2; font-size: 18px;">SUPERVISOR</div>
     @elseif ($hod_no == $a)
-    <div class="table-cell-top" style="width: {{ $width }}%; text-align: center; background-color: #f2f2f2; font-size: 18px;">HOD</div>
+    <div class="table-cell-top text-center" style="width: {{ $width }}%; background-color: #f2f2f2; font-size: 18px;">HOD</div>
     @elseif ($director_no == $a)
-    <div class="table-cell-top" style="width: {{ $width }}%; text-align: center; background-color: #f2f2f2; font-size: 18px;">DIRECTOR</div>
+    <div class="table-cell-top text-center" style="width: {{ $width }}%; background-color: #f2f2f2; font-size: 18px;">DIRECTOR</div>
     @elseif ($hr_no == $a)
-    <div class="table-cell-top" style="width: {{ $width }}%; text-align: center; background-color: #f2f2f2; font-size: 18px;">HR</div>
+    <div class="table-cell-top text-center" style="width: {{ $width }}%; background-color: #f2f2f2; font-size: 18px;">HR</div>
     @endif
     @endfor
   </div>
 </div>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 <div class="table">
   <div class="table-row" style="height: 50px;">
-  @for ($a = 1; $a <= $count; $a++) 
-  @if ($supervisor_no==$a) 
-  <div class="table-cell-top" style="width: {{ $width }}%; vertical-align: bottom;">{{ @$supervisor->belongstostaff->name }}<br /></div>
+    @for ($a = 1; $a <= $count; $a++) @if ($supervisor_no==$a) <div class="table-cell-top-bottom text-center text-decoration-underline text-wrap" style="width: {{ $width }}%; vertical-align: bottom;">{{ @$supervisor->belongstostaff->name }}</div>
   @elseif ($hod_no == $a)
-  <div class="table-cell-top" style="width: {{ $width }}%; vertical-align: bottom;">{{ @$hod->belongstostaff->name }}</div>
+  <div class="table-cell-top-bottom text-center text-decoration-underline text-wrap" style="width: {{ $width }}%; vertical-align: bottom;">{{ @$hod->belongstostaff->name }}</div>
   @elseif ($director_no == $a)
-  <div class="table-cell-top" style="width: {{ $width }}%; vertical-align: bottom;">{{ @$director->belongstostaff->name }}</div>
+  <div class="table-cell-top-bottom text-center text-decoration-underline text-wrap" style="width: {{ $width }}%; vertical-align: bottom;">{{ @$director->belongstostaff->name }}</div>
   @elseif ($hr_no == $a)
-  <div class="table-cell-top" style="width: {{ $width }}%; vertical-align: bottom;">{{ @$hr->belongstostaff->name }}</div>
+  <div class="table-cell-top-bottom text-center text-decoration-underline text-wrap" style="width: {{ $width }}%; vertical-align: bottom;">{{ @$hr->belongstostaff->name }}</div>
   @endif
   @endfor
-  </div>
-  <div class="table-row">
-  @for ($a = 1; $a <= $count; $a++) 
-  @if ($supervisor_no==$a) 
-  <div class="table-cell-test">____________________________________<br/>2023-09-08</div>
-  @elseif ($hod_no == $a)
-  <div class="table-cell-test">____________________________________<br/>2023-09-08</div>
-  @elseif ($director_no == $a)
-  <div class="table-cell-test">____________________________________<br/>2023-09-08</div>
-  @elseif ($hr_no == $a)
-  <div class="table-cell-test">____________________________________<br/>2023-09-08</div>
-  @endif
-  @endfor
-  </div>
 </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+<div class="table-row">
+  @for ($a = 1; $a <= $count; $a++) @if ($supervisor_no==$a) <div class="table-cell-top1 text-center">{{ @$supervisor->updated_at }}</div>
+@elseif ($hod_no == $a)
+<div class="table-cell-top1 text-center">{{ @$hod->updated_at }}</div>
+@elseif ($director_no == $a)
+<div class="table-cell-top1 text-center">{{ @$director->updated_at }}</div>
+@elseif ($hr_no == $a)
+<div class="table-cell-top1 text-center">{{ @$hr->updated_at }}</div>
+@endif
+@endfor
+</div>
+</div>
 
 <div class="table" style="height: 10px;">
   <div class="table-row"></div>
@@ -318,7 +258,10 @@ if ($backup) {
 
 <div class="table">
   <div class="table-row">
-    <div class="table-cell-hidden" style="width: 100%; text-align: center;"><button onclick="printPage()" class="btn btn-sm btn-outline-secondary" id="printPageButton">Print</button></div>
+    <div class="table-cell-hidden text-center" style="width: 100%;">
+      <a href="{{ url()->previous() }}"><button class="btn btn-sm btn-outline-secondary" id="back">Back</button></a>
+      <a href=""><button onclick="printPage()" class="btn btn-sm btn-outline-secondary" id="printPageButton">Print</button></a>
+    </div>
   </div>
 </div>
 
