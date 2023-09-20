@@ -17,9 +17,9 @@ if ($attendance->time_work_hour != NULL || $attendance->time_work_hour != '') {
 $dayName = \Carbon\Carbon::parse($attendance->attend_date)->format('l');
 
 if ($dayName == 'Friday') {
-  $working_hour = $staff->belongstomanydepartment()->wherePivot('main', 1)->get()->first()->belongstowhgroup()->where('effective_date_start', '<=', $attendance->attend_date)->where('effective_date_end', '>=', $attendance->attend_date)->where('category', 3)->get()->first();
+  $working_hour = $staff->belongstomanydepartment()->wherePivot('main', 1)->first()->belongstowhgroup()->where('effective_date_start', '<=', $attendance->attend_date)->where('effective_date_end', '>=', $attendance->attend_date)->where('category', 3)->first();
 } else {
-  $working_hour = $staff->belongstomanydepartment()->wherePivot('main', 1)->get()->first()->belongstowhgroup()->where('effective_date_start', '<=', $attendance->attend_date)->where('effective_date_end', '>=', $attendance->attend_date)->where('category', '!=', 3)->get()->first();
+  $working_hour = $staff->belongstomanydepartment()->wherePivot('main', 1)->first()->belongstowhgroup()->where('effective_date_start', '<=', $attendance->attend_date)->where('effective_date_end', '>=', $attendance->attend_date)->where('category', '!=', 3)->first();
 }
 
 $time_start_am = \Carbon\Carbon::parse($working_hour->time_start_am)->format('H:i');
