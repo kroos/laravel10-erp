@@ -259,7 +259,7 @@
 	<p>&nbsp;</p>
 	<div class="row justify-content-center">
 		<div class="col-sm-12">
-			<canvas id="myChart" ></canvas>
+			<canvas id="myChart" width="200" height="75"></canvas>
 		</div>
 	</div>
 
@@ -511,37 +511,27 @@ document.addEventListener('DOMContentLoaded', function() {
 /////////////////////////////////////////////////////////////////////////////////////////
 // chartjs also dont use jquery
 
-(async function() {
-	// const data = [
-	// 					{ month: 'January', percentage: 90, workdays: 31, leaves: 1, absents: 1, working_days: 25 },
-	// 					{ month: 'February', percentage: 93, workdays: 28, leaves: 1, absents: 1, working_days: 25 },
-	// 					{ month: 'March', percentage: 91, workdays: 31, leaves: 1, absents: 1, working_days: 25 },
-	// 					{ month: 'April', percentage: 93, workdays: 30, leaves: 1, absents: 1, working_days: 25 },
-	// 					{ month: 'May', percentage: 81, workdays: 31, leaves: 1, absents: 1, working_days: 25 },
-	// 					{ month: 'June', percentage: 79, workdays: 30, leaves: 1, absents: 1, working_days: 25 },
-	// 					{ month: 'July', percentage: 95, workdays: 31, leaves: 1, absents: 1, working_days: 25 },
-	// 			];
-	const data = $.ajax({
-							url: "{{ route('staffpercentage') }}",
-							type: "GET",
-							data: {
-									id: {{ $staff->id }},
-									_token: '{!! csrf_token() !!}',
-								},
-							dataType: 'json',
-							global: false,
-							async:false,
-							success: function (response) {
-								// you will get response from your php page (what you echo or print)
-								return response;
-							},
-							error: function(jqXHR, textStatus, errorThrown) {
-								console.log(textStatus, errorThrown);
-							}
-						}).responseText;
+// const data = [
+// 					{ month: 'January', percentage: 90.59, workdays: 31, leaves: 1, absents: 1, working_days: 25 },
+// 					{ month: 'February', percentage: 93.23, workdays: 28, leaves: 1, absents: 1, working_days: 25 },
+// 					{ month: 'March', percentage: 91.5, workdays: 31, leaves: 1, absents: 1, working_days: 25 },
+// 					{ month: 'April', percentage: 93.45, workdays: 30, leaves: 1, absents: 1, working_days: 25 },
+// 					{ month: 'May', percentage: 81.23, workdays: 31, leaves: 1, absents: 1, working_days: 25 },
+// 					{ month: 'June', percentage: 79.23, workdays: 30, leaves: 1, absents: 1, working_days: 25 },
+// 					{ month: 'July', percentage: 95.59, workdays: 31, leaves: 1, absents: 1, working_days: 25 },
+// 			];
 
-						// convert data10 into json
-						var objtime = $.parseJSON( data10 );
+var xmlhttp = new XMLHttpRequest();
+// xmlhttp.open(method, URL, [async, user, password])
+xmlhttp.open("POST", '{!! route('staffpercentage', ['id' => $staff->id, '_token' => csrf_token()]) !!}', true);
+// xmlhttp.responseType = 'json';
+// xmlhttp.onreadystatechange = myfunction;
+xmlhttp.send();
+xmlhttp.onload = function() {
+// alert(`Loaded: ${data.status} ${data.response}`);
+// return data.status;
+	const data = JSON.parse(xmlhttp.responseText);
+//	console.log(data);
 
 	new Chart(document.getElementById('myChart'), {
 		type: 'line',
@@ -553,20 +543,20 @@ document.addEventListener('DOMContentLoaded', function() {
 							data: data.map(row => row.percentage)
 						},
 						{
-							label: 'Work Days By Month',
-							data: data.map(row => row.workdays)
-						},
-						{
-							label: 'Working Days By Month (Person Available)',
-							data: data.map(row => row.working_days)
-						},
-						{
 							label: 'Leaves By Month',
 							data: data.map(row => row.leaves)
 						},
 						{
 							label: 'Absents By Month',
 							data: data.map(row => row.absents)
+						},
+						{
+							label: 'Working Days By Month (Person Available)',
+							data: data.map(row => row.working_days)
+						},
+						{
+							label: 'Work Days By Month',
+							data: data.map(row => row.workdays)
 						},
 			]
 		},
@@ -592,6 +582,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			},
 		},
 	});
-})();
+};
+
 /////////////////////////////////////////////////////////////////////////////////////////
 @endsection

@@ -313,7 +313,7 @@ $('#leave_id').on('change', function() {
 			placeholder: 'Please Choose',
 			width: '100%',
 			ajax: {
-				url: '{{ route('backupperson.backupperson') }}',
+				url: '{{ route('backupperson') }}',
 				// data: { '_token': '{!! csrf_token() !!}' },
 				type: 'POST',
 				dataType: 'json',
@@ -321,6 +321,8 @@ $('#leave_id').on('change', function() {
 					var query = {
 						id: {{ \Auth::user()->belongstostaff->id }},
 						_token: '{!! csrf_token() !!}',
+						date_from: $('#from').val(),
+						date_to: $('#to').val(),
 					}
 					return query;
 				}
@@ -754,7 +756,7 @@ if(obj.time_start_pm == itime_start) {
 			placeholder: 'Please Choose',
 			width: '100%',
 			ajax: {
-				url: '{{ route('backupperson.backupperson') }}',
+				url: '{{ route('backupperson') }}',
 				// data: { '_token': '{!! csrf_token() !!}' },
 				type: 'POST',
 				dataType: 'json',
@@ -762,6 +764,8 @@ if(obj.time_start_pm == itime_start) {
 					var query = {
 						id: {{ \Auth::user()->belongstostaff->id }},
 						_token: '{!! csrf_token() !!}',
+						date_from: $('#from').val(),
+						date_to: $('#to').val(),
 					}
 					return query;
 				}
@@ -1209,7 +1213,7 @@ $oi = \Auth::user()->belongstostaff->hasmanyleavereplacement()->where('leave_bal
 			placeholder: 'Please Choose',
 			width: '100%',
 			ajax: {
-				url: '{{ route('backupperson.backupperson') }}',
+				url: '{{ route('backupperson') }}',
 				// data: { '_token': '{!! csrf_token() !!}' },
 				type: 'POST',
 				dataType: 'json',
@@ -1217,6 +1221,8 @@ $oi = \Auth::user()->belongstostaff->hasmanyleavereplacement()->where('leave_bal
 					var query = {
 						id: {{ \Auth::user()->belongstostaff->id }},
 						_token: '{!! csrf_token() !!}',
+						date_from: $('#from').val(),
+						date_to: $('#to').val(),
 					}
 					return query;
 				}
@@ -1696,7 +1702,7 @@ if(obj.time_start_pm == itime_start) {
 			placeholder: 'Please Choose',
 			width: '100%',
 			ajax: {
-				url: '{{ route('backupperson.backupperson') }}',
+				url: '{{ route('backupperson') }}',
 				// data: { '_token': '{!! csrf_token() !!}' },
 				type: 'POST',
 				dataType: 'json',
@@ -1704,6 +1710,8 @@ if(obj.time_start_pm == itime_start) {
 					var query = {
 						id: {{ \Auth::user()->belongstostaff->id }},
 						_token: '{!! csrf_token() !!}',
+						date_from: $('#from').val(),
+						date_to: $('#to').val(),
 					}
 					return query;
 				}
@@ -1843,7 +1851,7 @@ if(obj.time_start_pm == itime_start) {
 			placeholder: 'Please Choose',
 			width: '100%',
 			ajax: {
-				url: '{{ route('backupperson.backupperson') }}',
+				url: '{{ route('backupperson') }}',
 				// data: { '_token': '{!! csrf_token() !!}' },
 				type: 'POST',
 				dataType: 'json',
@@ -1851,6 +1859,8 @@ if(obj.time_start_pm == itime_start) {
 					var query = {
 						id: {{ \Auth::user()->belongstostaff->id }},
 						_token: '{!! csrf_token() !!}',
+						date_from: $('#from').val(),
+						date_to: $('#to').val(),
 					}
 					return query;
 				}
@@ -2027,7 +2037,7 @@ if(obj.time_start_pm == itime_start) {
 						placeholder: 'Please Choose',
 						width: '100%',
 						ajax: {
-							url: '{{ route('backupperson.backupperson') }}',
+							url: '{{ route('backupperson') }}',
 							// data: { '_token': '{!! csrf_token() !!}' },
 							type: 'POST',
 							dataType: 'json',
@@ -2035,6 +2045,8 @@ if(obj.time_start_pm == itime_start) {
 								var query = {
 									id: {{ \Auth::user()->belongstostaff->id }},
 									_token: '{!! csrf_token() !!}',
+									date_from: $('#from').val(),
+									date_to: $('#to').val(),
 								}
 								return query;
 							}
@@ -2323,7 +2335,7 @@ if(obj.time_start_pm == itime_start) {
 			placeholder: 'Please Choose',
 			width: '100%',
 			ajax: {
-				url: '{{ route('backupperson.backupperson') }}',
+				url: '{{ route('backupperson') }}',
 				// data: { '_token': '{!! csrf_token() !!}' },
 				type: 'POST',
 				dataType: 'json',
@@ -2331,6 +2343,8 @@ if(obj.time_start_pm == itime_start) {
 					var query = {
 						id: {{ \Auth::user()->belongstostaff->id }},
 						_token: '{!! csrf_token() !!}',
+						date_from: $('#from').val(),
+						date_to: $('#to').val(),
 					}
 					return query;
 				}
@@ -2382,7 +2396,7 @@ if(obj.time_start_pm == itime_start) {
 						placeholder: 'Please Choose',
 						width: '100%',
 						ajax: {
-							url: '{{ route('backupperson.backupperson') }}',
+							url: '{{ route('backupperson') }}',
 							// data: { '_token': '{!! csrf_token() !!}' },
 							type: 'POST',
 							dataType: 'json',
@@ -2390,6 +2404,8 @@ if(obj.time_start_pm == itime_start) {
 								var query = {
 									id: {{ \Auth::user()->belongstostaff->id }},
 									_token: '{!! csrf_token() !!}',
+									date_from: $('#from').val(),
+									date_to: $('#to').val(),
 								}
 								return query;
 							}
@@ -2693,7 +2709,7 @@ if(obj.time_start_pm == itime_start) {
 						placeholder: 'Please Choose',
 						width: '100%',
 						ajax: {
-							url: '{{ route('backupperson.backupperson') }}',
+							url: '{{ route('backupperson') }}',
 							// data: { '_token': '{!! csrf_token() !!}' },
 							type: 'POST',
 							dataType: 'json',
@@ -2701,6 +2717,8 @@ if(obj.time_start_pm == itime_start) {
 								var query = {
 									id: {{ \Auth::user()->belongstostaff->id }},
 									_token: '{!! csrf_token() !!}',
+									date_from: $('#from').val(),
+									date_to: $('#to').val(),
 								}
 								return query;
 							}
@@ -2873,7 +2891,7 @@ if(obj.time_start_pm == itime_start) {
 			placeholder: 'Please Choose',
 			width: '100%',
 			ajax: {
-				url: '{{ route('backupperson.backupperson') }}',
+				url: '{{ route('backupperson') }}',
 				// data: { '_token': '{!! csrf_token() !!}' },
 				type: 'POST',
 				dataType: 'json',
@@ -2881,6 +2899,8 @@ if(obj.time_start_pm == itime_start) {
 					var query = {
 						id: {{ \Auth::user()->belongstostaff->id }},
 						_token: '{!! csrf_token() !!}',
+						date_from: $('#from').val(),
+						date_to: $('#to').val(),
 					}
 					return query;
 				}
@@ -3037,7 +3057,7 @@ $oi = \Auth::user()->belongstostaff->hasmanyleavereplacement()->where('leave_bal
 			placeholder: 'Please Choose',
 			width: '100%',
 			ajax: {
-				url: '{{ route('backupperson.backupperson') }}',
+				url: '{{ route('backupperson') }}',
 				// data: { '_token': '{!! csrf_token() !!}' },
 				type: 'POST',
 				dataType: 'json',
@@ -3045,6 +3065,8 @@ $oi = \Auth::user()->belongstostaff->hasmanyleavereplacement()->where('leave_bal
 					var query = {
 						id: {{ \Auth::user()->belongstostaff->id }},
 						_token: '{!! csrf_token() !!}',
+						date_from: $('#from').val(),
+						date_to: $('#to').val(),
 					}
 					return query;
 				}
@@ -3222,7 +3244,7 @@ if(obj.time_start_pm == itime_start) {
 						placeholder: 'Please Choose',
 						width: '100%',
 						ajax: {
-							url: '{{ route('backupperson.backupperson') }}',
+							url: '{{ route('backupperson') }}',
 							// data: { '_token': '{!! csrf_token() !!}' },
 							type: 'POST',
 							dataType: 'json',
@@ -3230,6 +3252,8 @@ if(obj.time_start_pm == itime_start) {
 								var query = {
 									id: {{ \Auth::user()->belongstostaff->id }},
 									_token: '{!! csrf_token() !!}',
+									date_from: $('#from').val(),
+									date_to: $('#to').val(),
 								}
 								return query;
 							}
@@ -3593,7 +3617,7 @@ if(obj.time_start_pm == itime_start) {
 			allowClear: true,
 			closeOnSelect: true,
 			ajax: {
-				url: '{{ route('backupperson.backupperson') }}',
+				url: '{{ route('backupperson') }}',
 				// data: { '_token': '{!! csrf_token() !!}' },
 				type: 'POST',
 				dataType: 'json',
@@ -3601,6 +3625,8 @@ if(obj.time_start_pm == itime_start) {
 					var query = {
 						id: {{ \Auth::user()->belongstostaff->id }},
 						_token: '{!! csrf_token() !!}',
+						date_from: $('#from').val(),
+						date_to: $('#to').val(),
 					}
 					return query;
 				}
@@ -3776,7 +3802,7 @@ if(obj.time_start_pm == itime_start) {
 						placeholder: 'Please Choose',
 						width: '100%',
 						ajax: {
-							url: '{{ route('backupperson.backupperson') }}',
+							url: '{{ route('backupperson') }}',
 							// data: { '_token': '{!! csrf_token() !!}' },
 							type: 'POST',
 							dataType: 'json',
@@ -3784,6 +3810,8 @@ if(obj.time_start_pm == itime_start) {
 								var query = {
 									id: {{ \Auth::user()->belongstostaff->id }},
 									_token: '{!! csrf_token() !!}',
+									date_from: $('#from').val(),
+									date_to: $('#to').val(),
 								}
 								return query;
 							}

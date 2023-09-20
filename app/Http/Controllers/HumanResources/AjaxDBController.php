@@ -331,7 +331,9 @@ class AjaxDBController extends Controller
 	{
 		// we r going to find a backup person
 		// 1st, we need to take a look into his/her department.
-		$user = \Auth::user()->belongstostaff;
+		// $user = Staff::find($request->id);
+		$user = Staff::find(196);
+		// dd($user);
 		$dept = $user->belongstomanydepartment()->first();
 		$userindept = $dept->belongstomanystaff()->where('active', 1)->get();
 
@@ -340,7 +342,34 @@ class AjaxDBController extends Controller
 		$backup['results'][] = [];
 		if ($userindept) {
 			foreach($userindept as $key){
-				if($key->id != \Auth::user()->belongstostaff->id){
+				if($key->id != $user->id){
+				$chkavailability = $key->hasmanyleave()
+									->where(function (Builder $query) use ($request){
+										$query->whereDate('date_time_start', '>=', '2023-08-02')
+										->whereDate('date_time_start', '<=', '2023-08-03');
+										// $query->whereDate('date_time_start', '>=', $request->date_from)
+										// ->whereDate('date_time_start', '<=', $request->date_to);
+									})
+									->where(function (Builder $query){
+										$query->where('leave_type_id', '<>', 9)
+										->where(function (Builder $query){
+											$query->where('half_type_id', '<>', 2)
+											->orWhereNull('half_type_id');
+										});
+									})
+									->where(function (Builder $query){
+										$query->whereIn('leave_status_id', [5,6])
+											->orWhereNull('leave_status_id');
+									})
+									->get();
+									// ->dumpRawSql();
+				$itedate = Carbon::parse('2023-08-02')->daysUntil('2023-08-03');
+				foreach ($itedate as $k) {
+					// dump($k);
+					foreach ($collection as $value) {
+
+					}
+				}
 					$backup['results'][] = [
 											'id' => $key->id,
 											'text' => $key->name,
@@ -688,11 +717,11 @@ class AjaxDBController extends Controller
 		// this is for fullcalendar, its NOT INCLUSIVE for the last date
 		// get the attandence 1st
 		$attendance = HRAttendance::where('staff_id', $request->staff_id)->get();
-		foreach ($attendance as $s) {
-			if (Carbon::parse($s->attend_date) != Carbon::SUNDAY) {
+		// foreach ($attendance as $s) {
+		// 	if (Carbon::parse($s->attend_date) != Carbon::SUNDAY) {
 
-			}
-		}
+		// 	}
+		// }
 
 		// mark sunday as a rest day
 		$sun = Carbon::parse('2020-01-01')->toPeriod(Carbon::now()->addYear());
@@ -738,7 +767,7 @@ class AjaxDBController extends Controller
 
 		// mark all holiday
 		$hdate = HRHolidayCalendar::
-				where(function (Builder $query) use ($s){
+				where(function (Builder $query){
 					$query->whereYear('date_start', '<=', Carbon::now()->format('Y'))
 					->orWhereYear('date_end', '>=', Carbon::now()->addYear(1)->format('Y'));
 				})
@@ -844,7 +873,7 @@ class AjaxDBController extends Controller
 
 	public function staffattendancelist(Request $request)
 	{
-		$sa = \App\Models\HumanResources\HRAttendance::select('staff_id')
+		$sa = HRAttendance::select('staff_id')
 			->where(function (Builder $query) use ($request){
 				$query->whereDate('attend_date', '>=', $request->from)
 				->whereDate('attend_date', '<=', $request->to);
@@ -857,16 +886,16 @@ class AjaxDBController extends Controller
 		return response()->json( $l0 );
 	}
 
-	public function staffpercentage(Request $request)
+	public function staffpercentage(Request $request): JsonResponse
 	{
+		// dd($request->all());
 		// $request->id = staff id
 		Carbon::setWeekendDays([
 			// Carbon::SATURDAY,
 			Carbon::SUNDAY,
 		]);
 
-		// $st = Staff::find($request->id);													// need to check date join
-		$st = Staff::find(17);																// need to check date join
+		$st = Staff::find($request->id);													// need to check date join
 		$join = Carbon::parse($st->join);													// join date
 		// dump($join);																		//2023-03-09
 
@@ -876,9 +905,9 @@ class AjaxDBController extends Controller
 		// dump($checkmonthsago);																//6
 
 		$nowstartmonth = $now->copy()->startOfMonth();										// 1st day of month
-		// dump($nowstartmonth);																//
+		// dump($nowstartmonth);															//
 
-		$sixstart = $nowstartmonth->subMonths(6);											// getting start day of 6 months before
+		$sixstart = $nowstartmonth->copy()->subMonths(6);											// getting start day of 6 months before
 		$sixend = $sixstart->copy()->endOfMonth();											// getting end day of 6 months before
 		$sixmonthname = $sixstart->copy()->monthName;										// getting name of the 6 months before
 
@@ -914,6 +943,27 @@ class AjaxDBController extends Controller
 				// dump($sixend);
 				$nosixweekend = $join->diffInWeekdays($sixend);								// get weekdays from above as we have only sunday as a weekend
 				// dump($nosixweekend + 1);													// 19 days : need to plus 1 for correct answer so it will be 20 days
+
+				// getting holiday on that month
+				$sixholiday = HRHolidayCalendar::where(function (Builder $query) use ($join, $sixend){
+														$query->whereDate('date_start', '>=', $join)
+														->WhereDate('date_start', '<=', $sixend);
+													})
+													->get();
+													// ->ddRawSql();
+				// dump($sixholiday);
+				$q = 0;
+				if ($sixholiday) {
+					foreach ($sixholiday as $v) {
+						$sixperiod = Carbon::parse($v->date_start)->daysUntil($v->date_end, 1);			// 5 days
+						foreach ($sixperiod as $val) {
+							if (Carbon::parse($val)->dayOfWeek != Carbon::SUNDAY) {
+								$q++;
+							}
+						}
+					}
+				}
+				// dump($q);
 
 				// saturday, probably this 1 could be a culprit because in the beginning, usually HR does not set restday_group_id, must check on attendance also.
 				$satoff = $st->belongstorestdaygroup?->hasmanyrestdaycalendar()				// getting sat for staff, if null than only 26 days available for him, otherwise, its lower than that.
@@ -974,7 +1024,7 @@ class AjaxDBController extends Controller
 				$p = 0;
 				if ($halfabsent->count()) {
 					foreach ($halfabsent as $v) {
-						$p =+ 0.5;
+						$p += 0.5;
 					}
 				}
 				// dump($p);
@@ -1001,7 +1051,7 @@ class AjaxDBController extends Controller
 				// dump($fulldayleave);
 				$i = 0;
 				foreach ($fulldayleave as $v) {
-					$i =+ $v->period_day;
+					$i += $v->period_day;
 				}
 				// dump($i);
 
@@ -1024,13 +1074,13 @@ class AjaxDBController extends Controller
 
 				$r = 0;
 				foreach ($halfdayleave as $v) {
-					$r =+ $v->period_day;
+					$r += $v->period_day;
 				}
 				// dump($r);
 
 				// start counting for this month
 				$month = $sixmonthname;
-				$workday = ($nosixweekend + 1) - $sat;
+				$workday = ($nosixweekend + 1) - $sat - $q;
 				// dump($workday);
 				$absent = $u + $p;
 				// dump($absent);
@@ -1039,13 +1089,53 @@ class AjaxDBController extends Controller
 
 				$attpercentage = number_format( ($workday - $absent - $leave) / ($workday) * 100, 2);
 				// dump($attpercentage);
-
-			} else {																		// count from $sixend
+			} else {
 				$sixm = $sixstart->toPeriod($sixend);										// 23 days
 				// dump($sixm->count());														// 23 days
 				// dump($sixend);
 				$nosixweekend = $sixstart->diffInWeekdays($sixend, true);					// get weekdays from above as we have only sunday as a weekend
 				// dump($nosixweekend + 1);													// 19 days : need to plus 1 for correct answer so it will be 20 days
+
+				// getting holiday on that month
+				$sixholiday = HRHolidayCalendar::where(function (Builder $query) use ($sixstart, $sixend){
+														$query->whereDate('date_start', '>=', $sixstart)
+														->WhereDate('date_start', '<=', $sixend);
+													})
+													->get();
+													// ->ddRawSql();
+				$q = 0;
+				if ($sixholiday) {
+					foreach ($sixholiday as $v) {
+						$sixperiod = Carbon::parse($v->date_start)->daysUntil($v->date_end, 1);			// 5 days
+						foreach ($sixperiod as $val) {
+							if (Carbon::parse($val)->dayOfWeek != Carbon::SUNDAY) {
+								$q++;
+							} else {
+								$q++;
+							}
+						}
+					}
+				}
+
+				// getting holiday on that month
+				$sixholiday = HRHolidayCalendar::where(function (Builder $query) use ($sixstart, $sixend){
+														$query->whereDate('date_start', '>=', $sixstart)
+														->WhereDate('date_start', '<=', $sixend);
+													})
+													->get();
+													// ->ddRawSql();
+				$q = 0;
+				if ($sixholiday) {
+					foreach ($sixholiday as $v) {
+						$sixperiod = Carbon::parse($v->date_start)->daysUntil($v->date_end, 1);			// 5 days
+						foreach ($sixperiod as $val) {
+							if (Carbon::parse($val)->dayOfWeek != Carbon::SUNDAY) {
+								$q++;
+							}
+						}
+					}
+				}
+				// dump($sixperiod->count());
 
 				// saturday, probably this 1 could be a culprit because in the beginning, usually HR does not set restday_group_id, must check on attendance also.
 				$satoff = $st->belongstorestdaygroup?->hasmanyrestdaycalendar()				// getting sat for staff, if null than only 26 days available for him, otherwise, its lower than that.
@@ -1105,7 +1195,7 @@ class AjaxDBController extends Controller
 				$p = 0;
 				if ($halfabsent->count()) {
 					foreach ($halfabsent as $v) {
-						$p =+ 0.5;
+						$p += 0.5;
 					}
 				}
 				// dump($p);
@@ -1132,7 +1222,7 @@ class AjaxDBController extends Controller
 				// dump($fulldayleave);
 				$i = 0;
 				foreach ($fulldayleave as $v) {
-					$i =+ $v->period_day;
+					$i += $v->period_day;
 				}
 				// dump($i);
 
@@ -1155,13 +1245,13 @@ class AjaxDBController extends Controller
 
 				$r = 0;
 				foreach ($halfdayleave as $v) {
-					$r =+ $v->period_day;
+					$r += $v->period_day;
 				}
 				// dump($r);
 
 				// start counting for this month
 				$month = $sixmonthname;
-				$workday = ($nosixweekend + 1) - $sat;
+				$workday = ($nosixweekend + 1) - $sat - $q;
 				// dump($workday);
 				$absent = $u + $p;
 				// dump($absent);
@@ -1177,7 +1267,7 @@ class AjaxDBController extends Controller
 								'workdays' => $workday,
 								'leaves' => $leave,
 								'absents' => $absent,
-								'working days' => ($workday - $absent - $leave),
+								'working_days' => ($workday - $absent - $leave),
 							];
 		}
 
@@ -1188,6 +1278,25 @@ class AjaxDBController extends Controller
 				// dump($fiveend);
 				$nofiveweekend = $join->diffInWeekdays($fiveend);								// get weekdays from above as we have only sunday as a weekend
 				// dump($nofiveweekend + 1);													// 19 days : need to plus 1 for correct answer so it will be 20 days
+
+				// getting holiday on that month
+				$fiveholiday = HRHolidayCalendar::where(function (Builder $query) use ($join, $fiveend){
+														$query->whereDate('date_start', '>=', $join)
+														->WhereDate('date_start', '<=', $fiveend);
+													})
+													->get();
+													// ->ddRawSql();
+				$q = 0;
+				if ($fiveholiday) {
+					foreach ($fiveholiday as $v) {
+						$sixperiod = Carbon::parse($v->date_start)->daysUntil($v->date_end, 1);			// 5 days
+						foreach ($sixperiod as $val) {
+							if (Carbon::parse($val)->dayOfWeek != Carbon::SUNDAY) {
+								$q++;
+							}
+						}
+					}
+				}
 
 				// saturday, probably this 1 could be a culprit because in the beginning, usually HR does not set restday_group_id, must check on attendance also.
 				$satoff = $st->belongstorestdaygroup?->hasmanyrestdaycalendar()				// getting sat for staff, if null than only 26 days available for him, otherwise, its lower than that.
@@ -1248,7 +1357,7 @@ class AjaxDBController extends Controller
 				$p = 0;
 				if ($halfabsent->count()) {
 					foreach ($halfabsent as $v) {
-						$p =+ 0.5;
+						$p += 0.5;
 					}
 				}
 				// dump($p);
@@ -1275,7 +1384,7 @@ class AjaxDBController extends Controller
 				// dump($fulldayleave);
 				$i = 0;
 				foreach ($fulldayleave as $v) {
-					$i =+ $v->period_day;
+					$i += $v->period_day;
 				}
 				// dump($i);
 
@@ -1298,13 +1407,13 @@ class AjaxDBController extends Controller
 
 				$r = 0;
 				foreach ($halfdayleave as $v) {
-					$r =+ $v->period_day;
+					$r += $v->period_day;
 				}
 				// dump($r);
 
 				// start counting for this month
 				$month = $fivemonthname;
-				$workday = ($nofiveweekend + 1) - $sat;
+				$workday = ($nofiveweekend + 1) - $sat - $q;
 				// dump($workday);
 				$absent = $u + $p;
 				// dump($absent);
@@ -1320,6 +1429,25 @@ class AjaxDBController extends Controller
 				// dump($fiveend);
 				$nofiveweekend = $fivestart->diffInWeekdays($fiveend, true);					// get weekdays from above as we have only sunday as a weekend
 				// dump($nofiveweekend + 1);													// 19 days : need to plus 1 for correct answer so it will be 20 days
+
+				// getting holiday on that month
+				$fiveholiday = HRHolidayCalendar::where(function (Builder $query) use ($fivestart, $fiveend){
+														$query->whereDate('date_start', '>=', $fivestart)
+														->WhereDate('date_start', '<=', $fiveend);
+													})
+													->get();
+													// ->ddRawSql();
+				$q = 0;
+				if ($fiveholiday) {
+					foreach ($fiveholiday as $v) {
+						$sixperiod = Carbon::parse($v->date_start)->daysUntil($v->date_end, 1);			// 5 days
+						foreach ($sixperiod as $val) {
+							if (Carbon::parse($val)->dayOfWeek != Carbon::SUNDAY) {
+								$q++;
+							}
+						}
+					}
+				}
 
 				// saturday, probably this 1 could be a culprit because in the beginning, usually HR does not set restday_group_id, must check on attendance also.
 				$satoff = $st->belongstorestdaygroup?->hasmanyrestdaycalendar()				// getting sat for staff, if null than only 26 days available for him, otherwise, its lower than that.
@@ -1379,7 +1507,7 @@ class AjaxDBController extends Controller
 				$p = 0;
 				if ($halfabsent->count()) {
 					foreach ($halfabsent as $v) {
-						$p =+ 0.5;
+						$p += 0.5;
 					}
 				}
 				// dump($p);
@@ -1403,12 +1531,12 @@ class AjaxDBController extends Controller
 								})
 								->get();
 								// ->ddRawSql();
-				// dump($fulldayleave);
+				// dd($fulldayleave);
 				$i = 0;
 				foreach ($fulldayleave as $v) {
-					$i =+ $v->period_day;
+					$i += $v->period_day;
 				}
-				// dump($i);
+				// dd($i);
 
 				// getting half day leave
 				$halfdayleave = HRLeave::where('staff_id', $st->id)							// get period from here
@@ -1429,13 +1557,13 @@ class AjaxDBController extends Controller
 
 				$r = 0;
 				foreach ($halfdayleave as $v) {
-					$r =+ $v->period_day;
+					$r += $v->period_day;
 				}
 				// dump($r);
 
 				// start counting for this month
 				$month = $fivemonthname;
-				$workday = ($nofiveweekend + 1) - $sat;
+				$workday = ($nofiveweekend + 1) - $sat - $q;
 				// dump($workday);
 				$absent = $u + $p;
 				// dump($absent);
@@ -1451,9 +1579,8 @@ class AjaxDBController extends Controller
 								'workdays' => $workday,
 								'leaves' => $leave,
 								'absents' => $absent,
-								'working days' => ($workday - $absent - $leave),
+								'working_days' => ($workday - $absent - $leave),
 							];
-
 		}
 
 		if ($checkmonthsago >= 4) {
@@ -1463,6 +1590,25 @@ class AjaxDBController extends Controller
 				// dump($fourend);
 				$nofiveweekend = $join->diffInWeekdays($fourend);								// get weekdays from above as we have only sunday as a weekend
 				// dump($nofiveweekend + 1);													// 19 days : need to plus 1 for correct answer so it will be 20 days
+
+				// getting holiday on that month
+				$fourholiday = HRHolidayCalendar::where(function (Builder $query) use ($join, $fourend){
+														$query->whereDate('date_start', '>=', $join)
+														->WhereDate('date_start', '<=', $fourend);
+													})
+													->get();
+													// ->ddRawSql();
+				$q = 0;
+				if ($fourholiday) {
+					foreach ($fourholiday as $v) {
+						$sixperiod = Carbon::parse($v->date_start)->daysUntil($v->date_end, 1);			// 5 days
+						foreach ($sixperiod as $val) {
+							if (Carbon::parse($val)->dayOfWeek != Carbon::SUNDAY) {
+								$q++;
+							}
+						}
+					}
+				}
 
 				// saturday, probably this 1 could be a culprit because in the beginning, usually HR does not set restday_group_id, must check on attendance also.
 				$satoff = $st->belongstorestdaygroup?->hasmanyrestdaycalendar()				// getting sat for staff, if null than only 26 days available for him, otherwise, its lower than that.
@@ -1502,8 +1648,8 @@ class AjaxDBController extends Controller
 											$query->whereDate('attend_date', '>=', $join)
 											->whereDate('attend_date', '<=', $fourend);
 										})
-										->get();
-										// ->ddRawSql();
+										// ->get();
+										->ddRawSql();
 				$u = 0;
 				if ($fullabsent->count()) {
 					foreach ($fullabsent as $v) {
@@ -1523,7 +1669,7 @@ class AjaxDBController extends Controller
 				$p = 0;
 				if ($halfabsent->count()) {
 					foreach ($halfabsent as $v) {
-						$p =+ 0.5;
+						$p += 0.5;
 					}
 				}
 				// dump($p);
@@ -1550,7 +1696,7 @@ class AjaxDBController extends Controller
 				// dump($fulldayleave);
 				$i = 0;
 				foreach ($fulldayleave as $v) {
-					$i =+ $v->period_day;
+					$i += $v->period_day;
 				}
 				// dump($i);
 
@@ -1573,13 +1719,13 @@ class AjaxDBController extends Controller
 
 				$r = 0;
 				foreach ($halfdayleave as $v) {
-					$r =+ $v->period_day;
+					$r += $v->period_day;
 				}
 				// dump($r);
 
 				// start counting for this month
 				$month = $fourmonthname;
-				$workday = ($nofiveweekend + 1) - $sat;
+				$workday = ($nofiveweekend + 1) - $sat - $q;
 				// dump($workday);
 				$absent = $u + $p;
 				// dump($absent);
@@ -1595,6 +1741,25 @@ class AjaxDBController extends Controller
 				// dump($fourend);
 				$nofiveweekend = $fourstart->diffInWeekdays($fourend, true);					// get weekdays from above as we have only sunday as a weekend
 				// dump($nofiveweekend + 1);													// 19 days : need to plus 1 for correct answer so it will be 20 days
+
+				// getting holiday on that month
+				$fourholiday = HRHolidayCalendar::where(function (Builder $query) use ($fourstart, $fourend){
+														$query->whereDate('date_start', '>=', $fourstart)
+														->WhereDate('date_start', '<=', $fourend);
+													})
+													->get();
+													// ->ddRawSql();
+				$q = 0;
+				if ($fourholiday) {
+					foreach ($fourholiday as $v) {
+						$sixperiod = Carbon::parse($v->date_start)->daysUntil($v->date_end, 1);			// 5 days
+						foreach ($sixperiod as $val) {
+							if (Carbon::parse($val)->dayOfWeek != Carbon::SUNDAY) {
+								$q++;
+							}
+						}
+					}
+				}
 
 				// saturday, probably this 1 could be a culprit because in the beginning, usually HR does not set restday_group_id, must check on attendance also.
 				$satoff = $st->belongstorestdaygroup?->hasmanyrestdaycalendar()				// getting sat for staff, if null than only 26 days available for him, otherwise, its lower than that.
@@ -1654,7 +1819,7 @@ class AjaxDBController extends Controller
 				$p = 0;
 				if ($halfabsent->count()) {
 					foreach ($halfabsent as $v) {
-						$p =+ 0.5;
+						$p += 0.5;
 					}
 				}
 				// dump($p);
@@ -1681,7 +1846,7 @@ class AjaxDBController extends Controller
 				// dump($fulldayleave);
 				$i = 0;
 				foreach ($fulldayleave as $v) {
-					$i =+ $v->period_day;
+					$i += $v->period_day;
 				}
 				// dump($i);
 
@@ -1704,13 +1869,13 @@ class AjaxDBController extends Controller
 
 				$r = 0;
 				foreach ($halfdayleave as $v) {
-					$r =+ $v->period_day;
+					$r += $v->period_day;
 				}
 				// dump($r);
 
 				// start counting for this month
 				$month = $fourmonthname;
-				$workday = ($nofiveweekend + 1) - $sat;
+				$workday = ($nofiveweekend + 1) - $sat - $q;
 				// dump($workday);
 				$absent = $u + $p;
 				// dump($absent);
@@ -1726,9 +1891,8 @@ class AjaxDBController extends Controller
 								'workdays' => $workday,
 								'leaves' => $leave,
 								'absents' => $absent,
-								'working days' => ($workday - $absent - $leave),
+								'working_days' => ($workday - $absent - $leave),
 							];
-
 		}
 
 		if ($checkmonthsago >= 3) {
@@ -1738,6 +1902,25 @@ class AjaxDBController extends Controller
 				// dump($threeend);
 				$nofiveweekend = $join->diffInWeekdays($threeend);								// get weekdays from above as we have only sunday as a weekend
 				// dump($nofiveweekend + 1);													// 19 days : need to plus 1 for correct answer so it will be 20 days
+
+				// getting holiday on that month
+				$threeholiday = HRHolidayCalendar::where(function (Builder $query) use ($join, $threeend){
+														$query->whereDate('date_start', '>=', $join)
+														->WhereDate('date_start', '<=', $threeend);
+													})
+													->get();
+													// ->ddRawSql();
+				$q = 0;
+				if ($threeholiday) {
+					foreach ($threeholiday as $v) {
+						$sixperiod = Carbon::parse($v->date_start)->daysUntil($v->date_end, 1);			// 5 days
+						foreach ($sixperiod as $val) {
+							if (Carbon::parse($val)->dayOfWeek != Carbon::SUNDAY) {
+								$q++;
+							}
+						}
+					}
+				}
 
 				// saturday, probably this 1 could be a culprit because in the beginning, usually HR does not set restday_group_id, must check on attendance also.
 				$satoff = $st->belongstorestdaygroup?->hasmanyrestdaycalendar()				// getting sat for staff, if null than only 26 days available for him, otherwise, its lower than that.
@@ -1798,7 +1981,7 @@ class AjaxDBController extends Controller
 				$p = 0;
 				if ($halfabsent->count()) {
 					foreach ($halfabsent as $v) {
-						$p =+ 0.5;
+						$p += 0.5;
 					}
 				}
 				// dump($p);
@@ -1825,7 +2008,7 @@ class AjaxDBController extends Controller
 				// dump($fulldayleave);
 				$i = 0;
 				foreach ($fulldayleave as $v) {
-					$i =+ $v->period_day;
+					$i += $v->period_day;
 				}
 				// dump($i);
 
@@ -1848,13 +2031,13 @@ class AjaxDBController extends Controller
 
 				$r = 0;
 				foreach ($halfdayleave as $v) {
-					$r =+ $v->period_day;
+					$r += $v->period_day;
 				}
 				// dump($r);
 
 				// start counting for this month
 				$month = $threemonthname;
-				$workday = ($nofiveweekend + 1) - $sat;
+				$workday = ($nofiveweekend + 1) - $sat - $q;
 				// dump($workday);
 				$absent = $u + $p;
 				// dump($absent);
@@ -1870,6 +2053,25 @@ class AjaxDBController extends Controller
 				// dump($threeend);
 				$nofiveweekend = $threestart->diffInWeekdays($threeend, true);					// get weekdays from above as we have only sunday as a weekend
 				// dump($nofiveweekend + 1);													// 19 days : need to plus 1 for correct answer so it will be 20 days
+
+				// getting holiday on that month
+				$threeholiday = HRHolidayCalendar::where(function (Builder $query) use ($threestart, $threeend){
+														$query->whereDate('date_start', '>=', $threestart)
+														->WhereDate('date_start', '<=', $threeend);
+													})
+													->get();
+													// ->ddRawSql();
+				$q = 0;
+				if ($threeholiday) {
+					foreach ($threeholiday as $v) {
+						$sixperiod = Carbon::parse($v->date_start)->daysUntil($v->date_end, 1);			// 5 days
+						foreach ($sixperiod as $val) {
+							if (Carbon::parse($val)->dayOfWeek != Carbon::SUNDAY) {
+								$q++;
+							}
+						}
+					}
+				}
 
 				// saturday, probably this 1 could be a culprit because in the beginning, usually HR does not set restday_group_id, must check on attendance also.
 				$satoff = $st->belongstorestdaygroup?->hasmanyrestdaycalendar()				// getting sat for staff, if null than only 26 days available for him, otherwise, its lower than that.
@@ -1929,7 +2131,7 @@ class AjaxDBController extends Controller
 				$p = 0;
 				if ($halfabsent->count()) {
 					foreach ($halfabsent as $v) {
-						$p =+ 0.5;
+						$p += 0.5;
 					}
 				}
 				// dump($p);
@@ -1956,7 +2158,7 @@ class AjaxDBController extends Controller
 				// dump($fulldayleave);
 				$i = 0;
 				foreach ($fulldayleave as $v) {
-					$i =+ $v->period_day;
+					$i += $v->period_day;
 				}
 				// dump($i);
 
@@ -1979,13 +2181,13 @@ class AjaxDBController extends Controller
 
 				$r = 0;
 				foreach ($halfdayleave as $v) {
-					$r =+ $v->period_day;
+					$r += $v->period_day;
 				}
 				// dump($r);
 
 				// start counting for this month
 				$month = $threemonthname;
-				$workday = ($nofiveweekend + 1) - $sat;
+				$workday = ($nofiveweekend + 1) - $sat - $q;
 				// dump($workday);
 				$absent = $u + $p;
 				// dump($absent);
@@ -2001,9 +2203,8 @@ class AjaxDBController extends Controller
 								'workdays' => $workday,
 								'leaves' => $leave,
 								'absents' => $absent,
-								'working days' => ($workday - $absent - $leave),
+								'working_days' => ($workday - $absent - $leave),
 							];
-
 		}
 
 		if ($checkmonthsago >= 2) {
@@ -2013,6 +2214,25 @@ class AjaxDBController extends Controller
 				// dump($twoend);
 				$nofiveweekend = $join->diffInWeekdays($twoend);								// get weekdays from above as we have only sunday as a weekend
 				// dump($nofiveweekend + 1);													// 19 days : need to plus 1 for correct answer so it will be 20 days
+
+				// getting holiday on that month
+				$twoholiday = HRHolidayCalendar::where(function (Builder $query) use ($join, $twoend){
+														$query->whereDate('date_start', '>=', $join)
+														->WhereDate('date_start', '<=', $twoend);
+													})
+													->get();
+													// ->ddRawSql();
+				$q = 0;
+				if ($twoholiday) {
+					foreach ($twoholiday as $v) {
+						$sixperiod = Carbon::parse($v->date_start)->daysUntil($v->date_end, 1);			// 5 days
+						foreach ($sixperiod as $val) {
+							if (Carbon::parse($val)->dayOfWeek != Carbon::SUNDAY) {
+								$q++;
+							}
+						}
+					}
+				}
 
 				// saturday, probably this 1 could be a culprit because in the beginning, usually HR does not set restday_group_id, must check on attendance also.
 				$satoff = $st->belongstorestdaygroup?->hasmanyrestdaycalendar()				// getting sat for staff, if null than only 26 days available for him, otherwise, its lower than that.
@@ -2073,7 +2293,7 @@ class AjaxDBController extends Controller
 				$p = 0;
 				if ($halfabsent->count()) {
 					foreach ($halfabsent as $v) {
-						$p =+ 0.5;
+						$p += 0.5;
 					}
 				}
 				// dump($p);
@@ -2100,7 +2320,7 @@ class AjaxDBController extends Controller
 				// dump($fulldayleave);
 				$i = 0;
 				foreach ($fulldayleave as $v) {
-					$i =+ $v->period_day;
+					$i += $v->period_day;
 				}
 				// dump($i);
 
@@ -2123,13 +2343,13 @@ class AjaxDBController extends Controller
 
 				$r = 0;
 				foreach ($halfdayleave as $v) {
-					$r =+ $v->period_day;
+					$r += $v->period_day;
 				}
 				// dump($r);
 
 				// start counting for this month
 				$month = $twomonthname;
-				$workday = ($nofiveweekend + 1) - $sat;
+				$workday = ($nofiveweekend + 1) - $sat - $q;
 				// dump($workday);
 				$absent = $u + $p;
 				// dump($absent);
@@ -2145,6 +2365,25 @@ class AjaxDBController extends Controller
 				// dump($twoend);
 				$nofiveweekend = $twostart->diffInWeekdays($twoend, true);					// get weekdays from above as we have only sunday as a weekend
 				// dump($nofiveweekend + 1);													// 19 days : need to plus 1 for correct answer so it will be 20 days
+
+				// getting holiday on that month
+				$twoholiday = HRHolidayCalendar::where(function (Builder $query) use ($twostart, $twoend){
+														$query->whereDate('date_start', '>=', $twostart)
+														->WhereDate('date_start', '<=', $twoend);
+													})
+													->get();
+													// ->ddRawSql();
+				$q = 0;
+				if ($twoholiday) {
+					foreach ($twoholiday as $v) {
+						$sixperiod = Carbon::parse($v->date_start)->daysUntil($v->date_end, 1);			// 5 days
+						foreach ($sixperiod as $val) {
+							if (Carbon::parse($val)->dayOfWeek != Carbon::SUNDAY) {
+								$q++;
+							}
+						}
+					}
+				}
 
 				// saturday, probably this 1 could be a culprit because in the beginning, usually HR does not set restday_group_id, must check on attendance also.
 				$satoff = $st->belongstorestdaygroup?->hasmanyrestdaycalendar()				// getting sat for staff, if null than only 26 days available for him, otherwise, its lower than that.
@@ -2204,7 +2443,7 @@ class AjaxDBController extends Controller
 				$p = 0;
 				if ($halfabsent->count()) {
 					foreach ($halfabsent as $v) {
-						$p =+ 0.5;
+						$p += 0.5;
 					}
 				}
 				// dump($p);
@@ -2231,7 +2470,7 @@ class AjaxDBController extends Controller
 				// dump($fulldayleave);
 				$i = 0;
 				foreach ($fulldayleave as $v) {
-					$i =+ $v->period_day;
+					$i += $v->period_day;
 				}
 				// dump($i);
 
@@ -2254,13 +2493,13 @@ class AjaxDBController extends Controller
 
 				$r = 0;
 				foreach ($halfdayleave as $v) {
-					$r =+ $v->period_day;
+					$r += $v->period_day;
 				}
 				// dump($r);
 
 				// start counting for this month
 				$month = $twomonthname;
-				$workday = ($nofiveweekend + 1) - $sat;
+				$workday = ($nofiveweekend + 1) - $sat - $q;
 				// dump($workday);
 				$absent = $u + $p;
 				// dump($absent);
@@ -2276,9 +2515,8 @@ class AjaxDBController extends Controller
 								'workdays' => $workday,
 								'leaves' => $leave,
 								'absents' => $absent,
-								'working days' => ($workday - $absent - $leave),
+								'working_days' => ($workday - $absent - $leave),
 							];
-
 		}
 
 		if ($checkmonthsago >= 1) {
@@ -2288,6 +2526,25 @@ class AjaxDBController extends Controller
 				// dump($oneend);
 				$nofiveweekend = $join->diffInWeekdays($oneend);								// get weekdays from above as we have only sunday as a weekend
 				// dump($nofiveweekend + 1);													// 19 days : need to plus 1 for correct answer so it will be 20 days
+
+				// getting holiday on that month
+				$oneholiday = HRHolidayCalendar::where(function (Builder $query) use ($join, $oneend){
+														$query->whereDate('date_start', '>=', $join)
+														->WhereDate('date_start', '<=', $oneend);
+													})
+													->get();
+													// ->ddRawSql();
+				$q = 0;
+				if ($oneholiday) {
+					foreach ($oneholiday as $v) {
+						$sixperiod = Carbon::parse($v->date_start)->daysUntil($v->date_end, 1);			// 5 days
+						foreach ($sixperiod as $val) {
+							if (Carbon::parse($val)->dayOfWeek != Carbon::SUNDAY) {
+								$q++;
+							}
+						}
+					}
+				}
 
 				// saturday, probably this 1 could be a culprit because in the beginning, usually HR does not set restday_group_id, must check on attendance also.
 				$satoff = $st->belongstorestdaygroup?->hasmanyrestdaycalendar()				// getting sat for staff, if null than only 26 days available for him, otherwise, its lower than that.
@@ -2348,7 +2605,7 @@ class AjaxDBController extends Controller
 				$p = 0;
 				if ($halfabsent->count()) {
 					foreach ($halfabsent as $v) {
-						$p =+ 0.5;
+						$p += 0.5;
 					}
 				}
 				// dump($p);
@@ -2375,7 +2632,7 @@ class AjaxDBController extends Controller
 				// dump($fulldayleave);
 				$i = 0;
 				foreach ($fulldayleave as $v) {
-					$i =+ $v->period_day;
+					$i += $v->period_day;
 				}
 				// dump($i);
 
@@ -2398,13 +2655,13 @@ class AjaxDBController extends Controller
 
 				$r = 0;
 				foreach ($halfdayleave as $v) {
-					$r =+ $v->period_day;
+					$r += $v->period_day;
 				}
 				// dump($r);
 
 				// start counting for this month
 				$month = $onemonthname;
-				$workday = ($nofiveweekend + 1) - $sat;
+				$workday = ($nofiveweekend + 1) - $sat - $q;
 				// dump($workday);
 				$absent = $u + $p;
 				// dump($absent);
@@ -2420,6 +2677,25 @@ class AjaxDBController extends Controller
 				// dump($oneend);
 				$nofiveweekend = $onestart->diffInWeekdays($oneend, true);					// get weekdays from above as we have only sunday as a weekend
 				// dump($nofiveweekend + 1);													// 19 days : need to plus 1 for correct answer so it will be 20 days
+
+				// getting holiday on that month
+				$oneholiday = HRHolidayCalendar::where(function (Builder $query) use ($onestart, $oneend){
+														$query->whereDate('date_start', '>=', $onestart)
+														->WhereDate('date_start', '<=', $oneend);
+													})
+													->get();
+													// ->ddRawSql();
+				$q = 0;
+				if ($oneholiday) {
+					foreach ($oneholiday as $v) {
+						$sixperiod = Carbon::parse($v->date_start)->daysUntil($v->date_end, 1);			// 5 days
+						foreach ($sixperiod as $val) {
+							if (Carbon::parse($val)->dayOfWeek != Carbon::SUNDAY) {
+								$q++;
+							}
+						}
+					}
+				}
 
 				// saturday, probably this 1 could be a culprit because in the beginning, usually HR does not set restday_group_id, must check on attendance also.
 				$satoff = $st->belongstorestdaygroup?->hasmanyrestdaycalendar()				// getting sat for staff, if null than only 26 days available for him, otherwise, its lower than that.
@@ -2479,7 +2755,7 @@ class AjaxDBController extends Controller
 				$p = 0;
 				if ($halfabsent->count()) {
 					foreach ($halfabsent as $v) {
-						$p =+ 0.5;
+						$p += 0.5;
 					}
 				}
 				// dump($p);
@@ -2506,7 +2782,7 @@ class AjaxDBController extends Controller
 				// dump($fulldayleave);
 				$i = 0;
 				foreach ($fulldayleave as $v) {
-					$i =+ $v->period_day;
+					$i += $v->period_day;
 				}
 				// dump($i);
 
@@ -2529,13 +2805,13 @@ class AjaxDBController extends Controller
 
 				$r = 0;
 				foreach ($halfdayleave as $v) {
-					$r =+ $v->period_day;
+					$r += $v->period_day;
 				}
 				// dump($r);
 
 				// start counting for this month
 				$month = $onemonthname;
-				$workday = ($nofiveweekend + 1) - $sat;
+				$workday = ($nofiveweekend + 1) - $sat - $q;
 				// dump($workday);
 				$absent = $u + $p;
 				// dump($absent);
@@ -2551,13 +2827,321 @@ class AjaxDBController extends Controller
 								'workdays' => $workday,
 								'leaves' => $leave,
 								'absents' => $absent,
-								'working days' => ($workday - $absent - $leave),
+								'working_days' => ($workday - $absent - $leave),
 							];
-
 		}
 
 		if ($checkmonthsago >= 0) {
+			if ($join->gte($nowstartmonth)) {													// check if he join in the same month, count from $join
+				$onem = $join->toPeriod($now);											// 23 days
+				// dump($onem->count());													// 23 days
+				// dump($now);
+				$nofiveweekend = $join->diffInWeekdays($now);								// get weekdays from above as we have only sunday as a weekend
+				// dump($nofiveweekend + 1);													// 19 days : need to plus 1 for correct answer so it will be 20 days
 
+				// getting holiday on that month
+				$oneholiday = HRHolidayCalendar::where(function (Builder $query) use ($join, $now){
+														$query->whereDate('date_start', '>=', $join)
+														->WhereDate('date_start', '<=', $now);
+													})
+													->get();
+													// ->ddRawSql();
+				$q = 0;
+				if ($oneholiday) {
+					foreach ($oneholiday as $v) {
+						$sixperiod = Carbon::parse($v->date_start)->daysUntil($v->date_end, 1);			// 5 days
+						foreach ($sixperiod as $val) {
+							if (Carbon::parse($val)->dayOfWeek != Carbon::SUNDAY) {
+								$q++;
+							}
+						}
+					}
+				}
+
+				// saturday, probably this 1 could be a culprit because in the beginning, usually HR does not set restday_group_id, must check on attendance also.
+				$satoff = $st->belongstorestdaygroup?->hasmanyrestdaycalendar()				// getting sat for staff, if null than only 26 days available for him, otherwise, its lower than that.
+							->where(function (Builder $query) use ($join, $now){
+									$query->whereDate('saturday_date', '<=', $now)
+									->WhereDate('saturday_date', '>=', $join);
+							})
+							->get()->count();
+							// ->ddRawSql();
+				// dump($satoff);																// restday group 1
+
+				// getting saturday working
+				$saturdayatt = HRAttendance::where('staff_id', $st->id)
+										->where(function (Builder $query) use ($join, $now){
+											$query->whereDate('attend_date', '>=', $join)
+											->whereDate('attend_date', '<=', $now);
+										})
+										->where(function (Builder $query){
+											$query->whereRaw('DAYOFWEEK(hr_attendances.attend_date) = 7')
+											->where('daytype_id', 2);
+										})
+										->get()->count();
+										// ->ddRawSql();
+				// dump($saturdayatt);														// from $join to $now only on 11/3 he is RESTDAY
+				// need to get the most working days
+				if($satoff >= $saturdayatt) {												// meaning: according to attendance at that time, its not set yet
+					$sat = $saturdayatt;													// choose the smallest sat count which means more working days
+				} elseif ($satoff == $saturdayatt) {
+					$sat = $satoff;
+				}
+				// dump($sat);
+
+				// getting absent
+				$fullabsent = HRAttendance::where('staff_id', $st->id)
+										->where('attendance_type_id', 1)
+										->where(function (Builder $query) use ($join, $now){
+											$query->whereDate('attend_date', '>=', $join)
+											->whereDate('attend_date', '<=', $now);
+										})
+										->get();
+										// ->ddRawSql();
+				$u = 0;
+				if ($fullabsent->count()) {
+					foreach ($fullabsent as $v) {
+						$u++;
+					}
+				}
+				// dump($u);
+
+				$halfabsent = HRAttendance::where('staff_id', $st->id)
+										->where('attendance_type_id', 2)
+										->where(function (Builder $query) use ($join, $now){
+											$query->whereDate('attend_date', '>=', $join)
+											->whereDate('attend_date', '<=', $now);
+										})
+										->get();
+										// ->ddRawSql();
+				$p = 0;
+				if ($halfabsent->count()) {
+					foreach ($halfabsent as $v) {
+						$p += 0.5;
+					}
+				}
+				// dump($p);
+
+				// getting full day leave for that months
+				$fulldayleave = HRLeave::where('staff_id', $st->id)							// get period from here
+								->where(function (Builder $query){
+									$query->where('leave_type_id', '<>', 9)
+									->where(function (Builder $query){
+										$query->where('half_type_id', '<>', 2)
+										->orWhereNull('half_type_id');
+									});
+								})
+								->where(function (Builder $query){
+									$query->whereIn('leave_status_id', [5,6])
+										->orWhereNull('leave_status_id');
+								})
+								->where(function (Builder $query) use ($now, $join){
+										$query->whereDate('date_time_start', '<=', $now)
+										->WhereDate('date_time_end', '>=', $join);
+								})
+								->get();
+								// ->ddRawSql();
+				// dump($fulldayleave);
+				$i = 0;
+				foreach ($fulldayleave as $v) {
+					$i += $v->period_day;
+				}
+				// dump($i);
+
+				// getting half day leave
+				$halfdayleave = HRLeave::where('staff_id', $st->id)								// get period from here
+										->where(function (Builder $query){
+											$query->where('leave_type_id', '<>', 9)
+											->where('half_type_id', 2);
+										})
+										->where(function (Builder $query) use ($now, $join){
+												$query->whereDate('date_time_start', '<=', $now)
+												->WhereDate('date_time_end', '>=', $join);
+										})
+										->where(function (Builder $query){
+											$query->whereIn('leave_status_id', [5,6])
+												->orWhereNull('leave_status_id');
+										})
+										->get();
+										// ->ddRawSql();
+
+				$r = 0;
+				foreach ($halfdayleave as $v) {
+					$r += $v->period_day;
+				}
+				// dump($r);
+
+				// start counting for this month
+				$month = $onemonthname;
+				$workday = ($nofiveweekend + 1) - $sat - $q;
+				// dump($workday);
+				$absent = $u + $p;
+				// dump($absent);
+				$leave = $i + $r;
+				// dump($leave);
+
+				$attpercentage = number_format( ($workday - $absent - $leave) / ($workday) * 100, 2);
+				// dump($attpercentage);
+
+			} else {																		// count from $now
+				// dump($now.' date now');
+				$onem = $nowstartmonth->copy()->toPeriod($now);								// 23 days
+				// dump($onem->count().' days');											// 23 days
+				// dump($now->copy()->startOfMonth().' start of month');
+				$nofiveweekend = $nowstartmonth->diffInWeekdays($now, true);					// get weekdays from above as we have only sunday as a weekend
+				// dump(($nofiveweekend + 1).' days without weekend');						// 19 days : need to plus 1 for correct answer so it will be 20 days
+
+				// getting holiday on that month
+				$oneholiday = HRHolidayCalendar::where(function (Builder $query) use ($nowstartmonth, $now){
+														$query->whereDate('date_start', '>=', $nowstartmonth)
+														->WhereDate('date_start', '<=', $now);
+													})
+													->get();
+													// ->ddRawSql();
+				$q = 0;
+				if ($oneholiday) {
+					foreach ($oneholiday as $v) {
+						$sixperiod = Carbon::parse($v->date_start)->daysUntil($v->date_end, 1);			// 5 days
+						foreach ($sixperiod as $val) {
+							if (Carbon::parse($val)->dayOfWeek != Carbon::SUNDAY) {
+								$q++;
+							}
+						}
+					}
+				}
+
+				// saturday, probably this 1 could be a culprit because in the beginning, usually HR does not set restday_group_id, must check on attendance also.
+				$satoff = $st->belongstorestdaygroup?->hasmanyrestdaycalendar()				// getting sat for staff, if null than only 26 days available for him, otherwise, its lower than that.
+							->where(function (Builder $query) use ($nowstartmonth, $now){
+									$query->whereDate('saturday_date', '<=', $now)
+									->WhereDate('saturday_date', '>=', $nowstartmonth);
+							})
+							->get()->count();
+							// ->ddRawSql();
+				// dump($satoff);																// restday group 1
+
+				// getting saturday working
+				$saturdayatt = HRAttendance::where('staff_id', $st->id)
+										->where(function (Builder $query) use ($nowstartmonth, $now){
+											$query->whereDate('attend_date', '>=', $nowstartmonth)
+											->whereDate('attend_date', '<=', $now);
+										})
+										->where(function (Builder $query){
+											$query->whereRaw('DAYOFWEEK(hr_attendances.attend_date) = 7')
+											->where('daytype_id', 2);
+										})
+										->get()->count();
+										// ->ddRawSql();
+				// dump($saturdayatt);															// from $nowstartmonth to $now only on 11/3 he is RESTDAY
+				// need to get the most working days
+				if($satoff >= $saturdayatt) {												// meaning: according to attendance at that time, its not set yet
+					$sat = $saturdayatt;													// choose the smallest sat count which means more working days
+				} elseif ($satoff == $saturdayatt) {
+					$sat = $satoff;
+				}
+
+				// getting absent
+				$fullabsent = HRAttendance::where('staff_id', $st->id)
+										->where('attendance_type_id', 1)
+										->where(function (Builder $query) use ($nowstartmonth, $now){
+											$query->whereDate('attend_date', '>=', $nowstartmonth)
+											->whereDate('attend_date', '<=', $now);
+										})
+										->get();
+										// ->ddRawSql();
+				$u = 0;
+				if ($fullabsent->count()) {
+					foreach ($fullabsent as $v) {
+						$u++;
+					}
+				}
+				// dump($u);
+
+				$halfabsent = HRAttendance::where('staff_id', $st->id)
+										->where('attendance_type_id', 2)
+										->where(function (Builder $query) use ($nowstartmonth, $now){
+											$query->whereDate('attend_date', '>=', $nowstartmonth)
+											->whereDate('attend_date', '<=', $now);
+										})
+										->get();
+										// ->ddRawSql();
+				$p = 0;
+				if ($halfabsent->count()) {
+					foreach ($halfabsent as $v) {
+						$p += 0.5;
+					}
+				}
+				// dump($p);
+
+				// getting full day leave for that months
+				$fulldayleave = HRLeave::where('staff_id', $st->id)							// get period from here
+								->where(function (Builder $query){
+									$query->where('leave_type_id', '<>', 9)
+									->where(function (Builder $query){
+										$query->where('half_type_id', '<>', 2)
+										->orWhereNull('half_type_id');
+									});
+								})
+								->where(function (Builder $query){
+									$query->whereIn('leave_status_id', [5,6])
+										->orWhereNull('leave_status_id');
+								})
+								->where(function (Builder $query) use ($now, $nowstartmonth){
+										$query->whereDate('date_time_start', '<=', $now)
+										->WhereDate('date_time_end', '>=', $nowstartmonth);
+								})
+								->get();
+								// ->ddRawSql();
+				// dd($fulldayleave);
+				$i = 0;
+				foreach ($fulldayleave as $v) {
+					$i += $v->period_day;
+				}
+				// dump($i);
+
+				// getting half day leave
+				$halfdayleave = HRLeave::where('staff_id', $st->id)							// get period from here
+										->where(function (Builder $query){
+											$query->where('leave_type_id', '<>', 9)
+											->where('half_type_id', 2);
+										})
+										->where(function (Builder $query) use ($now, $nowstartmonth){
+												$query->whereDate('date_time_start', '<=', $now)
+												->WhereDate('date_time_end', '>=', $nowstartmonth);
+										})
+										->where(function (Builder $query){
+											$query->whereIn('leave_status_id', [5,6])
+												->orWhereNull('leave_status_id');
+										})
+										->get();
+										// ->ddRawSql();
+
+				$r = 0;
+				foreach ($halfdayleave as $v) {
+					$r += $v->period_day;
+				}
+				// dump($r);
+
+				// start counting for this month
+				$month = $onemonthname;
+				$workday = ($nofiveweekend + 1) - $sat - $q;
+				// dump($workday);
+				$absent = $u + $p;
+				// dump($absent);
+				$leave = $i + $r;
+				// dump($leave);
+
+				$attpercentage = number_format( ($workday - $absent - $leave) / ($workday) * 100, 2);
+				// dump($attpercentage);
+			}
+			$chartdata[] = [
+								'month' => $month,
+								'percentage' => $attpercentage,
+								'workdays' => $workday,
+								'leaves' => $leave,
+								'absents' => $absent,
+								'working_days' => ($workday - $absent - $leave),
+							];
 		}
 
 		return response()->json($chartdata);

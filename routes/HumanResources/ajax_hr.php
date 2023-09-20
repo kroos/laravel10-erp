@@ -18,7 +18,7 @@ Route::delete('/deletecrossbackup/{staff}', [AjaxController::class, 'deletecross
 // Ajax DB Controller : only to retrieve data from db
 Route::post('/loginuser', [AjaxDBController::class, 'loginuser'])->name('loginuser.loginuser');
 Route::post('/leaveType', [AjaxDBController::class, 'leaveType'])->name('leaveType.leaveType');
-Route::post('/backupperson', [AjaxDBController::class, 'backupperson'])->name('backupperson.backupperson');
+Route::get('/backupperson', [AjaxDBController::class, 'backupperson'])->name('backupperson');
 Route::post('/unavailabledate', [AjaxDBController::class, 'unavailabledate'])->name('leavedate.unavailabledate');
 Route::post('/timeleave', [AjaxDBController::class, 'timeleave'])->name('leavedate.timeleave');
 Route::post('/leavestatus', [AjaxDBController::class, 'leavestatus'])->name('leavestatus.leavestatus');
@@ -46,7 +46,7 @@ Route::post('/leaveevents', [AjaxDBController::class, 'leaveevents'])->name('lea
 Route::post('/division', [AjaxDBController::class, 'division'])->name('division');
 Route::post('/staffattendance', [AjaxDBController::class, 'staffattendance'])->name('staffattendance');
 Route::post('/staffattendancelist', [AjaxDBController::class, 'staffattendancelist'])->name('staffattendancelist');
-Route::get('/staffpercentage', [AjaxDBController::class, 'staffpercentage'])->name('staffpercentage');
+Route::post('/staffpercentage', [AjaxDBController::class, 'staffpercentage'])->name('staffpercentage');
 
 // Route::get('/login/{login}', [
 // 	'as' => 'login.edit',
