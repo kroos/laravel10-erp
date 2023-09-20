@@ -331,8 +331,7 @@ class AjaxDBController extends Controller
 	{
 		// we r going to find a backup person
 		// 1st, we need to take a look into his/her department.
-		// $user = Staff::find($request->id);
-		$user = Staff::find(196);
+		$user = Staff::find($request->id);
 		// dd($user);
 		$dept = $user->belongstomanydepartment()->first();
 		$userindept = $dept->belongstomanystaff()->where('active', 1)->get();
@@ -343,12 +342,12 @@ class AjaxDBController extends Controller
 		if ($userindept) {
 			foreach($userindept as $key){
 				if($key->id != $user->id){
-				$chkavailability = $key->hasmanyleave()
+					$chkavailability = $key->hasmanyleave()
 									->where(function (Builder $query) use ($request){
-										$query->whereDate('date_time_start', '>=', '2023-08-02')
-										->whereDate('date_time_start', '<=', '2023-08-03');
-										// $query->whereDate('date_time_start', '>=', $request->date_from)
-										// ->whereDate('date_time_start', '<=', $request->date_to);
+										// $query->whereDate('date_time_start', '>=', '2023-09-21')
+										// ->whereDate('date_time_start', '<=', '2023-09-22');
+										$query->whereDate('date_time_start', '<=', $request->date_from)
+										->whereDate('date_time_end', '>=', $request->date_to);
 									})
 									->where(function (Builder $query){
 										$query->where('leave_type_id', '<>', 9)
@@ -363,13 +362,42 @@ class AjaxDBController extends Controller
 									})
 									->get();
 									// ->dumpRawSql();
-				$itedate = Carbon::parse('2023-08-02')->daysUntil('2023-08-03');
-				foreach ($itedate as $k) {
-					// dump($k);
-					foreach ($collection as $value) {
 
+					// dump($chkavailability);
+					if($key->id != $chkavailability->first()?->staff_id) {
+						$backup['results'][] = [
+												'id' => $key->id,
+												'text' => $key->name,
+											];
 					}
 				}
+			}
+		}
+
+		$crossbacku = $user->crossbackupto()?->wherePivot('active', 1)->get();
+		// $crossbackup['results'][] = [];
+		if($crossbacku) {
+			foreach($crossbacku as $key){
+				$chkavailability = $key->hasmanyleave()
+								->where(function (Builder $query) use ($request){
+									$query->whereDate('date_time_start', '<=', $request->date_from)
+									->whereDate('date_time_end', '>=', $request->date_to);
+								})
+								->where(function (Builder $query){
+									$query->where('leave_type_id', '<>', 9)
+									->where(function (Builder $query){
+										$query->where('half_type_id', '<>', 2)
+										->orWhereNull('half_type_id');
+									});
+								})
+								->where(function (Builder $query){
+									$query->whereIn('leave_status_id', [5,6])
+										->orWhereNull('leave_status_id');
+								})
+								->get();
+								// ->dumpRawSql();
+
+				if($key->id != $chkavailability->first()?->staff_id) {
 					$backup['results'][] = [
 											'id' => $key->id,
 											'text' => $key->name,
@@ -377,21 +405,10 @@ class AjaxDBController extends Controller
 				}
 			}
 		}
-
-		$crossbacku = $user->crossbackupto()?->wherePivot('active', 1)->get();
-		$crossbackup['results'][] = [];
-		if($crossbacku) {
-			foreach($crossbacku as $key){
-				$crossbackup['results'][] = [
-												'id' => $key->id,
-												'text' => $key->name,
-											];
-			}
-		}
-		// dd($crossbackup);
 		// $allbackups = Arr::collapse([$backup, $crossbackup]);
-		$allbackups = array_merge_recursive($backup, $crossbackup);
-		return response()->json( $allbackups );
+		// $allbackups = array_merge_recursive($backup, $crossbackup);
+		// return response()->json( $allbackups );
+		return response()->json( $backup );
 	}
 
 	public function timeleave(Request $request)
