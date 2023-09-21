@@ -1010,7 +1010,7 @@ if ($os->isNotEmpty()) {																							// outstation |
 }
 
 if($l) {
-	$lea = '<a href="'.route('leave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+	$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 } else {
 	$lea = NULL;
 }

@@ -44,29 +44,28 @@ class LeaveController extends Controller
 	 */
 	public function store(Request $request): RedirectResponse
 	{
-		//
 	}
 
 	/**
 	 * Display the specified resource.
 	 */
-	public function show(HRLeave $hRLeave): View
+	public function show(HRLeave $hrleave): View
 	{
-		//
+		return view('humanresources.hrdept.leave.show', ['hrleave' => $hrleave]);
 	}
 
 	/**
 	 * Show the form for editing the specified resource.
 	 */
-	public function edit(HRLeave $hRLeave): View
+	public function edit(HRLeave $hrleave): View
 	{
-		//
+		return view('humanresources.hrdept.leave.edit', ['hrleave' => $hrleave]);
 	}
 
 	/**
 	 * Update the specified resource in storage.
 	 */
-	public function update(Request $request, HRLeave $hRLeave): RedirectResponse
+	public function update(Request $request, HRLeave $hrleave): RedirectResponse
 	{
 		//
 	}
@@ -74,7 +73,7 @@ class LeaveController extends Controller
 	/**
 	 * Remove the specified resource from storage.
 	 */
-	public function destroy(HRLeave $hRLeave): RedirectResponse
+	public function destroy(HRLeave $hrleave): RedirectResponse
 	{
 		//
 	}

@@ -20,7 +20,7 @@
 
 	<!-- herecomes the hardest part, leave application -->
 
-	<div class="d-flex justify-content-center align-items-center">
+	<div class="d-flex justify-content-center align-items-start">
 		{{ Form::open(['route' => ['leave.store'], 'id' => 'form', 'autocomplete' => 'off', 'files' => true,  'data-toggle' => 'validator']) }}
 		<h5>Leave Application</h5>
 
