@@ -89,8 +89,19 @@
 
 
 <?php
+use \Carbon\Carbon;
+use \Carbon\CarbonPeriod;
+
+$user = $hrleave->belongstostaff;
+$userneedbackup = $user->belongstoleaveapprovalflow->backup_approval;
+$setHalfDayMC = \App\Models\Setting::find(2)->active;
+// dd($setHalfDayMC);
+// checking for overlapped leave only for half day leave
+// dd(\App\Helpers\UnavailableDateTime::unblockhalfdayleave($hrleave->belongstostaff->id, '2023-09-08'));
 // dd($hrleave);
-$staff = $hrleave->belongstostaff()->get()->first();
+
+$staff = $user;
+// dd([$staff, $user]);
 $login = $staff->hasmanylogin()->get()->first();
 
 $count = 0;
@@ -274,7 +285,8 @@ if ($backup) {
 			</div>
 		</div>
 
-		<div id="wrapper"></div>
+		<div id="wrapper">
+		</div>
 
 		<div class="form-group row mb-3 {{ $errors->has('akuan') ? 'has-error' : '' }}">
 			<div class="offset-sm-2 col-auto">
@@ -318,15 +330,6 @@ $('#leave_id').select2({
 
 /////////////////////////////////////////////////////////////////////////////////////////
 // start setting up the leave accordingly.
-<?php
-$user = $hrleave->belongstostaff;
-$userneedbackup = $user->belongstoleaveapprovalflow->backup_approval;
-$setHalfDayMC = \App\Models\Setting::find(2)->active;
-// dd($setHalfDayMC);
-// checking for overlapped leave only for half day leave
-// dd(\App\Helpers\UnavailableDateTime::unblockhalfdayleave($hrleave->belongstostaff->id, '2023-09-08'));
-?>
-
 /////////////////////////////////////////////////////////////////////////////////////////
 //  global variable : ajax to get the unavailable date
 var data2 = $.ajax({
@@ -339,7 +342,7 @@ var data2 = $.ajax({
 			},
 	dataType: 'json',
 	global: false,
-	async:false,
+	async: false,
 	success: function (response) {
 		// you will get response from your php page (what you echo or print)
 		// return response;
@@ -367,7 +370,7 @@ var data3 = $.ajax({
 			},
 	dataType: 'json',
 	global: false,
-	async:false,
+	async: false,
 	success: function (response) {
 		// you will get response from your php page (what you echo or print)
 		// return response;
@@ -411,20 +414,153 @@ var objtime = $.parseJSON( data10 );
 
 // console.log(objtime);
 
-//concept of checking overlapped half day leave
-// var d = false;
-// var itime_start = 0;
-// var itime_end = 0;
-// $.each(objtime, function() {
-// 	console.log(this.date_half_leave);
-// 	if(this.date_half_leave == '2023-09-09') {	// half day leave date
-// 		return [d = true, itime_start = this.time_start, itime_end = this.time_end];
-// 	}
-// });
-// console.log(d);
-// console.log(itime_start);
-// console.log(itime_end);
+/////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////
+$(document).ready(function(){
+	if ($('#leave_id').val() == '9') {													// if TF
+		// console.log($('#leave_id').val());
+		// insert tf leave here
+	} else {																			// other than TF
+		// console.log('else');
+		$('#wrapper').append(
 
+			'<div id="remove">' +
+				'<div class="form-group row mb-3 {{ $errors->has('date_time_start') ? 'has-error' : '' }}">' +
+					'{{ Form::label('from', 'From : ', ['class' => 'col-sm-2 col-form-label']) }}' +
+					'<div class="col-auto datetime" style="position: relative">' +
+						'{{ Form::text('date_time_start', Carbon::parse($hrleave->date_time_start)->format('Y-m-d'), ['class' => 'form-control col-auto', 'id' => 'from', 'placeholder' => 'From : ', 'autocomplete' => 'off']) }}' +
+					'</div>' +
+				'</div>' +
+				'<div class="form-group row mb-3 {{ $errors->has('date_time_end') ? 'has-error' : '' }}">' +
+					'{{ Form::label('to', 'To : ', ['class' => 'col-sm-2 col-form-label']) }}' +
+					'<div class="col-auto datetime" style="position: relative">' +
+						'{{ Form::text('date_time_end', Carbon::parse($hrleave->date_time_end)->format('Y-m-d'), ['class' => 'form-control col-auto', 'id' => 'to', 'placeholder' => 'To : ', 'autocomplete' => 'off']) }}' +
+					'</div>' +
+				'</div>' +
+				'<div class="form-group row mb-3 {{ $errors->has('leave_type') ? 'has-error' : '' }}" id="wrapperday">' +
+
+					'{{ Form::label('leave_type', 'Leave Category : ', ['class' => 'col-sm-2 col-form-label removehalfleave']) }}' +
+					'<div class="col-auto mb-3 removehalfleave " id="halfleave">' +
+						'<div class="pretty p-default p-curve form-check form-check-inline removehalfleave" id="removeleavehalf">' +
+							'<input type="radio" name="leave_type" value="1" id="radio1" class="removehalfleave" checked="checked">' +
+							'<div class="state p-success removehalfleave">' +
+								'{{ Form::label('radio1', 'Full Day Off', ['class' => 'form-check-label removehalfleave']) }}' +
+							'</div>' +
+						'</div>' +
+						'<div class="pretty p-default p-curve form-check form-check-inline removehalfleave" id="appendleavehalf">' +
+							'<input type="radio" name="leave_type" value="2" id="radio2" class="removehalfleave" >' +
+							'<div class="state p-success removehalfleave">' +
+								'{{ Form::label('radio2', 'Half Day Off', ['class' => 'form-check-label removehalfleave']) }}' +
+							'</div>' +
+						'</div>' +
+					'</div>' +
+					'<div class="form-group col-auto offset-sm-2 {{ $errors->has('half_type_id') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
+
+					'</div>' +
+
+					'<div class="form-group col-auto offset-sm-2 {{ $errors->has('half_type_id') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
+
+					'</div>' +
+				'</div>' +
+				'@if( $userneedbackup == 1 )' +
+				'<div class="form-group row mb-3 {{ $errors->has('staff_id') ? 'has-error' : '' }}">' +
+					'{{ Form::label('backupperson', 'Replacement : ', ['class' => 'col-sm-2 col-form-label']) }}' +
+					'<div class="col-auto backup">' +
+						'{{ Form::select('staff_id', \App\Models\Staff::where('active', 1)->pluck('name', 'id'), !is_null($hrleave->hasmanyleaveapprovalbackup()->first()?->staff_id)?$hrleave->hasmanyleaveapprovalbackup()->first()?->staff_id:NULL, ['id' => 'backupperson', 'class' => 'form-control form-select form-select-sm', 'placeholder' => 'Please Choose']) }}' +
+					'</div>' +
+				'</div>' +
+				'@endif' +
+				'<div class="form-group row mb-3 {{ $errors->has('document') ? 'has-error' : '' }}">' +
+					'{{ Form::label( 'doc', 'Upload Supporting Document : ', ['class' => 'col-sm-2 col-form-label'] ) }}' +
+					'<div class="col-auto supportdoc">' +
+						'{{ Form::file( 'document', ['class' => 'form-control form-control-file', 'id' => 'doc', 'placeholder' => 'Supporting Document']) }}' +
+					'</div>' +
+				'</div>' +
+				'<div class="form-group row mb-3 {{ $errors->has('documentsupport') ? 'has-error' : '' }}">' +
+					'<div class="offset-sm-2 col-auto form-check suppdoc">' +
+						'{{ Form::checkbox('documentsupport', 1, @$value, ['class' => 'form-check-input ', 'id' => 'suppdoc']) }}' +
+						'<label for="suppdoc" class="form-check-label p-1 bg-warning text-danger rounded">Please ensure you will submit <strong>Supporting Documents</strong> within <strong>3 Days</strong> after date leave.</label>' +
+					'</div>' +
+				'</div>' +
+			'</div>'
+
+		);
+	}
+	// start date
+	$('#from').datetimepicker({
+		icons: {
+			time: "fas fas-regular fa-clock fa-beat",
+			date: "fas fas-regular fa-calendar fa-beat",
+			up: "fa-regular fa-circle-up fa-beat",
+			down: "fa-regular fa-circle-down fa-beat",
+			previous: 'fas fas-regular fa-arrow-left fa-beat',
+			next: 'fas fas-regular fa-arrow-right fa-beat',
+			today: 'fas fas-regular fa-calenday-day fa-beat',
+			clear: 'fas fas-regular fa-broom-wide fa-beat',
+			close: 'fas fas-regular fa-rectangle-xmark fa-beat'
+		},
+		format:'YYYY-MM-DD',
+		useCurrent: false,
+		// minDate: moment().format('YYYY-MM-DD'),
+		// disabledDates: data,
+	})
+	.on('dp.change dp.update', function(e) {
+		// $('#form').bootstrapValidator('revalidateField', 'date_time_start');
+		$('#to').datetimepicker('minDate', $('#from').val());
+	});
+
+	// end date
+	$('#to').datetimepicker({
+		icons: {
+			time: "fas fas-regular fa-clock fa-beat",
+			date: "fas fas-regular fa-calendar fa-beat",
+			up: "fa-regular fa-circle-up fa-beat",
+			down: "fa-regular fa-circle-down fa-beat",
+			previous: 'fas fas-regular fa-arrow-left fa-beat',
+			next: 'fas fas-regular fa-arrow-right fa-beat',
+			today: 'fas fas-regular fa-calenday-day fa-beat',
+			clear: 'fas fas-regular fa-broom-wide fa-beat',
+			close: 'fas fas-regular fa-rectangle-xmark fa-beat'
+		},
+		format:'YYYY-MM-DD',
+		useCurrent: false,
+		// minDate: moment().format('YYYY-MM-DD'),
+		// disabledDates: data,
+	})
+	.on('dp.change dp.update', function(e) {
+		// $('#to').bootstrapValidator('revalidateField', 'date_time_start');
+		$('#from').datetimepicker('maxDate', $('#to').val());
+	});
+
+	//enable select 2 for backup
+	$('#backupperson').select2({
+		placeholder: 'Please Choose',
+		width: '100%',
+		ajax: {
+			url: '{{ route('backupperson') }}',
+			// data: { '_token': '{!! csrf_token() !!}' },
+			type: 'POST',
+			dataType: 'json',
+			data: function (params) {
+				var query = {
+					id: {{ $hrleave->belongstostaff->id }},
+					_token: '{!! csrf_token() !!}',
+					date_from: $('#from').val(),
+					date_to: $('#to').val(),
+				}
+				return query;
+			}
+		},
+		allowClear: true,
+		closeOnSelect: true,
+	});
+
+
+});
+
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////
 // start here when user start to select the leave type option
 $('#leave_id').on('change', function() {
@@ -570,8 +706,8 @@ $('#leave_id').on('change', function() {
 			},
 			format:'YYYY-MM-DD',
 			useCurrent: false,
-			minDate: moment().format('YYYY-MM-DD'),
-			disabledDates: data,
+			// minDate: moment().format('YYYY-MM-DD'),
+			// disabledDates: data,
 			// daysOfWeekDisabled: [0],
 			// minDate: data[1],
 		})
@@ -722,8 +858,8 @@ if(obj.time_start_pm == itime_start) {
 			},
 			format:'YYYY-MM-DD',
 			useCurrent: false,
-			minDate: moment().format('YYYY-MM-DD'),
-			disabledDates:data,
+			// minDate: moment().format('YYYY-MM-DD'),
+			// disabledDates:data,
 			//daysOfWeekDisabled: [0],
 		})
 		.on('dp.change dp.update', function(e) {
