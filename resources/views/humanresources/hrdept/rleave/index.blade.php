@@ -1,50 +1,61 @@
 @extends('layouts.app')
 
 @section('content')
-<?php
-// load facade
-use Illuminate\Database\Eloquent\Builder;
 
-// load models
-use App\Models\HumanResources\HRHolidayCalendar;
-use App\Models\HumanResources\OptDayType;
-use App\Models\HumanResources\OptTcms;
-use App\Models\HumanResources\HROvertime;
-use App\Models\HumanResources\HROutstation;
+<style>
+  /* div {
+  border: 1px solid black;
+} */
+</style>
 
-// load helper
-use App\Helpers\UnavailableDateTime;
-
-// load lib
-use \Carbon\Carbon;
-?>
-
-<div class="col-sm-12 row">
+<div class="container">
   @include('humanresources.hrdept.navhr')
   <h4>Replacement Leave</h4>
-  <div class="">
-    <table id="attendance" class="table table-hover table-sm align-middle" style="font-size:12px">
+  <div>
+    <table id="replacement" class="table table-hover table-sm align-middle" style="font-size:12px">
       <thead>
         <tr>
           <th>ID</th>
           <th>Name</th>
-          <th>Type</th>
-          <th>Cause</th>
-          <th>Leave</th>
-          <th>Date</th>
-          <th>In</th>
-          <th>Break</th>
-          <th>Resume</th>
-          <th>Out</th>
-          <th>Duration</th>
-          <th>Overtime</th>
+          <th>Date Start</th>
+          <th>Date End</th>
+          <th>Customer</th>
+          <th>Reason</th>
+          <th>Total</th>
+          <th>Utilize</th>
+          <th>Balance</th>
           <th>Remarks</th>
-          <th>Exception</th>
+          <th>Edit</th>
+          <th>Cancel</th>
         </tr>
       </thead>
       <tbody>
+        @foreach ($replacements as $replacement)
+        <tr>
+          <th>ID</th>
+          <th>{{ $replacement->belongstostaff->name }}</th>
+          <th>{{ $replacement->date_start }}</th>
+          <th>{{ $replacement->date_end }}</th>
+          <th>
+            @if ($replacement->belongstocustomer)
+              {{ $replacement->belongstocustomer->customer }}
+            @endif
+          </th>
+          <th>{{ $replacement->reason }}</th>
+          <th>Total</th>
+          <th>Utilize</th>
+          <th>Balance</th>
+          <th>Remarks</th>
+          <th>Edit</th>
+          <th>Cancel</th>
+        </tr>
+        @endforeach
       </tbody>
     </table>
+
+    <div class="d-flex justify-content-center">
+      {{ $replacements->links() }}
+    </div>
   </div>
 </div>
 @endsection
