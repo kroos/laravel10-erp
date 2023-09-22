@@ -89,6 +89,7 @@
 
 
 <?php
+use \App\Models\Staff;
 use \Carbon\Carbon;
 use \Carbon\CarbonPeriod;
 
@@ -268,8 +269,8 @@ if ($backup) {
 	<p>&nbsp;</p>
 
 	<div class="d-flex justify-content-center align-items-start">
-		{{ Form::model($hrleave, ['route' => ['hrleave.update', $hrleave->id], 'id' => 'form', 'autocomplete' => 'off', 'files' => true,  'data-toggle' => 'validator']) }}
-		<h5>Leave Application Edit</h5>
+		{{ Form::model($hrleave, ['route' => ['hrleave.update', $hrleave], 'method' => 'PATCH', 'id' => 'form', 'autocomplete' => 'off', 'files' => true, 'data-toggle' => 'validator']) }}
+		<h5>Edit Leave Application</h5>
 
 		<div class="form-group row {{ $errors->has('leave_id') ? 'has-error' : '' }}">
 			{{ Form::label( 'leave_type_id', 'Leave Type : ', ['class' => 'col-sm-2 col-form-label'] ) }}
@@ -420,6 +421,59 @@ $(document).ready(function(){
 	if ($('#leave_id').val() == '9') {													// if TF
 		// console.log($('#leave_id').val());
 		// insert tf leave here
+		$('#wrapper').append(
+
+			'<div id="remove">' +
+				<!-- time off -->
+				'<div class="form-group row mb-3 {{ $errors->has('date_time_start') ? 'has-error' : '' }}">' +
+					'{{ Form::label('from', 'Date : ', ['class' => 'col-sm-2 col-form-label']) }}' +
+					'<div class="col-auto datetime" style="position: relative">' +
+						'{{ Form::text('date_time_start', Carbon::parse($hrleave->date_time_start)->format('Y-m-d'), ['class' => 'form-control', 'id' => 'from', 'placeholder' => 'Date : ', 'autocomplete' => 'off']) }}' +
+						'{{ Form::hidden('date_time_end', Carbon::parse($hrleave->date_time_start)->format('Y-m-d'), ['id' => 'to']) }}' +
+					'</div>' +
+				'</div>' +
+
+				'<div class="form-group row mb-3 {{ $errors->has('date_time_end') ? 'has-error' : '' }}">' +
+					'{{ Form::label('to', 'Time : ', ['class' => 'col-sm-2 col-form-label']) }}' +
+					'<div class="col-auto">' +
+							'<div class="form-row time">' +
+								'<div class="col-auto mb-3" style="position: relative">' +
+									'{{ Form::text('time_start', Carbon::parse($hrleave->date_time_start)->format('H:i:s'), ['class' => 'form-control', 'id' => 'start', 'placeholder' => 'From : ', 'autocomplete' => 'off']) }}' +
+								'</div>' +
+								'<div class="col-auto mb-3" style="position: relative">' +
+									'{{ Form::text('time_end', Carbon::parse($hrleave->date_time_end)->format('H:i:s'), ['class' => 'form-control', 'id' => 'end', 'placeholder' => 'To : ', 'autocomplete' => 'off']) }}' +
+								'</div>' +
+							'</div>' +
+					'</div>' +
+				'</div>' +
+				@if( $userneedbackup == 1 )
+				'<div id="backupwrapper">' +
+					'<div class="form-group row mb-3 {{ $errors->has('staff_id') ? 'has-error' : '' }}" id="backupremove">' +
+						'{{ Form::label('backupperson', 'Backup Person : ', ['class' => 'col-sm-2 col-form-label']) }}' +
+						'<div class="col-auto backup">' +
+							'{{ Form::select('staff_id', Staff::where('active', 1)->pluck('name', 'id'), $hrleave->hasmanyleaveapprovalbackup()->first()?->staff_id??NULL, ['id' => 'backupperson', 'class' => 'form-control form-select form-select-sm', 'placeholder' => 'Please Choose']) }}' +
+						'</div>' +
+					'</div>' +
+				'</div>' +
+				@endif
+				'<div class="form-group row mb-3 {{ $errors->has('document') ? 'has-error' : '' }}">' +
+					'{{ Form::label( 'doc', 'Upload Supporting Document : ', ['class' => 'col-sm-2 col-form-label'] ) }}' +
+					'<div class="col-auto supportdoc">' +
+						'{{ Form::file( 'document', ['class' => 'form-control form-control-file', 'id' => 'doc', 'placeholder' => 'Supporting Document']) }}' +
+					'</div>' +
+				'</div>' +
+
+				'<div class="form-group row mb-3 {{ $errors->has('akuan') ? 'has-error' : '' }}">' +
+					'{{ Form::label('suppdoc', 'Supporting Documents : ', ['class' => 'col-sm-2 col-form-label']) }}' +
+					'<div class="col-auto form-check suppdoc">' +
+						'{{ Form::checkbox('documentsupport', 1, @$value, ['class' => 'form-check-input rounded', 'id' => 'suppdoc']) }}' +
+						'<label for="suppdoc" class="form-check-label p-1 bg-warning text-danger rounded">Please ensure you will submit <strong>Supporting Document</strong> within a period of  <strong>3 Days</strong> upon return.</label>' +
+					'</div>' +
+				'</div>' +
+
+			'</div>'
+
+		);
 	} else {																			// other than TF
 		// console.log('else');
 		$('#wrapper').append(
@@ -466,7 +520,7 @@ $(document).ready(function(){
 				'<div class="form-group row mb-3 {{ $errors->has('staff_id') ? 'has-error' : '' }}">' +
 					'{{ Form::label('backupperson', 'Replacement : ', ['class' => 'col-sm-2 col-form-label']) }}' +
 					'<div class="col-auto backup">' +
-						'{{ Form::select('staff_id', \App\Models\Staff::where('active', 1)->pluck('name', 'id'), !is_null($hrleave->hasmanyleaveapprovalbackup()->first()?->staff_id)?$hrleave->hasmanyleaveapprovalbackup()->first()?->staff_id:NULL, ['id' => 'backupperson', 'class' => 'form-control form-select form-select-sm', 'placeholder' => 'Please Choose']) }}' +
+						'{{ Form::select('staff_id', Staff::where('active', 1)->pluck('name', 'id'), $hrleave->hasmanyleaveapprovalbackup()->first()?->staff_id??NULL, ['id' => 'backupperson', 'class' => 'form-control form-select form-select-sm', 'placeholder' => 'Please Choose']) }}' +
 					'</div>' +
 				'</div>' +
 				'@endif' +
@@ -530,6 +584,48 @@ $(document).ready(function(){
 	.on('dp.change dp.update', function(e) {
 		// $('#to').bootstrapValidator('revalidateField', 'date_time_start');
 		$('#from').datetimepicker('maxDate', $('#to').val());
+	});
+
+	// time start
+	$('#start').datetimepicker({
+		icons: {
+			time: "fas fas-regular fa-clock fa-beat",
+			date: "fas fas-regular fa-calendar fa-beat",
+			up: "fas fa-regular fa-circle-up fa-beat",
+			down: "fas fa-regular fa-circle-down fa-beat",
+			previous: 'fas fas-regular fa-arrow-left fa-beat',
+			next: 'fas fas-regular fa-arrow-right fa-beat',
+			today: 'fas fas-regular fa-calenday-day fa-beat',
+			clear: 'fas fas-regular fa-broom-wide fa-beat',
+			close: 'fas fas-regular fa-rectangle-xmark fa-beat'
+		},
+		format: 'h:mm A',
+		// enabledHours: [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18],
+	})
+	.on('dp.change dp.update', function(e){
+		// $('#form').bootstrapValidator('revalidateField', 'time_start');
+		// $('#end').datetimepicker('minDate', moment($('#start').val(), 'h:mm A'));
+	});
+
+	// time end
+	$('#end').datetimepicker({
+		icons: {
+			time: "fas fas-regular fa-clock fa-beat",
+			date: "fas fas-regular fa-calendar fa-beat",
+			up: "fas fa-regular fa-circle-up fa-beat",
+			down: "fas fa-regular fa-circle-down fa-beat",
+			previous: 'fas fas-regular fa-arrow-left fa-beat',
+			next: 'fas fas-regular fa-arrow-right fa-beat',
+			today: 'fas fas-regular fa-calenday-day fa-beat',
+			clear: 'fas fas-regular fa-broom-wide fa-beat',
+			close: 'fas fas-regular fa-rectangle-xmark fa-beat'
+		},
+		format: 'h:mm A',
+		// enabledHours: [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18],
+	})
+	.on('dp.change dp.update', function(e){
+		// $('#form').bootstrapValidator('revalidateField', 'time_end');
+		// $('#start').datetimepicker('minDate', moment($('#end').val(), 'h:mm A'));
 	});
 
 	//enable select 2 for backup
