@@ -22,11 +22,10 @@ class ReplacementRequestRequestStore extends FormRequest
 	public function rules(): array
 	{
 		return [
-			'staff_id' => 'required|integer',
+			'staff_id' => 'required',
 			'date_start' => 'required|date',
 			'date_end' => 'required|date',
 			'reason' => 'required|string',
-			'customer_id' => 'sometimes|integer',
 		];
 	}
 
