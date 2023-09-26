@@ -1444,7 +1444,7 @@ class HRLeaveController extends Controller
 	 */
 	public function show(HRLeave $leave): View
 	{
-		//
+		return view('humanresources.leave.show', ['leave' => $leave]);
 	}
 
 	/**

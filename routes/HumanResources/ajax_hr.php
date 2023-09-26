@@ -16,9 +16,7 @@ Route::delete('/deletecrossbackup/{staff}', [AjaxController::class, 'deletecross
 
 
 // Ajax DB Controller : only to retrieve data from db
-Route::post('/loginuser', [AjaxDBController::class, 'loginuser'])->name('loginuser');
-Route::post('/icuser', [AjaxDBController::class, 'icuser'])->name('icuser');
-Route::post('/emailuser', [AjaxDBController::class, 'emailuser'])->name('emailuser');
+Route::post('/loginuser', [AjaxDBController::class, 'loginuser'])->name('loginuser.loginuser');
 Route::post('/leaveType', [AjaxDBController::class, 'leaveType'])->name('leaveType.leaveType');
 Route::post('/backupperson', [AjaxDBController::class, 'backupperson'])->name('backupperson');
 Route::post('/unavailabledate', [AjaxDBController::class, 'unavailabledate'])->name('leavedate.unavailabledate');

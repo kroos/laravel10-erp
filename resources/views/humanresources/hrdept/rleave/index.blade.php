@@ -7,9 +7,12 @@
   border: 1px solid black;
 } */
 
-table, thead, tr, th {
-  border: 1px solid black;
-}
+  /* table,
+  thead,
+  tr,
+  th {
+    border: 1px solid black;
+  } */
 </style>
 
 <div class="container">
@@ -35,23 +38,34 @@ table, thead, tr, th {
       </thead>
       <tbody>
         @foreach ($replacements as $replacement)
+
+        @if ($replacement->belongstocustomer)
+        {{ $customer = $replacement->belongstocustomer->customer }}
+        @else
+        {{ $customer = "" }}
+        @endif
+        
         <tr>
           <th>{{ $replacement->belongstostaff->hasmanylogin()->where('logins.active', 1)->first()->username }}</th>
-          <th class="text-truncate" style="max-width: 200px;">{{ $replacement->belongstostaff->name }}</th>
+          <th class="text-truncate" style="max-width: 200px;" data-toggle="tooltip" title="{{ $replacement->belongstostaff->name }}">{{ $replacement->belongstostaff->name }}</th>
           <th>{{ $replacement->date_start }}</th>
           <th>{{ $replacement->date_end }}</th>
-          <th class="text-truncate" style="max-width: 200px;">
-            @if ($replacement->belongstocustomer)
-              {{ $replacement->belongstocustomer->customer }}
-            @endif
-          </th>
-          <th class="text-truncate" style="max-width: 150px;">{{ $replacement->reason }}</th>
+          <th class="text-truncate" style="max-width: 200px;" data-toggle="tooltip" title="{{ $customer }}">{{ $customer }}</th>
+          <th class="text-truncate" style="max-width: 150px;" data-toggle="tooltip" title="{{ $replacement->reason }}">{{ $replacement->reason }}</th>
           <th class="text-center">{{ $replacement->leave_total }}</th>
           <th class="text-center">{{ $replacement->leave_utilize }}</th>
           <th class="text-center">{{ $replacement->leave_balance }}</th>
-          <th class="text-truncate" style="max-width: 100px;">{{ $replacement->remarks }}</th>
-          <th><a href="#" class="btn btn-outline-secondary" role="button" aria-pressed="true" style="--bs-btn-padding-y: 0px; --bs-btn-padding-x: 0px; --bs-btn-font-size: .75rem;">EDIT</a></th>
-          <th><a href="#" class="btn btn-outline-secondary" role="button" aria-pressed="true" style="--bs-btn-padding-y: 0px; --bs-btn-padding-x: 0px; --bs-btn-font-size: .75rem;">CANCEL</a></th>
+          <th class="text-truncate" style="max-width: 100px;" data-toggle="tooltip" title="{{ $replacement->remarks }}">{{ $replacement->remarks }}</th>
+          <th class="text-center">
+            <a href="#">
+              <i class="bi bi-pencil-square" style="font-size: 15px;"></i>
+            </a>
+          </th>
+          <th class="text-center">
+            <a href="#">
+              <i class="bi bi-x-square" style="font-size: 15px;"></i>
+            </a>
+          </th>
         </tr>
         @endforeach
       </tbody>

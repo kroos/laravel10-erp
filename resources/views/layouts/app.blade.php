@@ -358,17 +358,14 @@
 		<p>{{ config('app.name') }} made from <a href="https://getbootstrap.com/">Bootstrap</a> & <a href="https://laravel.com">Laravel v.{{ app()->version() }}</a> by <a href="{{ url('/') }}">IT Department</a>.</p>
 	</footer>
 </body>
+<script src="{{ asset('js/app.js') }}"></script>
 
 <script src="{{ asset('js/fullcalendar/index.global.js') }}"></script>
-<!-- <script type="module" src="{{ asset('js/fullcalendar/bootstrap5/index.global.js') }}"></script> -->
-<!-- <script type="module" src="{{ asset('js/fullcalendar/daygrid/index.global.js') }}"></script> -->
-<!-- <script type="module" src="{{ asset('js/fullcalendar/multimonth/index.global.js') }}"></script> -->
 <script src='https://unpkg.com/popper.js/dist/umd/popper.min.js'></script>
 <script src='https://unpkg.com/tooltip.js/dist/umd/tooltip.min.js'></script>
 
 <script src="{{ asset('js/chartjs/chart.umd.js') }}"></script>
 
-<script src="{{ asset('js/app.js') }}"></script>
 <script src="{{ asset('js/ckeditor/ckeditor.js') }}"></script>
 <script src="{{ asset('js/ckeditor/adapters/jquery.js') }}"></script>
 <script >
