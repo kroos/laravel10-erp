@@ -317,7 +317,7 @@ if ( ($ls->leave_type_id == 9) || ($ls->leave_type_id != 9 && $ls->half_type_id 
 }
 ?>
 					<tr>
-						<td>HR9-{{ str_pad( $ls->leave_no, 5, "0", STR_PAD_LEFT ) }}/{{ $arr[1] }}</td>
+						<td> <a href="{{ route('hrleave.show', $ls->id) }}">HR9-{{ str_pad( $ls->leave_no, 5, "0", STR_PAD_LEFT ) }}/{{ $arr[1] }}</a></td>
 						<td>{{ $ls->belongstooptleavetype?->leave_type_code }}</td>
 						<td>{{ $dts }}</td>
 						<td>{{ $dte }}</td>
@@ -470,12 +470,18 @@ $('#replacementleave').DataTable({
 @section('nonjquery')
 /////////////////////////////////////////////////////////////////////////////////////////
 // fullcalendar cant use jquery
+// import { Calendar } from '@fullcalendar/core'
+// import multiMonthPlugin from '@fullcalendar/multimonth'
+
 document.addEventListener('DOMContentLoaded', function() {
 	var calendarEl = document.getElementById('calendar');
 
 	var calendar = new FullCalendar.Calendar(calendarEl, {
 		aspectRatio: 1.0,
-		height: 700,
+		height: 500,
+		// plugins: [multiMonthPlugin],
+		// initialView: 'multiMonthYear',
+		// multiMonthMaxColumns: 1,					// force a single column
 		initialView: 'dayGridMonth',
 		weekNumbers: true,
 		themeSystem: 'bootstrap',
