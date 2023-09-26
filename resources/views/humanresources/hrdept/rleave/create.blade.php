@@ -5,26 +5,21 @@
   /* div {
     border: 1px solid black;
   } */
-
-  p {
-    border: 1px solid black;
-  }
 </style>
 
 <style>
   .scrollable-div {
+    /* Set the width height as needed */
     width: 100%;
     height: 400px;
-    /* Set the height as needed */
-    overflow: auto;
+    background-color:blanchedalmond;
     /* Add scrollbars when content overflows */
-    border: 1px solid #ccc;
-    /* Optional border for visualization */
+    overflow: auto;
   }
 
-  /* Optional styling for the content inside the scrollable div */
-  .scrollable-content {
-    padding: 10px;
+  p {
+    margin-top: 4px;
+    margin-bottom: 4px;
   }
 </style>
 
@@ -32,7 +27,16 @@
 use App\Models\Staff;
 use App\Models\Customer;
 
-$staffs = Staff::where('active', 1)->get();
+$staffs = Staff::join('logins', 'staffs.id', '=', 'logins.staff_id')
+->where('staffs.active', 1)
+->where('logins.active', 1)
+->where(function ($query) {
+  $query->where('staffs.div_id', '!=', 2)
+  ->orWhereNull('staffs.div_id');
+})
+->select('staffs.id as staffID', 'staffs.*', 'logins.*')
+->orderBy('logins.username', 'asc')
+->get();
 ?>
 
 <div class="container">
@@ -46,17 +50,18 @@ $staffs = Staff::where('active', 1)->get();
       {{Form::label('name', 'Name')}}
     </div>
     <div class="col-md-10">
-      {{Form::label('name', 'Name')}}
+      <p>
+        <input type="checkbox" id="checkAll"> <label>Check All</label>&nbsp;&nbsp;&nbsp;&nbsp;
+        <input type="checkbox" id="checkG1"> <label>Check Group 1</label>&nbsp;&nbsp;&nbsp;&nbsp;
+        <input type="checkbox" id="checkG2"> <label>Check Group 2</label>&nbsp;&nbsp;&nbsp;&nbsp;
+      </p>
       <div class="scrollable-div">
-        <div class="scrollable-content">
           @foreach ($staffs as $staff)
           <p>
-            <input class="form-check-input" type="checkbox" value="" id="checkAll" checked>
-            <label class="form-check-label" for="checkAll">{{ $staff->name }}</label>
-
-</p>
+            <input type="checkbox" class="staff group{{ $staff->restday_group_id }}" name="staff_id[]" id="staff_id" value="{{ $staff->staffID }}">
+            <label>{{ $staff->username }} - Group {{ $staff->restday_group_id }} _ {{ $staff->name }}</label>
+          </p>
           @endforeach
-        </div>
       </div>
     </div>
   </div>
@@ -110,12 +115,19 @@ $staffs = Staff::where('active', 1)->get();
 
 @section('js')
 /////////////////////////////////////////////////////////////////////////////////////////
-// MULTIPLE SELECTION
-$("#staff_id").select2({
-maximumSelectionLength: 100,
-placeholder: '',
-allowClear: true,
-width: '100%',
+// CHECK ALL STAFF
+$("#checkAll").change(function () {
+	$(".staff").prop('checked', this.checked);
+});
+
+// CHECK ALL GROUP 1
+$("#checkG1").change(function () {
+	$(".group1").prop('checked', this.checked);
+});
+
+// CHECK ALL GROUP 2
+$("#checkG2").change(function () {
+	$(".group2").prop('checked', this.checked);
 });
 
 
