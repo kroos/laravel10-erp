@@ -79,6 +79,34 @@ class AjaxDBController extends Controller
 		]);
 	}
 
+	public function icuser(Request $request)
+	{
+		$valid = true;
+		$log = \App\Models\Staff::all();
+		foreach($log as $k) {
+			if($k->ic == $request->ic) {
+				$valid = false;
+			}
+		}
+		return response()->json([
+			'valid' => $valid,
+		]);
+	}
+
+	public function emailuser(Request $request)
+	{
+		$valid = true;
+		$log = \App\Models\Staff::all();
+		foreach($log as $k) {
+			if($k->email == $request->email) {
+				$valid = false;
+			}
+		}
+		return response()->json([
+			'valid' => $valid,
+		]);
+	}
+	
 	// get types of leave according to user
 	public function leaveType(Request $request)
 	{

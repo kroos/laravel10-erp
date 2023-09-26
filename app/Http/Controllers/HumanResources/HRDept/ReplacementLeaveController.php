@@ -97,7 +97,7 @@ class ReplacementLeaveController extends Controller
      */
     public function edit(HRLeaveReplacement $rleave)
     {
-        //
+        return view('humanresources.hrdept.rleave.edit', compact('rleave'));
     }
 
     /**

@@ -39,33 +39,35 @@
       <tbody>
         @foreach ($replacements as $replacement)
 
-        @if ($replacement->belongstocustomer)
-        {{ $customer = $replacement->belongstocustomer->customer }}
-        @else
-        {{ $customer = "" }}
-        @endif
+        <?php
+        if ($replacement->belongstocustomer) {
+          $customer = $replacement->belongstocustomer->customer;
+        } else {
+          $customer = "";
+        }
+        ?>
         
         <tr>
-          <th>{{ $replacement->belongstostaff->hasmanylogin()->where('logins.active', 1)->first()->username }}</th>
-          <th class="text-truncate" style="max-width: 200px;" data-toggle="tooltip" title="{{ $replacement->belongstostaff->name }}">{{ $replacement->belongstostaff->name }}</th>
-          <th>{{ $replacement->date_start }}</th>
-          <th>{{ $replacement->date_end }}</th>
-          <th class="text-truncate" style="max-width: 200px;" data-toggle="tooltip" title="{{ $customer }}">{{ $customer }}</th>
-          <th class="text-truncate" style="max-width: 150px;" data-toggle="tooltip" title="{{ $replacement->reason }}">{{ $replacement->reason }}</th>
-          <th class="text-center">{{ $replacement->leave_total }}</th>
-          <th class="text-center">{{ $replacement->leave_utilize }}</th>
-          <th class="text-center">{{ $replacement->leave_balance }}</th>
-          <th class="text-truncate" style="max-width: 100px;" data-toggle="tooltip" title="{{ $replacement->remarks }}">{{ $replacement->remarks }}</th>
-          <th class="text-center">
-            <a href="#">
+          <td>{{ $replacement->belongstostaff->hasmanylogin()->where('logins.active', 1)->first()->username }}</td>
+          <td class="text-truncate" style="max-width: 200px;" data-toggle="tooltip" title="{{ $replacement->belongstostaff->name }}">{{ $replacement->belongstostaff->name }}</td>
+          <td>{{ $replacement->date_start }}</td>
+          <td>{{ $replacement->date_end }}</td>
+          <td class="text-truncate" style="max-width: 200px;" data-toggle="tooltip" title="{{ $customer }}">{{ $customer }}</td>
+          <td class="text-truncate" style="max-width: 150px;" data-toggle="tooltip" title="{{ $replacement->reason }}">{{ $replacement->reason }}</td>
+          <td class="text-center">{{ $replacement->leave_total }}</td>
+          <td class="text-center">{{ $replacement->leave_utilize }}</td>
+          <td class="text-center">{{ $replacement->leave_balance }}</td>
+          <td class="text-truncate" style="max-width: 100px;" data-toggle="tooltip" title="{{ $replacement->remarks }}">{{ $replacement->remarks }}</td>
+          <td class="text-center">
+            <a href="{{ route('rleave.edit', $replacement->id) }}">
               <i class="bi bi-pencil-square" style="font-size: 15px;"></i>
             </a>
-          </th>
-          <th class="text-center">
+          </td>
+          <td class="text-center">
             <a href="#">
               <i class="bi bi-x-square" style="font-size: 15px;"></i>
             </a>
-          </th>
+          </td>
         </tr>
         @endforeach
       </tbody>
@@ -109,7 +111,7 @@ $('#replacement').DataTable({
 { type: 'date', 'targets': [2] },
 { type: 'time', 'targets': [3] },
 ],
-"order": [ 0, 'asc' ], // sorting the 6th column descending
+"order": [ 2, 'desc' ], // sorting the 6th column descending
 responsive: true
 })
 .on( 'length.dt page.dt order.dt search.dt', function ( e, settings, len ) {
