@@ -12,6 +12,13 @@ use Illuminate\View\View;
 // load models
 use App\Models\Staff;
 use App\Models\HumanResources\HRLeave;
+use App\Models\HumanResources\HRLeaveAnnual;
+use App\Models\HumanResources\HRLeaveAnnual;
+use App\Models\HumanResources\HRLeaveAnnual;
+use App\Models\HumanResources\HRLeaveAnnual;
+
+use \Carbon\Carbon;
+use \Carbon\CarbonPeriod;
 
 
 class LeaveController extends Controller
@@ -67,11 +74,58 @@ class LeaveController extends Controller
 	 */
 	public function update(Request $request, HRLeave $hrleave): RedirectResponse
 	{
-		dd($request->all());
+		// dd([$request->all(), $hrleave->leave_type_id]);
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// initial setup for create a leave
-		$user = \Auth::user()->belongstostaff;																			// for specific user
+		$user = $hrleave->belongstostaff;																				// for specific user
 		$daStart = Carbon::parse($request->date_time_start);															// date start : for manipulation
+
+		// start to give back the AL, MC, Maternity & Replacement Leave
+		$t = $daStart->copy()->format('Y');
+		if ($request->leave_type_id == 1 || $request->leave_type_id == 5) {												// give back all to AL & EL-AL
+			// $r = HRLeaveAnnual::where([['staff_id', $hrleave->staff_id],['year', $t]])->first();
+			$r = $hrleave->belongstomanyleaveannual()->first();
+
+			$utilize = $r->annual_leave_utilize;
+			$balance = $r->annual_leave_balance;
+			$total = $r->annual_leave;
+			$newutilize = $utilize - $hrleave->period_day;
+			$newbalance = $balance + $hrleave->period_day;
+
+			$r->update([
+							'annual_leave_utilize' => $newbalance,
+							'annual_leave_balance' => $newutilize,
+						]);
+		}
+
+		if ($request->leave_type_id == 2) {																				// give back all to MC
+			// $r = HRLeaveAnnual::where([['staff_id', $hrleave->staff_id],['year', $t]])->first();
+			$r = $hrleave->belongstomanyleaveannual()->first();
+
+			$utilize = $r->annual_leave_utilize;
+			$balance = $r->annual_leave_balance;
+			$total = $r->annual_leave;
+			$newutilize = $utilize - $hrleave->period_day;
+			$newbalance = $balance + $hrleave->period_day;
+
+			$r->update([
+							'annual_leave_utilize' => $newbalance,
+							'annual_leave_balance' => $newutilize,
+						]);
+		}
+
+		if ($request->leave_type_id == 7) {																				// give back all to ML
+		}
+
+		if ($request->leave_type_id == 4 || $request->leave_type_id == 10) {											// give back all to NRL & EL-NRL
+		}
+
+
+
+
+
+
+
 
 		if( empty( $request->date_time_end ) ) {																		// in time off, there only date_time_start so...
 			$request->date_time_end = $request->date_time_start;
@@ -79,11 +133,11 @@ class LeaveController extends Controller
 
 		$row = HRLeave::whereYear('date_time_start', $request->date_time_start)->get()->count();						// count rows for particular year based on $request->date_time_start
 		$row += 1;
-		$ye = $daStart->format('y');																					// strip down to 2 digits
+		$ye = $daStart->copy()->format('y');																					// strip down to 2 digits
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// if a user select more than 1 day and setting double date is on, we need to count the remaining day that is not overlapping
-		$blockdate = UnavailableDateTime::blockDate(\Auth::user()->belongstostaff->id);
+		$blockdate = UnavailableDateTime::blockDate($hrleave->belongstostaff->id);
 
 		$period = \Carbon\CarbonPeriod::create($request->date_time_start, '1 days', $request->date_time_end);
 		$lea = [];

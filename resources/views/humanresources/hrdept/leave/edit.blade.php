@@ -535,20 +535,20 @@ $(document).ready(function(){
 							'</div>' +
 						'</div>' +
 						'<div class="form-group col-auto offset-sm-2 {{ $errors->has('half_type_id') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
-
-							'<div class="pretty p-default p-curve form-check form-check-inline removetest">' +
-								'<input type="radio" name="half_type_id" value="1/' + obj.time_start_am + '/' + obj.time_end_am + '" id="am">' +
-								'<div class="state p-primary">' +
-									'<label for="am" class="form-check-label">' + moment(obj.time_start_am, 'HH:mm:ss').format('h:mm a') + ' to ' + moment(obj.time_end_am, 'HH:mm:ss').format('h:mm a') + '</label> ' +
+							@if($hrleave->period_day <= 0.5)
+								'<div class="pretty p-default p-curve form-check form-check-inline removetest">' +
+									'<input type="radio" name="half_type_id" value="1/' + obj.time_start_am + '/' + obj.time_end_am + '" id="am">' +
+									'<div class="state p-primary">' +
+										'<label for="am" class="form-check-label">' + moment(obj.time_start_am, 'HH:mm:ss').format('h:mm a') + ' to ' + moment(obj.time_end_am, 'HH:mm:ss').format('h:mm a') + '</label> ' +
+									'</div>' +
 								'</div>' +
-							'</div>' +
-							'<div class="pretty p-default p-curve form-check form-check-inline removetest">' +
-								'<input type="radio" name="half_type_id" value="2/' + obj.time_start_pm + '/' + obj.time_end_pm + '" id="pm">' +
-								'<div class="state p-primary">' +
-									'<label for="pm" class="form-check-label">' + moment(obj.time_start_pm, 'HH:mm:ss').format('h:mm a') + ' to ' + moment(obj.time_end_pm, 'HH:mm:ss').format('h:mm a') + '</label> ' +
+								'<div class="pretty p-default p-curve form-check form-check-inline removetest">' +
+									'<input type="radio" name="half_type_id" value="2/' + obj.time_start_pm + '/' + obj.time_end_pm + '" id="pm">' +
+									'<div class="state p-primary">' +
+										'<label for="pm" class="form-check-label">' + moment(obj.time_start_pm, 'HH:mm:ss').format('h:mm a') + ' to ' + moment(obj.time_end_pm, 'HH:mm:ss').format('h:mm a') + '</label> ' +
+									'</div>' +
 								'</div>' +
-							'</div>' +
-
+							@endif
 						'</div>' +
 					@endif
 
