@@ -1157,7 +1157,7 @@ $('#form').bootstrapValidator({
 				},
 				remote: {
 					type: 'POST',
-					url: '{{ route('loginuser.loginuser') }}',
+					url: '{{ route('loginuser') }}',
 					message: 'Username exist. Please use another username. ',
 					data: function(validator) {
 								return {
@@ -1298,6 +1298,18 @@ $('#form').bootstrapValidator({
 				// digits: {
 				// 	message: 'Only numbers '
 				// },
+				remote: {
+					type: 'POST',
+					url: '{{ route('icuser') }}',
+					message: 'Identity Card or Passport exist, please activate this person ',
+					data: function(validator) {
+								return {
+											_token: '{!! csrf_token() !!}',
+											ic: $('#ic').val(),
+								};
+							},
+					delay: 1,		// wait 0.001 seconds
+				},
 			}
 		},
 		religion_id: {
@@ -1342,6 +1354,18 @@ $('#form').bootstrapValidator({
 				},
 				emailAddress: {
 					message: 'Please insert valid email '
+				},
+				remote: {
+					type: 'POST',
+					url: '{{ route('emailuser') }}',
+					message: 'Email exist, please use another email ',
+					data: function(validator) {
+								return {
+											_token: '{!! csrf_token() !!}',
+											email: $('#ema').val(),
+								};
+							},
+					delay: 1,		// wait 0.001 seconds
 				},
 			}
 		},

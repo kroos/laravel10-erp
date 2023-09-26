@@ -1,33 +1,281 @@
 @extends('layouts.app')
+
 @section('content')
-<div class="col-sm-12">
-	<div class="table-responsive col-auto">
-		<table class="table table-hover table-sm">
-			<tbody>
-				<tr>
-					<td rowspan="3" class="text-danger col-sm-2">Attention :</td>
-					<td>Leave application must be at least <span class="font-weight-bold">THREE (3)</span> days in advance for <strong>"Annual Leave"</strong> and <strong>"Unpaid Leave"</strong>. Otherwise it will be considered as <strong>"Emergency Annual Leave"</strong> or <strong>"Emergency Unpaid Leave"</strong></td>
-				</tr>
-				<tr>
-					<td><strong>"Time-Off"</strong> will consider as a <strong>"Leave"</strong>, if leave period exceed <strong>more than 2 hours</strong>.</td>
-				</tr>
-				<tr>
-					<td>Application for <strong>"Sick Leave/Medical Certificate (MC)"</strong> or <strong>"Unpaid Medical Certificate (MC-UPL)"</strong> will only be <strong>considered VALID and ELIGIBLE</strong> if a sick/medical certificate is <strong>issued by a REGISTERED government hospital/clinic or panel clinic only.</td>
-				</tr>
-			</tbody>
-		</table>
+<style>
+	@media print {
+		body {
+			visibility: hidden;
+		}
+
+		#printPageButton, #back {
+			display: none;
+		}
+
+		.table-container {
+			visibility: visible;
+			position: absolute;
+			left: 0;
+			top: 0;
+		}
+	}
+
+	.table-container {
+		display: table;
+		width: 100%;
+		border-collapse: collapse;
+	}
+
+	.table {
+		display: table;
+		width: 100%;
+		border-collapse: collapse;
+		margin-top: 0;
+		padding-top: 0;
+		margin-bottom: 0;
+		padding-bottom: 0;
+	}
+
+	.table-row {
+		display: table-row;
+	}
+
+	.table-cell {
+		display: table-cell;
+		border: 1px solid #b3b3b3;
+		padding: 4px;
+		box-sizing: border-box;
+	}
+
+	.table-cell-top {
+		display: table-cell;
+		border: 1px solid #b3b3b3;
+		border-top: none;
+		padding: 4px;
+		box-sizing: border-box;
+	}
+
+	.table-cell-top-bottom {
+		display: table-cell;
+		border: 1px solid #b3b3b3;
+		border-top: none;
+		border-bottom: none;
+		padding: 0px;
+		box-sizing: border-box;
+	}
+
+	.table-cell-hidden {
+		display: table-cell;
+		border: none;
+	}
+
+	.header {
+		font-size: 22px;
+		text-align: center;
+	}
+
+	.theme {
+		background-color: #e6e6e6;
+	}
+
+	.table-cell-top1 {
+		display: table-cell;
+		border: 1px solid #b3b3b3;
+		border-top: none;
+		padding: 0px;
+		box-sizing: border-box;
+	}
+</style>
+
+
+
+<?php
+use \App\Models\Staff;
+use \Carbon\Carbon;
+use \Carbon\CarbonPeriod;
+
+$user = $hrleave->belongstostaff;
+$userneedbackup = $user->belongstoleaveapprovalflow->backup_approval;
+$setHalfDayMC = \App\Models\Setting::find(2)->active;
+// dd($setHalfDayMC);
+// checking for overlapped leave only for half day leave
+// dd(\App\Helpers\UnavailableDateTime::unblockhalfdayleave($hrleave->belongstostaff->id, '2023-09-08'));
+// dd($hrleave);
+
+$staff = $user;
+// dd([$staff, $user]);
+$login = $staff->hasmanylogin()->get()->first();
+
+$count = 0;
+$supervisor_no = 0;
+$hod_no = 0;
+$director_no = 0;
+$hr_no = 0;
+
+$backup = $hrleave->hasmanyleaveapprovalbackup->first();
+$supervisor = $hrleave->hasmanyleaveapprovalsupervisor->first();
+$hod = $hrleave->hasmanyleaveapprovalhod->first();
+$director = $hrleave->hasmanyleaveapprovaldir->first();
+$hr = $hrleave->hasmanyleaveapprovalhr->first();
+
+if ($supervisor) {
+	$count++;
+	$supervisor_no = $count;
+}
+
+if ($hod) {
+	$count++;
+	$hod_no = $count;
+}
+
+if ($director) {
+	$count++;
+	$director_no = $count;
+}
+
+if ($hr) {
+	$count++;
+	$hr_no = $count;
+}
+
+if ($count != 0) {
+	$width = 100 / $count;
+} else {
+	$width = 100;
+}
+
+if ((\Carbon\Carbon::parse($hrleave->date_time_start)->format('H:i')) == '00:00') {
+	$date_start = \Carbon\Carbon::parse($hrleave->date_time_start)->format('d F Y');
+} else {
+	$date_start = \Carbon\Carbon::parse($hrleave->date_time_start)->format('d F Y h:i a');
+}
+
+if ((\Carbon\Carbon::parse($hrleave->date_time_end)->format('H:i')) == '00:00') {
+	$date_end = \Carbon\Carbon::parse($hrleave->date_time_end)->format('d F Y');
+} else {
+	$date_end = \Carbon\Carbon::parse($hrleave->date_time_end)->format('d F Y h:i a');
+}
+
+if ($hrleave->period_day !== 0.0 &&$hrleave->period_time == NULL) {
+	$total_leave =$hrleave->period_day . ' Days';
+} else {
+	$total_leave =$hrleave->period_time;
+}
+
+if ($backup) {
+	$backup_name = $backup->belongstostaff->name;
+
+	if ($backup->created_at == $backup->updated_at) {
+		$approved_date = '-';
+	} else {
+		$approved_date = \Carbon\Carbon::parse($backup->updated_at)->format('d F Y h:i a');
+	}
+} else {
+	$backup_name = '-';
+	$approved_date = '-';
+}
+?>
+<div class="col-sm-12 row">
+	@include('humanresources.hrdept.navhr')
+	<h4>Leave Edit</h4>
+	<div class="table-container">
+		<div class="table">
+			<div class="table-row header">
+				<div class="table-cell" style="width: 40%; background-color: #99ff99;">IPMA INDUSTRY SDN.BHD.</div>
+				<div class="table-cell" style="width: 60%; background-color: #e6e6e6;">LEAVE APPLICATION FORM</div>
+			</div>
+		</div>
+
+		<div class="table">
+			<div class="table-row">
+				<div class="table-cell-top" style="width: 25%;">STAFF ID : {{ @$login->username }}</div>
+				<div class="table-cell-top" style="width: 75%;">NAME : {{ @$staff->name }}</div>
+			</div>
+		</div>
+
+		<div class="table">
+			<div class="table-row">
+				<div class="table-cell-top" style="width: 25%;">LEAVE NO : HR9-{{ @str_pad($hrleave->leave_no,5,'0',STR_PAD_LEFT) }}/{{ $hrleave->leave_year }}</div>
+				<div class="table-cell-top" style="width: 60%;">DATE : {{ @$date_start }} - {{ @$date_end }} </div>
+				<div class="table-cell-top" style="width: 25%;">TOTAL : {{ @$total_leave }} </div>
+			</div>
+		</div>
+
+		<div class="table">
+			<div class="table-row">
+				<div class="table-cell-top text-wrap" style="width: 45%;">LEAVE TYPE : {{ $hrleave->belongstooptleavetype->leave_type_code }} ({{ $hrleave->belongstooptleavetype->leave_type }})</div>
+				<div class="table-cell-top text-wrap" style="width: 55%;">REASON : {{ $hrleave->reason }} </div>
+			</div>
+		</div>
+
+		<div class="table">
+			<div class="table-row">
+				<div class="table-cell-top text-wrap" style="width: 60%;">BACKUP : {{ @$backup_name }}</div>
+				<div class="table-cell-top" style="width: 40%;">DATE APPROVED : {{ @$approved_date }} </div>
+			</div>
+		</div>
+
+		<div class="table">
+			<div class="table-row">
+				<div class="table-cell-top text-center" style="width: 100%; background-color: #ffcc99; font-size: 18px;">SIGNATURE / APPROVALS</div>
+			</div>
+		</div>
+
+		<div class="table">
+			<div class="table-row">
+				@for ($a = 1; $a <= $count; $a++)
+					@if ($supervisor_no==$a)
+						<div class="table-cell-top text-center" style="width: {{ $width }}%; background-color: #f2f2f2; font-size: 18px;">SUPERVISOR</div>
+					@elseif ($hod_no == $a)
+						<div class="table-cell-top text-center" style="width: {{ $width }}%; background-color: #f2f2f2; font-size: 18px;">HOD</div>
+					@elseif ($director_no == $a)
+						<div class="table-cell-top text-center" style="width: {{ $width }}%; background-color: #f2f2f2; font-size: 18px;">DIRECTOR</div>
+					@elseif ($hr_no == $a)
+						<div class="table-cell-top text-center" style="width: {{ $width }}%; background-color: #f2f2f2; font-size: 18px;">HR</div>
+					@endif
+				@endfor
+			</div>
+		</div>
+
+		<div class="table">
+			<div class="table-row" style="height: 50px;">
+				@for ($a = 1; $a <= $count; $a++)
+					@if ($supervisor_no==$a)
+						<div class="table-cell-top-bottom text-center text-decoration-underline text-wrap" style="width: {{ $width }}%; vertical-align: bottom;">{{ @$supervisor->belongstostaff->name }}</div>
+					@elseif ($hod_no == $a)
+						<div class="table-cell-top-bottom text-center text-decoration-underline text-wrap" style="width: {{ $width }}%; vertical-align: bottom;">{{ @$hod->belongstostaff->name }}</div>
+					@elseif ($director_no == $a)
+						<div class="table-cell-top-bottom text-center text-decoration-underline text-wrap" style="width: {{ $width }}%; vertical-align: bottom;">{{ @$director->belongstostaff->name }}</div>
+					@elseif ($hr_no == $a)
+						<div class="table-cell-top-bottom text-center text-decoration-underline text-wrap" style="width: {{ $width }}%; vertical-align: bottom;">{{ @$hr->belongstostaff->name }}</div>
+					@endif
+				@endfor
+			</div>
+			<div class="table-row">
+				@for ($a = 1; $a <= $count; $a++)
+					@if ($supervisor_no==$a)
+						<div class="table-cell-top1 text-center">{{ @$supervisor->updated_at }}</div>
+					@elseif ($hod_no == $a)
+						<div class="table-cell-top1 text-center">{{ @$hod->updated_at }}</div>
+					@elseif ($director_no == $a)
+						<div class="table-cell-top1 text-center">{{ @$director->updated_at }}</div>
+					@elseif ($hr_no == $a)
+						<div class="table-cell-top1 text-center">{{ @$hr->updated_at }}</div>
+					@endif
+				@endfor
+			</div>
+		</div>
 	</div>
 
-	<!-- herecomes the hardest part, leave application -->
+	<p>&nbsp;</p>
 
 	<div class="d-flex justify-content-center align-items-start">
-		{{ Form::open(['route' => ['leave.store'], 'id' => 'form', 'autocomplete' => 'off', 'files' => true,  'data-toggle' => 'validator']) }}
-		<h5>Leave Application</h5>
+		{{ Form::model($hrleave, ['route' => ['hrleave.update', $hrleave], 'method' => 'PATCH', 'id' => 'form', 'autocomplete' => 'off', 'files' => true, 'data-toggle' => 'validator']) }}
+		<h5>Edit Leave Application</h5>
 
 		<div class="form-group row {{ $errors->has('leave_id') ? 'has-error' : '' }}">
 			{{ Form::label( 'leave_type_id', 'Leave Type : ', ['class' => 'col-sm-2 col-form-label'] ) }}
 			<div class="col-auto">
-				<select name="leave_type_id" id="leave_id" class="form-control col-auto"></select>
+				{{ Form::select('leave_type_id', \App\Models\HumanResources\OptLeaveType::pluck('leave_type', 'id'), @$value, ['id' => 'leave_id', 'class' => 'form-control col-auto']) }}
 			</div>
 		</div>
 
@@ -38,12 +286,13 @@
 			</div>
 		</div>
 
-		<div id="wrapper"></div>
+		<div id="wrapper">
+		</div>
 
-		<div class="form-group row mb-3 {{ $errors->has('akuan') ? 'has-error' : '' }}">
-			<div class="offset-sm-2 col-auto">
-				{{ Form::checkbox('akuan', 1, @$value, ['class' => 'form-check-input ', 'id' => 'akuan1']) }}
-					<label for="akuan1" class="form-check-label p-1 bg-warning text-danger rounded"><p>I hereby confirmed that all details and information filled in are <strong>CORRECT</strong> and <strong>CHECKED</strong> before sending.</p></label>
+		<div class="form-group row mb-3 {{ $errors->has('amend_note') ? 'has-error' : '' }}">
+			{{ Form::label( 'amend_note', 'Amend Note : ', ['class' => 'col-sm-2 col-form-label'] ) }}
+			<div class="col-auto">
+				{{ Form::textarea('amend_note', @$value, ['class' => 'form-control col-auto', 'id' => 'amend_note', 'placeholder' => 'Amend Note', 'autocomplete' => 'off']) }}
 			</div>
 		</div>
 
@@ -54,9 +303,10 @@
 		</div>
 		{{ Form::close() }}
 	</div>
-</div>
 
+</div>
 @endsection
+
 @section('js')
 /////////////////////////////////////////////////////////////////////////////////////////
 $('#leave_id').select2({
@@ -71,7 +321,7 @@ $('#leave_id').select2({
 		dataType: 'json',
 		data: function () {
 			var data = {
-				id: {{ \Auth::user()->belongstostaff->id }},
+				id: {{ $hrleave->belongstostaff->id }},
 				_token: '{!! csrf_token() !!}',
 			}
 			return data;
@@ -80,43 +330,20 @@ $('#leave_id').select2({
 });
 
 /////////////////////////////////////////////////////////////////////////////////////////
-//enable ckeditor
-// its working, i just disable it
-// $(document).ready(function() {
-// 	var editor = CKEDITOR.replace( 'reason', {});
-// 	// editor is object of your CKEDITOR
-// 	editor.on('change',function(){
-// 	     // console.log();
-// 	    $('#form').bootstrapValidator('revalidateField', 'reason');
-// 	});
-// });
-// // with jquery adapter
-// $('textarea#reason').ckeditor();
-
-/////////////////////////////////////////////////////////////////////////////////////////
 // start setting up the leave accordingly.
-<?php
-$user = \Auth::user()->belongstostaff;
-$userneedbackup = $user->belongstoleaveapprovalflow->backup_approval;
-$setHalfDayMC = \App\Models\Setting::find(2)->active;
-// dd($setHalfDayMC);
-// checking for overlapped leave only for half day leave
-// dd(\App\Helpers\UnavailableDateTime::unblockhalfdayleave(\Auth::user()->belongstostaff->id, '2023-09-08'));
-?>
-
 /////////////////////////////////////////////////////////////////////////////////////////
 //  global variable : ajax to get the unavailable date
 var data2 = $.ajax({
 	url: "{{ route('leavedate.unavailabledate') }}",
 	type: "POST",
 	data : {
-				id: {{ \Auth::user()->belongstostaff->id }},
+				id: {{ $hrleave->belongstostaff->id }},
 				type: 1,
 				_token: '{!! csrf_token() !!}',
 			},
 	dataType: 'json',
 	global: false,
-	async:false,
+	async: false,
 	success: function (response) {
 		// you will get response from your php page (what you echo or print)
 		// return response;
@@ -138,13 +365,13 @@ var data3 = $.ajax({
 	url: "{{ route('leavedate.unavailabledate') }}",
 	type: "POST",
 	data : {
-				id: {{ \Auth::user()->belongstostaff->id }},
+				id: {{ $hrleave->belongstostaff->id }},
 				type: 2,
 				_token: '{!! csrf_token() !!}',
 			},
 	dataType: 'json',
 	global: false,
-	async:false,
+	async: false,
 	success: function (response) {
 		// you will get response from your php page (what you echo or print)
 		// return response;
@@ -168,7 +395,7 @@ var data10 = $.ajax({
 	url: "{{ route('unblockhalfdayleave.unblockhalfdayleave') }}",
 	type: "POST",
 	data: {
-			id: {{ \Auth::user()->belongstostaff->id }},
+			id: {{ $hrleave->belongstostaff->id }},
 			_token: '{!! csrf_token() !!}',
 		},
 	dataType: 'json',
@@ -188,25 +415,331 @@ var objtime = $.parseJSON( data10 );
 
 // console.log(objtime);
 
-//concept of checking overlapped half day leave
-// var d = false;
-// var itime_start = 0;
-// var itime_end = 0;
-// $.each(objtime, function() {
-// 	console.log(this.date_half_leave);
-// 	if(this.date_half_leave == '2023-09-09') {	// half day leave date
-// 		return [d = true, itime_start = this.time_start, itime_end = this.time_end];
-// 	}
-// });
-// console.log(d);
-// console.log(itime_start);
-// console.log(itime_end);
+/////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////
+$(document).ready(function(){
+	if ($('#leave_id').val() == '9') {													// if TF
+		// console.log($('#leave_id').val());
+		// insert tf leave here
+		$('#wrapper').append(
 
+			'<div id="remove">' +
+				<!-- time off -->
+				'<div class="form-group row mb-3 {{ $errors->has('date_time_start') ? 'has-error' : '' }}">' +
+					'{{ Form::label('from', 'Date : ', ['class' => 'col-sm-2 col-form-label']) }}' +
+					'<div class="col-auto datetime" style="position: relative">' +
+						'{{ Form::text('date_time_start', Carbon::parse($hrleave->date_time_start)->format('Y-m-d'), ['class' => 'form-control', 'id' => 'from', 'placeholder' => 'Date : ', 'autocomplete' => 'off']) }}' +
+						'{{ Form::hidden('date_time_end', Carbon::parse($hrleave->date_time_start)->format('Y-m-d'), ['id' => 'to']) }}' +
+					'</div>' +
+				'</div>' +
+
+				'<div class="form-group row mb-3 {{ $errors->has('date_time_end') ? 'has-error' : '' }}">' +
+					'{{ Form::label('to', 'Time : ', ['class' => 'col-sm-2 col-form-label']) }}' +
+					'<div class="col-auto">' +
+							'<div class="form-row time">' +
+								'<div class="col-auto mb-3" style="position: relative">' +
+									'{{ Form::text('time_start', Carbon::parse($hrleave->date_time_start)->format('H:i:s'), ['class' => 'form-control', 'id' => 'start', 'placeholder' => 'From : ', 'autocomplete' => 'off']) }}' +
+								'</div>' +
+								'<div class="col-auto mb-3" style="position: relative">' +
+									'{{ Form::text('time_end', Carbon::parse($hrleave->date_time_end)->format('H:i:s'), ['class' => 'form-control', 'id' => 'end', 'placeholder' => 'To : ', 'autocomplete' => 'off']) }}' +
+								'</div>' +
+							'</div>' +
+					'</div>' +
+				'</div>' +
+				@if( $userneedbackup == 1 )
+				'<div id="backupwrapper">' +
+					'<div class="form-group row mb-3 {{ $errors->has('staff_id') ? 'has-error' : '' }}" id="backupremove">' +
+						'{{ Form::label('backupperson', 'Backup Person : ', ['class' => 'col-sm-2 col-form-label']) }}' +
+						'<div class="col-auto backup">' +
+							'{{ Form::select('staff_id', Staff::where('active', 1)->pluck('name', 'id'), $hrleave->hasmanyleaveapprovalbackup()->first()?->staff_id??NULL, ['id' => 'backupperson', 'class' => 'form-control form-select form-select-sm', 'placeholder' => 'Please Choose']) }}' +
+						'</div>' +
+					'</div>' +
+				'</div>' +
+				@endif
+				'<div class="form-group row mb-3 {{ $errors->has('document') ? 'has-error' : '' }}">' +
+					'{{ Form::label( 'doc', 'Upload Supporting Document : ', ['class' => 'col-sm-2 col-form-label'] ) }}' +
+					'<div class="col-auto supportdoc">' +
+						'{{ Form::file( 'document', ['class' => 'form-control form-control-file', 'id' => 'doc', 'placeholder' => 'Supporting Document']) }}' +
+					'</div>' +
+				'</div>' +
+
+				'<div class="form-group row mb-3 {{ $errors->has('akuan') ? 'has-error' : '' }}">' +
+					'{{ Form::label('suppdoc', 'Supporting Documents : ', ['class' => 'col-sm-2 col-form-label']) }}' +
+					'<div class="col-auto form-check suppdoc">' +
+						'{{ Form::checkbox('documentsupport', 1, @$value, ['class' => 'form-check-input rounded', 'id' => 'suppdoc']) }}' +
+						'<label for="suppdoc" class="form-check-label p-1 bg-warning text-danger rounded">Please ensure you will submit <strong>Supporting Document</strong> within a period of  <strong>3 Days</strong> upon return.</label>' +
+					'</div>' +
+				'</div>' +
+
+			'</div>'
+
+		);
+	} else {																			// other than TF
+		// console.log('else');
+		console.log(moment('{{ Carbon::parse($hrleave->date_time_start) }}').format('HH:mm:ss'));
+		var datenow = '{{ Carbon::parse($hrleave->date_time_start)->format('Y-m-d') }}';
+
+		var data1 = $.ajax({
+			url: "{{ route('leavedate.timeleave') }}",
+			type: "POST",
+			data: {
+					date: datenow,
+					_token: '{!! csrf_token() !!}',
+					id: {{ $hrleave->belongstostaff->id }},
+			},
+			dataType: 'json',
+			global: false,
+			async: false,
+			success: function (response) {
+				// you will get response from your php page (what you echo or print)
+				return response;
+			},
+			error: function(jqXHR, textStatus, errorThrown) {
+				console.log(textStatus, errorThrown);
+			}
+		}).responseText;
+
+		// convert data1 into json
+		var obj = $.parseJSON( data1 );
+
+		$('#wrapper').append(
+			'<div id="remove">' +
+				'<div class="form-group row mb-3 {{ $errors->has('date_time_start') ? 'has-error' : '' }}">' +
+					'{{ Form::label('from', 'From : ', ['class' => 'col-sm-2 col-form-label']) }}' +
+					'<div class="col-auto datetime" style="position: relative">' +
+						'{{ Form::text('date_time_start', Carbon::parse($hrleave->date_time_start)->format('Y-m-d'), ['class' => 'form-control col-auto', 'id' => 'from', 'placeholder' => 'From : ', 'autocomplete' => 'off']) }}' +
+					'</div>' +
+				'</div>' +
+				'<div class="form-group row mb-3 {{ $errors->has('date_time_end') ? 'has-error' : '' }}">' +
+					'{{ Form::label('to', 'To : ', ['class' => 'col-sm-2 col-form-label']) }}' +
+					'<div class="col-auto datetime" style="position: relative">' +
+						'{{ Form::text('date_time_end', Carbon::parse($hrleave->date_time_end)->format('Y-m-d'), ['class' => 'form-control col-auto', 'id' => 'to', 'placeholder' => 'To : ', 'autocomplete' => 'off']) }}' +
+					'</div>' +
+				'</div>' +
+				'<div class="form-group row mb-3 {{ $errors->has('leave_type') ? 'has-error' : '' }}" id="wrapperday">' +
+
+					@if($hrleave->period_day <= 1)
+						'{{ Form::label('leave_type', 'Leave Category : ', ['class' => 'col-sm-2 col-form-label removehalfleave']) }}' +
+						'<div class="col-auto mb-3 removehalfleave " id="halfleave">' +
+							'<div class="pretty p-default p-curve form-check form-check-inline removehalfleave" id="removeleavehalf">' +
+								'<input type="radio" name="leave_type" value="1" id="radio1" class="removehalfleave" {{ ($hrleave->period_day == 1)?'checked="checked"':NULL }}>' +
+								'<div class="state p-success removehalfleave">' +
+									'{{ Form::label('radio1', 'Full Day Off', ['class' => 'form-check-label removehalfleave']) }}' +
+								'</div>' +
+							'</div>' +
+							'<div class="pretty p-default p-curve form-check form-check-inline removehalfleave" id="appendleavehalf">' +
+								'<input type="radio" name="leave_type" value="2" id="radio2" class="removehalfleave" {{ ($hrleave->period_day == 0.5)?'checked="checked"':NULL }}>' +
+								'<div class="state p-success removehalfleave">' +
+									'{{ Form::label('radio2', 'Half Day Off', ['class' => 'form-check-label removehalfleave']) }}' +
+								'</div>' +
+							'</div>' +
+						'</div>' +
+						'<div class="form-group col-auto offset-sm-2 {{ $errors->has('half_type_id') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
+
+							'<div class="pretty p-default p-curve form-check form-check-inline removetest">' +
+								'<input type="radio" name="half_type_id" value="1/' + obj.time_start_am + '/' + obj.time_end_am + '" id="am">' +
+								'<div class="state p-primary">' +
+									'<label for="am" class="form-check-label">' + moment(obj.time_start_am, 'HH:mm:ss').format('h:mm a') + ' to ' + moment(obj.time_end_am, 'HH:mm:ss').format('h:mm a') + '</label> ' +
+								'</div>' +
+							'</div>' +
+							'<div class="pretty p-default p-curve form-check form-check-inline removetest">' +
+								'<input type="radio" name="half_type_id" value="2/' + obj.time_start_pm + '/' + obj.time_end_pm + '" id="pm">' +
+								'<div class="state p-primary">' +
+									'<label for="pm" class="form-check-label">' + moment(obj.time_start_pm, 'HH:mm:ss').format('h:mm a') + ' to ' + moment(obj.time_end_pm, 'HH:mm:ss').format('h:mm a') + '</label> ' +
+								'</div>' +
+							'</div>' +
+
+						'</div>' +
+					@endif
+
+				'</div>' +
+				'@if( $userneedbackup == 1 )' +
+				'<div class="form-group row mb-3 {{ $errors->has('staff_id') ? 'has-error' : '' }}">' +
+					'{{ Form::label('backupperson', 'Replacement : ', ['class' => 'col-sm-2 col-form-label']) }}' +
+					'<div class="col-auto backup">' +
+						'{{ Form::select('staff_id', Staff::where('active', 1)->pluck('name', 'id'), $hrleave->hasmanyleaveapprovalbackup()->first()?->staff_id??NULL, ['id' => 'backupperson', 'class' => 'form-control form-select form-select-sm', 'placeholder' => 'Please Choose']) }}' +
+					'</div>' +
+				'</div>' +
+				'@endif' +
+				'<div class="form-group row mb-3 {{ $errors->has('document') ? 'has-error' : '' }}">' +
+					'{{ Form::label( 'doc', 'Upload Supporting Document : ', ['class' => 'col-sm-2 col-form-label'] ) }}' +
+					'<div class="col-auto supportdoc">' +
+						'{{ Form::file( 'document', ['class' => 'form-control form-control-file', 'id' => 'doc', 'placeholder' => 'Supporting Document']) }}' +
+					'</div>' +
+				'</div>' +
+				'<div class="form-group row mb-3 {{ $errors->has('documentsupport') ? 'has-error' : '' }}">' +
+					'<div class="offset-sm-2 col-auto form-check suppdoc">' +
+						'{{ Form::checkbox('documentsupport', 1, @$value, ['class' => 'form-check-input ', 'id' => 'suppdoc']) }}' +
+						'<label for="suppdoc" class="form-check-label p-1 bg-warning text-danger rounded">Please ensure you will submit <strong>Supporting Documents</strong> within <strong>3 Days</strong> after date leave.</label>' +
+					'</div>' +
+				'</div>' +
+			'</div>'
+		);
+		$(document).on('change', '#appendleavehalf :radio', function () {
+			if (this.checked) {
+				if( $('.removetest').length == 0 ) {
+					$('#wrappertest').append(
+						'<div class="pretty p-default p-curve form-check form-check-inline removetest">' +
+							'<input type="radio" name="half_type_id" value="1/' + obj.time_start_am + '/' + obj.time_end_am + '" id="am" checked="checked">' +
+							'<div class="state p-primary">' +
+								'<label for="am" class="form-check-label">' + moment(obj.time_start_am, 'HH:mm:ss').format('h:mm a') + ' to ' + moment(obj.time_end_am, 'HH:mm:ss').format('h:mm a') + '</label> ' +
+							'</div>' +
+						'</div>' +
+						'<div class="pretty p-default p-curve form-check form-check-inline removetest">' +
+							'<input type="radio" name="half_type_id" value="2/' + obj.time_start_pm + '/' + obj.time_end_pm + '" id="pm">' +
+							'<div class="state p-primary">' +
+								'<label for="pm" class="form-check-label">' + moment(obj.time_start_pm, 'HH:mm:ss').format('h:mm a') + ' to ' + moment(obj.time_end_pm, 'HH:mm:ss').format('h:mm a') + '</label> ' +
+							'</div>' +
+						'</div>'
+					);
+					if( moment('{{ Carbon::parse($hrleave->date_time_start)->format('H:i:s') }}').isSame(moment(obj.time_start_am, 'HH:mm:ss')) ) {
+						console.log('ppagi');
+						$('#am').prop('checked', true);
+					} else {
+						console.log('ptg');
+						$('#pm').prop('checked', true);
+					}
+				}
+			}
+		});
+
+		if( moment('{{ Carbon::parse($hrleave->date_time_start)->format('H:i:s') }}').isSame(moment(obj.time_start_am, 'HH:mm:ss')) ) {
+			console.log('ppagi');
+			$('#am').prop('checked', true);
+		} else {
+			console.log('ptg');
+			$('#pm').prop('checked', true);
+		}
+
+		$(document).on('change', '#removeleavehalf :radio', function () {
+		//$('#removeleavehalf :radio').change(function() {
+			if (this.checked) {
+				$('.removetest').remove();
+			}
+		});
+	}
+	// start date
+	$('#from').datetimepicker({
+		icons: {
+			time: "fas fas-regular fa-clock fa-beat",
+			date: "fas fas-regular fa-calendar fa-beat",
+			up: "fa-regular fa-circle-up fa-beat",
+			down: "fa-regular fa-circle-down fa-beat",
+			previous: 'fas fas-regular fa-arrow-left fa-beat',
+			next: 'fas fas-regular fa-arrow-right fa-beat',
+			today: 'fas fas-regular fa-calenday-day fa-beat',
+			clear: 'fas fas-regular fa-broom-wide fa-beat',
+			close: 'fas fas-regular fa-rectangle-xmark fa-beat'
+		},
+		format:'YYYY-MM-DD',
+		useCurrent: false,
+		// minDate: moment().format('YYYY-MM-DD'),
+		// disabledDates: data,
+	})
+	.on('dp.change dp.update', function(e) {
+		// $('#form').bootstrapValidator('revalidateField', 'date_time_start');
+		$('#to').datetimepicker('minDate', $('#from').val());
+	});
+
+	// end date
+	$('#to').datetimepicker({
+		icons: {
+			time: "fas fas-regular fa-clock fa-beat",
+			date: "fas fas-regular fa-calendar fa-beat",
+			up: "fa-regular fa-circle-up fa-beat",
+			down: "fa-regular fa-circle-down fa-beat",
+			previous: 'fas fas-regular fa-arrow-left fa-beat',
+			next: 'fas fas-regular fa-arrow-right fa-beat',
+			today: 'fas fas-regular fa-calenday-day fa-beat',
+			clear: 'fas fas-regular fa-broom-wide fa-beat',
+			close: 'fas fas-regular fa-rectangle-xmark fa-beat'
+		},
+		format:'YYYY-MM-DD',
+		useCurrent: false,
+		// minDate: moment().format('YYYY-MM-DD'),
+		// disabledDates: data,
+	})
+	.on('dp.change dp.update', function(e) {
+		// $('#to').bootstrapValidator('revalidateField', 'date_time_start');
+		$('#from').datetimepicker('maxDate', $('#to').val());
+	});
+
+	// time start
+	$('#start').datetimepicker({
+		icons: {
+			time: "fas fas-regular fa-clock fa-beat",
+			date: "fas fas-regular fa-calendar fa-beat",
+			up: "fas fa-regular fa-circle-up fa-beat",
+			down: "fas fa-regular fa-circle-down fa-beat",
+			previous: 'fas fas-regular fa-arrow-left fa-beat',
+			next: 'fas fas-regular fa-arrow-right fa-beat',
+			today: 'fas fas-regular fa-calenday-day fa-beat',
+			clear: 'fas fas-regular fa-broom-wide fa-beat',
+			close: 'fas fas-regular fa-rectangle-xmark fa-beat'
+		},
+		format: 'h:mm A',
+		// enabledHours: [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18],
+	})
+	.on('dp.change dp.update', function(e){
+		// $('#form').bootstrapValidator('revalidateField', 'time_start');
+		// $('#end').datetimepicker('minDate', moment($('#start').val(), 'h:mm A'));
+	});
+
+	// time end
+	$('#end').datetimepicker({
+		icons: {
+			time: "fas fas-regular fa-clock fa-beat",
+			date: "fas fas-regular fa-calendar fa-beat",
+			up: "fas fa-regular fa-circle-up fa-beat",
+			down: "fas fa-regular fa-circle-down fa-beat",
+			previous: 'fas fas-regular fa-arrow-left fa-beat',
+			next: 'fas fas-regular fa-arrow-right fa-beat',
+			today: 'fas fas-regular fa-calenday-day fa-beat',
+			clear: 'fas fas-regular fa-broom-wide fa-beat',
+			close: 'fas fas-regular fa-rectangle-xmark fa-beat'
+		},
+		format: 'h:mm A',
+		// enabledHours: [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18],
+	})
+	.on('dp.change dp.update', function(e){
+		// $('#form').bootstrapValidator('revalidateField', 'time_end');
+		// $('#start').datetimepicker('minDate', moment($('#end').val(), 'h:mm A'));
+	});
+
+	//enable select 2 for backup
+	$('#backupperson').select2({
+		placeholder: 'Please Choose',
+		width: '100%',
+		ajax: {
+			url: '{{ route('backupperson') }}',
+			// data: { '_token': '{!! csrf_token() !!}' },
+			type: 'POST',
+			dataType: 'json',
+			data: function (params) {
+				var query = {
+					id: {{ $hrleave->belongstostaff->id }},
+					_token: '{!! csrf_token() !!}',
+					date_from: $('#from').val(),
+					date_to: $('#to').val(),
+				}
+				return query;
+			}
+		},
+		allowClear: true,
+		closeOnSelect: true,
+	});
+
+
+});
+
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////
 // start here when user start to select the leave type option
 $('#leave_id').on('change', function() {
 	$selection = $(this).find(':selected');
-	// console.log($selection.val());
+	// console.log($selection);
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// annual leave & UPL
@@ -319,7 +852,7 @@ $('#leave_id').on('change', function() {
 				dataType: 'json',
 				data: function (params) {
 					var query = {
-						id: {{ \Auth::user()->belongstostaff->id }},
+						id: {{ $hrleave->belongstostaff->id }},
 						_token: '{!! csrf_token() !!}',
 						date_from: $('#from').val(),
 						date_to: $('#to').val(),
@@ -347,8 +880,8 @@ $('#leave_id').on('change', function() {
 			},
 			format:'YYYY-MM-DD',
 			useCurrent: false,
-			minDate: moment().format('YYYY-MM-DD'),
-			disabledDates: data,
+			// minDate: moment().format('YYYY-MM-DD'),
+			// disabledDates: data,
 			// daysOfWeekDisabled: [0],
 			// minDate: data[1],
 		})
@@ -402,7 +935,11 @@ var datenow =$('#from').val();
 var data1 = $.ajax({
 	url: "{{ route('leavedate.timeleave') }}",
 	type: "POST",
-	data: {date: datenow, _token: '{!! csrf_token() !!}', id: {{ \Auth::user()->belongstostaff->id }} },
+	data: {
+		date: datenow,
+		_token: '{!! csrf_token() !!}',
+		id: {{ $hrleave->belongstostaff->id }}
+	},
 	dataType: 'json',
 	global: false,
 	async:false,
@@ -495,8 +1032,8 @@ if(obj.time_start_pm == itime_start) {
 			},
 			format:'YYYY-MM-DD',
 			useCurrent: false,
-			minDate: moment().format('YYYY-MM-DD'),
-			disabledDates:data,
+			// minDate: moment().format('YYYY-MM-DD'),
+			// disabledDates:data,
 			//daysOfWeekDisabled: [0],
 		})
 		.on('dp.change dp.update', function(e) {
@@ -548,7 +1085,11 @@ var datenow =$('#from').val();
 var data1 = $.ajax({
 	url: "{{ route('leavedate.timeleave') }}",
 	type: "POST",
-	data: {date: datenow, _token: '{!! csrf_token() !!}', id: {{ \Auth::user()->belongstostaff->id }} },
+	data: {
+		date: datenow,
+		_token: '{!! csrf_token() !!}',
+		id: {{ $hrleave->belongstostaff->id }}
+	},
 	dataType: 'json',
 	global: false,
 	async:false,
@@ -638,9 +1179,9 @@ if(obj.time_start_pm == itime_start) {
 					url: "{{ route('leavedate.timeleave') }}",
 					type: "POST",
 					data: {
-							date: datenow,
-							_token: '{!! csrf_token() !!}',
-							id: {{ \Auth::user()->belongstostaff->id }}
+						date: datenow,
+						_token: '{!! csrf_token() !!}',
+						id: {{ $hrleave->belongstostaff->id }}
 					},
 					dataType: 'json',
 					global: false,
@@ -761,12 +1302,11 @@ if(obj.time_start_pm == itime_start) {
 			width: '100%',
 			ajax: {
 				url: '{{ route('backupperson') }}',
-				// data: { '_token': '{!! csrf_token() !!}' },
 				type: 'POST',
 				dataType: 'json',
 				data: function (params) {
 					var query = {
-						id: {{ \Auth::user()->belongstostaff->id }},
+						id: {{ $hrleave->belongstostaff->id }},
 						_token: '{!! csrf_token() !!}',
 						date_from: $('#from').val(),
 						date_to: $('#to').val(),
@@ -793,7 +1333,7 @@ if(obj.time_start_pm == itime_start) {
 			},
 			format:'YYYY-MM-DD',
 			useCurrent: true,
-			disabledDates: data4,
+			// disabledDates: data4,
 			// minDate: moment().format('YYYY-MM-DD'),
 			// daysOfWeekDisabled: [0],
 			// minDate: data[1],
@@ -849,7 +1389,11 @@ var datenow =$('#from').val();
 var data1 = $.ajax({
 	url: "{{ route('leavedate.timeleave') }}",
 	type: "POST",
-	data: {date: datenow, _token: '{!! csrf_token() !!}', id: {{ \Auth::user()->belongstostaff->id }} },
+	data: {
+		date: datenow,
+		_token: '{!! csrf_token() !!}',
+		id: {{ $hrleave->belongstostaff->id }}
+	},
 	dataType: 'json',
 	global: false,
 	async:false,
@@ -943,7 +1487,7 @@ if(obj.time_start_pm == itime_start) {
 			},
 			format:'YYYY-MM-DD',
 			useCurrent: true,
-			disabledDates: data4,
+			// disabledDates: data4,
 			// minDate: moment().format('YYYY-MM-DD'),
 			// daysOfWeekDisabled: [0],
 			// minDate: data[1],
@@ -999,7 +1543,11 @@ var datenow =$('#from').val();
 var data1 = $.ajax({
 	url: "{{ route('leavedate.timeleave') }}",
 	type: "POST",
-	data: {date: datenow, _token: '{!! csrf_token() !!}', id: {{ \Auth::user()->belongstostaff->id }} },
+	data: {
+			date: datenow,
+			_token: '{!! csrf_token() !!}',
+			id: {{ $hrleave->belongstostaff->id }}
+	},
 	dataType: 'json',
 	global: false,
 	async:false,
@@ -1091,7 +1639,11 @@ if(obj.time_start_pm == itime_start) {
 				var data1 = $.ajax({
 					url: "{{ route('leavedate.timeleave') }}",
 					type: "POST",
-					data: {date: datenow, _token: '{!! csrf_token() !!}', id: {{ \Auth::user()->belongstostaff->id }} },
+					data: {
+							date: datenow,
+							_token: '{!! csrf_token() !!}',
+							id: {{ $hrleave->belongstostaff->id }}
+					},
 					dataType: 'json',
 					global: false,
 					async:false,
@@ -1223,7 +1775,7 @@ $oi = \Auth::user()->belongstostaff->hasmanyleavereplacement()->where('leave_bal
 				dataType: 'json',
 				data: function (params) {
 					var query = {
-						id: {{ \Auth::user()->belongstostaff->id }},
+						id: {{ $hrleave->belongstostaff->id }},
 						_token: '{!! csrf_token() !!}',
 						date_from: $('#from').val(),
 						date_to: $('#to').val(),
@@ -1251,8 +1803,8 @@ $oi = \Auth::user()->belongstostaff->hasmanyleavereplacement()->where('leave_bal
 			},
 			format:'YYYY-MM-DD',
 			useCurrent: false,
-			minDate: moment().format('YYYY-MM-DD'),
-			disabledDates: data,
+			// minDate: moment().format('YYYY-MM-DD'),
+			// disabledDates: data,
 			// daysOfWeekDisabled: [0],
 			// minDate: data[1],
 		})
@@ -1307,7 +1859,11 @@ var datenow =$('#from').val();
 var data1 = $.ajax({
 	url: "{{ route('leavedate.timeleave') }}",
 	type: "POST",
-	data: {date: datenow, _token: '{!! csrf_token() !!}', id: {{ \Auth::user()->belongstostaff->id }} },
+	data: {
+			date: datenow,
+			_token: '{!! csrf_token() !!}',
+			id: {{ $hrleave->belongstostaff->id }}
+	},
 	dataType: 'json',
 	global: false,
 	async:false,
@@ -1400,9 +1956,9 @@ if(obj.time_start_pm == itime_start) {
 			},
 			format:'YYYY-MM-DD',
 			useCurrent: false,
-			minDate: moment().format('YYYY-MM-DD'),
-			disabledDates:data,
-			//daysOfWeekDisabled: [0],
+			// minDate: moment().format('YYYY-MM-DD'),
+			// disabledDates:data,
+			// daysOfWeekDisabled: [0],
 		})
 		.on('dp.change dp.update', function(e) {
 			$('#form').bootstrapValidator('revalidateField', 'date_time_end');
@@ -1453,7 +2009,11 @@ var datenow =$('#from').val();
 var data1 = $.ajax({
 	url: "{{ route('leavedate.timeleave') }}",
 	type: "POST",
-	data: {date: datenow, _token: '{!! csrf_token() !!}', id: {{ \Auth::user()->belongstostaff->id }} },
+	data: {
+			date: datenow,
+			_token: '{!! csrf_token() !!}',
+			id: {{ $hrleave->belongstostaff->id }}
+	},
 	dataType: 'json',
 	global: false,
 	async:false,
@@ -1542,7 +2102,11 @@ if(obj.time_start_pm == itime_start) {
 				var data1 = $.ajax({
 					url: "{{ route('leavedate.timeleave') }}",
 					type: "POST",
-					data: {date: datenow, _token: '{!! csrf_token() !!}', id: {{ \Auth::user()->belongstostaff->id }} },
+					data: {
+							date: datenow,
+							_token: '{!! csrf_token() !!}',
+							id: {{ $hrleave->belongstostaff->id }}
+					},
 					dataType: 'json',
 					global: false,
 					async:false,
@@ -1612,7 +2176,11 @@ if(obj.time_start_pm == itime_start) {
 				var data1 = $.ajax({
 					url: "{{ route('leavedate.timeleave') }}",
 					type: "POST",
-					data: {date: datenow, _token: '{!! csrf_token() !!}', id: {{ \Auth::user()->belongstostaff->id }} },
+					data: {
+							date: datenow,
+							_token: '{!! csrf_token() !!}',
+							id: {{ $hrleave->belongstostaff->id }}
+					},
 					dataType: 'json',
 					global: false,
 					async:false,
@@ -1861,7 +2429,7 @@ if(obj.time_start_pm == itime_start) {
 				dataType: 'json',
 				data: function (params) {
 					var query = {
-						id: {{ \Auth::user()->belongstostaff->id }},
+						id: {{ $hrleave->belongstostaff->id }},
 						_token: '{!! csrf_token() !!}',
 						date_from: $('#from').val(),
 						date_to: $('#to').val(),
@@ -1889,7 +2457,7 @@ if(obj.time_start_pm == itime_start) {
 			},
 			format:'YYYY-MM-DD',
 			useCurrent: false,
-			disabledDates:data4,
+			// disabledDates:data4,
 			// minDate: moment().format('YYYY-MM-DD'),
 			// daysOfWeekDisabled: [0],
 		})
@@ -1943,7 +2511,11 @@ var datenow =$('#from').val();
 var data1 = $.ajax({
 	url: "{{ route('leavedate.timeleave') }}",
 	type: "POST",
-	data: {date: datenow, _token: '{!! csrf_token() !!}', id: {{ \Auth::user()->belongstostaff->id }} },
+	data: {
+			date: datenow,
+			_token: '{!! csrf_token() !!}',
+			id: {{ $hrleave->belongstostaff->id }}
+	},
 	dataType: 'json',
 	global: false,
 	async:false,
@@ -2047,7 +2619,7 @@ if(obj.time_start_pm == itime_start) {
 							dataType: 'json',
 							data: function (params) {
 								var query = {
-									id: {{ \Auth::user()->belongstostaff->id }},
+									id: {{ $hrleave->belongstostaff->id }},
 									_token: '{!! csrf_token() !!}',
 									date_from: $('#from').val(),
 									date_to: $('#to').val(),
@@ -2080,7 +2652,7 @@ if(obj.time_start_pm == itime_start) {
 			},
 			format:'YYYY-MM-DD',
 			useCurrent: false,
-			disabledDates:data4,
+			// disabledDates:data4,
 			// minDate: moment().format('YYYY-MM-DD'),
 			// daysOfWeekDisabled: [0],
 		})
@@ -2134,7 +2706,11 @@ var datenow =$('#from').val();
 var data1 = $.ajax({
 	url: "{{ route('leavedate.timeleave') }}",
 	type: "POST",
-	data: {date: datenow, _token: '{!! csrf_token() !!}', id: {{ \Auth::user()->belongstostaff->id }} },
+	data: {
+			date: datenow,
+			_token: '{!! csrf_token() !!}',
+			id: {{ $hrleave->belongstostaff->id }}
+	},
 	dataType: 'json',
 	global: false,
 	async:false,
@@ -2223,7 +2799,11 @@ if(obj.time_start_pm == itime_start) {
 				var data1 = $.ajax({
 					url: "{{ route('leavedate.timeleave') }}",
 					type: "POST",
-					data: {date: datenow, _token: '{!! csrf_token() !!}', id: {{ \Auth::user()->belongstostaff->id }} },
+					data: {
+							date: datenow,
+							_token: '{!! csrf_token() !!}',
+							id: {{ $hrleave->belongstostaff->id }}
+					},
 					dataType: 'json',
 					global: false,
 					async:false,
@@ -2345,7 +2925,7 @@ if(obj.time_start_pm == itime_start) {
 				dataType: 'json',
 				data: function (params) {
 					var query = {
-						id: {{ \Auth::user()->belongstostaff->id }},
+						id: {{ $hrleave->belongstostaff->id }},
 						_token: '{!! csrf_token() !!}',
 						date_from: $('#from').val(),
 						date_to: $('#to').val(),
@@ -2373,7 +2953,7 @@ if(obj.time_start_pm == itime_start) {
 			},
 			format:'YYYY-MM-DD',
 			useCurrent: false,
-			disabledDates:data,
+			// disabledDates:data,
 			// minDate: moment().format('YYYY-MM-DD'),
 			// daysOfWeekDisabled: [0],
 		})
@@ -2406,7 +2986,7 @@ if(obj.time_start_pm == itime_start) {
 							dataType: 'json',
 							data: function (params) {
 								var query = {
-									id: {{ \Auth::user()->belongstostaff->id }},
+									id: {{ $hrleave->belongstostaff->id }},
 									_token: '{!! csrf_token() !!}',
 									date_from: $('#from').val(),
 									date_to: $('#to').val(),
@@ -2447,7 +3027,7 @@ if(obj.time_start_pm == itime_start) {
 				close: 'fas fas-regular fa-rectangle-xmark fa-beat'
 			},
 			format: 'h:mm A',
-			enabledHours: [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18],
+			// enabledHours: [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18],
 		})
 		.on('dp.change dp.update', function(e){
 			$('#form').bootstrapValidator('revalidateField', 'time_start');
@@ -2467,7 +3047,7 @@ if(obj.time_start_pm == itime_start) {
 				close: 'fas fas-regular fa-rectangle-xmark fa-beat'
 			},
 			format: 'h:mm A',
-			enabledHours: [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18],
+			// enabledHours: [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18],
 		})
 		.on('dp.change dp.update', function(e){
 			$('#form').bootstrapValidator('revalidateField', 'time_end');
@@ -2559,7 +3139,7 @@ if(obj.time_start_pm == itime_start) {
 			},
 			format:'YYYY-MM-DD',
 			useCurrent: false,
-			disabledDates: data4,
+			// disabledDates: data4,
 			// daysOfWeekDisabled: [0],
 		})
 		.on('dp.change dp.update', function(e) {
@@ -2613,7 +3193,11 @@ var datenow =$('#from').val();
 var data1 = $.ajax({
 	url: "{{ route('leavedate.timeleave') }}",
 	type: "POST",
-	data: {date: datenow, _token: '{!! csrf_token() !!}', id: {{ \Auth::user()->belongstostaff->id }} },
+	data: {
+			date: datenow,
+			_token: '{!! csrf_token() !!}',
+			id: {{ $hrleave->belongstostaff->id }}
+	},
 	dataType: 'json',
 	global: false,
 	async:false,
@@ -2719,7 +3303,7 @@ if(obj.time_start_pm == itime_start) {
 							dataType: 'json',
 							data: function (params) {
 								var query = {
-									id: {{ \Auth::user()->belongstostaff->id }},
+									id: {{ $hrleave->belongstostaff->id }},
 									_token: '{!! csrf_token() !!}',
 									date_from: $('#from').val(),
 									date_to: $('#to').val(),
@@ -2753,7 +3337,7 @@ if(obj.time_start_pm == itime_start) {
 			useCurrent: false,
 			format:'YYYY-MM-DD',
 			useCurrent: false,
-			disabledDates:data4,
+			// disabledDates:data4,
 			// daysOfWeekDisabled: [0],
 		})
 		.on('dp.change dp.update', function(e) {
@@ -2807,7 +3391,11 @@ var datenow =$('#from').val();
 var data1 = $.ajax({
 	url: "{{ route('leavedate.timeleave') }}",
 	type: "POST",
-	data: {date: datenow, _token: '{!! csrf_token() !!}', id: {{ \Auth::user()->belongstostaff->id }} },
+	data: {
+			date: datenow,
+			_token: '{!! csrf_token() !!}',
+			id: {{ $hrleave->belongstostaff->id }}
+	},
 	dataType: 'json',
 	global: false,
 	async:false,
@@ -2901,7 +3489,7 @@ if(obj.time_start_pm == itime_start) {
 				dataType: 'json',
 				data: function (params) {
 					var query = {
-						id: {{ \Auth::user()->belongstostaff->id }},
+						id: {{ $hrleave->belongstostaff->id }},
 						_token: '{!! csrf_token() !!}',
 						date_from: $('#from').val(),
 						date_to: $('#to').val(),
@@ -2924,7 +3512,11 @@ if(obj.time_start_pm == itime_start) {
 				var data1 = $.ajax({
 					url: "{{ route('leavedate.timeleave') }}",
 					type: "POST",
-					data: {date: datenow, _token: '{!! csrf_token() !!}', id: {{ \Auth::user()->belongstostaff->id }} },
+					data: {
+							date: datenow,
+							_token: '{!! csrf_token() !!}',
+							id: {{ $hrleave->belongstostaff->id }}
+					},
 					dataType: 'json',
 					global: false,
 					async:false,
@@ -3041,7 +3633,7 @@ $oi = \Auth::user()->belongstostaff->hasmanyleavereplacement()->where('leave_bal
 		// more option
 		$('#form').bootstrapValidator('addField', $('.nrl').find('[name="leave_id"]'));
 		@if( $userneedbackup == 1 )
-		$('#form').bootstrapValidator('addField', $('.backup').find('[name="staff_id"]'));
+			$('#form').bootstrapValidator('addField', $('.backup').find('[name="staff_id"]'));
 		@endif
 		$('#form').bootstrapValidator('addField', $('.datetime').find('[name="date_time_start"]'));
 		$('#form').bootstrapValidator('addField', $('.datetime').find('[name="date_time_end"]'));
@@ -3067,7 +3659,7 @@ $oi = \Auth::user()->belongstostaff->hasmanyleavereplacement()->where('leave_bal
 				dataType: 'json',
 				data: function (params) {
 					var query = {
-						id: {{ \Auth::user()->belongstostaff->id }},
+						id: {{ $hrleave->belongstostaff->id }},
 						_token: '{!! csrf_token() !!}',
 						date_from: $('#from').val(),
 						date_to: $('#to').val(),
@@ -3095,7 +3687,7 @@ $oi = \Auth::user()->belongstostaff->hasmanyleavereplacement()->where('leave_bal
 			},
 			format:'YYYY-MM-DD',
 			useCurrent: false,
-			disabledDates: data4,
+			// disabledDates: data4,
 			// minDate: moment().format('YYYY-MM-DD'),
 			// daysOfWeekDisabled: [0],
 			// minDate: data[1],
@@ -3150,7 +3742,11 @@ var datenow =$('#from').val();
 var data1 = $.ajax({
 	url: "{{ route('leavedate.timeleave') }}",
 	type: "POST",
-	data: {date: datenow, _token: '{!! csrf_token() !!}', id: {{ \Auth::user()->belongstostaff->id }} },
+	data: {
+			date: datenow,
+			_token: '{!! csrf_token() !!}',
+			id: {{ $hrleave->belongstostaff->id }}
+	},
 	dataType: 'json',
 	global: false,
 	async:false,
@@ -3254,7 +3850,7 @@ if(obj.time_start_pm == itime_start) {
 							dataType: 'json',
 							data: function (params) {
 								var query = {
-									id: {{ \Auth::user()->belongstostaff->id }},
+									id: {{ $hrleave->belongstostaff->id }},
 									_token: '{!! csrf_token() !!}',
 									date_from: $('#from').val(),
 									date_to: $('#to').val(),
@@ -3287,7 +3883,7 @@ if(obj.time_start_pm == itime_start) {
 			},
 			format:'YYYY-MM-DD',
 			useCurrent: false,
-			disabledDates:data4,
+			// disabledDates:data4,
 			// minDate: moment().format('YYYY-MM-DD'),
 			// daysOfWeekDisabled: [0],
 		})
@@ -3341,7 +3937,11 @@ var datenow =$('#from').val();
 var data1 = $.ajax({
 	url: "{{ route('leavedate.timeleave') }}",
 	type: "POST",
-	data: {date: datenow, _token: '{!! csrf_token() !!}', id: {{ \Auth::user()->belongstostaff->id }} },
+	data: {
+			date: datenow,
+			_token: '{!! csrf_token() !!}',
+			id: {{ $hrleave->belongstostaff->id }}
+	},
 	dataType: 'json',
 	global: false,
 	async:false,
@@ -3386,7 +3986,6 @@ if(obj.time_start_pm == itime_start) {
 					);
 					$('#form').bootstrapValidator('addField', $('.time').find('[name="time_start"]'));
 					$('#form').bootstrapValidator('addField', $('.time').find('[name="time_end"]'));
-
 } else {
 					$('#wrapperday').append(
 							'{{ Form::label('leave_type', 'Leave Category : ', ['class' => 'col-sm-2 col-form-label removehalfleave']) }}' +
@@ -3431,7 +4030,11 @@ if(obj.time_start_pm == itime_start) {
 				var data1 = $.ajax({
 					url: "{{ route('leavedate.timeleave') }}",
 					type: "POST",
-					data: {date: datenow, _token: '{!! csrf_token() !!}', id: {{ \Auth::user()->belongstostaff->id }} },
+					data: {
+							date: datenow,
+							_token: '{!! csrf_token() !!}',
+							id: {{ $hrleave->belongstostaff->id }}
+					},
 					dataType: 'json',
 					global: false,
 					async:false,
@@ -3501,7 +4104,11 @@ if(obj.time_start_pm == itime_start) {
 				var data1 = $.ajax({
 					url: "{{ route('leavedate.timeleave') }}",
 					type: "POST",
-					data: {date: datenow, _token: '{!! csrf_token() !!}', id: {{ \Auth::user()->belongstostaff->id }} },
+					data: {
+							date: datenow,
+							_token: '{!! csrf_token() !!}',
+							id: {{ $hrleave->belongstostaff->id }}
+					},
 					dataType: 'json',
 					global: false,
 					async:false,
@@ -3627,7 +4234,7 @@ if(obj.time_start_pm == itime_start) {
 				dataType: 'json',
 				data: function (params) {
 					var query = {
-						id: {{ \Auth::user()->belongstostaff->id }},
+						id: {{ $hrleave->belongstostaff->id }},
 						_token: '{!! csrf_token() !!}',
 						date_from: $('#from').val(),
 						date_to: $('#to').val(),
@@ -3653,7 +4260,7 @@ if(obj.time_start_pm == itime_start) {
 			},
 			format:'YYYY-MM-DD',
 			useCurrent: false,
-			disabledDates: data4,
+			// disabledDates: data4,
 			// minDate: moment().format('YYYY-MM-DD'),
 			// minDate: data[1],
 			// daysOfWeekDisabled: [0],
@@ -3708,7 +4315,11 @@ var datenow =$('#from').val();
 var data1 = $.ajax({
 	url: "{{ route('leavedate.timeleave') }}",
 	type: "POST",
-	data: {date: datenow, _token: '{!! csrf_token() !!}', id: {{ \Auth::user()->belongstostaff->id }} },
+	data: {
+			date: datenow,
+			_token: '{!! csrf_token() !!}',
+			id: {{ $hrleave->belongstostaff->id }}
+	},
 	dataType: 'json',
 	global: false,
 	async:false,
@@ -3812,7 +4423,7 @@ if(obj.time_start_pm == itime_start) {
 							dataType: 'json',
 							data: function (params) {
 								var query = {
-									id: {{ \Auth::user()->belongstostaff->id }},
+									id: {{ $hrleave->belongstostaff->id }},
 									_token: '{!! csrf_token() !!}',
 									date_from: $('#from').val(),
 									date_to: $('#to').val(),
@@ -3845,7 +4456,7 @@ if(obj.time_start_pm == itime_start) {
 			},
 			format:'YYYY-MM-DD',
 			useCurrent: false,
-			disabledDates:data4,
+			// disabledDates:data4,
 			// minDate: moment().format('YYYY-MM-DD'),
 			// daysOfWeekDisabled: [0],
 		})
@@ -3899,7 +4510,11 @@ var datenow =$('#from').val();
 var data1 = $.ajax({
 	url: "{{ route('leavedate.timeleave') }}",
 	type: "POST",
-	data: {date: datenow, _token: '{!! csrf_token() !!}', id: {{ \Auth::user()->belongstostaff->id }} },
+	data: {
+			date: datenow,
+			_token: '{!! csrf_token() !!}',
+			id: {{ $hrleave->belongstostaff->id }}
+	},
 	dataType: 'json',
 	global: false,
 	async:false,
@@ -3944,7 +4559,6 @@ if(obj.time_start_pm == itime_start) {
 					);
 					$('#form').bootstrapValidator('addField', $('.time').find('[name="time_start"]'));
 					$('#form').bootstrapValidator('addField', $('.time').find('[name="time_end"]'));
-
 } else {
 					$('#wrapperday').append(
 							'{{ Form::label('leave_type', 'Leave Category : ', ['class' => 'col-sm-2 col-form-label removehalfleave']) }}' +
@@ -3989,7 +4603,11 @@ if(obj.time_start_pm == itime_start) {
 				var data1 = $.ajax({
 					url: "{{ route('leavedate.timeleave') }}",
 					type: "POST",
-					data: {date: datenow, _token: '{!! csrf_token() !!}', id: {{ \Auth::user()->belongstostaff->id }} },
+					data: {
+							date: datenow,
+							_token: '{!! csrf_token() !!}',
+							id: {{ $hrleave->belongstostaff->id }}
+					},
 					dataType: 'json',
 					global: false,
 					async:false,
@@ -4131,6 +4749,13 @@ $(document).ready(function() {
 					}
 				}
 			},
+			amend_note: {
+				validators: {
+					// notEmpty: {
+					// 	message: 'Please choose'
+					// }
+				}
+			},
 			document: {
 				validators: {
 					file: {
@@ -4141,14 +4766,13 @@ $(document).ready(function() {
 					},
 				}
 			},
-			//container: '.suppdoc',
-			documentsupport: {
-				validators: {
-					notEmpty: {
-						message: 'Please click this as an aknowledgement.'
-					},
-				}
-			},
+			// documentsupport: {
+			// 	validators: {
+			// 		notEmpty: {
+			// 			message: 'Please click this as an aknowledgement.'
+			// 		},
+			// 	}
+			// },
 		}
 	})
 	.find('[name="reason"]')
@@ -4165,3 +4789,13 @@ $(document).ready(function() {
 /////////////////////////////////////////////////////////////////////////////////////////
 @endsection
 
+@section('nonjquery')
+	function printPage() {
+		window.print();
+	}
+
+	function back() {
+		window.history.back();
+	}
+
+@endsection
