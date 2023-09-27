@@ -638,9 +638,9 @@ if(obj.time_start_pm == itime_start) {
 					url: "{{ route('leavedate.timeleave') }}",
 					type: "POST",
 					data: {
-							date: datenow,
-							_token: '{!! csrf_token() !!}',
-							id: {{ \Auth::user()->belongstostaff->id }}
+						date: datenow, 
+						_token: '{!! csrf_token() !!}', 
+						id: {{ \Auth::user()->belongstostaff->id }} 
 					},
 					dataType: 'json',
 					global: false,

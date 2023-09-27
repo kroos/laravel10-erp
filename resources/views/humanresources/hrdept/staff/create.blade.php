@@ -1303,15 +1303,16 @@ $('#form').bootstrapValidator({
 					url: '{{ route('icuser') }}',
 					message: 'Identity Card or Passport exist, please activate this person ',
 					data: function(validator) {
-								return {
-											_token: '{!! csrf_token() !!}',
-											ic: $('#ic').val(),
-								};
-							},
+						return {
+									_token: '{!! csrf_token() !!}',
+									ic: $('#ic').val(),
+						};
+					},
 					delay: 1,		// wait 0.001 seconds
 				},
 			}
 		},
+
 		religion_id: {
 			validators: {
 				// notEmpty: {
