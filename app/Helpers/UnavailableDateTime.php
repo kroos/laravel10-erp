@@ -149,6 +149,7 @@ class UnavailableDateTime
 		})
 		// ->ddRawSql();
 		->get();
+		dd($aleaveday);
 
 		// echo $leaveday;
 		// dd([$aleaveday->count(), $hleaveday->count()]);

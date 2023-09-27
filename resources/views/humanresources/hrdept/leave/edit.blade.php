@@ -1949,7 +1949,7 @@ if(obj.time_start_pm == itime_start) {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // replacement leave
 <?php
-$oi = \Auth::user()->belongstostaff->hasmanyleavereplacement()->where('leave_balance', '<>', 0)->get();
+$oi = $hrleave->belongstostaff->hasmanyleavereplacement()->where('leave_balance', '<>', 0)->get();
 ?>
 	if ($selection.val() == '4') {
 		$('#remove').remove();
@@ -3818,7 +3818,7 @@ if(obj.time_start_pm == itime_start) {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // el replacement leave
 <?php
-$oi = \Auth::user()->belongstostaff->hasmanyleavereplacement()->where('leave_balance', '<>', 0)->get();
+$oi = $hrleave->belongstostaff->hasmanyleavereplacement()->where('leave_balance', '<>', 0)->get();
 ?>
 	if ($selection.val() == '10') {
 

@@ -255,6 +255,11 @@ class LeaveController extends Controller
 						$l = $user->hasmanyleave()->create($data);																					// insert data into HRLeave
 						$l->belongstomanyleaveannual()->attach($entitlement->id);										// it should be leave_replacement_id but im lazy to change it at view humanresources/create.blade.php
 						$user->hasmanyleaveannual()->where('year', $daStart->year)->update(['annual_leave_balance' => $entitle, 'annual_leave_utilize' => $utilize]);		// update leave_balance by substarct
+						$l->hasmanyleaveamend()->create([
+															'amend_note' => $request->amend_note,
+															'staff_id' => \Auth::user()->belongstostaff->id,
+															'date' => now()
+														]);
 						if($user->belongstoleaveapprovalflow->backup_approval == 1){																// alert backup
 							if($request->staff_id) {																								// backup only valid for non EL leave
 								$hrleave->hasmanyleaveapprovalbackup()->update(['leave_id' => $l->id]);
@@ -302,7 +307,11 @@ class LeaveController extends Controller
 						$l = $user->hasmanyleave()->create($data);																					// insert data into HRLeave
 						$l->belongstomanyleaveannual()->attach($entitlement->id);					// it should be leave_replacement_id but im lazy to change it at view humanresources/create.blade.php
 						$user->hasmanyleaveannual()->where('year', $daStart->year)->update(['annual_leave_balance' => $entitle, 'annual_leave_utilize' => $utilize]);// update leave_balance by substarct
-
+						$l->hasmanyleaveamend()->create([
+															'amend_note' => $request->amend_note,
+															'staff_id' => \Auth::user()->belongstostaff->id,
+															'date' => now()
+														]);
 						//can make a shortcut like this also
 						// shortcut to update hr_leave_annual
 						// not working
@@ -359,6 +368,11 @@ class LeaveController extends Controller
 						$l = $user->hasmanyleave()->create($data);																					// insert data into HRLeave
 						$l->belongstomanyleaveannual()->attach($entitlement->id);										// it should be leave_replacement_id but im lazy to change it at view humanresources/create.blade.php
 						$user->hasmanyleaveannual()->where('year', $daStart->year)->update(['annual_leave_balance' => $entitle, 'annual_leave_utilize' => $utilize]);		// update leave_balance by substarct
+						$l->hasmanyleaveamend()->create([
+															'amend_note' => $request->amend_note,
+															'staff_id' => \Auth::user()->belongstostaff->id,
+															'date' => now()
+														]);
 						if($user->belongstoleaveapprovalflow->backup_approval == 1){																// alert backup
 							if($request->staff_id) {																						// backup only valid for non EL leave
 								$hrleave->hasmanyleaveapprovalbackup()->create(['leave_id' => $l->id]);
@@ -416,7 +430,7 @@ class LeaveController extends Controller
 
 
 		// finally, we delete the leave
-		$hrleave->delete();
+		// $hrleave->delete();
 		Session::flash('flash_message', 'Successfully edit leave');
 		return redirect()->route('hrleave.show', $l->id);
 	}
