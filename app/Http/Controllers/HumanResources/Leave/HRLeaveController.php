@@ -98,10 +98,6 @@ class HRLeaveController extends Controller
 		$filtered = array_diff($lea, $leav);																			// get all the dates that is not overlapped
 		$totaldayfiltered = count($filtered);																			// total days
 
-		// return $filtered;
-		// return $totaldayfiltered;
-		// exit;
-
 		$dateStartEnd = [];
 		if($totalday == $totaldayfiltered){
 			$noOverlap = true;																							// meaning we CAN take $request->date_time_end $request->date_time_start as is to be insert in database

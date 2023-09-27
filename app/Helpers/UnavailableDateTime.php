@@ -206,7 +206,7 @@ class UnavailableDateTime
 		->get();
 
 		// get the days of half day leave
-		if($hleaveday1) {
+		if($hleaveday1->count()) {
 			foreach ($hleaveday1 as $v2) {
 				$timeuhd[] = [
 								'date_half_leave' => \Carbon\Carbon::parse($v2->date_time_start)->format('Y-m-d'),
