@@ -49,7 +49,7 @@ $staffs = Staff::join('logins', 'staffs.id', '=', 'logins.staff_id')
     <div class="col-md-2">
       {{Form::label('name', 'Name')}}
     </div>
-    <div class="col-md-10">
+    <div class="col-md-10 {{ $errors->has('staff_id') ? 'has-error' : '' }}"">
       <p>
         <input type="checkbox" id="checkAll"> <label>Check All</label>&nbsp;&nbsp;&nbsp;&nbsp;
         <input type="checkbox" id="checkG1"> <label>Check Group 1</label>&nbsp;&nbsp;&nbsp;&nbsp;
@@ -70,7 +70,7 @@ $staffs = Staff::join('logins', 'staffs.id', '=', 'logins.staff_id')
     <div class="col-md-2">
       {{Form::label('date_start', 'Date Start')}}
     </div>
-    <div class="col-md-10">
+    <div class="col-md-10 {{ $errors->has('date_start') ? 'has-error' : '' }}">
       {{ Form::text('date_start', @$value, ['class' => 'form-control form-control-sm col-auto', 'id' => 'date_start', 'placeholder' => 'Date Start', 'autocomplete' => 'off']) }}
     </div>
   </div>
@@ -79,7 +79,7 @@ $staffs = Staff::join('logins', 'staffs.id', '=', 'logins.staff_id')
     <div class="col-md-2">
       {{Form::label('date_end', 'Date End')}}
     </div>
-    <div class="col-md-10">
+    <div class="col-md-10 {{ $errors->has('date_end') ? 'has-error' : '' }}">
       {{ Form::text('date_end', @$value, ['class' => 'form-control form-control-sm col-auto', 'id' => 'date_end', 'placeholder' => 'Date End', 'autocomplete' => 'off']) }}
     </div>
   </div>
@@ -97,7 +97,7 @@ $staffs = Staff::join('logins', 'staffs.id', '=', 'logins.staff_id')
     <div class="col-md-2">
       {{Form::label('reason', 'Reason')}}
     </div>
-    <div class="col-md-10">
+    <div class="col-md-10 {{ $errors->has('reason') ? 'has-error' : '' }}">
       {!! Form::text( 'reason', @$value, ['class' => 'form-control', 'id' => 'reason', 'placeholder' => 'Please Insert'] ) !!}
     </div>
   </div>
@@ -156,6 +156,54 @@ close: 'fas fas-regular fa-rectangle-xmark fa-beat'
 },
 format: 'YYYY-MM-DD',
 useCurrent: true,
+});
+
+
+/////////////////////////////////////////////////////////////////////////////////////////
+// VALIDATOR
+$(document).ready(function() {
+	$('#form').bootstrapValidator({
+		feedbackIcons: {
+			valid: '',
+			invalid: '',
+			validating: ''
+		},
+
+		fields: {
+      staff_id: {
+				validators: {
+					notEmpty: {
+						message: 'Please select a staff.'
+					}
+				}
+			},
+
+			date_start: {
+				validators: {
+					notEmpty: {
+						message: 'Please select a date.'
+					}
+				}
+			},
+
+      date_end: {
+				validators: {
+					notEmpty: {
+						message: 'Please select a date.'
+					}
+				}
+			},
+
+      reason: {
+				validators: {
+					notEmpty: {
+						message: 'Please insert a reason.'
+					}
+				}
+			},
+
+		}
+	})
 });
 @endsection
 

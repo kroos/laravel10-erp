@@ -4,7 +4,7 @@ namespace App\Http\Requests\HumanResources\ReplacementLeave;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class ReplacementRequestRequestStore extends FormRequest
+class ReplacementRequestStore extends FormRequest
 {
 	/**
 	 * Determine if the user is authorized to make this request.
@@ -22,9 +22,8 @@ class ReplacementRequestRequestStore extends FormRequest
 	public function rules(): array
 	{
 		return [
-			'staff_id' => 'required',
-			'date_start' => 'required|date',
-			'date_end' => 'required|date',
+			'date_start' => 'required|date_format:Y-m-d',
+			'date_end' => 'required|date_format:Y-m-d',
 			'reason' => 'required|string',
 		];
 	}
@@ -43,7 +42,11 @@ class ReplacementRequestRequestStore extends FormRequest
 	public function messages(): array
 	{
 		return [
-			//
+			'date_start.required' => 'Please select a start date.',
+			'date_end.required' => 'Please select an end date.',
+			'date_start.date_format' => 'Please insert start date in correct date format.',
+			'date_end.date_format' => 'Please insert end date in correct date format.',
+			'reason.required' => 'Please insert a reason.',
 		];
 	}
 }

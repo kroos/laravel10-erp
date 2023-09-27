@@ -81,24 +81,6 @@
 @endsection
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 @section('js')
 /////////////////////////////////////////////////////////////////////////////////////////
 // datatables
@@ -114,12 +96,13 @@ $('#replacement').DataTable({
 "order": [ 2, 'desc' ], // sorting the 6th column descending
 responsive: true
 })
-.on( 'length.dt page.dt order.dt search.dt', function ( e, settings, len ) {
-$(document).ready(function(){
-$('[data-bs-toggle="tooltip"]').tooltip();
-});}
-);
+
+
+$(function () {
+  $('[data-toggle="tooltip"]').tooltip()
+})
 @endsection
+
 
 @section('nonjquery')
 
