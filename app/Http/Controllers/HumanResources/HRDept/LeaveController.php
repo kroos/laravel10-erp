@@ -12,6 +12,16 @@ use Illuminate\View\View;
 // load models
 use App\Models\Staff;
 use App\Models\HumanResources\HRLeave;
+use App\Models\HumanResources\HRLeaveAnnual;
+use App\Models\HumanResources\HRLeaveMC;
+use App\Models\HumanResources\HRLeaveMaternity;
+use App\Models\HumanResources\HRLeaveReplacement;
+
+use \Carbon\Carbon;
+use \Carbon\CarbonPeriod;
+use Session;
+
+use \App\Helpers\UnavailableDateTime;
 
 
 class LeaveController extends Controller
@@ -68,23 +78,29 @@ class LeaveController extends Controller
 	 */
 	public function update(Request $request, HRLeave $hrleave): RedirectResponse
 	{
-		dd($request->all());
+		// dd([$request->all(), $hrleave->leave_type_id]);
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// initial setup for create a leave
-		$user = \Auth::user()->belongstostaff;																			// for specific user
+		$user = $hrleave->belongstostaff;																				// for specific user
 		$daStart = Carbon::parse($request->date_time_start);															// date start : for manipulation
+
+		// start to give back the AL, MC, Maternity & Replacement Leave
+		$t = $daStart->copy()->format('Y');
+
+		$r1 = $hrleave->belongstomanyleaveannual()->first();
+		$r2 = $hrleave->belongstomanyleavemc()->first();
+		$r3 = $hrleave->belongstomanyleavematernity()->first();
+		$r4 = $hrleave->belongstomanyleavereplacement()->first();
 
 		if( empty( $request->date_time_end ) ) {																		// in time off, there only date_time_start so...
 			$request->date_time_end = $request->date_time_start;
 		}
 
-		$row = HRLeave::whereYear('date_time_start', $request->date_time_start)->get()->count();						// count rows for particular year based on $request->date_time_start
-		$row += 1;
-		$ye = $daStart->format('y');																					// strip down to 2 digits
+		$ye = $daStart->copy()->format('y');																			// strip down to 2 digits
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// if a user select more than 1 day and setting double date is on, we need to count the remaining day that is not overlapping
-		$blockdate = UnavailableDateTime::blockDate(\Auth::user()->belongstostaff->id);
+		$blockdate = UnavailableDateTime::blockDate($user->id);
 
 		$period = \Carbon\CarbonPeriod::create($request->date_time_start, '1 days', $request->date_time_end);
 		$lea = [];
@@ -105,10 +121,6 @@ class LeaveController extends Controller
 		$filtered = array_diff($lea, $leav);																			// get all the dates that is not overlapped
 		$totaldayfiltered = count($filtered);																			// total days
 
-		// return $filtered;
-		// return $totaldayfiltered;
-		// exit;
-
 		$dateStartEnd = [];
 		if($totalday == $totaldayfiltered){
 			$noOverlap = true;																							// meaning we CAN take $request->date_time_end $request->date_time_start as is to be insert in database
@@ -119,29 +131,97 @@ class LeaveController extends Controller
 				$dateStartEnd[] = ['date_time_start' => $d, 'date_time_end' => $d];
 			}
 		}
-		// return $dateStartEnd;
-		// exit;
 
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		// generate code for approver
-		$code = mt_rand(100000,999999);
+		// dd([$totalday, $noOverlap, $totaldayfiltered, (!$noOverlap && !($hrleave->period_day == $totalday))]);
 
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		// check if total leave day equals to or lower that entitlement based on year leave date
-		// $daStart;
-		// $entitlement = $user->hasmanyleaveentitlement()->where('year', $daStart->year)->first();
-		// $entitlement = $user->hasmanyleaveentitlement()->where('year', 2024)->first();
+		////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		if (!$noOverlap && !($hrleave->period_day == $totalday)) {
+			Session::flash('flash_danger', 'Edit leave has duration not equal to the previous leave and/or overlapped with other leave, public holiday and restday');
+			return redirect()->back()->withInput();
+		}
+		if ($hrleave->leave_type_id == 1 || $hrleave->leave_type_id == 5) {												// give back all to AL & EL-AL
+			if (!$r1) {
+				Session::flash('flash_danger', 'Please inform IT Department with this message: "No link between leave and annual leave table (database). This is old leave created from old system."');
+				return redirect()->back()->withInput();
+			}
+			// $r1 = HRLeaveAnnual::where([['staff_id', $hrleave->staff_id],['year', $t]])->first();
+			$utilize = $r1->annual_leave_utilize;
+			$balance = $r1->annual_leave_balance;
+			$total = $r1->annual_leave;
+			$newutilize = $utilize - $hrleave->period_day;
+			$newbalance = $balance + $hrleave->period_day;
 
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		// start insert into DB
-		// AL & EL-AL
+			$r1->update([																								// update entitlements
+							'annual_leave_utilize' => $newbalance,
+							'annual_leave_balance' => $newutilize,
+						]);
+			// $hrleave->update(['period_day' => 0, 'period_time' => '00:00:00']);
+		}
+
+		if ($hrleave->leave_type_id == 2) {																				// give back all to MC
+			if (!$r2) {
+				Session::flash('flash_danger', 'Please inform IT Department with this message: "No link between leave and annual leave table (database). This is old leave created from old system."');
+				return redirect()->back()->withInput();
+			}
+			// $r2 = HRLeaveMC::where([['staff_id', $hrleave->staff_id],['year', $t]])->first();
+			$utilize = $r2->mc_leave_utilize;
+			$balance = $r2->mc_leave_balance;
+			$total = $r2->mc_leave;
+			$newutilize = $utilize - $hrleave->period_day;
+			$newbalance = $balance + $hrleave->period_day;
+
+			$r2->update([
+							'mc_leave_utilize' => $newbalance,
+							'mc_leave_balance' => $newutilize,
+						]);
+			// $hrleave->update(['period_day' => 0, 'period_time' => '00:00:00']);
+		}
+
+		if ($hrleave->leave_type_id == 7) {																				// give back all to ML
+			if (!$r3) {
+				Session::flash('flash_danger', 'Please inform IT Department with this message: "No link between leave and annual leave table (database). This is old leave created from old system."');
+				return redirect()->back()->withInput();
+			}
+			// $r3 = HRLeaveMaternity::where([['staff_id', $hrleave->staff_id],['year', $t]])->first();
+			$utilize = $r3->maternity_leave_utilize;
+			$balance = $r3->maternity_leave_balance;
+			$total = $r3->maternity_leave;
+			$newutilize = $utilize - $hrleave->period_day;
+			$newbalance = $balance + $hrleave->period_day;
+
+			$r3->update([
+							'maternity_leave_utilize' => $newbalance,
+							'maternity_leave_balance' => $newutilize,
+						]);
+			// $hrleave->update(['period_day' => 0, 'period_time' => '00:00:00']);
+		}
+
+		if ($hrleave->leave_type_id == 4 || $hrleave->leave_type_id == 10) {											// give back all to NRL & EL-NRL
+			if (!$r4) {
+				Session::flash('flash_danger', 'Please inform IT Department with this message: "No link between leave and annual leave table (database). This is old leave created from old system."');
+				return redirect()->back()->withInput();
+			}
+			// $r4 = HRLeaveReplacement::where([['staff_id', $hrleave->staff_id],['year', $t]])->first();
+			$utilize = $r4->leave_utilize;
+			$balance = $r4->leave_balance;
+			$total = $r4->leave;
+			$newutilize = $utilize - $hrleave->period_day;
+			$newbalance = $balance + $hrleave->period_day;
+
+			$r4->update([
+							'leave_utilize' => $newbalance,
+							'leave_balance' => $newutilize,
+						]);
+			// $hrleave->update(['period_day' => 0, 'period_time' => '00:00:00']);
+		}
+
+		////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 		if($request->leave_type_id == 1 || $request->leave_type_id == 5) {
+
+
 			// check entitlement if configured or not
-			$entitlement = $user->hasmanyleaveannual()->where('year', $daStart->year)->first();
-			// if(!$entitlement) {																													// kick him out if there is no entitlement been configured for entitlement
-			// 	Session::flash('flash_danger', 'Please contact with your Human Resources Manager. Most probably, HR havent configured yet your entitlement.');
-			// 	return redirect()->back();
-			// }
+			$entitlement = $user->hasmanyleaveannual()->where('year', $daStart->copy()->year)->first();
 
 			if ($request->has('leave_type')) {																										// applied for 1 full day OR half day
 				if($request->leave_type == 2){																										// half day
@@ -152,13 +232,13 @@ class LeaveController extends Controller
 						$time = explode( '/', $request->half_type_id );
 
 						$data = $request->only(['leave_type_id', 'reason']);
-						$data += ['verify_code' => $code];
+						$data += ['verify_code' => $hrleave->verify_code];
 						$data += ['half_type_id' => $time[0]];
 						$data += ['date_time_start' => $request->date_time_start.' '.$time[1]];
 						$data += ['date_time_end' => $request->date_time_end.' '.$time[2]];
 						$data += ['period_day' => 0.5];
-						$data += ['leave_no' => $row];
-						$data += ['leave_year' => $ye];
+						$data += ['leave_no' => $hrleave->leave_no];
+						$data += ['leave_year' => $hrleave->leave_year];
 						if($request->file('document')){
 							$file = $request->file('document')->getClientOriginalName();
 							$currentDate = Carbon::now()->format('Y-m-d H:i:s');
@@ -177,20 +257,20 @@ class LeaveController extends Controller
 						$user->hasmanyleaveannual()->where('year', $daStart->year)->update(['annual_leave_balance' => $entitle, 'annual_leave_utilize' => $utilize]);		// update leave_balance by substarct
 						if($user->belongstoleaveapprovalflow->backup_approval == 1){																// alert backup
 							if($request->staff_id) {																								// backup only valid for non EL leave
-								$l->hasmanyleaveapprovalbackup()->create($request->only(['staff_id']));
+								$hrleave->hasmanyleaveapprovalbackup()->update(['leave_id' => $l->id]);
 							}
 						}
 						if($user->belongstoleaveapprovalflow->supervisor_approval == 1){															// alert supervisor
-							$l->hasmanyleaveapprovalsupervisor()->create();
+							$hrleave->hasmanyleaveapprovalsupervisor()->update(['leave_id' => $l->id]);
 						}
 						if($user->belongstoleaveapprovalflow->hod_approval == 1){																	// alert hod
-							$l->hasmanyleaveapprovalhod()->create();
+							$hrleave->hasmanyleaveapprovalhod()->update(['leave_id' => $l->id]);
 						}
 						if($user->belongstoleaveapprovalflow->director_approval == 1){																// alert director
-							$l->hasmanyleaveapprovaldir()->create();
+							$hrleave->hasmanyleaveapprovaldir()->update(['leave_id' => $l->id]);
 						}
 						if($user->belongstoleaveapprovalflow->hr_approval == 1){																	// alert hr
-							$l->hasmanyleaveapprovalhr()->create();
+							$hrleave->hasmanyleaveapprovalhr()->update(['leave_id' => $l->id]);
 						}
 					} else {
 						Session::flash('flash_danger', 'Please make sure your applied leave does not exceed your available leave balance');
@@ -202,10 +282,10 @@ class LeaveController extends Controller
 						$utilize = $entitlement->annual_leave_utilize + 1;
 
 						$data = $request->only(['leave_type_id', 'reason', 'date_time_start', 'date_time_end', 'half_type_id']);
-						$data += ['verify_code' => $code];
+						$data += ['verify_code' => $hrleave->verify_code];
 						$data += ['period_day' => 1];
-						$data += ['leave_no' => $row];
-						$data += ['leave_year' => $ye];
+						$data += ['leave_no' => $hrleave->leave_no];
+						$data += ['leave_year' => $hrleave->leave_year];
 						if($request->file('document')){
 							$file = $request->file('document')->getClientOriginalName();
 							$currentDate = Carbon::now()->format('Y-m-d H:i:s');
@@ -232,20 +312,20 @@ class LeaveController extends Controller
 
 						if($user->belongstoleaveapprovalflow->backup_approval == 1){																// alert backup
 							if($request->staff_id) {																						// backup only valid for non EL leave
-								$l->hasmanyleaveapprovalbackup()->create($request->only(['staff_id']));
+								$hrleave->hasmanyleaveapprovalbackup()->create(['leave_id' => $l->id]);
 							}
 						}
 						if($user->belongstoleaveapprovalflow->supervisor_approval == 1){															// alert supervisor
-							$l->hasmanyleaveapprovalsupervisor()->create();
+							$hrleave->hasmanyleaveapprovalsupervisor()->create(['leave_id' => $l->id]);
 						}
 						if($user->belongstoleaveapprovalflow->hod_approval == 1){																	// alert hod
-							$l->hasmanyleaveapprovalhod()->create();
+							$hrleave->hasmanyleaveapprovalhod()->create(['leave_id' => $l->id]);
 						}
 						if($user->belongstoleaveapprovalflow->director_approval == 1){																// alert director
-							$l->hasmanyleaveapprovaldir()->create();
+							$hrleave->hasmanyleaveapprovaldir()->create(['leave_id' => $l->id]);
 						}
 						if($user->belongstoleaveapprovalflow->hr_approval == 1){																	// alert hr
-							$l->hasmanyleaveapprovalhr()->create();
+							$hrleave->hasmanyleaveapprovalhr()->create(['leave_id' => $l->id]);
 						}
 					} else {
 						Session::flash('flash_danger', 'Please make sure your applied leave does not exceed your available leave balance');
@@ -259,10 +339,10 @@ class LeaveController extends Controller
 						$utilize = $entitlement->annual_leave_utilize + $totalday;
 
 						$data = $request->only(['leave_type_id', 'reason', 'date_time_start', 'date_time_end']);
-						$data += ['verify_code' => $code];
+						$data += ['verify_code' => $hrleave->leave_verify_code];
 						$data += ['period_day' => $totalday];
-						$data += ['leave_no' => $row];
-						$data += ['leave_year' => $ye];
+						$data += ['leave_no' => $hrleave->leave_no];
+						$data += ['leave_year' => $hrleave->leave_year];
 						if($request->file('document')){
 							$file = $request->file('document')->getClientOriginalName();
 							$currentDate = Carbon::now()->format('Y-m-d H:i:s');
@@ -281,87 +361,21 @@ class LeaveController extends Controller
 						$user->hasmanyleaveannual()->where('year', $daStart->year)->update(['annual_leave_balance' => $entitle, 'annual_leave_utilize' => $utilize]);		// update leave_balance by substarct
 						if($user->belongstoleaveapprovalflow->backup_approval == 1){																// alert backup
 							if($request->staff_id) {																						// backup only valid for non EL leave
-								$l->hasmanyleaveapprovalbackup()->create($request->only(['staff_id']));
+								$hrleave->hasmanyleaveapprovalbackup()->create(['leave_id' => $l->id]);
 							}
 						}
 						if($user->belongstoleaveapprovalflow->supervisor_approval == 1){															// alert supervisor
-							$l->hasmanyleaveapprovalsupervisor()->create();
+							$hrleave->hasmanyleaveapprovalsupervisor()->create(['leave_id' => $l->id]);
 						}
 						if($user->belongstoleaveapprovalflow->hod_approval == 1){																	// alert hod
-							$l->hasmanyleaveapprovalhod()->create();
+							$hrleave->hasmanyleaveapprovalhod()->create(['leave_id' => $l->id]);
 						}
 						if($user->belongstoleaveapprovalflow->director_approval == 1){																// alert director
-							$l->hasmanyleaveapprovaldir()->create();
+							$hrleave->hasmanyleaveapprovaldir()->create(['leave_id' => $l->id]);
 						}
 						if($user->belongstoleaveapprovalflow->hr_approval == 1){																	// alert hr
-							$l->hasmanyleaveapprovalhr()->create();
+							$hrleave->hasmanyleaveapprovalhr()->create(['leave_id' => $l->id]);
 						}
-					} else {																														// annual_leave_balance < $totalday, then exit
-						Session::flash('flash_danger', 'Please make sure your applied leave does not exceed your available leave balance');
-						return redirect()->back();
-					}
-				} else {																															// false: date choose overlapping date with unavailable date
-					if($entitlement->annual_leave_balance >= $totaldayfiltered) {																	// annual_leave_balance > $totaldayfiltered
-						$entitle = $entitlement->annual_leave_balance - $totaldayfiltered;
-						$utilize = $entitlement->annual_leave_utilize + $totaldayfiltered;
-
-						foreach ($dateStartEnd as $value) {																// since date_time_start and date_time_end overlapping with block date, need to iterate date by date
-							if($request->file('document')){
-								$file = $request->file('document')->getClientOriginalName();
-								$currentDate = Carbon::now()->format('Y-m-d H:i:s');
-								$fileName = $currentDate . '_' . $file;
-								// Store File in Storage Folder
-								$request->document->storeAs('uploads', $fileName);
-								// storage/app/uploads/file.png
-								// Store File in Public Folder
-								// $request->document->move(public_path('uploads'), $fileName);
-								// public/uploads/file.png
-								$data = [
-									'date_time_start' => $value['date_time_start'],
-									'date_time_end' => $value['date_time_end'],
-									'verify_code' => $code,
-									'period_day' => 1,
-									'leave_no' => $row++,
-									'leave_year' => $ye,
-									'leave_type_id' => $request->leave_type_id,
-									'reason' => $request->reason,
-									'softcopy' => $fileName
-								];
-							} else {
-								$data = [
-									'date_time_start' => $value['date_time_start'],
-									'date_time_end' => $value['date_time_end'],
-									'verify_code' => $code,
-									'period_day' => 1,
-									'leave_no' => $row++,
-									'leave_year' => $ye,
-									'leave_type_id' => $request->leave_type_id,
-									'reason' => $request->reason
-								];
-							}
-
-							$l = $user->hasmanyleave()->create($data);																				// insert data into HRLeave
-							$l->belongstomanyleaveannual()->attach($entitlement->id);									// it should be leave_replacement_id but im lazy to change it at view humanresources/create.blade.php
-
-							if($user->belongstoleaveapprovalflow->backup_approval == 1){															// alert backup
-								if($request->staff_id) {																							// backup only valid for non EL leave
-									$l->hasmanyleaveapprovalbackup()->create($request->only(['staff_id']));
-								}
-							}
-							if($user->belongstoleaveapprovalflow->supervisor_approval == 1){														// alert supervisor
-								$l->hasmanyleaveapprovalsupervisor()->create();
-							}
-							if($user->belongstoleaveapprovalflow->hod_approval == 1){																// alert hod
-								$l->hasmanyleaveapprovalhod()->create();
-							}
-							if($user->belongstoleaveapprovalflow->director_approval == 1){															// alert director
-								$l->hasmanyleaveapprovaldir()->create();
-							}
-							if($user->belongstoleaveapprovalflow->hr_approval == 1){																// alert hr
-								$l->hasmanyleaveapprovalhr()->create();
-							}
-						}
-						$user->hasmanyleaveannual()->where('year', $daStart->year)->update(['annual_leave_balance' => $entitle, 'annual_leave_utilize' => $utilize]);		// update leave_balance by substarct
 					} else {																														// annual_leave_balance < $totalday, then exit
 						Session::flash('flash_danger', 'Please make sure your applied leave does not exceed your available leave balance');
 						return redirect()->back();
@@ -370,9 +384,41 @@ class LeaveController extends Controller
 			}
 		}
 
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		// UPL & EL-UPL & MC-UPL
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		// finally, we delete the leave
+		$hrleave->delete();
+		Session::flash('flash_message', 'Successfully edit leave');
+		return redirect()->route('hrleave.show', $l->id);
 	}
 
 	/**
