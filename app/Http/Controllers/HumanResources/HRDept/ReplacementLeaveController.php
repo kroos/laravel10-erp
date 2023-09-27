@@ -8,7 +8,8 @@ use App\Http\Controllers\Controller;
 use App\Models\HumanResources\HRLeaveReplacement;
 
 // validation
-use App\Http\Requests\HumanResources\ReplacementLeave\ReplacementRequestRequestStore;
+use App\Http\Requests\HumanResources\ReplacementLeave\ReplacementRequestStore;
+use App\Http\Requests\HumanResources\ReplacementLeave\ReplacementRequestUpdate;
 
 // load paginator
 use Illuminate\Pagination\Paginator;
@@ -55,7 +56,7 @@ class ReplacementLeaveController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(ReplacementRequestRequestStore  $request): RedirectResponse
+    public function store(ReplacementRequestStore  $request): RedirectResponse
     {
         $staffids = $request->input('staff_id', []);
 
@@ -95,17 +96,20 @@ class ReplacementLeaveController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(HRLeaveReplacement $rleave)
+    public function edit(HRLeaveReplacement $rleave): View
     {
-        //
+        return view('humanresources.hrdept.rleave.edit', ['rleave'=>$rleave]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, HRLeaveReplacement $rleave)
+    public function update(ReplacementRequestUpdate $request, HRLeaveReplacement $rleave): RedirectResponse
     {
-        //
+        $rleave->update($request->only(['date_start', 'date_end', 'customer_id', 'reason', 'leave_total', 'leave_utilize', 'leave_balance']));
+
+        Session::flash('flash_message', 'Data successfully updated!');
+		return Redirect::route('rleave.index', $rleave);
     }
 
     /**

@@ -54,6 +54,7 @@ class LeaveController extends Controller
 	 */
 	public function store(Request $request): RedirectResponse
 	{
+		//
 	}
 
 	/**

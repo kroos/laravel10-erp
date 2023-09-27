@@ -106,7 +106,7 @@ class AjaxDBController extends Controller
 			'valid' => $valid,
 		]);
 	}
-
+	
 	// get types of leave according to user
 	public function leaveType(Request $request)
 	{
