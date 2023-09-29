@@ -290,7 +290,6 @@
 <?php
 $dts = \Carbon\Carbon::parse($ls->date_time_start)->format('Y');
 $dte = \Carbon\Carbon::parse($ls->date_time_end)->format('j M Y g:i a');
-$arr = str_split( $dts, 2 );
 // only available if only now is before date_time_start and active is 1
 $dtsl = \Carbon\Carbon::parse( $ls->date_time_start );
 $dt = \Carbon\Carbon::now()->lte( $dtsl );
@@ -317,7 +316,7 @@ if ( ($ls->leave_type_id == 9) || ($ls->leave_type_id != 9 && $ls->half_type_id 
 }
 ?>
 					<tr>
-						<td> <a href="{{ route('hrleave.show', $ls->id) }}">HR9-{{ str_pad( $ls->leave_no, 5, "0", STR_PAD_LEFT ) }}/{{ $arr[1] }}</a></td>
+						<td> <a href="{{ route('hrleave.show', $ls->id) }}">HR9-{{ str_pad( $ls->leave_no, 5, "0", STR_PAD_LEFT ) }}/{{ $ls->leave_year }}</a></td>
 						<td>{{ $ls->belongstooptleavetype?->leave_type_code }}</td>
 						<td>{{ $dts }}</td>
 						<td>{{ $dte }}</td>
