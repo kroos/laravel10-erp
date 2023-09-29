@@ -57,7 +57,7 @@ class UnavailableDateTime
 			// dd([ empty($entitannual->count()) && empty($entitmc->count()) && empty($entitmaternity->count()) && empty($wh->count()) ]);
 			// dd(empty($entitannual->count() && $entitmc->count() && $entitmaternity->count()) && empty($wh->count()) );
 			$nextyear = [];
-		if (Setting::findOrFail(6)->active == 1) {																					// block next year leave (setting): enable is 1
+		if (Setting::find(6)->active == 1) {																					// block next year leave (setting): enable is 1
 			foreach ($nystart_date->daysUntil($nyend_date) as $nydate) {															// straight away block next year
 				$nextyear[] = $nydate->format('Y-m-d');
 			}
@@ -149,9 +149,11 @@ class UnavailableDateTime
 		})
 		// ->ddRawSql();
 		->get();
+		// dd($aleaveday);
 
 		// echo $leaveday;
 		// dd([$aleaveday->count(), $hleaveday->count()]);
+		// dd([$aleaveday, $hleaveday]);
 
 		$leavday = [];
 		if(!is_null($aleaveday)) {
@@ -163,6 +165,7 @@ class UnavailableDateTime
 			}
 		}
 
+		$leavday2 = [];
 		if(!is_null($hleaveday)) {
 			foreach ($hleaveday as $v2) {
 				$period2 = \Carbon\CarbonPeriod::create($v2->date_time_start, '1 days', $v2->date_time_end);

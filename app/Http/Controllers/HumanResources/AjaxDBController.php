@@ -106,7 +106,7 @@ class AjaxDBController extends Controller
 			'valid' => $valid,
 		]);
 	}
-	
+
 	// get types of leave according to user
 	public function leaveType(Request $request)
 	{
@@ -976,8 +976,13 @@ class AjaxDBController extends Controller
  		$oneend = $onestart->copy()->endOfMonth();											// getting end day of 1 months before
  		$onemonthname = $onestart->copy()->monthName;										// getting name of the 6 months before
 
+		$start = $onestart->copy()->addMonth();											// getting start day of 1 months before
+ 		$end = $start->copy()->endOfMonth();											// getting end day of 1 months before
+ 		$monthname = $start->copy()->monthName;										// getting name of the 6 months before
+
 		// dump([$sixstart, $sixend, $fivestart, $fiveend, $fourstart, $fourend, $threestart, $threeend, $twostart, $twoend, $onestart, $oneend]);
 		// dump($checkmonthsago >= 6);														//true
+		// dump($join->gte($sixstart));														//true
 		// dump($join->gte($sixstart));														//true
 
 
@@ -2563,7 +2568,7 @@ class AjaxDBController extends Controller
 								'working_days' => ($workday - $absent - $leave),
 							];
 		}
-
+// dd($checkmonthsago);
 		if ($checkmonthsago >= 1) {
 			if ($join->gte($onestart)) {													// check if he join in the same month, count from $join
 				$onem = $join->toPeriod($oneend);											// 23 days
@@ -3017,7 +3022,7 @@ class AjaxDBController extends Controller
 				// dump($r);
 
 				// start counting for this month
-				$month = $onemonthname;
+				$month = $monthname;
 				$workday = ($nofiveweekend + 1) - $sat - $q;
 				// dump($workday);
 				$absent = $u + $p;
@@ -3029,20 +3034,21 @@ class AjaxDBController extends Controller
 				// dump($attpercentage);
 
 			} else {																		// count from $now
-				// dump($now.' date now');
+				// dd($nowstartmonth.' date start month');
 				$onem = $nowstartmonth->copy()->toPeriod($now);								// 23 days
 				// dump($onem->count().' days');											// 23 days
 				// dump($now->copy()->startOfMonth().' start of month');
-				$nofiveweekend = $nowstartmonth->diffInWeekdays($now, true);					// get weekdays from above as we have only sunday as a weekend
-				// dump(($nofiveweekend + 1).' days without weekend');						// 19 days : need to plus 1 for correct answer so it will be 20 days
+				$nofiveweekend = $nowstartmonth->diffInWeekdays($now, true);				// get weekdays from above as we have only sunday as a weekend
+				// dd(($nofiveweekend + 1).' days without weekend');						// 19 days : need to plus 1 for correct answer so it will be 20 days
 
 				// getting holiday on that month
 				$oneholiday = HRHolidayCalendar::where(function (Builder $query) use ($nowstartmonth, $now){
 														$query->whereDate('date_start', '>=', $nowstartmonth)
-														->WhereDate('date_start', '<=', $now);
+														->whereDate('date_start', '<=', $now);
 													})
 													->get();
 													// ->ddRawSql();
+				// dd($oneholiday);
 				$q = 0;
 				if ($oneholiday) {
 					foreach ($oneholiday as $v) {
@@ -3180,7 +3186,7 @@ class AjaxDBController extends Controller
 				// dump($attpercentage);
 			}
 			$chartdata[] = [
-								'month' => $month,
+								'month' => $monthname,
 								'percentage' => $attpercentage,
 								'workdays' => $workday,
 								'leaves' => $leave,
@@ -3188,7 +3194,6 @@ class AjaxDBController extends Controller
 								'working_days' => ($workday - $absent - $leave),
 							];
 		}
-
 		return response()->json($chartdata);
 	}
 

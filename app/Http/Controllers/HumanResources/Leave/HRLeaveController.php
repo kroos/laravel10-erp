@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 
 // for controller output
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
 
@@ -132,15 +133,16 @@ class HRLeaveController extends Controller
 			// 	return redirect()->back();
 			// }
 
-			if ($request->has('leave_type')) {																										// applied for 1 full day OR half day
-				if($request->leave_type == 2){																										// half day
-					if($entitlement->annual_leave_balance >= 0.5){																							// annual_leave_balance > 0.5
+			if ($request->has('leave_cat')) {																										// applied for 1 full day OR half day
+				if($request->leave_cat == 2){																										// half day
+					if($entitlement->annual_leave_balance >= 0.5){																					// annual_leave_balance > 0.5
 
 						$entitle = $entitlement->annual_leave_balance - 0.5;
 						$utilize = $entitlement->annual_leave_utilize + 0.5;
 						$time = explode( '/', $request->half_type_id );
 
-						$data = $request->only(['leave_type_id', 'reason']);
+						$data = $request->only(['leave_type_id', 'leave_cat']);
+						$data += ['reason' => Str::ucfirst(Str::lower($request->reason))];
 						$data += ['verify_code' => $code];
 						$data += ['half_type_id' => $time[0]];
 						$data += ['date_time_start' => $request->date_time_start.' '.$time[1]];
@@ -185,12 +187,13 @@ class HRLeaveController extends Controller
 						Session::flash('flash_danger', 'Please make sure your applied leave does not exceed your available leave balance');
 						return redirect()->back();
 					}
-				} elseif($request->leave_type == 1) {																								// apply leace 1 whole day
+				} elseif($request->leave_cat == 1) {																								// apply leace 1 whole day
 					if($entitlement->annual_leave_balance >= 1){																								// annual_leave_balance >= 1
 						$entitle = $entitlement->annual_leave_balance - 1;
 						$utilize = $entitlement->annual_leave_utilize + 1;
 
-						$data = $request->only(['leave_type_id', 'reason', 'date_time_start', 'date_time_end', 'half_type_id']);
+						$data = $request->only(['leave_type_id', 'leave_cat', 'date_time_start', 'date_time_end', 'half_type_id']);
+						$data += ['reason' => Str::ucfirst(Str::lower($request->reason))];
 						$data += ['verify_code' => $code];
 						$data += ['period_day' => 1];
 						$data += ['leave_no' => $row];
@@ -247,7 +250,8 @@ class HRLeaveController extends Controller
 						$entitle = $entitlement->annual_leave_balance - $totalday;
 						$utilize = $entitlement->annual_leave_utilize + $totalday;
 
-						$data = $request->only(['leave_type_id', 'reason', 'date_time_start', 'date_time_end']);
+						$data = $request->only(['leave_type_id', 'leave_cat', 'date_time_start', 'date_time_end']);
+						$data += ['reason' => Str::ucfirst(Str::lower($request->reason))];
 						$data += ['verify_code' => $code];
 						$data += ['period_day' => $totalday];
 						$data += ['leave_no' => $row];
@@ -312,8 +316,9 @@ class HRLeaveController extends Controller
 									'period_day' => 1,
 									'leave_no' => $row++,
 									'leave_year' => $ye,
+									'leave_cat' => $request->leave_cat,
 									'leave_type_id' => $request->leave_type_id,
-									'reason' => $request->reason,
+									'reason' => Str::ucfirst(Str::lower($request->reason)),
 									'softcopy' => $fileName
 								];
 							} else {
@@ -324,8 +329,9 @@ class HRLeaveController extends Controller
 									'period_day' => 1,
 									'leave_no' => $row++,
 									'leave_year' => $ye,
+									'leave_cat' => $request->leave_cat,
 									'leave_type_id' => $request->leave_type_id,
-									'reason' => $request->reason
+									'reason' => Str::ucfirst(Str::lower($request->reason))
 								];
 							}
 
@@ -362,21 +368,12 @@ class HRLeaveController extends Controller
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// UPL & EL-UPL & MC-UPL
 		if($request->leave_type_id == 3 || $request->leave_type_id == 6 || $request->leave_type_id == 11) {
-			// check entitlement if configured or not
-			// $entitlement = $user->hasmanyleaveentitlement()->where('year', $daStart->year)->first();
-			// if(!$entitlement) {																													// kick him out if there is no entitlement been configured for entitlement
-			// 	Session::flash('flash_danger', 'Please contact with your Human Resources Manager. Most probably, HR havent configured yet your entitlement.');
-			// 	return redirect()->back();
-			// }
-
-			if ($request->has('leave_type')) {																										// applied for 1 full day OR half day
-				if($request->leave_type == 2){																										// half day
-					// if($entitlement->mc_balance >= 0.5){																							// mc_balance > 0.5
-
-						// $entitle = $entitlement->mc_balance - 0.5;
+			if ($request->has('leave_cat')) {																										// applied for 1 full day OR half day
+				if($request->leave_cat == 2){																										// half day
 						$time = explode( '/', $request->half_type_id );
 
-						$data = $request->only(['leave_type_id', 'reason']);
+						$data = $request->only(['leave_type_id', 'leave_cat']);
+						$data += ['reason' => Str::ucfirst(Str::lower($request->reason))];
 						$data += ['half_type_id' => $time[0]];
 						$data += ['verify_code' => $code];
 						$data += ['date_time_start' => $request->date_time_start.' '.$time[1]];
@@ -420,11 +417,12 @@ class HRLeaveController extends Controller
 						// Session::flash('flash_danger', 'Please make sure your applied leave does not exceed your available leave balance');
 						// return redirect()->back();
 					// }
-				} elseif($request->leave_type == 1) {																								// apply leace 1 whole day
+				} elseif($request->leave_cat == 1) {																								// apply leace 1 whole day
 					// if($entitlement->mc_balance >= 1){																								// mc_balance >= 1
 						// $entitle = $entitlement->mc_balance - 1;
 
-						$data = $request->only(['leave_type_id', 'reason', 'date_time_start', 'date_time_end', 'half_type_id']);
+						$data = $request->only(['leave_type_id', 'leave_cat', 'date_time_start', 'date_time_end', 'half_type_id']);
+						$data += ['reason' => Str::ucfirst(Str::lower($request->reason))];
 						$data += ['verify_code' => $code];
 						$data += ['period_day' => 1];
 						$data += ['leave_no' => $row];
@@ -471,7 +469,8 @@ class HRLeaveController extends Controller
 					// if($entitlement->mc_balance >= $totalday) {																						// mc_balance > $totalday
 						// $entitle = $entitlement->mc_balance - $totalday;
 
-						$data = $request->only(['leave_type_id', 'reason', 'date_time_start', 'date_time_end']);
+						$data = $request->only(['leave_type_id', 'leave_cat', 'date_time_start', 'date_time_end']);
+						$data += ['reason' => Str::ucfirst(Str::lower($request->reason))];
 						$data += ['verify_code' => $code];
 						$data += ['period_day' => $totalday];
 						$data += ['leave_no' => $row];
@@ -535,8 +534,9 @@ class HRLeaveController extends Controller
 									'period_day' => 1,
 									'leave_no' => $row++,
 									'leave_year' => $ye,
+									'leave_cat' => $request->leave_cat,
 									'leave_type_id' => $request->leave_type_id,
-									'reason' => $request->reason,
+									'reason' => Str::ucfirst(Str::lower($request->reason)),
 									'softcopy' => $fileName
 								];
 							} else {
@@ -547,8 +547,9 @@ class HRLeaveController extends Controller
 									'period_day' => 1,
 									'leave_no' => $row++,
 									'leave_year' => $ye,
+									'leave_cat' => $request->leave_cat,
 									'leave_type_id' => $request->leave_type_id,
-									'reason' => $request->reason
+									'reason' => Str::ucfirst(Str::lower($request->reason))
 								];
 							}
 
@@ -590,15 +591,16 @@ class HRLeaveController extends Controller
 			// 	return redirect()->back();
 			// }
 
-			if ($request->has('leave_type')) {																										// applied for 1 full day OR half day
-				if($request->leave_type == 2){																										// half day
+			if ($request->has('leave_cat')) {																										// applied for 1 full day OR half day
+				if($request->leave_cat == 2){																										// half day
 					if($entitlement->mc_leave_balance >= 0.5){																							// mc_leave_balance > 0.5
 
 						$entitle = $entitlement->mc_leave_balance - 0.5;
 						$utilize = $entitlement->mc_leave_utilize + 0.5;
 						$time = explode( '/', $request->half_type_id );
 
-						$data = $request->only(['leave_type_id', 'reason']);
+						$data = $request->only(['leave_type_id', 'leave_cat']);
+						$data += ['reason' => Str::ucfirst(Str::lower($request->reason))];
 						$data += ['half_type_id' => $time[0]];
 						$data += ['verify_code' => $code];
 						$data += ['date_time_start' => $request->date_time_start.' '.$time[1]];
@@ -643,12 +645,13 @@ class HRLeaveController extends Controller
 						Session::flash('flash_danger', 'Please make sure your applied leave does not exceed your available leave balance');
 						return redirect()->back();
 					}
-				} elseif($request->leave_type == 1) {																								// apply leace 1 whole day
+				} elseif($request->leave_cat == 1) {																								// apply leace 1 whole day
 					if($entitlement->mc_leave_balance >= 1){																								// mc_leave_balance >= 1
 						$entitle = $entitlement->mc_leave_balance - 1;
 						$utilize = $entitlement->mc_leave_utilize + 1;
 
-						$data = $request->only(['leave_type_id', 'reason', 'date_time_start', 'date_time_end', 'half_type_id']);
+						$data = $request->only(['leave_type_id', 'leave_cat', 'date_time_start', 'date_time_end', 'half_type_id']);
+						$data += ['reason' => Str::ucfirst(Str::lower($request->reason))];
 						$data += ['verify_code' => $code];
 						$data += ['period_day' => 1];
 						$data += ['leave_no' => $row];
@@ -697,7 +700,8 @@ class HRLeaveController extends Controller
 						$entitle = $entitlement->mc_leave_balance - $totalday;
 						$utilize = $entitlement->mc_leave_utilize + $totalday;
 
-						$data = $request->only(['leave_type_id', 'reason', 'date_time_start', 'date_time_end']);
+						$data = $request->only(['leave_type_id', 'leave_cat', 'date_time_start', 'date_time_end']);
+						$data += ['reason' => Str::ucfirst(Str::lower($request->reason))];
 						$data += ['verify_code' => $code];
 						$data += ['period_day' => $totalday];
 						$data += ['leave_no' => $row];
@@ -763,8 +767,9 @@ class HRLeaveController extends Controller
 									'period_day' => 1,
 									'leave_no' => $row++,
 									'leave_year' => $ye,
+									'leave_cat' => $request->leave_cat,
 									'leave_type_id' => $request->leave_type_id,
-									'reason' => $request->reason,
+									'reason' => Str::ucfirst(Str::lower($request->reason)),
 									'softcopy' => $fileName
 								];
 							} else {
@@ -775,8 +780,9 @@ class HRLeaveController extends Controller
 									'period_day' => 1,
 									'leave_no' => $row++,
 									'leave_year' => $ye,
+									'leave_cat' => $request->leave_cat,
 									'leave_type_id' => $request->leave_type_id,
-									'reason' => $request->reason
+									'reason' => Str::ucfirst(Str::lower($request->reason))
 								];
 							}
 
@@ -821,15 +827,16 @@ class HRLeaveController extends Controller
 			// 	return redirect()->back();
 			// }
 
-			if ($request->has('leave_type')) {																										// applied for 1 full day OR half day
-				if($request->leave_type == 2){																										// half day
+			if ($request->has('leave_cat')) {																										// applied for 1 full day OR half day
+				if($request->leave_cat == 2){																										// half day
 					if($entitlement->leave_balance >= 0.5){																							// leave_balance > 0.5
 
 						$entitle = $entitlement->leave_balance - 0.5;
 						$utilize = $entitlement->leave_utilize + 0.5;
 						$time = explode( '/', $request->half_type_id );
 
-						$data = $request->only(['leave_type_id', 'reason']);
+						$data = $request->only(['leave_type_id', 'leave_cat']);
+						$data += ['reason' => Str::ucfirst(Str::lower($request->reason))];
 						$data += ['verify_code' => $code];
 						$data += ['half_type_id' => $time[0]];
 						$data += ['date_time_start' => $request->date_time_start.' '.$time[1]];
@@ -874,12 +881,13 @@ class HRLeaveController extends Controller
 						Session::flash('flash_danger', 'Please make sure your applied leave does not exceed your available leave balance');
 						return redirect()->back();
 					}
-				} elseif($request->leave_type == 1) {																								// apply leace 1 whole day
+				} elseif($request->leave_cat == 1) {																								// apply leace 1 whole day
 					if($entitlement->leave_balance >= 1){																							// leave_balance >= 1
 						$entitle = $entitlement->leave_balance - 1;
 						$utilize = $entitlement->leave_utilize + 1;
 
-						$data = $request->only(['leave_type_id', 'reason', 'date_time_start', 'date_time_end']);
+						$data = $request->only(['leave_type_id', 'leave_cat', 'date_time_start', 'date_time_end']);
+						$data += ['reason' => Str::ucfirst(Str::lower($request->reason))];
 						$data += ['verify_code' => $code];
 						$data += ['period_day' => 1];
 						$data += ['leave_no' => $row];
@@ -928,7 +936,8 @@ class HRLeaveController extends Controller
 						$entitle = $entitlement->leave_balance - $totalday;
 						$utilize = $entitlement->leave_utilize + $totalday;
 
-						$data = $request->only(['leave_type_id', 'reason', 'date_time_start', 'date_time_end']);
+						$data = $request->only(['leave_type_id', 'leave_cat', 'date_time_start', 'date_time_end']);
+						$data += ['reason' => Str::ucfirst(Str::lower($request->reason))];
 						$data += ['verify_code' => $code];
 						$data += ['period_day' => $totalday];
 						$data += ['leave_no' => $row];
@@ -994,8 +1003,9 @@ class HRLeaveController extends Controller
 									'period_day' => 1,
 									'leave_no' => $row++,
 									'leave_year' => $ye,
+									'leave_cat' => $request->leave_cat,
 									'leave_type_id' => $request->leave_type_id,
-									'reason' => $request->reason,
+									'reason' => Str::ucfirst(Str::lower($request->reason)),
 									'softcopy' => $fileName
 								];
 							} else {
@@ -1006,8 +1016,9 @@ class HRLeaveController extends Controller
 									'period_day' => 1,
 									'leave_no' => $row++,
 									'leave_year' => $ye,
+									'leave_cat' => $request->leave_cat,
 									'leave_type_id' => $request->leave_type_id,
-									'reason' => $request->reason
+									'reason' => Str::ucfirst(Str::lower($request->reason))
 								];
 							}
 
@@ -1052,7 +1063,8 @@ class HRLeaveController extends Controller
 				// }
 				$entitle = $entitlement->maternity_leave_balance - $totalday;
 				$utilize = $entitlement->maternity_leave_utilize + $totalday;
-				$data = $request->only(['leave_type_id', 'reason', 'date_time_start', 'date_time_end']);
+				$data = $request->only(['leave_type_id', 'date_time_start', 'date_time_end']);
+				$data += ['reason' => Str::ucfirst(Str::lower($request->reason))];
 				$data += ['verify_code' => $code];
 				$data += ['period_day' => $totalday];
 				$data += ['leave_no' => $row];
@@ -1103,6 +1115,7 @@ class HRLeaveController extends Controller
 			// convert $request->time_start and $request->time_end to mysql format
 			$ts = Carbon::parse($request->date_time_start.' '.$request->time_start);
 			$te = Carbon::parse($request->date_time_start.' '.$request->time_end);
+			// dd([$ts, $te]);
 
 			if ( $ts->gte($te) ) { // time start less than time end
 				Session::flash('flash_danger', 'Your Time Off application can\'t be processed due to your selection time ('.\Carbon\Carbon::parse($request->date_time_start.' '.$request->time_start)->format('D, j F Y h:i A').' untill '.\Carbon\Carbon::parse($request->date_time_start.' '.$request->time_end)->format('D, j F Y h:i A').') . Please choose time correctly.');
@@ -1170,10 +1183,11 @@ class HRLeaveController extends Controller
 			$t = $hour.':'.$minute.':00';
 			// echo $t;
 
-			$data = $request->only(['leave_type_id', 'reason']);
+			$data = $request->only(['leave_type_id']);
+			$data += ['reason' => Str::ucfirst(Str::lower($request->reason))];
 			$data += ['verify_code' => $code];
-			$data += ['date_time_start' => $request->date_time_start];
-			$data += ['date_time_end' => $request->date_time_start];
+			$data += ['date_time_start' => $ts];
+			$data += ['date_time_end' => $te];
 			$data += ['period_time' => $t];
 			$data += ['leave_no' => $row];
 			$data += ['leave_year' => $ye];
@@ -1219,14 +1233,15 @@ class HRLeaveController extends Controller
 			// 	return redirect()->back();
 			// }
 
-			if ($request->has('leave_type')) {																										// applied for 1 full day OR half day
-				if($request->leave_type == 2){																										// half day
+			if ($request->has('leave_cat')) {																										// applied for 1 full day OR half day
+				if($request->leave_cat == 2){																										// half day
 					// if($entitlement->mc_balance >= 0.5){																							// mc_balance > 0.5
 
 						// $entitle = $entitlement->mc_balance - 0.5;
 						$time = explode( '/', $request->half_type_id );
 
-						$data = $request->only(['leave_type_id', 'reason']);
+						$data = $request->only(['leave_type_id', 'leave_cat']);
+						$data += ['reason' => Str::ucfirst(Str::lower($request->reason))];
 						$data += ['half_type_id' => $time[0]];
 						$data += ['verify_code' => $code];
 						$data += ['date_time_start' => $request->date_time_start.' '.$time[1]];
@@ -1270,11 +1285,12 @@ class HRLeaveController extends Controller
 						// Session::flash('flash_danger', 'Please make sure your applied leave does not exceed your available leave balance');
 						// return redirect()->back();
 					// }
-				} elseif($request->leave_type == 1) {																								// apply leace 1 whole day
+				} elseif($request->leave_cat == 1) {																								// apply leace 1 whole day
 					// if($entitlement->mc_balance >= 1){																								// mc_balance >= 1
 						// $entitle = $entitlement->mc_balance - 1;
 
-						$data = $request->only(['leave_type_id', 'reason', 'date_time_start', 'date_time_end', 'half_type_id']);
+						$data = $request->only(['leave_type_id', 'leave_cat', 'date_time_start', 'date_time_end', 'half_type_id']);
+						$data += ['reason' => Str::ucfirst(Str::lower($request->reason))];
 						$data += ['verify_code' => $code];
 						$data += ['period_day' => 1];
 						$data += ['leave_no' => $row];
@@ -1321,7 +1337,8 @@ class HRLeaveController extends Controller
 					// if($entitlement->mc_balance >= $totalday) {																						// mc_balance > $totalday
 						// $entitle = $entitlement->mc_balance - $totalday;
 
-						$data = $request->only(['leave_type_id', 'reason', 'date_time_start', 'date_time_end']);
+						$data = $request->only(['leave_type_id', 'leave_cat', 'date_time_start', 'date_time_end']);
+						$data += ['reason' => Str::ucfirst(Str::lower($request->reason))];
 						$data += ['verify_code' => $code];
 						$data += ['period_day' => $totalday];
 						$data += ['leave_no' => $row];
@@ -1385,8 +1402,9 @@ class HRLeaveController extends Controller
 									'period_day' => 1,
 									'leave_no' => $row++,
 									'leave_year' => $ye,
+									'leave_cat' => $request->leave_cat,
 									'leave_type_id' => $request->leave_type_id,
-									'reason' => $request->reason,
+									'reason' => Str::ucfirst(Str::lower($request->reason)),
 									'softcopy' => $fileName
 								];
 							} else {
@@ -1397,8 +1415,9 @@ class HRLeaveController extends Controller
 									'period_day' => 1,
 									'leave_no' => $row++,
 									'leave_year' => $ye,
+									'leave_cat' => $request->leave_cat,
 									'leave_type_id' => $request->leave_type_id,
-									'reason' => $request->reason
+									'reason' => Str::ucfirst(Str::lower($request->reason))
 								];
 							}
 
