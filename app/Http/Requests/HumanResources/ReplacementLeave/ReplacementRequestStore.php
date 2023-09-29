@@ -22,6 +22,7 @@ class ReplacementRequestStore extends FormRequest
 	public function rules(): array
 	{
 		return [
+			'staff_id' => 'required|array',
 			'date_start' => 'required|date_format:Y-m-d',
 			'date_end' => 'required|date_format:Y-m-d',
 			'reason' => 'required|string',
@@ -42,6 +43,7 @@ class ReplacementRequestStore extends FormRequest
 	public function messages(): array
 	{
 		return [
+			'staff_id.required' => 'Please select a staff.',
 			'date_start.required' => 'Please select a start date.',
 			'date_end.required' => 'Please select an end date.',
 			'date_start.date_format' => 'Please insert start date in correct date format.',

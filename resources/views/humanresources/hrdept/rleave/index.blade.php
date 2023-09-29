@@ -13,6 +13,15 @@
   th {
     border: 1px solid black;
   } */
+
+  .btn-sm-custom {
+		padding: 0px;
+		background: none;
+    border: none;
+    font-size: 15px;
+    width: 100%;
+    height: 100%;
+	}
 </style>
 
 <div class="container">
@@ -64,8 +73,8 @@
             </a>
           </td>
           <td class="text-center">
-            <a href="#">
-              <i class="bi bi-x-square" style="font-size: 15px;"></i>
+            <a href="">
+              <i class="bi bi-x-square delete_replacement" data-id="{{ $replacement->id }}" data-table="replacement" style="font-size: 15px;"></i>
             </a>
           </td>
         </tr>
@@ -101,6 +110,64 @@ responsive: true
 $(function () {
   $('[data-toggle="tooltip"]').tooltip()
 })
+
+
+/////////////////////////////////////////////////////////////////////////////////////////
+// DELETE
+$(document).on('click', '.delete_replacement', function(e){
+	var ackID = $(this).data('id');
+	var ackTable = $(this).data('table');
+	SwalDelete(ackID, ackTable);
+	e.preventDefault();
+});
+
+function SwalDelete(ackID, ackTable){
+	swal.fire({
+		title: 'Delete Replacement Leave',
+		text: 'Are you sure to delete this replacement?',
+		icon: 'info',
+		showCancelButton: true,
+		confirmButtonColor: '#3085d6',
+		cancelButtonColor: '#d33',
+		cancelButtonText: 'Cancel',
+		confirmButtonText: 'Yes',
+		showLoaderOnConfirm: true,
+
+		preConfirm: function() {
+			return new Promise(function(resolve) {
+				$.ajax({
+					url: '{{ url('rleave') }}' + '/' + ackID,
+					type: 'DELETE',
+					dataType: 'json',
+					data: {
+						id: ackID,
+						table: ackTable,
+						_token : $('meta[name=csrf-token]').attr('content')
+					},
+				})
+				.done(function(response){
+					swal.fire('Accept', response.message, response.status)
+					.then(function(){
+						window.location.reload(true);
+					});
+				})
+				.fail(function(){
+					swal.fire('Oops...', 'Something went wrong with ajax!', 'error');
+				})
+			});
+		},
+		allowOutsideClick: false
+	})
+	.then((result) => {
+		if (result.dismiss === swal.DismissReason.cancel) {
+			swal.fire('Cancel Action', '', 'info')
+		}
+	});
+}
+//auto refresh right after clicking OK button
+$(document).on('click', '.swal2-confirm', function(e){
+	window.location.reload(true);
+});
 @endsection
 
 
