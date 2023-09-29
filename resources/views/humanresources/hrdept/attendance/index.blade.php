@@ -1010,9 +1010,16 @@ if ($os->isNotEmpty()) {																							// outstation |
 }
 
 if($l) {
-	$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+	if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+		$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+		$s->update(['leave_id' => $l->id]);
+	} else {															// otherwise just show the leave
+		// $lea = $s->belongstoleave->id;
+		$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+	}
 } else {
 	$lea = NULL;
+	$s->update(['leave_id' => NULL]);
 }
 ?>
 				<tr>

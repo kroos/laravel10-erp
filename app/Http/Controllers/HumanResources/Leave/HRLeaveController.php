@@ -368,18 +368,8 @@ class HRLeaveController extends Controller
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// UPL & EL-UPL & MC-UPL
 		if($request->leave_type_id == 3 || $request->leave_type_id == 6 || $request->leave_type_id == 11) {
-			// check entitlement if configured or not
-			// $entitlement = $user->hasmanyleaveentitlement()->where('year', $daStart->year)->first();
-			// if(!$entitlement) {																													// kick him out if there is no entitlement been configured for entitlement
-			// 	Session::flash('flash_danger', 'Please contact with your Human Resources Manager. Most probably, HR havent configured yet your entitlement.');
-			// 	return redirect()->back();
-			// }
-
 			if ($request->has('leave_cat')) {																										// applied for 1 full day OR half day
 				if($request->leave_cat == 2){																										// half day
-					// if($entitlement->mc_balance >= 0.5){																							// mc_balance > 0.5
-
-						// $entitle = $entitlement->mc_balance - 0.5;
 						$time = explode( '/', $request->half_type_id );
 
 						$data = $request->only(['leave_type_id', 'leave_cat']);
@@ -1125,6 +1115,7 @@ class HRLeaveController extends Controller
 			// convert $request->time_start and $request->time_end to mysql format
 			$ts = Carbon::parse($request->date_time_start.' '.$request->time_start);
 			$te = Carbon::parse($request->date_time_start.' '.$request->time_end);
+			// dd([$ts, $te]);
 
 			if ( $ts->gte($te) ) { // time start less than time end
 				Session::flash('flash_danger', 'Your Time Off application can\'t be processed due to your selection time ('.\Carbon\Carbon::parse($request->date_time_start.' '.$request->time_start)->format('D, j F Y h:i A').' untill '.\Carbon\Carbon::parse($request->date_time_start.' '.$request->time_end)->format('D, j F Y h:i A').') . Please choose time correctly.');
@@ -1195,8 +1186,8 @@ class HRLeaveController extends Controller
 			$data = $request->only(['leave_type_id']);
 			$data += ['reason' => Str::ucfirst(Str::lower($request->reason))];
 			$data += ['verify_code' => $code];
-			$data += ['date_time_start' => $request->date_time_start];
-			$data += ['date_time_end' => $request->date_time_start];
+			$data += ['date_time_start' => $ts];
+			$data += ['date_time_end' => $te];
 			$data += ['period_time' => $t];
 			$data += ['leave_no' => $row];
 			$data += ['leave_year' => $ye];
