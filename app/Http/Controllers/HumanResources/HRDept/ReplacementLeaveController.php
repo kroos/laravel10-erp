@@ -58,7 +58,7 @@ class ReplacementLeaveController extends Controller
      */
     public function store(ReplacementRequestStore  $request): RedirectResponse
     {
-        $staffids = $request->input('staff_id', []);
+        $staffids = $request->input('staff_id');
 
         $dateStart = Carbon::parse($request->date_start);
         $dateEnd = Carbon::parse($request->date_end);
@@ -115,8 +115,19 @@ class ReplacementLeaveController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(HRLeaveReplacement $rleave)
+    public function destroy(Request $request, HRLeaveReplacement $rleave): JsonResponse
     {
-        //
+        if ($request->table == 'replacement') {
+			$HRLeaveReplacement = HRLeaveReplacement::destroy(
+				[
+					'id' => $rleave['id']
+				]
+			);
+
+			return response()->json([
+				'status' => 'success',
+				'message' => 'Your replacement leave has been deleted.',
+			]);
+		}
     }
 }

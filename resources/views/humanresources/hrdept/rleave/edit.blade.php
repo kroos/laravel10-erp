@@ -113,6 +113,14 @@ $customer = App\Models\Customer::pluck('customer', 'id')->sortKeys()->toArray();
 
   {!! Form::close() !!}
 
+  <div class="row mt-3">
+    <div class="col-md-12 text-center">
+      <a href="{{ url()->previous() }}">
+        <button class="btn btn-sm btn-outline-secondary">BACK</button>
+      </a>
+    </div>
+  </div>
+
 </div>
 @endsection
 
@@ -137,10 +145,10 @@ $(".group2").prop('checked', this.checked);
 /////////////////////////////////////////////////////////////////////////////////////////
 // SELECTION
 $('.select-input').select2({
-	placeholder: 'Please Select',
-	width: '100%',
-	allowClear: true,
-	closeOnSelect: true,
+placeholder: 'Please Select',
+width: '100%',
+allowClear: true,
+closeOnSelect: true,
 });
 
 
@@ -166,80 +174,80 @@ useCurrent: true,
 /////////////////////////////////////////////////////////////////////////////////////////
 // VALIDATOR
 $(document).ready(function() {
-	$('#form').bootstrapValidator({
-		feedbackIcons: {
-			valid: '',
-			invalid: '',
-			validating: ''
-		},
+$('#form').bootstrapValidator({
+feedbackIcons: {
+valid: '',
+invalid: '',
+validating: ''
+},
 
-		fields: {
-			date_start: {
-				validators: {
-					notEmpty: {
-						message: 'Please select a date.'
-					}
-				}
-			},
+fields: {
+date_start: {
+validators: {
+notEmpty: {
+message: 'Please select a date.'
+}
+}
+},
 
-      date_end: {
-				validators: {
-					notEmpty: {
-						message: 'Please select a date.'
-					}
-				}
-			},
+date_end: {
+validators: {
+notEmpty: {
+message: 'Please select a date.'
+}
+}
+},
 
-      leave_total: {
-				validators: {
-					notEmpty: {
-						message: 'Please insert a value. 0 by default.'
-          },
-					numeric: {
-						message: 'The value is not numeric'
-					}
-				}
-			},
+leave_total: {
+validators: {
+notEmpty: {
+message: 'Please insert a value. 0 by default.'
+},
+numeric: {
+message: 'The value is not numeric'
+}
+}
+},
 
-      leave_utilize: {
-				validators: {
-					notEmpty: {
-						message: 'Please insert a value. 0 by default.'
-          },
-					numeric: {
-						message: 'The value is not numeric'
-					}
-				}
-			},
+leave_utilize: {
+validators: {
+notEmpty: {
+message: 'Please insert a value. 0 by default.'
+},
+numeric: {
+message: 'The value is not numeric'
+}
+}
+},
 
-      leave_balance: {
-				validators: {
-					notEmpty: {
-						message: 'Please insert a value. 0 by default.'
-          },
-					numeric: {
-						message: 'The value is not numeric'
-					}
-				}
-			},
+leave_balance: {
+validators: {
+notEmpty: {
+message: 'Please insert a value. 0 by default.'
+},
+numeric: {
+message: 'The value is not numeric'
+}
+}
+},
 
-      reason: {
-				validators: {
-					notEmpty: {
-						message: 'Please insert a reason.'
-					}
-				}
-			},
+reason: {
+validators: {
+notEmpty: {
+message: 'Please insert a reason.'
+}
+}
+},
 
-		}
-	})
+}
+})
 });
 
 
 /////////////////////////////////////////////////////////////////////////////////////////
 // TOOLTIP
 $(function () {
-  $('[data-toggle="tooltip"]').tooltip()
+$('[data-toggle="tooltip"]').tooltip()
 })
 @endsection
 
