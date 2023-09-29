@@ -1,9 +1,93 @@
 @extends('layouts.app')
 
 @section('content')
+<?php
+// load models
+use App\Models\Staff;
+use App\Models\HumanResources\HRLeave;
+use App\Models\HumanResources\HRLeaveAnnual;
+use App\Models\HumanResources\HRLeaveMC;
+use App\Models\HumanResources\HRLeaveMaternity;
+use App\Models\HumanResources\HRLeaveReplacement;
+use App\Models\HumanResources\HRLeaveApprovalBackup;
+use App\Models\HumanResources\HRLeaveApprovalSupervisor;
+use App\Models\HumanResources\HRLeaveApprovalHOD;
+use App\Models\HumanResources\HRLeaveApprovalDirector;
+use App\Models\HumanResources\HRLeaveApprovalHR;
+
+// load array helper
+use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
+
+use \Carbon\Carbon;
+use \Carbon\CarbonPeriod;
+use Session;
+
+use \App\Helpers\UnavailableDateTime;
+
+$upleave = HRLeave::where(function (Builder $query) {
+				$query->whereIn('leave_status_id', [5, 6])->orWhereNull('leave_status_id');
+			})
+			->whereDate('date_time_start', '>', now())
+			// ->where(function (Builder $query) {
+			// 	$query->whereDate('date_time_start', '<=', $s->attend_date)
+			// 	->whereDate('date_time_end', '>=', $s->attend_date);
+			// })
+			->first();
+?>
+
+
 <div class="col-sm-12 row">
 @include('humanresources.hrdept.navhr')
 	<h4>Leave</h4>
+	<p>&nbsp;</p>
+	<h5>Upcoming Leave</h5>
+	<table>
+		<thead>
+			<tr>
+				<th>No</th>
+				<th>Type</th>
+				<th>Date Applied</th>
+				<th>From</th>
+				<th>To</th>
+				<th>Duration</th>
+				<th>Reason</th>
+				<th>Status</th>
+				<th>Remarks</th>
+				<th>Remarks HR</th>
+			</tr>
+		</thead>
+		<tbody>
+
+
+
+
+
+
+			<tr>
+				<td></td>
+			</tr>
+
+		</tbody>
+	</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	<div id="calendar"></div>
 </div>
 @endsection
