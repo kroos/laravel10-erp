@@ -3197,5 +3197,39 @@ class AjaxDBController extends Controller
 		return response()->json($chartdata);
 	}
 
+	public function yearworkinghourstart(Request $request)
+	{
+		$valid = TRUE;
 
+		$po = OptWorkingHour::groupBy('year')->select('year')->get();
+
+		foreach ($po as $k1) {
+			if($k1->year == \Carbon\Carbon::parse($request->effective_date_start)->format('Y')) {
+				$valid = FALSE;
+			}
+		}
+
+		return response()->json([
+			'year1' => \Carbon\Carbon::parse($request->effective_date_start)->format('Y'),
+			'valid' => $valid
+		]);
+	}
+
+	public function yearworkinghourend(Request $request)
+	{
+		$valid = TRUE;
+
+		$po = OptWorkingHour::groupBy('year')->select('year')->get();
+
+		foreach ($po as $k2) {
+			if($k2->year == \Carbon\Carbon::parse($request->effective_date_end)->format('Y')) {
+				$valid = FALSE;
+			}
+		}
+
+		return response()->json([
+			'year2' => \Carbon\Carbon::parse($request->effective_date_end)->format('Y'),
+			'valid' => $valid
+		]);
+	}
 }

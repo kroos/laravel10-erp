@@ -13,6 +13,7 @@ use App\Http\Controllers\HumanResources\HRDept\EmergencyContactController;
 use App\Http\Controllers\HumanResources\HRDept\AttendanceReportController;
 use App\Http\Controllers\HumanResources\HRDept\ReplacementLeaveController;
 use App\Http\Controllers\HumanResources\HRDept\HRSettingController;
+use App\Http\Controllers\HumanResources\HRDept\WorkingHourController;
 
 Route::resources([
 	'leave' => HRLeaveController::class,
@@ -26,6 +27,7 @@ Route::resources([
 	'emergencycontact' => EmergencyContactController::class,
 	'rleave' => ReplacementLeaveController::class,
 	'hrsetting' => HRSettingController::class,
+	'workinghour' => WorkingHourController::class,
 ]);
 
 Route::get('/attendancereport', [AttendanceReportController::class, 'index'])->name('attendancereport.index');

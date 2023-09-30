@@ -45,6 +45,7 @@
 		<a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Setting</a>
 		<ul class="dropdown-menu">
 			<li><a class="dropdown-item btn btn-sm btn-outline-secondary" href="{{ route('hrsetting.index') }}"><i class="fa-solid fa-users-gear fa-beat"></i> Setting</a></li>
+			<li><a class="dropdown-item btn btn-sm btn-outline-secondary" href="{{ route('workinghour.index') }}"><i class="fa-regular fa-clock fa-beat"></i> Working Hour Configuration</a></li>
 <!-- 			<li><a class="dropdown-item" href="#">Staff Leave</a></li>
 			<li><a class="dropdown-item" href="#">Something else here</a></li>
 			<li><hr class="dropdown-divider"></li>

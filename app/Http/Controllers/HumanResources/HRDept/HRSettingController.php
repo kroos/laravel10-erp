@@ -35,6 +35,7 @@ class HRSettingController extends Controller
 		$this->middleware('highMgmtAccess:1|2|4|5,14', ['only' => ['index', 'show']]);									// all high management
 		$this->middleware('highMgmtAccess:1|5,14', ['only' => ['create', 'store', 'edit', 'update', 'destroy']]);		// only hod and asst hod HR can access
 	}
+
 	/**
 	 * Display a listing of the resource.
 	 */
