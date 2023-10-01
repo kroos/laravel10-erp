@@ -3232,4 +3232,47 @@ class AjaxDBController extends Controller
 			'valid' => $valid
 		]);
 	}
+
+	public function hcaldstart(Request $request)
+	{
+		$valid = true;
+		// echo $request->date_start;
+		$u = HRHolidayCalendar::all();
+		foreach($u as $p) {
+			$b = \Carbon\CarbonPeriod::create($p->date_start, '1 day', $p->date_end);
+			// echo $p->date_start;
+			// echo $p->date_end;
+			foreach ($b as $key) {
+				// echo $key;
+				if($key->format('Y-m-d') == $request->date_start) {
+					$valid = false;
+				}
+			}
+		}
+		return response()->json([
+			'valid' => $valid,
+		]);
+	}
+
+	public function hcaldend(Request $request)
+	{
+		$valid = true;
+		// echo $request->date_end;
+		$u = HRHolidayCalendar::all();
+		foreach($u as $p) {
+			$b = \Carbon\CarbonPeriod::create($p->date_start, '1 day', $p->date_end);
+			// echo $p->date_start;
+			// echo $p->date_end;
+			foreach ($b as $key) {
+				// echo $key;
+				if($key->format('Y-m-d') == $request->date_end) {
+					$valid = false;
+				}
+			}
+		}
+		return response()->json([
+			'valid' => $valid,
+		]);
+	}
+
 }

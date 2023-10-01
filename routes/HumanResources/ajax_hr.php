@@ -51,6 +51,8 @@ Route::post('/staffattendancelist', [AjaxDBController::class, 'staffattendanceli
 Route::post('/staffpercentage', [AjaxDBController::class, 'staffpercentage'])->name('staffpercentage');
 Route::post('/yearworkinghourstart', [AjaxDBController::class, 'yearworkinghourstart'])->name('yearworkinghourstart');
 Route::post('/yearworkinghourend', [AjaxDBController::class, 'yearworkinghourend'])->name('yearworkinghourend');
+Route::post('/hcaldstart', [AjaxDBController::class, 'hcaldstart'])->name('hcaldstart');
+Route::post('/hcaldend', [AjaxDBController::class, 'hcaldend'])->name('hcaldend');
 
 // Route::get('/login/{login}', [
 // 	'as' => 'login.edit',
