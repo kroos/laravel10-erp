@@ -49,7 +49,7 @@ $staffs = Staff::join('logins', 'staffs.id', '=', 'logins.staff_id')
     <div class="col-md-2">
       {{Form::label('name', 'Name')}}
     </div>
-    <div class="col-md-10 {{ $errors->has('staff_id') ? 'has-error' : '' }}"">
+    <div class="col-md-10 {{ $errors->has('staff_id') ? 'has-error' : '' }}">
       <p>
         <input type="checkbox" id="checkAll"> <label>Check All</label>&nbsp;&nbsp;&nbsp;&nbsp;
         <input type="checkbox" id="checkG1"> <label>Check Group 1</label>&nbsp;&nbsp;&nbsp;&nbsp;

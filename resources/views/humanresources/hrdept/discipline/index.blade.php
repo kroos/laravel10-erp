@@ -1,7 +1,6 @@
 @extends('layouts.app')
 
 @section('content')
-
 <style>
   /* div {
   border: 1px solid black;
@@ -14,21 +13,7 @@
   td {
     border: 1px solid black;
   } */
-
-  .btn-sm-custom {
-    padding: 0px;
-    background: none;
-    border: none;
-    font-size: 15px;
-    width: 100%;
-    height: 100%;
-  }
 </style>
-
-
-<?php
-
-?>
 
 <div class="container">
   @include('humanresources.hrdept.navhr')
@@ -75,7 +60,11 @@
             {{ $discipline->reason }}
           </td>
           <td class="text-center">
-            {{ $discipline->softcopy }}
+            @if ($discipline->softcopy)
+            <a href="#">
+              <i class="bi bi-file-text" style="font-size: 15px;"></i>
+            </a>
+            @endif
           </td>
           <td class="text-center">
             <a href="{{ route('discipline.edit', $discipline->id) }}">
@@ -83,7 +72,7 @@
             </a>
           </td>
           <td class="text-center">
-            <a href="">
+            <a href="#">
               <i class="bi bi-x-square delete_discipline" data-id="{{ $discipline->id }}" data-table="discipline" style="font-size: 15px;"></i>
             </a>
           </td>
@@ -124,7 +113,7 @@ $('[data-toggle="tooltip"]').tooltip()
 
 /////////////////////////////////////////////////////////////////////////////////////////
 // DELETE
-$(document).on('click', '.delete_replacement', function(e){
+$(document).on('click', '.delete_discipline', function(e){
 var ackID = $(this).data('id');
 var ackTable = $(this).data('table');
 SwalDelete(ackID, ackTable);
@@ -133,8 +122,8 @@ e.preventDefault();
 
 function SwalDelete(ackID, ackTable){
 swal.fire({
-title: 'Delete Replacement Leave',
-text: 'Are you sure to delete this replacement?',
+title: 'Delete Discipline',
+text: 'Are you sure to delete this discipline?',
 icon: 'info',
 showCancelButton: true,
 confirmButtonColor: '#3085d6',
@@ -146,7 +135,7 @@ showLoaderOnConfirm: true,
 preConfirm: function() {
 return new Promise(function(resolve) {
 $.ajax({
-url: '{{ url('rleave') }}' + '/' + ackID,
+url: '{{ url('discipline') }}' + '/' + ackID,
 type: 'DELETE',
 dataType: 'json',
 data: {
