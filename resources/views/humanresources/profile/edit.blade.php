@@ -4,18 +4,10 @@
 <!-- <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 <script src="https://unpkg.com/bootstrap-show-password@1.2.1/dist/bootstrap-show-password.min.js"></script> -->
 
-
-
-
-
 <style>
-  /* .form-control, #ic {
-border: 1px solid black;
-} */
-
   /* div {
-border: 1px solid black;
-} */
+    border: 1px solid black;
+  } */
 </style>
 
 <div class="container rounded bg-white mt-2 mb-2">
@@ -31,10 +23,6 @@ border: 1px solid black;
 
     <div class="col-md-10 border-right">
       <div class="p-1 py-3">
-
-        {!! Form::model($profile, ['route' => ['profile.update', $profile->id], 'method' => 'PATCH', 'id' => 'form', 'class' => 'form-horizontal', 'autocomplete' => 'off', 'files' => true]) !!}
-        <input type="hidden" name="login_id" id="login_id" value="{{ $profile->hasmanylogin()->where('active', 1)->first()->id }}">
-
         <div class="row">
           <div class="d-flex justify-content-between align-items-center">
             <h4 class="text-right">Edit Staff Password</h4>
@@ -42,6 +30,10 @@ border: 1px solid black;
         </div>
         <div class="row mb-5">
           <div class="col-md-12">
+
+            {!! Form::model($profile, ['route' => ['profile.update', $profile->id], 'method' => 'PATCH', 'id' => 'form', 'class' => 'form-horizontal', 'autocomplete' => 'off', 'files' => true]) !!}
+            <input type="hidden" name="login_id" id="login_id" value="{{ $profile->hasmanylogin()->where('active', 1)->first()->id }}">
+
             <div class="row mt-3">
               <div class="col-md-2">
                 <label for="ic" class="labels">ID</label>
@@ -65,7 +57,7 @@ border: 1px solid black;
                 <label for="ic" class="labels">New Password</label>
               </div>
               <div class="col-md-10 {{ $errors->has('password') ? 'has-error' : '' }}">
-              {!! Form::password('password', ['class' => 'form-control', 'id' => 'password', 'placeholder' => 'Password', 'data-toggle' => 'password']) !!}
+                {!! Form::password('password', ['class' => 'form-control', 'id' => 'password', 'placeholder' => 'Password', 'data-toggle' => 'password']) !!}
               </div>
             </div>
 
@@ -74,32 +66,34 @@ border: 1px solid black;
                 <label for="ic" class="labels">Confirm Password</label>
               </div>
               <div class="col-md-10 {{ $errors->has('confirm_password') ? 'has-error' : '' }}">
-              {!! Form::password('password_confirmation', ['class' => 'form-control', 'id' => 'password_confirmation', 'placeholder' => 'Confirm Password']) !!}
+                {!! Form::password('password_confirmation', ['class' => 'form-control', 'id' => 'password_confirmation', 'placeholder' => 'Confirm Password']) !!}
               </div>
             </div>
-          </div>
 
-          <div class="row mt-3">
-            <div class="text-center">
-              {!! Form::button('Save', ['class' => 'btn btn-sm btn-outline-secondary', 'type' => 'submit']) !!}
+            <div class="row mt-3">
+              <div class="text-center">
+                {!! Form::button('Save', ['class' => 'btn btn-sm btn-outline-secondary', 'type' => 'submit']) !!}
+              </div>
             </div>
-          </div>
 
-        {!! Form::close() !!}
 
-          <div class="row mt-4">
-            <div class="text-center">
-              <a href="{{ url()->previous() }}">
-                <button class="btn btn-sm btn-outline-secondary">Back</button>
-              </a>
+            {!! Form::close() !!}
+
+            <div class="row mt-3">
+              <div class="text-center">
+                <a href="{{ route('profile.show', Auth::user()->belongstostaff->id) }}">
+                  <button class="btn btn-sm btn-outline-secondary">Back</button>
+                </a>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
   </div>
-  @endsection
+</div>
+@endsection
 
-  @section('js')
+@section('js')
 
-  @endsection
+@endsection
