@@ -10,3 +10,4 @@ class Controller extends BaseController
 {
     use AuthorizesRequests, ValidatesRequests;
 }
+ // php artisan make:controller HumanResources/HRDept/WorkingHourController -rm HumanResources/OptWorkingHour

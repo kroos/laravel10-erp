@@ -12,7 +12,11 @@ use App\Http\Controllers\HumanResources\HRDept\ChildrenController;
 use App\Http\Controllers\HumanResources\HRDept\EmergencyContactController;
 use App\Http\Controllers\HumanResources\HRDept\AttendanceReportController;
 use App\Http\Controllers\HumanResources\HRDept\ReplacementLeaveController;
+use App\Http\Controllers\HumanResources\HRDept\HRSettingController;
+use App\Http\Controllers\HumanResources\HRDept\WorkingHourController;
+use App\Http\Controllers\HumanResources\HRDept\HolidayCalendarController;
 use App\Http\Controllers\HumanResources\HRDept\DisciplineController;
+
 
 Route::resources([
 	'leave' => HRLeaveController::class,
@@ -25,6 +29,9 @@ Route::resources([
 	'children' => ChildrenController::class,
 	'emergencycontact' => EmergencyContactController::class,
 	'rleave' => ReplacementLeaveController::class,
+	'hrsetting' => HRSettingController::class,
+	'workinghour' => WorkingHourController::class,
+	'holidaycalendar' => HolidayCalendarController::class,
 	'discipline' => DisciplineController::class,
 ]);
 
