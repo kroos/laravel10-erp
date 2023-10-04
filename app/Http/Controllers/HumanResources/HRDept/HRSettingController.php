@@ -86,7 +86,7 @@ class HRSettingController extends Controller
 
 		if($request->active == 'true') {
 			Setting::find($request->id)->update(['active' => 1]);
-			$active = 'Disable';
+			$active = 'Enable';
 			return response()->json([
 				'status' => 'Success Change Setting',
 				'active' => $active
@@ -94,7 +94,7 @@ class HRSettingController extends Controller
 		}
 		if($request->active == 'false') {
 			Setting::find($request->id)->update(['active' => NULL]);
-			$active = 'Enable';
+			$active = 'Disable';
 			return response()->json([
 				'status' => 'Success Change Setting',
 				'active' => $active

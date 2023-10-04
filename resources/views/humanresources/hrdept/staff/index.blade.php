@@ -6,7 +6,7 @@ use App\Models\Staff;
 ?>
 <div class="container row justify-content-center align-items-start">
 @include('humanresources.hrdept.navhr')
-	<h2>Staffs</h2>
+	<h2>Staffs&nbsp;<a class="btn btn-sm btn-outline-secondary" href="{{ route('staff.create') }}"><i class="fa-solid fa-person-circle-plus fa-beat"></i> Add Staff</a></h2>
 	<div class="table-responsive">
 		<table id="staff" class="table table-hover table-sm align-middle" style="font-size:12px">
 			<thead>
@@ -205,7 +205,7 @@ if ($me1) {																				// hod
 							@if(auth()->user()->belongstostaff->authorise_id == 1)
 							<td>{{ $s->id }}</td>
 							@endif
-							<td><a href="{{ route('staff.show', $s->id) }}" alt="Detail" title="Detail">{{ $s->hasmanylogin()->where('active', 1)->first()?->username }}</a></td>
+							<td><a href="{{ route('staff.show', $s->id) }}" alt="Detail" title="Detail">{{ $s->hasmanylogin()->where('active', '<>', 1)->first()?->username }}</a></td>
 							<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-html="true" data-bs-title="
 								<div class='d-flex flex-column align-items-center text-center p-3 py-5'>
 									<img class='rounded-5 mt-3' width='180px' src='{{ asset('storage/user_profile/' . $s->image) }}'>
@@ -213,7 +213,48 @@ if ($me1) {																				// hod
 									<span class='font-weight-bold'>{{ $s->hasmanylogin()->where('active', 1)->first()?->username }}</span>
 									<span> </span>
 								</div>
-							">{{ $s->name }}</td>
+							">
+								<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#staff_{{ $s->id }}">
+									{{ $s->name }}
+								</button>
+								<div class="modal fade" id="staff_{{ $s->id }}" tabindex="-1" aria-labelledby="label_{{ $s->id }}" aria-hidden="true">
+									<div class="modal-dialog modal-dialog-centered">
+										<div class="modal-content">
+											<div class="modal-header">
+												<h1 class="modal-title fs-5" id="label_{{ $s->id }}">Activate Ex-Staff {{ $s->name }}</h1>
+												<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+											</div>
+											<div class="modal-body">
+												{{ Form::model($s, ['route' => ['staff.activate', $s->id], 'method' => 'PATCH', 'id' => 'form', 'files' => true, ]) }}
+												<div class="form-group row mb-3 {{ $errors->has('username') ? 'has-error' : '' }}">
+													{{ Form::label( 'user', 'Username : ', ['class' => 'col-sm-3 col-form-label'] ) }}
+													<div class="col-auto" style="position: relative">
+														{{ Form::text('username', @$value, ['class' => 'form-control form-control-sm col-auto', 'id' => 'user', 'placeholder' => 'Username', 'autocomplete' => 'off']) }}
+													</div>
+												</div>
+												<div class="form-group row mb-3 {{ $errors->has('password') ? 'has-error' : '' }}">
+													{{ Form::label( 'pass', 'Password : ', ['class' => 'col-sm-3 col-form-label'] ) }}
+													<div class="col-auto" style="position: relative">
+														{{ Form::text('password', @$value, ['class' => 'form-control form-control-sm col-auto', 'id' => 'pass', 'placeholder' => 'Password', 'autocomplete' => 'off']) }}
+													</div>
+												</div>
+											<!-- 	<div class="form-group row mb-3 g-3 p-2">
+													<div class="col-sm-10 offset-sm-2">
+														{!! Form::button('Edit Data', ['class' => 'btn btn-sm btn-outline-secondary', 'type' => 'submit']) !!}
+													</div>
+												</div> -->
+											</div>
+											<div class="modal-footer">
+												<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+												<button type="submit" class="btn btn-sm btn-outline-secondary">Save Changes</button>
+											</div>
+												{{ Form::close() }}
+										</div>
+									</div>
+								</div>
+
+
+							</td>
 							<td>{{ $s->belongstorestdaygroup?->group }}</td>
 							<!-- <td>{{ $s->belongstogender?->gender }}</td> -->
 							<td>{{ $s->belongstonationality?->country }}</td>
