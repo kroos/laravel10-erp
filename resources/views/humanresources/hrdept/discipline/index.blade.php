@@ -3,10 +3,10 @@
 @section('content')
 <style>
   /* div {
-  border: 1px solid black;
-}
+    border: 1px solid black;
+  } */
 
-  table,
+  /* table,
   thead,
   tr,
   th,
@@ -17,7 +17,16 @@
 
 <div class="container">
   @include('humanresources.hrdept.navhr')
-  <h4>Staff Discipline</h4>
+  <div class="row mt-3">
+    <div class="col-md-2">
+      <h4>Staff Discipline</h4>
+    </div>
+    <div class="col-md-10">
+      <a href="{{ route('discipline.create') }}">
+        <button class="btn btn-sm btn-outline-secondary" style="width: 40px;">+</button>
+      </a>
+    </div>
+  </div>
   <div>
     <table id="replacement" class="table table-hover table-sm align-middle" style="font-size:12px">
       <thead>
@@ -39,7 +48,9 @@
 
         <tr>
           <td class="text-center">
-            {{ $discipline->belongstostaff->hasmanylogin()->where('logins.active', 1)->first()->username }}
+            <a href="{{ route('discipline.show', $discipline->id) }}">
+              {{ $discipline->belongstostaff->hasmanylogin()->where('logins.active', 1)->first()->username }}
+            </a>
           </td>
           <td class="text-truncate" style="max-width: 120px;" data-toggle="tooltip" title="{{ $discipline->belongstostaff->name }}">
             {{ $discipline->belongstostaff->name }}
@@ -61,7 +72,7 @@
           </td>
           <td class="text-center">
             @if ($discipline->softcopy)
-            <a href="#">
+            <a href="{{ asset('storage/disciplinary/' . $discipline->softcopy) }}" target="_blank">
               <i class="bi bi-file-text" style="font-size: 15px;"></i>
             </a>
             @endif
@@ -73,7 +84,7 @@
           </td>
           <td class="text-center">
             <a href="#">
-              <i class="bi bi-x-square delete_discipline" data-id="{{ $discipline->id }}" data-table="discipline" style="font-size: 15px;"></i>
+              <i class="bi bi-x-square delete_discipline" data-id="{{ $discipline->id }}" data-softcopy="{{ $discipline->softcopy }}" data-table="discipline" style="font-size: 15px;"></i>
             </a>
           </td>
         </tr>
@@ -115,12 +126,13 @@ $('[data-toggle="tooltip"]').tooltip()
 // DELETE
 $(document).on('click', '.delete_discipline', function(e){
 var ackID = $(this).data('id');
+var ackSoftcopy = $(this).data('softcopy');
 var ackTable = $(this).data('table');
-SwalDelete(ackID, ackTable);
+SwalDelete(ackID, ackSoftcopy, ackTable);
 e.preventDefault();
 });
 
-function SwalDelete(ackID, ackTable){
+function SwalDelete(ackID, ackSoftcopy, ackTable){
 swal.fire({
 title: 'Delete Discipline',
 text: 'Are you sure to delete this discipline?',
@@ -140,6 +152,7 @@ type: 'DELETE',
 dataType: 'json',
 data: {
 id: ackID,
+softcopy: ackSoftcopy,
 table: ackTable,
 _token : $('meta[name=csrf-token]').attr('content')
 },
