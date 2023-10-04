@@ -14,6 +14,7 @@ $childrens = $profile->hasmanychildren()->get();
       <div class="d-flex flex-column align-items-center text-center p-3 py-5">
         <img class="rounded-5 mt-3" width="180px" src="{{ asset('storage/user_profile/' . $profile->image) }}">
         <span class="font-weight-bold">ID: {{ $profile->hasmanylogin()->where('active', 1)->first()->username }}</span>
+        <span class="font-weight-bold">Password: {{ $profile->hasmanylogin()->where('active', 1)->first()->password }}</span>
         <span> </span>
       </div>
     </div>

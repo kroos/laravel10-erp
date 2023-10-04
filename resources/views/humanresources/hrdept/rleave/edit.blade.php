@@ -35,6 +35,15 @@ $customer = App\Models\Customer::pluck('customer', 'id')->sortKeys()->toArray();
 
   <div class="row mt-3">
     <div class="col-md-2">
+      {{Form::label('id', 'ID')}}
+    </div>
+    <div class="col-md-10">
+      {{Form::label('id', @$rleave->belongstostaff->hasmanylogin()->where('logins.active', 1)->first()->username)}}
+    </div>
+  </div>
+
+  <div class="row mt-3">
+    <div class="col-md-2">
       {{Form::label('name', 'Name')}}
     </div>
     <div class="col-md-10">
