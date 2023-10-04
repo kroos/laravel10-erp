@@ -3197,5 +3197,82 @@ class AjaxDBController extends Controller
 		return response()->json($chartdata);
 	}
 
+	public function yearworkinghourstart(Request $request)
+	{
+		$valid = TRUE;
+
+		$po = OptWorkingHour::groupBy('year')->select('year')->get();
+
+		foreach ($po as $k1) {
+			if($k1->year == \Carbon\Carbon::parse($request->effective_date_start)->format('Y')) {
+				$valid = FALSE;
+			}
+		}
+
+		return response()->json([
+			'year1' => \Carbon\Carbon::parse($request->effective_date_start)->format('Y'),
+			'valid' => $valid
+		]);
+	}
+
+	public function yearworkinghourend(Request $request)
+	{
+		$valid = TRUE;
+
+		$po = OptWorkingHour::groupBy('year')->select('year')->get();
+
+		foreach ($po as $k2) {
+			if($k2->year == \Carbon\Carbon::parse($request->effective_date_end)->format('Y')) {
+				$valid = FALSE;
+			}
+		}
+
+		return response()->json([
+			'year2' => \Carbon\Carbon::parse($request->effective_date_end)->format('Y'),
+			'valid' => $valid
+		]);
+	}
+
+	public function hcaldstart(Request $request)
+	{
+		$valid = true;
+		// echo $request->date_start;
+		$u = HRHolidayCalendar::all();
+		foreach($u as $p) {
+			$b = \Carbon\CarbonPeriod::create($p->date_start, '1 day', $p->date_end);
+			// echo $p->date_start;
+			// echo $p->date_end;
+			foreach ($b as $key) {
+				// echo $key;
+				if($key->format('Y-m-d') == $request->date_start) {
+					$valid = false;
+				}
+			}
+		}
+		return response()->json([
+			'valid' => $valid,
+		]);
+	}
+
+	public function hcaldend(Request $request)
+	{
+		$valid = true;
+		// echo $request->date_end;
+		$u = HRHolidayCalendar::all();
+		foreach($u as $p) {
+			$b = \Carbon\CarbonPeriod::create($p->date_start, '1 day', $p->date_end);
+			// echo $p->date_start;
+			// echo $p->date_end;
+			foreach ($b as $key) {
+				// echo $key;
+				if($key->format('Y-m-d') == $request->date_end) {
+					$valid = false;
+				}
+			}
+		}
+		return response()->json([
+			'valid' => $valid,
+		]);
+	}
 
 }
