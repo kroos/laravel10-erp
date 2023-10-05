@@ -17,6 +17,9 @@ use App\Http\Controllers\HumanResources\HRDept\WorkingHourController;
 use App\Http\Controllers\HumanResources\HRDept\HolidayCalendarController;
 use App\Http\Controllers\HumanResources\HRDept\DisciplineController;
 use App\Http\Controllers\HumanResources\HRDept\OutstationController;
+use App\Http\Controllers\HumanResources\HRDept\AnnualLeaveController;
+use App\Http\Controllers\HumanResources\HRDept\MCLeaveController;
+use App\Http\Controllers\HumanResources\HRDept\MaternityLeaveController;
 
 
 Route::resources([
@@ -36,6 +39,9 @@ Route::resources([
 	'discipline' => DisciplineController::class,
 	'discipline' => DisciplineController::class,
 	'outstation' => OutstationController::class,
+	'annualleave' => AnnualLeaveController::class,
+	'mcleave' => MCLeaveController::class,
+	'maternityleave' => MaternityLeaveController::class,
 ]);
 
 Route::get('/attendancereport', [AttendanceReportController::class, 'index'])->name('attendancereport.index');

@@ -14,6 +14,9 @@ Route::patch('/hrstatus', [AjaxController::class, 'hrstatus'])->name('leavestatu
 Route::patch('/deactivatestaff/{staff}', [AjaxController::class, 'deactivatestaff'])->name('deactivatestaff');
 Route::delete('/deletecrossbackup/{staff}', [AjaxController::class, 'deletecrossbackup'])->name('deletecrossbackup');
 Route::patch('/staffactivate/{staff}', [AjaxController::class, 'staffactivate'])->name('staff.activate');
+Route::post('/generateannualleave', [AjaxController::class, 'generateannualleave'])->name('generateannualleave');
+Route::post('/generatemcleave', [AjaxController::class, 'generatemcleave'])->name('generatemcleave');
+Route::post('/generatematernityleave', [AjaxController::class, 'generatematernityleave'])->name('generatematernityleave');
 
 
 
