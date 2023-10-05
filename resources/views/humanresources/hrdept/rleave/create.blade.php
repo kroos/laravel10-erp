@@ -12,7 +12,7 @@
     /* Set the width height as needed */
     width: 100%;
     height: 400px;
-    background-color:blanchedalmond;
+    background-color: blanchedalmond;
     /* Add scrollbars when content overflows */
     overflow: auto;
   }
@@ -24,19 +24,20 @@
 </style>
 
 <?php
+
 use App\Models\Staff;
 use App\Models\Customer;
 
 $staffs = Staff::join('logins', 'staffs.id', '=', 'logins.staff_id')
-->where('staffs.active', 1)
-->where('logins.active', 1)
-->where(function ($query) {
-  $query->where('staffs.div_id', '!=', 2)
-  ->orWhereNull('staffs.div_id');
-})
-->select('staffs.id as staffID', 'staffs.*', 'logins.*')
-->orderBy('logins.username', 'asc')
-->get();
+  ->where('staffs.active', 1)
+  ->where('logins.active', 1)
+  ->where(function ($query) {
+    $query->where('staffs.div_id', '!=', 2)
+      ->orWhereNull('staffs.div_id');
+  })
+  ->select('staffs.id as staffID', 'staffs.*', 'logins.*')
+  ->orderBy('logins.username', 'asc')
+  ->get();
 ?>
 
 <div class="container">
@@ -56,12 +57,12 @@ $staffs = Staff::join('logins', 'staffs.id', '=', 'logins.staff_id')
         <input type="checkbox" id="checkG2"> <label>Check Group 2</label>&nbsp;&nbsp;&nbsp;&nbsp;
       </p>
       <div class="scrollable-div">
-          @foreach ($staffs as $staff)
-          <p>
-            <input type="checkbox" class="staff group{{ $staff->restday_group_id }}" name="staff_id[]" id="staff_id" value="{{ $staff->staffID }}">
-            <label>{{ $staff->username }} - Group {{ $staff->restday_group_id }} _ {{ $staff->name }}</label>
-          </p>
-          @endforeach
+        @foreach ($staffs as $staff)
+        <p>
+          <input type="checkbox" class="staff group{{ $staff->restday_group_id }}" name="staff_id[]" id="staff_id" value="{{ $staff->staffID }}">
+          <label>{{ $staff->username }} - Group {{ $staff->restday_group_id }} _ {{ $staff->name }}</label>
+        </p>
+        @endforeach
       </div>
     </div>
   </div>
@@ -110,6 +111,14 @@ $staffs = Staff::join('logins', 'staffs.id', '=', 'logins.staff_id')
 
   {!! Form::close() !!}
 
+  <div class="row mt-3">
+    <div class="col-md-12 text-center">
+      <a href="{{ url()->previous() }}">
+        <button class="btn btn-sm btn-outline-secondary">BACK</button>
+      </a>
+    </div>
+  </div>
+
 </div>
 @endsection
 
@@ -117,17 +126,17 @@ $staffs = Staff::join('logins', 'staffs.id', '=', 'logins.staff_id')
 /////////////////////////////////////////////////////////////////////////////////////////
 // CHECK ALL STAFF
 $("#checkAll").change(function () {
-	$(".staff").prop('checked', this.checked);
+$(".staff").prop('checked', this.checked);
 });
 
 // CHECK ALL GROUP 1
 $("#checkG1").change(function () {
-	$(".group1").prop('checked', this.checked);
+$(".group1").prop('checked', this.checked);
 });
 
 // CHECK ALL GROUP 2
 $("#checkG2").change(function () {
-	$(".group2").prop('checked', this.checked);
+$(".group2").prop('checked', this.checked);
 });
 
 
@@ -162,48 +171,48 @@ useCurrent: true,
 /////////////////////////////////////////////////////////////////////////////////////////
 // VALIDATOR
 $(document).ready(function() {
-	$('#form').bootstrapValidator({
-		feedbackIcons: {
-			valid: '',
-			invalid: '',
-			validating: ''
-		},
+$('#form').bootstrapValidator({
+feedbackIcons: {
+valid: '',
+invalid: '',
+validating: ''
+},
 
-		fields: {
-      staff_id: {
-				validators: {
-					notEmpty: {
-						message: 'Please select a staff.'
-					}
-				}
-			},
+fields: {
+staff_id: {
+validators: {
+notEmpty: {
+message: 'Please select a staff.'
+}
+}
+},
 
-			date_start: {
-				validators: {
-					notEmpty: {
-						message: 'Please select a date.'
-					}
-				}
-			},
+date_start: {
+validators: {
+notEmpty: {
+message: 'Please select a date.'
+}
+}
+},
 
-      date_end: {
-				validators: {
-					notEmpty: {
-						message: 'Please select a date.'
-					}
-				}
-			},
+date_end: {
+validators: {
+notEmpty: {
+message: 'Please select a date.'
+}
+}
+},
 
-      reason: {
-				validators: {
-					notEmpty: {
-						message: 'Please insert a reason.'
-					}
-				}
-			},
+reason: {
+validators: {
+notEmpty: {
+message: 'Please insert a reason.'
+}
+}
+},
 
-		}
-	})
+}
+})
 });
 @endsection
 

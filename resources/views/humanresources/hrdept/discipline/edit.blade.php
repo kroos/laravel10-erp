@@ -8,6 +8,7 @@
 </style>
 
 <?php
+
 use App\Models\Staff;
 use App\Models\HumanResources\OptDisciplinaryAction;
 use App\Models\HumanResources\OptViolation;
@@ -26,16 +27,16 @@ $violation = OptViolation::select(DB::raw('CONCAT(IFNULL(violation, ""), " - ", 
 
 <div class="container">
   @include('humanresources.hrdept.navhr')
-  <h4>Add Discipline</h4>
+  <h4>Update Discipline</h4>
 
-  {{ Form::open(['route' => ['discipline.store'], 'id' => 'form', 'class' => 'form-horizontal', 'autocomplete' => 'off', 'files' => true]) }}
+  {{ Form::model($discipline, ['route' => ['discipline.update', $discipline->id], 'method' => 'PATCH', 'id' => 'form', 'class' => 'form-horizontal', 'autocomplete' => 'off', 'files' => true]) }}
 
   <div class="row mt-3">
     <div class="col-md-2">
       {{Form::label('name', 'Name')}}
     </div>
-    <div class="col-md-10 {{ $errors->has('staff_id') ? 'has-error' : '' }}">
-      {{ Form::select('staff_id', $staff, @$value, ['class' => 'form-control form-select form-select-sm col-auto', 'id' => 'staff_id', 'placeholder' => '', 'autocomplete' => 'off']) }}
+    <div class="col-md-10">
+      {{ Form::text('staff_id', $discipline->belongstostaff->name, ['class' => 'form-control form-select-sm col-auto', 'id' => 'staff_id', 'readonly' => 'readonly']) }}
     </div>
   </div>
 
@@ -84,9 +85,22 @@ $violation = OptViolation::select(DB::raw('CONCAT(IFNULL(violation, ""), " - ", 
     </div>
   </div>
 
+  @if ($discipline->softcopy)
+  <input type="hidden" name="old_softcopy" od="old_softcopy" value="{{ $discipline->softcopy }}">
+  <div class="row mt-3">
+    <div class="col-md-2"></div>
+    <div class="col-md-10">
+      <a href="{{ asset('storage/disciplinary/' . $discipline->softcopy) }}" target="_blank">
+        {{ $discipline->softcopy }}
+      </a>
+      &nbsp;&nbsp;&nbsp;(Will Be Replace By New Uploaded Softcopy)
+    </div>
+  </div>
+  @endif
+
   <div class="row mt-3">
     <div class="col-md-12 text-center">
-      {!! Form::submit('SUBMIT', ['class' => 'btn btn-sm btn-outline-secondary']) !!}
+      {!! Form::submit('UPDATE', ['class' => 'btn btn-sm btn-outline-secondary']) !!}
     </div>
   </div>
 
@@ -94,7 +108,7 @@ $violation = OptViolation::select(DB::raw('CONCAT(IFNULL(violation, ""), " - ", 
 
   <div class="row mt-3">
     <div class="col-md-12 text-center">
-    <a href="{{ url()->previous() }}">
+      <a href="{{ url()->previous() }}">
         <button class="btn btn-sm btn-outline-secondary">BACK</button>
       </a>
     </div>

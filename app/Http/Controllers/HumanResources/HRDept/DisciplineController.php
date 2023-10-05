@@ -3,14 +3,14 @@
 namespace App\Http\Controllers\HumanResources\HRDept;
 
 // for controller output
+use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Redirect;
-use Illuminate\View\View;
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Http\File;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\View\View;
 
 // load models
 use App\Models\HumanResources\HRDisciplinary;
@@ -62,18 +62,13 @@ class DisciplineController extends Controller
 	public function store(Request $request): RedirectResponse
 	{
 		if ($request->file('softcopy')) {
+			// UPLOAD SOFTCOPY
 			$fileName = $request->file('softcopy')->getClientOriginalName();
-			$currentDate = Carbon::now()->format('Y-m-d H:i:s');
+			$currentDate = Carbon::now()->format('Y-m-d His');
 			$file = $currentDate . '_' . $fileName;
+			$request->file('softcopy')->storeAs('public/disciplinary', $file);
 
-
-
-			$request->file('softcopy')->storeAs('uploads',$file);
-
-
-
-
-
+			// INSERT NEW DATABASE
 			HRDisciplinary::create([
 				'staff_id' => $request->staff_id,
 				'disciplinary_action_id' => $request->disciplinary_action_id,
@@ -83,6 +78,7 @@ class DisciplineController extends Controller
 				'softcopy' => $file,
 			]);
 		} else {
+			// INSERT NEW DATABASE
 			HRDisciplinary::create([
 				'staff_id' => $request->staff_id,
 				'disciplinary_action_id' => $request->disciplinary_action_id,
@@ -100,9 +96,9 @@ class DisciplineController extends Controller
 	/**
 	 * Display the specified resource.
 	 */
-	public function show(Staff $staff): View
+	public function show(HRDisciplinary $discipline): View
 	{
-		//
+		return view('humanresources.hrdept.discipline.show', ['discipline' => $discipline]);
 	}
 
 
@@ -120,10 +116,36 @@ class DisciplineController extends Controller
 	 */
 	public function update(Request $request, HRDisciplinary $discipline): RedirectResponse
 	{
-		// $rleave->update($request->only(['date_start', 'date_end', 'customer_id', 'reason', 'leave_total', 'leave_utilize', 'leave_balance']));
+		if ($request->file('softcopy')) {
+			// DELETE OLD SOFTCOPY
+			Storage::delete("public/disciplinary/" . $request->old_softcopy);
 
-		// Session::flash('flash_message', 'Data successfully updated!');
-		// return Redirect::route('rleave.index', $rleave);
+			// UPLOAD NEW SOFTCOPY
+			$fileName = $request->file('softcopy')->getClientOriginalName();
+			$currentDate = Carbon::now()->format('Y-m-d His');
+			$file = $currentDate . '_' . $fileName;
+			$request->file('softcopy')->storeAs('public/disciplinary', $file);
+
+			// UPDATE DATABASE
+			$discipline->update([
+				'disciplinary_action_id' => $request->disciplinary_action_id,
+				'violation_id' => $request->violation_id,
+				'date' => $request->date,
+				'reason' => $request->reason,
+				'softcopy' => $file,
+			]);
+		} else {
+			// UPDATE DATABASE
+			$discipline->update([
+				'disciplinary_action_id' => $request->disciplinary_action_id,
+				'violation_id' => $request->violation_id,
+				'date' => $request->date,
+				'reason' => $request->reason,
+			]);
+		}
+
+		Session::flash('flash_message', 'Data successfully updated!');
+		return Redirect::route('discipline.index', $discipline);
 	}
 
 
@@ -133,6 +155,10 @@ class DisciplineController extends Controller
 	public function destroy(Request $request, HRDisciplinary $discipline): JsonResponse
 	{
 		if ($request->table == 'discipline') {
+			// DELETE SOFTCOPY
+			Storage::delete("public/disciplinary/" . $request->softcopy);
+
+			// DELETE DATABASE
 			$HRDisciplinary = HRDisciplinary::destroy(
 				[
 					'id' => $discipline['id']
