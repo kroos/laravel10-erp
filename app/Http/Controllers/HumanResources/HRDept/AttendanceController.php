@@ -31,6 +31,7 @@ use Illuminate\Pagination\CursorPaginator;
 
 // load array helper
 use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 
 // load Carbon
 use \Carbon\Carbon;
