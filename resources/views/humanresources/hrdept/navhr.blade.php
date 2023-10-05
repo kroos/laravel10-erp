@@ -55,6 +55,9 @@
 			<li><a class="dropdown-item btn btn-sm btn-outline-secondary" href="{{ route('hrsetting.index') }}"><i class="fa-solid fa-users-gear fa-beat"></i> Setting</a></li>
 			<li><a class="dropdown-item btn btn-sm btn-outline-secondary" href="{{ route('workinghour.index') }}"><i class="fa-regular fa-clock fa-beat"></i> Working Hour Configuration</a></li>
 			<li><a class="dropdown-item btn btn-sm btn-outline-secondary" href="{{ route('holidaycalendar.index') }}"><i class="fa-solid fa-gifts fa-beat"></i> Holiday Calendar Configuration</a></li>
+			<li><a class="dropdown-item btn btn-sm btn-outline-secondary" href="{{ route('annualleave.index') }}"><i class="fa-regular fa-calendar fa-beat"></i> Generate Annual Leave Entitlements</a></li>
+			<li><a class="dropdown-item btn btn-sm btn-outline-secondary" href="{{ route('mcleave.index') }}"><i class="fa-solid fa-house-chimney-medical fa-beat"></i> Generate MC Leave Entitlements</a></li>
+			<li><a class="dropdown-item btn btn-sm btn-outline-secondary" href="{{ route('maternityleave.index') }}"><i class="fa-solid fa-person-breastfeeding fa-beat"></i> Generate Maternity Leave Entitlements</a></li>
 <!-- 			<li><a class="dropdown-item" href="#">Staff Leave</a></li>
 			<li><a class="dropdown-item" href="#">Something else here</a></li>
 			<li><hr class="dropdown-divider"></li>

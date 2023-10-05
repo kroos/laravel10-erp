@@ -22,6 +22,9 @@ use App\Models\HumanResources\HRLeaveApprovalSupervisor;
 use App\Models\HumanResources\HRLeaveApprovalDirector;
 use App\Models\HumanResources\HRLeaveApprovalHOD;
 use App\Models\HumanResources\HRLeaveApprovalHR;
+use App\Models\HumanResources\HRLeaveAnnual;
+use App\Models\HumanResources\HRLeaveMC;
+use App\Models\HumanResources\HRLeaveMaternity;
 
 
 use App\Models\HumanResources\OptAuthorise;
@@ -701,5 +704,92 @@ class AjaxController extends Controller
 										]);
 		Session::flash('flash_message', 'Successfully activate ex-staff '.$staff->name);
 		return redirect()->route('staff.show', $staff->id);
+	}
+
+	public function generateannualleave(Request $request)
+	{
+		// checking to make sure there is no duplicate year for 1 person
+		$r = HRLeaveAnnual::where('year', now()->addYear()->format('Y'))->get()->isEmpty();
+		if ($r) {
+			$s = Staff::where('active', 1)->get();
+			foreach ($s as $st) {
+				$al = HRLeaveAnnual::where('year', now()->year)->where('staff_id', $st->id)->first();
+				$st->hasmanyleaveannual()->create([
+													'year' => now()->addYear()->format('Y'),
+													'annual_leave' => $al?->annual_leave + $al?->annual_leave_adjustment,
+													'annual_leave_adjustment' => 0,
+													'annual_leave_utilize' => 0,
+													'annual_leave_balance' => $al?->annual_leave + $al?->annual_leave_adjustment,
+												]);
+			}
+		} else {
+			return response()->json([
+				'status' => 'error',
+				'message' => 'You have generate annual leave for next year. System couldn\'t generate anymore annual leave entitlement for all users in next year ('.now()->addYear()->format('Y').')',
+			]);
+		}
+
+		return response()->json([
+			'status' => 'success',
+			'message' => 'Success generate annual leave for next year',
+		]);
+	}
+
+	public function generatemcleave(Request $request)
+	{
+		// checking to make sure there is no duplicate year for 1 person
+		$r = HRLeaveMC::where('year', now()->addYear()->format('Y'))->get()->isEmpty();
+		if ($r) {
+			$s = Staff::where('active', 1)->get();
+			foreach ($s as $st) {
+				$al = HRLeaveMC::where('year', now()->year)->where('staff_id', $st->id)->first();
+				$st->hasmanyleavemc()->create([
+													'year' => now()->addYear()->format('Y'),
+													'mc_leave' => $al?->mc_leave + $al?->mc_leave_adjustment,
+													'mc_leave_adjustment' => 0,
+													'mc_leave_utilize' => 0,
+													'mc_leave_balance' => $al?->mc_leave + $al?->mc_leave_adjustment,
+												]);
+			}
+		} else {
+			return response()->json([
+				'status' => 'error',
+				'message' => 'You have generate medical certificate leave for next year. System couldn\'t generate anymore medical certificate leave entitlement for all users in next year ('.now()->addYear()->format('Y').')',
+			]);
+		}
+
+		return response()->json([
+			'status' => 'success',
+			'message' => 'Success generate medical certificate leave for next year',
+		]);
+	}
+
+	public function generatematernityleave(Request $request)
+	{
+		// checking to make sure there is no duplicate year for 1 person
+		$r = HRLeaveMaternity::where('year', now()->addYear()->format('Y'))->get()->isEmpty();
+		if ($r) {
+			$s = Staff::where('active', 1)->get();
+			foreach ($s as $st) {
+				$al = HRLeaveMaternity::where('year', now()->year)->where('staff_id', $st->id)->first();
+				$st->hasmanyleavematernity()->create([
+													'year' => now()->addYear()->format('Y'),
+													'maternity_leave' => $al?->maternity_leave + $al?->maternity_leave_adjustment,
+													'maternity_leave_adjustment' => 0,
+													'maternity_leave_utilize' => 0,
+													'maternity_leave_balance' => $al?->maternity_leave + $al?->maternity_leave_adjustment,
+												]);
+			}
+		} else {
+			return response()->json([
+				'status' => 'error',
+				'message' => 'You have generate medical certificate leave for next year. System couldn\'t generate anymore medical certificate leave entitlement for all users in next year ('.now()->addYear()->format('Y').')',
+			]);
+		}
+
+		return response()->json([
+			'status' => 'success',
+			'message' => 'Success generate medical certificate leave for next year',
+		]);
 	}
 }
