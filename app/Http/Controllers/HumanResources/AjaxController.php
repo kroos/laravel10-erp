@@ -690,4 +690,16 @@ class AjaxController extends Controller
 			'message' => 'Cross backup for '.$staff->name.' been deactivated.',
 		]);
 	}
+
+	public function staffactivate(Request $request, Staff $staff): RedirectResponse
+	{
+		$staff->update(['active' => 1]);
+		$staff->hasmanylogin()->create([
+											'username' => $request->username,
+											'password' => $request->password,
+											'active' => 1,
+										]);
+		Session::flash('flash_message', 'Successfully activate ex-staff '.$staff->name);
+		return redirect()->route('staff.show', $staff->id);
+	}
 }

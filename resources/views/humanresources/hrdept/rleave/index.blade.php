@@ -26,7 +26,7 @@
 
 <div class="container">
   @include('humanresources.hrdept.navhr')
-  <h4>Replacement Leave</h4>
+  <h4>Replacement Leave&nbsp; <a class="btn btn-sm btn-outline-secondary" href="{{ route('rleave.create') }}"><i class="fa-solid fa-person-walking-arrow-loop-left fa-beat"></i> Add Replacement Leave</a></h4>
   <div>
     <table id="replacement" class="table table-hover table-sm align-middle" style="font-size:12px">
       <thead>
@@ -55,7 +55,7 @@
           $customer = "";
         }
         ?>
-        
+
         <tr>
           <td>{{ $replacement->belongstostaff->hasmanylogin()->where('logins.active', 1)->first()->username }}</td>
           <td class="text-truncate" style="max-width: 200px;" data-toggle="tooltip" title="{{ $replacement->belongstostaff->name }}">{{ $replacement->belongstostaff->name }}</td>

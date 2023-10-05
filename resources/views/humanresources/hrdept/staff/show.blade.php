@@ -15,7 +15,7 @@
 	<div class="d-flex flex-column align-items-center text-center p-3 py-5">
 		<img class="rounded-5 mt-3" width="180px" src="{{ asset('storage/user_profile/' . $staff->image) }}">
 		<span class="font-weight-bold">{{ $staff->name }}</span>
-		<span class="font-weight-bold">{{ $staff->hasmanylogin()->where('active', 1)->first()->username }}</span>
+		<span class="font-weight-bold">{{ $staff->hasmanylogin()->where('active', 1)->first()?->username }}</span>
 		<span> </span>
 	</div>
 	<div class="row align-items-start justify-content-center">
@@ -321,7 +321,7 @@ if ( ($ls->leave_type_id == 9) || ($ls->leave_type_id != 9 && $ls->half_type_id 
 						<td>{{ $dts }}</td>
 						<td>{{ $dte }}</td>
 						<td>{{ $dper }}</td>
-						<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-html="true" data-bs-title="{{ $ls->reason }}">{{ Str::of($ls->reason)->words(3, ' >') }}</td>
+						<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-html="true" data-bs-title="{{ $ls->reason }}">{{ Str::limit($ls->reason, 10, '>') }}</td>
 						<td>
 							@if(is_null($ls->leave_status_id))
 								Pending

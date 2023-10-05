@@ -28,6 +28,11 @@ class Customer extends Model
 		return $this->hasMany(\App\Models\HumanResources\HRLeaveReplacement::class, 'customer_id');
 	}
 
+	public function hasmanyoutstation(): HasMany
+	{
+		return $this->hasMany(\App\Models\HumanResources\HROutstation::class, 'customer_id');
+	}
+
 	/////////////////////////////////////////////////////////////////////////////////////////
 	// belongsto relationship
 }

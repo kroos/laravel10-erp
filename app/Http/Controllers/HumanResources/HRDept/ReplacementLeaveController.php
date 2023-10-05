@@ -48,7 +48,7 @@ class ReplacementLeaveController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(): View
     {
         return view('humanresources.hrdept.rleave.create');
     }
@@ -88,7 +88,7 @@ class ReplacementLeaveController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(HRLeaveReplacement $rleave)
+    public function show(HRLeaveReplacement $rleave): View
     {
         //
     }

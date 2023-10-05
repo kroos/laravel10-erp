@@ -2,9 +2,9 @@
 
 @section('content')
 <style>
-  /* div {
-    border: 1px solid black;
-  } */
+	/* div {
+		border: 1px solid black;
+	} */
 </style>
 
 <style>
@@ -142,29 +142,29 @@ $(".group2").prop('checked', this.checked);
 
 /////////////////////////////////////////////////////////////////////////////////////////
 $('#customer_id').select2({
-placeholder: '',
-width: '100%',
-allowClear: true,
-closeOnSelect: true,
+	placeholder: 'Please Choose',
+	width: '100%',
+	allowClear: true,
+	closeOnSelect: true,
 });
 
 
 /////////////////////////////////////////////////////////////////////////////////////////
 // DATE PICKER
 $('#date_start, #date_end').datetimepicker({
-icons: {
-time: "fas fas-regular fa-clock fa-beat",
-date: "fas fas-regular fa-calendar fa-beat",
-up: "fa-regular fa-circle-up fa-beat",
-down: "fa-regular fa-circle-down fa-beat",
-previous: 'fas fas-regular fa-arrow-left fa-beat',
-next: 'fas fas-regular fa-arrow-right fa-beat',
-today: 'fas fas-regular fa-calenday-day fa-beat',
-clear: 'fas fas-regular fa-broom-wide fa-beat',
-close: 'fas fas-regular fa-rectangle-xmark fa-beat'
-},
-format: 'YYYY-MM-DD',
-useCurrent: true,
+	icons: {
+		time: "fas fas-regular fa-clock fa-beat",
+		date: "fas fas-regular fa-calendar fa-beat",
+		up: "fa-regular fa-circle-up fa-beat",
+		down: "fa-regular fa-circle-down fa-beat",
+		previous: 'fas fas-regular fa-arrow-left fa-beat',
+		next: 'fas fas-regular fa-arrow-right fa-beat',
+		today: 'fas fas-regular fa-calenday-day fa-beat',
+		clear: 'fas fas-regular fa-broom-wide fa-beat',
+		close: 'fas fas-regular fa-rectangle-xmark fa-beat'
+	},
+	format: 'YYYY-MM-DD',
+	useCurrent: true,
 });
 
 
@@ -213,6 +213,7 @@ message: 'Please insert a reason.'
 
 }
 })
+
 });
 @endsection
 
