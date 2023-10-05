@@ -19,8 +19,8 @@ use App\Models\HumanResources\HRDisciplinary;
 use Illuminate\Pagination\Paginator;
 
 // load validation
-//use App\Http\Requests\HumanResources\Disciplinary\DisciplinaryRequestStore;
-//use App\Http\Requests\HumanResources\Disciplinary\DisciplinaryRequestUpdate;
+use App\Http\Requests\HumanResources\Disciplinary\DisciplinaryRequestStore;
+use App\Http\Requests\HumanResources\Disciplinary\DisciplinaryRequestUpdate;
 
 use Session;
 
@@ -59,7 +59,7 @@ class DisciplineController extends Controller
 	/**
 	 * Store a newly created resource in storage.
 	 */
-	public function store(Request $request): RedirectResponse
+	public function store(DisciplinaryRequestStore $request): RedirectResponse
 	{
 		if ($request->file('softcopy')) {
 			// UPLOAD SOFTCOPY
@@ -114,7 +114,7 @@ class DisciplineController extends Controller
 	/**
 	 * Update the specified resource in storage.
 	 */
-	public function update(Request $request, HRDisciplinary $discipline): RedirectResponse
+	public function update(DisciplinaryRequestUpdate $request, HRDisciplinary $discipline): RedirectResponse
 	{
 		if ($request->file('softcopy')) {
 			// DELETE OLD SOFTCOPY
