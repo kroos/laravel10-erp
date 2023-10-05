@@ -252,10 +252,10 @@ class LeaveController extends Controller
 						$data += ['leave_year' => $ye];
 						if($request->file('document')){
 							$file = $request->file('document')->getClientOriginalName();
-							$currentDate = Carbon::now()->format('Y-m-d H:i:s');
+							$currentDate = Carbon::now()->format('Y-m-d His');
 							$fileName = $currentDate . '_' . $file;
 							// Store File in Storage Folder
-							$request->document->storeAs('uploads', $fileName);
+							$request->document->storeAs('public/leaves', $fileName);
 							// storage/app/uploads/file.png
 							// Store File in Public Folder
 							// $request->document->move(public_path('uploads'), $fileName);
@@ -310,10 +310,10 @@ class LeaveController extends Controller
 						$data += ['leave_year' => $ye];
 						if($request->file('document')){
 							$file = $request->file('document')->getClientOriginalName();
-							$currentDate = Carbon::now()->format('Y-m-d H:i:s');
+							$currentDate = Carbon::now()->format('Y-m-d His');
 							$fileName = $currentDate . '_' . $file;
 							// Store File in Storage Folder
-							$request->document->storeAs('uploads', $fileName);
+							$request->document->storeAs('public/leaves', $fileName);
 							// storage/app/uploads/file.png
 							// Store File in Public Folder
 							// $request->document->move(public_path('uploads'), $fileName);
@@ -377,10 +377,10 @@ class LeaveController extends Controller
 						$data += ['leave_year' => $ye];
 						if($request->file('document')){
 							$file = $request->file('document')->getClientOriginalName();
-							$currentDate = Carbon::now()->format('Y-m-d H:i:s');
+							$currentDate = Carbon::now()->format('Y-m-d His');
 							$fileName = $currentDate . '_' . $file;
 							// Store File in Storage Folder
-							$request->document->storeAs('uploads', $fileName);
+							$request->document->storeAs('public/leaves', $fileName);
 							// storage/app/uploads/file.png
 							// Store File in Public Folder
 							// $request->document->move(public_path('uploads'), $fileName);
@@ -449,10 +449,10 @@ class LeaveController extends Controller
 					$data += ['leave_year' => $ye];
 					if($request->file('document')){
 						$file = $request->file('document')->getClientOriginalName();
-						$currentDate = Carbon::now()->format('Y-m-d H:i:s');
+						$currentDate = Carbon::now()->format('Y-m-d His');
 						$fileName = $currentDate . '_' . $file;
 						// Store File in Storage Folder
-						$request->document->storeAs('uploads', $fileName);
+						$request->document->storeAs('public/leaves', $fileName);
 						// storage/app/uploads/file.png
 						// Store File in Public Folder
 						// $request->document->move(public_path('uploads'), $fileName);
@@ -498,10 +498,10 @@ class LeaveController extends Controller
 					$data += ['leave_year' => $ye];
 					if($request->file('document')){
 						$file = $request->file('document')->getClientOriginalName();
-						$currentDate = Carbon::now()->format('Y-m-d H:i:s');
+						$currentDate = Carbon::now()->format('Y-m-d His');
 						$fileName = $currentDate . '_' . $file;
 						// Store File in Storage Folder
-						$request->document->storeAs('uploads', $fileName);
+						$request->document->storeAs('public/leaves', $fileName);
 						// storage/app/uploads/file.png
 						// Store File in Public Folder
 						// $request->document->move(public_path('uploads'), $fileName);
@@ -549,10 +549,10 @@ class LeaveController extends Controller
 					$data += ['leave_year' => $ye];
 					if($request->file('document')){
 						$file = $request->file('document')->getClientOriginalName();
-						$currentDate = Carbon::now()->format('Y-m-d H:i:s');
+						$currentDate = Carbon::now()->format('Y-m-d His');
 						$fileName = $currentDate . '_' . $file;
 						// Store File in Storage Folder
-						$request->document->storeAs('uploads', $fileName);
+						$request->document->storeAs('public/leaves', $fileName);
 						// storage/app/uploads/file.png
 						// Store File in Public Folder
 						// $request->document->move(public_path('uploads'), $fileName);
@@ -621,10 +621,10 @@ class LeaveController extends Controller
 						$data += ['leave_year' => $ye];
 						if($request->file('document')){
 							$file = $request->file('document')->getClientOriginalName();
-							$currentDate = Carbon::now()->format('Y-m-d H:i:s');
+							$currentDate = Carbon::now()->format('Y-m-d His');
 							$fileName = $currentDate . '_' . $file;
 							// Store File in Storage Folder
-							$request->document->storeAs('uploads', $fileName);
+							$request->document->storeAs('public/leaves', $fileName);
 							// storage/app/uploads/file.png
 							// Store File in Public Folder
 							// $request->document->move(public_path('uploads'), $fileName);
@@ -681,10 +681,10 @@ class LeaveController extends Controller
 						$data += ['leave_year' => $ye];
 						if($request->file('document')){
 							$file = $request->file('document')->getClientOriginalName();
-							$currentDate = Carbon::now()->format('Y-m-d H:i:s');
+							$currentDate = Carbon::now()->format('Y-m-d His');
 							$fileName = $currentDate . '_' . $file;
 							// Store File in Storage Folder
-							$request->document->storeAs('uploads', $fileName);
+							$request->document->storeAs('public/leaves', $fileName);
 							// storage/app/uploads/file.png
 							// Store File in Public Folder
 							// $request->document->move(public_path('uploads'), $fileName);
@@ -743,10 +743,10 @@ class LeaveController extends Controller
 						$data += ['leave_year' => $ye];
 						if($request->file('document')){
 							$file = $request->file('document')->getClientOriginalName();
-							$currentDate = Carbon::now()->format('Y-m-d H:i:s');
+							$currentDate = Carbon::now()->format('Y-m-d His');
 							$fileName = $currentDate . '_' . $file;
 							// Store File in Storage Folder
-							$request->document->storeAs('uploads', $fileName);
+							$request->document->storeAs('public/leaves', $fileName);
 							// storage/app/uploads/file.png
 							// Store File in Public Folder
 							// $request->document->move(public_path('uploads'), $fileName);
@@ -821,10 +821,10 @@ class LeaveController extends Controller
 						$data += ['leave_year' => $ye];
 						if($request->file('document')){
 							$file = $request->file('document')->getClientOriginalName();
-							$currentDate = Carbon::now()->format('Y-m-d H:i:s');
+							$currentDate = Carbon::now()->format('Y-m-d His');
 							$fileName = $currentDate . '_' . $file;
 							// Store File in Storage Folder
-							$request->document->storeAs('uploads', $fileName);
+							$request->document->storeAs('public/leaves', $fileName);
 							// storage/app/uploads/file.png
 							// Store File in Public Folder
 							// $request->document->move(public_path('uploads'), $fileName);
@@ -881,10 +881,10 @@ class LeaveController extends Controller
 						$data += ['leave_year' => $ye];
 						if($request->file('document')){
 							$file = $request->file('document')->getClientOriginalName();
-							$currentDate = Carbon::now()->format('Y-m-d H:i:s');
+							$currentDate = Carbon::now()->format('Y-m-d His');
 							$fileName = $currentDate . '_' . $file;
 							// Store File in Storage Folder
-							$request->document->storeAs('uploads', $fileName);
+							$request->document->storeAs('public/leaves', $fileName);
 							// storage/app/uploads/file.png
 							// Store File in Public Folder
 							// $request->document->move(public_path('uploads'), $fileName);
@@ -943,10 +943,10 @@ class LeaveController extends Controller
 						$data += ['leave_year' => $ye];
 						if($request->file('document')){
 							$file = $request->file('document')->getClientOriginalName();
-							$currentDate = Carbon::now()->format('Y-m-d H:i:s');
+							$currentDate = Carbon::now()->format('Y-m-d His');
 							$fileName = $currentDate . '_' . $file;
 							// Store File in Storage Folder
-							$request->document->storeAs('uploads', $fileName);
+							$request->document->storeAs('public/leaves', $fileName);
 							// storage/app/uploads/file.png
 							// Store File in Public Folder
 							// $request->document->move(public_path('uploads'), $fileName);
@@ -1017,10 +1017,10 @@ class LeaveController extends Controller
 				$data += ['leave_year' => $ye];
 				if($request->file('document')){
 					$file = $request->file('document')->getClientOriginalName();
-					$currentDate = Carbon::now()->format('Y-m-d H:i:s');
+					$currentDate = Carbon::now()->format('Y-m-d His');
 					$fileName = $currentDate . '_' . $file;
 					// Store File in Storage Folder
-					$request->document->storeAs('uploads', $fileName);
+					$request->document->storeAs('public/leaves', $fileName);
 					// storage/app/uploads/file.png
 					// Store File in Public Folder
 					// $request->document->move(public_path('uploads'), $fileName);
@@ -1148,10 +1148,10 @@ class LeaveController extends Controller
 			$data += ['leave_year' => $ye];
 			if($request->file('document')){
 				$file = $request->file('document')->getClientOriginalName();
-				$currentDate = Carbon::now()->format('Y-m-d H:i:s');
+				$currentDate = Carbon::now()->format('Y-m-d His');
 				$fileName = $currentDate . '_' . $file;
 				// Store File in Storage Folder
-				$request->document->storeAs('uploads', $fileName);
+				$request->document->storeAs('public/leaves', $fileName);
 				// storage/app/uploads/file.png
 				// Store File in Public Folder
 				// $request->document->move(public_path('uploads'), $fileName);
@@ -1208,10 +1208,10 @@ class LeaveController extends Controller
 					$data += ['leave_year' => $ye];
 					if($request->file('document')){
 						$file = $request->file('document')->getClientOriginalName();
-						$currentDate = Carbon::now()->format('Y-m-d H:i:s');
+						$currentDate = Carbon::now()->format('Y-m-d His');
 						$fileName = $currentDate . '_' . $file;
 						// Store File in Storage Folder
-						$request->document->storeAs('uploads', $fileName);
+						$request->document->storeAs('public/leaves', $fileName);
 						// storage/app/uploads/file.png
 						// Store File in Public Folder
 						// $request->document->move(public_path('uploads'), $fileName);
@@ -1257,10 +1257,10 @@ class LeaveController extends Controller
 					$data += ['leave_year' => $ye];
 					if($request->file('document')){
 						$file = $request->file('document')->getClientOriginalName();
-						$currentDate = Carbon::now()->format('Y-m-d H:i:s');
+						$currentDate = Carbon::now()->format('Y-m-d His');
 						$fileName = $currentDate . '_' . $file;
 						// Store File in Storage Folder
-						$request->document->storeAs('uploads', $fileName);
+						$request->document->storeAs('public/leaves', $fileName);
 						// storage/app/uploads/file.png
 						// Store File in Public Folder
 						// $request->document->move(public_path('uploads'), $fileName);
@@ -1308,10 +1308,10 @@ class LeaveController extends Controller
 					$data += ['leave_year' => $ye];
 					if($request->file('document')){
 						$file = $request->file('document')->getClientOriginalName();
-						$currentDate = Carbon::now()->format('Y-m-d H:i:s');
+						$currentDate = Carbon::now()->format('Y-m-d His');
 						$fileName = $currentDate . '_' . $file;
 						// Store File in Storage Folder
-						$request->document->storeAs('uploads', $fileName);
+						$request->document->storeAs('public/leaves', $fileName);
 						// storage/app/uploads/file.png
 						// Store File in Public Folder
 						// $request->document->move(public_path('uploads'), $fileName);

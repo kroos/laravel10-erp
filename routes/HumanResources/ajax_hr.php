@@ -13,6 +13,8 @@ Route::patch('/dirstatus', [AjaxController::class, 'dirstatus'])->name('leavesta
 Route::patch('/hrstatus', [AjaxController::class, 'hrstatus'])->name('leavestatus.hrstatus');
 Route::patch('/deactivatestaff/{staff}', [AjaxController::class, 'deactivatestaff'])->name('deactivatestaff');
 Route::delete('/deletecrossbackup/{staff}', [AjaxController::class, 'deletecrossbackup'])->name('deletecrossbackup');
+Route::patch('/staffactivate/{staff}', [AjaxController::class, 'staffactivate'])->name('staff.activate');
+
 
 
 // Ajax DB Controller : only to retrieve data from db

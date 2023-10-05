@@ -51,9 +51,16 @@ use Illuminate\Database\Eloquent\Builder;
 
 // load helper
 use App\Helpers\UnavailableDateTime;
+
+// load array helper
+use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
+
+// load Carbon
 use \Carbon\Carbon;
 use \Carbon\CarbonPeriod;
-use Illuminate\Support\Arr;
+use \Carbon\CarbonInterval;
+
 use Session;
 
 class AjaxDBController extends Controller
@@ -65,7 +72,7 @@ class AjaxDBController extends Controller
 
 	//////////////////////////////////////////////////////////////////////////////////////////////
 	// compared username
-	public function loginuser(Request $request)
+	public function loginuser(Request $request): JsonResponse
 	{
 		$valid = true;
 		$log = \App\Models\Login::all();
@@ -79,7 +86,7 @@ class AjaxDBController extends Controller
 		]);
 	}
 
-	public function icuser(Request $request)
+	public function icuser(Request $request): JsonResponse
 	{
 		$valid = true;
 		$log = \App\Models\Staff::all();
@@ -93,7 +100,7 @@ class AjaxDBController extends Controller
 		]);
 	}
 
-	public function emailuser(Request $request)
+	public function emailuser(Request $request): JsonResponse
 	{
 		$valid = true;
 		$log = \App\Models\Staff::all();
@@ -108,7 +115,7 @@ class AjaxDBController extends Controller
 	}
 
 	// get types of leave according to user
-	public function leaveType(Request $request)
+	public function leaveType(Request $request): JsonResponse
 	{
 		// tahun sekarang ni
 		$year = \Carbon\Carbon::parse(now())->year;
@@ -325,9 +332,9 @@ class AjaxDBController extends Controller
 		return response()->json( $cuti );
 	}
 
-	public function unavailabledate(Request $request)
+	public function unavailabledate(Request $request): JsonResponse
 	{
-		$blockdate = UnavailableDateTime::blockDate(\Auth::user()->belongstostaff->id);
+		$blockdate = UnavailableDateTime::blockDate($request->id);
 
 		$lusa1 = Carbon::now()->addDays(Setting::find(5)->active - 1)->format('Y-m-d');
 		$period2 = \Carbon\CarbonPeriod::create(Carbon::now()->format('Y-m-d'), '1 days', $lusa1);
@@ -349,13 +356,13 @@ class AjaxDBController extends Controller
 		return response()->json($unavailableleave);
 	}
 
-	public function unblockhalfdayleave(Request $request)
+	public function unblockhalfdayleave(Request $request): JsonResponse
 	{
 		$blocktime = UnavailableDateTime::unblockhalfdayleave($request->id);
 		return response()->json($blocktime);
 	}
 
-	public function backupperson(Request $request)
+	public function backupperson(Request $request): JsonResponse
 	{
 		// we r going to find a backup person
 		// 1st, we need to take a look into his/her department.
@@ -439,13 +446,13 @@ class AjaxDBController extends Controller
 		return response()->json( $backup );
 	}
 
-	public function timeleave(Request $request)
+	public function timeleave(Request $request): JsonResponse
 	{
 		$whtime = UnavailableDateTime::workinghourtime($request->date, $request->id);
 		return response()->json($whtime->first());
 	}
 
-	public function leavestatus(Request $request)
+	public function leavestatus(Request $request): JsonResponse
 	{
 
 		// $ls['results'] = [];
@@ -463,7 +470,7 @@ class AjaxDBController extends Controller
 		return response()->json($ls);
 	}
 
-	public function staffcrossbackup(Request $request)
+	public function staffcrossbackup(Request $request): JsonResponse
 	{
 		$s = Staff::where('active', 1)->where('name','LIKE','%'.$request->search.'%')->get();
 		foreach ($s as $v) {
@@ -475,7 +482,7 @@ class AjaxDBController extends Controller
 		return response()->json($ls);
 	}
 
-	public function department(Request $request)
+	public function department(Request $request): JsonResponse
 	{
 		$au = DepartmentPivot::where([['category_id', $request->category_id], ['branch_id', $request->branch_id]])->get();
 		foreach ($au as $key) {
@@ -492,7 +499,7 @@ class AjaxDBController extends Controller
 		return response()->json( $cuti );
 	}
 
-	public function restdaygroup(Request $request)
+	public function restdaygroup(Request $request): JsonResponse
 	{
 		$au = OptRestdayGroup::where('group','LIKE','%'.$request->search.'%')->get();
 		foreach ($au as $key) {
@@ -506,7 +513,7 @@ class AjaxDBController extends Controller
 		return response()->json( $cuti );
 	}
 
-	public function authorise(Request $request)
+	public function authorise(Request $request): JsonResponse
 	{
 		// https://select2.org/data-sources/formats
 		$au = OptAuthorise::where('group','LIKE','%'.$request->search.'%')->get();
@@ -520,7 +527,7 @@ class AjaxDBController extends Controller
 		return response()->json( $cuti );
 	}
 
-	public function branch(Request $request)
+	public function branch(Request $request): JsonResponse
 	{
 		// https://select2.org/data-sources/formats
 		$au = OptBranch::where('location','LIKE','%'.$request->search.'%')->get();
@@ -534,7 +541,7 @@ class AjaxDBController extends Controller
 		return response()->json( $cuti );
 	}
 
-	public function country(Request $request)
+	public function country(Request $request): JsonResponse
 	{
 		// https://select2.org/data-sources/formats
 		$au = OptCountry::where('country','LIKE','%'.$request->search.'%')->get();
@@ -548,7 +555,7 @@ class AjaxDBController extends Controller
 		return response()->json( $cuti );
 	}
 
-	public function educationlevel(Request $request)
+	public function educationlevel(Request $request): JsonResponse
 	{
 		// https://select2.org/data-sources/formats
 		$au = OptEducationLevel::where('education_level','LIKE','%'.$request->search.'%')->get();
@@ -562,7 +569,7 @@ class AjaxDBController extends Controller
 		return response()->json( $cuti );
 	}
 
-	public function gender(Request $request)
+	public function gender(Request $request): JsonResponse
 	{
 		// https://select2.org/data-sources/formats
 		$au = OptGender::where('gender','LIKE','%'.$request->search.'%')->get();
@@ -576,7 +583,7 @@ class AjaxDBController extends Controller
 		return response()->json( $cuti );
 	}
 
-	public function status(Request $request)
+	public function status(Request $request): JsonResponse
 	{
 		// https://select2.org/data-sources/formats
 		$au = OptStatus::where('status','LIKE','%'.$request->search.'%')->get();
@@ -590,7 +597,7 @@ class AjaxDBController extends Controller
 		return response()->json( $cuti );
 	}
 
-	public function category(Request $request)
+	public function category(Request $request): JsonResponse
 	{
 		// https://select2.org/data-sources/formats
 		$au = OptCategory::where('category','LIKE','%'.$request->search.'%')->get();
@@ -604,7 +611,7 @@ class AjaxDBController extends Controller
 		return response()->json( $cuti );
 	}
 
-	public function healthstatus(Request $request)
+	public function healthstatus(Request $request): JsonResponse
 	{
 		// https://select2.org/data-sources/formats
 		$au = OptHealthStatus::where('health_status','LIKE','%'.$request->search.'%')->get();
@@ -618,7 +625,7 @@ class AjaxDBController extends Controller
 		return response()->json( $cuti );
 	}
 
-	public function maritalstatus(Request $request)
+	public function maritalstatus(Request $request): JsonResponse
 	{
 		// https://select2.org/data-sources/formats
 		$au = OptMaritalStatus::where('marital_status','LIKE','%'.$request->search.'%')->get();
@@ -632,7 +639,7 @@ class AjaxDBController extends Controller
 		return response()->json( $cuti );
 	}
 
-	public function race(Request $request)
+	public function race(Request $request): JsonResponse
 	{
 		// https://select2.org/data-sources/formats
 		$au = OptRace::where('race','LIKE','%'.$request->search.'%')->get();
@@ -646,7 +653,7 @@ class AjaxDBController extends Controller
 		return response()->json( $cuti );
 	}
 
-	public function religion(Request $request)
+	public function religion(Request $request): JsonResponse
 	{
 		// https://select2.org/data-sources/formats
 		$au = OptReligion::where('religion','LIKE','%'.$request->search.'%')->get();
@@ -660,7 +667,7 @@ class AjaxDBController extends Controller
 		return response()->json( $cuti );
 	}
 
-	public function taxexemptionpercentage(Request $request)
+	public function taxexemptionpercentage(Request $request): JsonResponse
 	{
 		// https://select2.org/data-sources/formats
 		$au = OptTaxExemptionPercentage::where('tax_exemption_percentage','LIKE','%'.$request->search.'%')->get();
@@ -674,7 +681,7 @@ class AjaxDBController extends Controller
 		return response()->json( $cuti );
 	}
 
-	public function relationship(Request $request)
+	public function relationship(Request $request): JsonResponse
 	{
 		// https://select2.org/data-sources/formats
 		$au = OptRelationship::where('relationship','LIKE','%'.$request->search.'%')->get();
@@ -688,7 +695,7 @@ class AjaxDBController extends Controller
 		return response()->json( $cuti );
 	}
 
-	public function division(Request $request)
+	public function division(Request $request): JsonResponse
 	{
 		// https://select2.org/data-sources/formats
 		$au = OptDivision::where('div','LIKE','%'.$request->search.'%')->get();
@@ -702,7 +709,7 @@ class AjaxDBController extends Controller
 		return response()->json( $cuti );
 	}
 
-	public function leaveevents(Request $request)
+	public function leaveevents(Request $request): JsonResponse
 	{
 		// please note that the full calendar for end date is EXCLUSIVE
 		// https://fullcalendar.io/docs/event-object
@@ -757,7 +764,7 @@ class AjaxDBController extends Controller
 			return response()->json( $l2 );
 	}
 
-	public function staffattendance(Request $request)/*: JsonResponse*/
+	public function staffattendance(Request $request): JsonResponse
 	{
 		// this is for fullcalendar, its NOT INCLUSIVE for the last date
 		// get the attandence 1st
@@ -789,7 +796,7 @@ class AjaxDBController extends Controller
 		}
 
 		// mark saturday as restday
-		$sat = Staff::find($request->staff_id)->belongstorestdaygroup->hasmanyrestdaycalendar()->get();
+		$sat = Staff::find($request->staff_id)->belongstorestdaygroup?->hasmanyrestdaycalendar()->get();
 		if ($sat->isNotEmpty()) {
 			foreach ($sat as $v) {
 				$l4[] = [
@@ -916,7 +923,7 @@ class AjaxDBController extends Controller
 		return response()->json( $l0 );
 	}
 
-	public function staffattendancelist(Request $request)
+	public function staffattendancelist(Request $request): JsonResponse
 	{
 		$sa = HRAttendance::select('staff_id')
 			->where(function (Builder $query) use ($request){
@@ -3197,7 +3204,7 @@ class AjaxDBController extends Controller
 		return response()->json($chartdata);
 	}
 
-	public function yearworkinghourstart(Request $request)
+	public function yearworkinghourstart(Request $request): JsonResponse
 	{
 		$valid = TRUE;
 
@@ -3215,7 +3222,7 @@ class AjaxDBController extends Controller
 		]);
 	}
 
-	public function yearworkinghourend(Request $request)
+	public function yearworkinghourend(Request $request): JsonResponse
 	{
 		$valid = TRUE;
 
@@ -3233,7 +3240,7 @@ class AjaxDBController extends Controller
 		]);
 	}
 
-	public function hcaldstart(Request $request)
+	public function hcaldstart(Request $request): JsonResponse
 	{
 		$valid = true;
 		// echo $request->date_start;
@@ -3254,7 +3261,7 @@ class AjaxDBController extends Controller
 		]);
 	}
 
-	public function hcaldend(Request $request)
+	public function hcaldend(Request $request): JsonResponse
 	{
 		$valid = true;
 		// echo $request->date_end;
