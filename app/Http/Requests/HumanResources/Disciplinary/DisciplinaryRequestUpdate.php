@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\HumanResources\ReplacementLeave;
+namespace App\Http\Requests\HumanResources\Disciplinary;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class ReplacementRequestUpdate extends FormRequest
+class DisciplinaryRequestUpdate extends FormRequest
 {
 	/**
 	 * Determine if the user is authorized to make this request.
@@ -22,11 +22,10 @@ class ReplacementRequestUpdate extends FormRequest
 	public function rules(): array
 	{
 		return [
-			'date_start' => 'required|date_format:Y-m-d',
-			'date_end' => 'required|date_format:Y-m-d',
-			'leave_total' => 'required|numeric',
-			'leave_utilize' => 'required|numeric',
-			'leave_balance' => 'required|numeric',
+			'staff_id' => 'required',
+			'date' => 'required|date_format:Y-m-d',
+			'disciplinary_action_id' => 'required',
+			'violation_id' => 'required',
 			'reason' => 'required|string',
 		];
 	}
@@ -34,30 +33,23 @@ class ReplacementRequestUpdate extends FormRequest
 	public function attributes(): array
 	{
 		return [
-			'date_start' => 'Date Start',
-			'date_end' => 'Date End',
-			'reason' => 'Reason',
-			'customer_id' => 'Customer',
-			'leave_total' => 'Totol Replacement',
-			'leave_utilize' => 'Total Replacement Utilize',
-			'leave_balance' => 'Total Replacement Balance',
+			'staff_id' => 'staff',
+			'date' => 'warning date',
+			'disciplinary_action_id' => 'disciplinary action',
+			'violation_id' => 'violation',
+			'reason' => 'reason',
 		];
 	}
 
 	public function messages(): array
 	{
 		return [
-			'date_start.required' => 'Please select a start date.',
-			'date_end.required' => 'Please select an end date.',
-			'date_start.date_format' => 'Please insert start date in correct date format.',
-			'date_end.date_format' => 'Please insert end date in correct date format.',
+			'staff_id.required' => 'Please select a staff.',
+			'date.required' => 'Please select a warning date.',
+			'date.date_format' => 'Please insert warning date in correct date format.',
+			'disciplinary_action_id.required' => 'Please select a disciplinary action.',
+			'violation_id.required' => 'Please select a violation.',
 			'reason.required' => 'Please insert a reason.',
-			'leave_total.required' => 'Please insert a value. Default value is 0.',
-			'leave_utilize.required' => 'Please insert a value. Default value is 0.',
-			'leave_balance.required' => 'Please insert a value. Default value is 0.',
-			'leave_total.numeric' => 'Please insert valid value. Default value is 0.',
-			'leave_utilize.numeric' => 'Please insert valid value. Default value is 0.',
-			'leave_balance.numeric' => 'Please insert valid value. Default value is 0.',
 		];
 	}
 }
