@@ -22,7 +22,6 @@ $violation = $discipline->belongstooptviolation->violation;
   @include('humanresources.hrdept.navhr')
   <h4>Show Discipline</h4>
 
-
   <div class="row mt-3">
     <div class="col-md-2">
       {{Form::label('name', 'Name')}}
@@ -69,7 +68,7 @@ $violation = $discipline->belongstooptviolation->violation;
   </div>
 
   @if ($discipline->softcopy)
-  <input type="hidden" name="old_softcopy" od="old_softcopy" value="{{ $discipline->softcopy }}">
+  <input type="hidden" name="old_softcopy" id="old_softcopy" value="{{ $discipline->softcopy }}">
   <div class="row mt-3">
     <div class="col-md-2">
       {{Form::label('softcopy', 'Softcopy')}}
@@ -81,7 +80,6 @@ $violation = $discipline->belongstooptviolation->violation;
     </div>
   </div>
   @endif
-
 
   <div class="row mt-3">
     <div class="col-md-12 text-center">
