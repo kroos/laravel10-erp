@@ -375,6 +375,46 @@ if ( ($ls->leave_type_id == 9) || ($ls->leave_type_id != 9 && $ls->half_type_id 
 				@endif
 			</div>
 		</div>
+	<p>&nbsp;</p>
+	<div class="row justify-content-center">
+		<div class="col-sm-12 row gy-1 gx-1 align-items-start">
+			<h4 class="align-items-center">Disciplinary</h4>
+			@if($staff->hasmanyhrdisciplinary()?->get()?->count())
+				<table class="table table-sm table-hover" style="font-size:12px;" id="disc">
+					<thead>
+						<tr>
+							<th>Discipline Action</th>
+							<th>Violation</th>
+							<th>Reason</th>
+							<th>Date</th>
+							<th>Softcopy</th>
+							<th>Softcopy</th>
+						</tr>
+					</thead>
+					<tbody>
+					@foreach($staff->hasmanyhrdisciplinary()->orderBy('date', 'DESC')->get() as $al)
+						<tr>
+							<td>{{ $al->belongstooptdisciplinaryaction->disciplinary_action }}</td>
+							<td>{{ $al->belongstooptviolation->violation }}</td>
+							<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-html="true" data-bs-title="{{ $al->reason }}">
+								{{ Str::limit($al->reason, 10, '>') }}
+							</td>
+							<td>{{ \Carbon\Carbon::parse($al->date)->format('j M Y') }}</td>
+							<td>
+								<a href="{{ asset('storage/disciplinary/' . $al->softcopy) }}" target="_blank" class="btn btn-sm btn-outline-secondary">
+									<i class="bi bi-file-text" style="font-size: 15px;"></i>
+								</a>
+							</td>
+							<td></td>
+						</tr>
+					@endforeach
+					</tbody>
+				</table>
+			@else
+				<p>No Disciplinary Action</p>
+			@endif
+		</div>
+	</div>
 </div>
 @endsection
 
