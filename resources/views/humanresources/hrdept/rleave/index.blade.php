@@ -1,91 +1,70 @@
 @extends('layouts.app')
 
 @section('content')
-
 <style>
-  /* div {
-  border: 1px solid black;
-} */
-
-  /* table,
-  thead,
-  tr,
-  th {
-    border: 1px solid black;
-  } */
-
-  .btn-sm-custom {
+	.btn-sm-custom {
 		padding: 0px;
 		background: none;
-    border: none;
-    font-size: 15px;
-    width: 100%;
-    height: 100%;
+		border: none;
+		font-size: 15px;
+		width: 100%;
+		height: 100%;
 	}
 </style>
 
 <div class="container">
-  @include('humanresources.hrdept.navhr')
-  <h4>Replacement Leave&nbsp; <a class="btn btn-sm btn-outline-secondary" href="{{ route('rleave.create') }}"><i class="fa-solid fa-person-walking-arrow-loop-left fa-beat"></i> Add Replacement Leave</a></h4>
-  <div>
-    <table id="replacement" class="table table-hover table-sm align-middle" style="font-size:12px">
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Name</th>
-          <th>Date Start</th>
-          <th>Date End</th>
-          <th>Customer</th>
-          <th>Reason</th>
-          <th>Total</th>
-          <th>Utilize</th>
-          <th>Balance</th>
-          <th>Remarks</th>
-          <th>Edit</th>
-          <th>Cancel</th>
-        </tr>
-      </thead>
-      <tbody>
-        @foreach ($replacements as $replacement)
+	@include('humanresources.hrdept.navhr')
+	<h4>Replacement Leave&nbsp; <a class="btn btn-sm btn-outline-secondary" href="{{ route('rleave.create') }}"><i class="fa-solid fa-person-walking-arrow-loop-left fa-beat"></i> Add Replacement Leave</a></h4>
+	<div>
+		<table id="replacement" class="table table-hover table-sm align-middle" style="font-size:12px">
+			<thead>
+				<tr>
+					<th>ID</th>
+					<th>Name</th>
+					<th>Date Start</th>
+					<th>Date End</th>
+					<th>Customer</th>
+					<th>Reason</th>
+					<th>Total</th>
+					<th>Utilize</th>
+					<th>Balance</th>
+					<th>Remarks</th>
+					<th>Edit</th>
+					<th>Cancel</th>
+				</tr>
+			</thead>
+			<tbody>
+				@foreach ($replacements as $replacement)
+				<tr>
+					<td>{{ $replacement->belongstostaff->hasmanylogin()->where('logins.active', 1)->first()?->username }}</td>
+					<td class="text-truncate" style="max-width: 200px;" data-toggle="tooltip" title="{{ $replacement->belongstostaff->name }}">{{ $replacement->belongstostaff->name }}</td>
+					<td>{{ \Carbon\Carbon::parse($replacement->date_start)->format('j M Y') }}</td>
+					<td>{{ \Carbon\Carbon::parse($replacement->date_end)->format('j M Y') }}</td>
+					<td class="text-truncate" style="max-width: 200px;" data-toggle="tooltip" title="{{ $replacement->belongstocustomer?->customer }}">{{ Str::limit($replacement->belongstocustomer?->customer, 10, '>') }}</td>
+					<td class="text-truncate" style="max-width: 150px;" data-toggle="tooltip" title="{{ $replacement->reason }}">{{ Str::limit($replacement->reason, 10, '>') }}</td>
+					<td class="text-center">{{ $replacement->leave_total }}</td>
+					<td class="text-center">{{ $replacement->leave_utilize }}</td>
+					<td class="text-center">{{ $replacement->leave_balance }}</td>
+					<td class="text-truncate" style="max-width: 100px;" data-toggle="tooltip" title="{{ $replacement->remarks }}">{{ Str::limit($replacement->remarks, 10, '>') }}</td>
+					<td class="text-center">
+						<a href="{{ route('rleave.edit', $replacement->id) }}" class="btn btn-sm btn-outline-secondary">
+							<i class="fa-regular fa-pen-to-square"></i>
+						</a>
+					</td>
+					<td class="text-center">
+						<button type="button" class="btn btn-sm btn-outline-secondary delete_replacement" data-id="{{ $replacement->id }}" data-table="replacement" >
+							<i class="fa-regular fa-trash-can"></i>
+						</button>
+					</td>
+				</tr>
+				@endforeach
+			</tbody>
+		</table>
 
-        <?php
-        if ($replacement->belongstocustomer) {
-          $customer = $replacement->belongstocustomer->customer;
-        } else {
-          $customer = "";
-        }
-        ?>
-
-        <tr>
-          <td>{{ $replacement->belongstostaff->hasmanylogin()->where('logins.active', 1)->first()->username }}</td>
-          <td class="text-truncate" style="max-width: 200px;" data-toggle="tooltip" title="{{ $replacement->belongstostaff->name }}">{{ $replacement->belongstostaff->name }}</td>
-          <td>{{ $replacement->date_start }}</td>
-          <td>{{ $replacement->date_end }}</td>
-          <td class="text-truncate" style="max-width: 200px;" data-toggle="tooltip" title="{{ $customer }}">{{ $customer }}</td>
-          <td class="text-truncate" style="max-width: 150px;" data-toggle="tooltip" title="{{ $replacement->reason }}">{{ $replacement->reason }}</td>
-          <td class="text-center">{{ $replacement->leave_total }}</td>
-          <td class="text-center">{{ $replacement->leave_utilize }}</td>
-          <td class="text-center">{{ $replacement->leave_balance }}</td>
-          <td class="text-truncate" style="max-width: 100px;" data-toggle="tooltip" title="{{ $replacement->remarks }}">{{ $replacement->remarks }}</td>
-          <td class="text-center">
-            <a href="{{ route('rleave.edit', $replacement->id) }}">
-              <i class="bi bi-pencil-square" style="font-size: 15px;"></i>
-            </a>
-          </td>
-          <td class="text-center">
-            <a href="">
-              <i class="bi bi-x-square delete_replacement" data-id="{{ $replacement->id }}" data-table="replacement" style="font-size: 15px;"></i>
-            </a>
-          </td>
-        </tr>
-        @endforeach
-      </tbody>
-    </table>
-
-    <div class="d-flex justify-content-center">
-      {{ $replacements->links() }}
-    </div>
-  </div>
+		<div class="d-flex justify-content-center">
+			{{ $replacements->links() }}
+		</div>
+	</div>
 </div>
 @endsection
 
@@ -96,19 +75,23 @@
 $.fn.dataTable.moment( 'D MMM YYYY' );
 $.fn.dataTable.moment( 'h:mm a' );
 $('#replacement').DataTable({
-"paging": false,
-"lengthMenu": [ [-1], ["All"] ],
-"columnDefs": [
-{ type: 'date', 'targets': [2] },
-{ type: 'time', 'targets': [3] },
-],
-"order": [ 2, 'desc' ], // sorting the 6th column descending
-responsive: true
+	"paging": false,
+	"lengthMenu": [ [10,25,50,-1], [10,25,50,"All"] ],
+	"columnDefs": [
+					{ type: 'date', 'targets': [2] },
+					{ type: 'time', 'targets': [3] },
+	],
+	"order": [ 2, 'desc' ], // sorting the 6th column descending
+	responsive: true
 })
-
+.on( 'length.dt page.dt order.dt search.dt', function ( e, settings, len ) {
+	$(document).ready(function(){
+		$('[data-toggle="tooltip"]').tooltip()
+	});
+});
 
 $(function () {
-  $('[data-toggle="tooltip"]').tooltip()
+	$('[data-toggle="tooltip"]').tooltip()
 })
 
 
@@ -164,10 +147,6 @@ function SwalDelete(ackID, ackTable){
 		}
 	});
 }
-//auto refresh right after clicking OK button
-$(document).on('click', '.swal2-confirm', function(e){
-	window.location.reload(true);
-});
 @endsection
 
 
