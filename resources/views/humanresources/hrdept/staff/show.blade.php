@@ -180,6 +180,7 @@
 							<th>Annual Leave Adjustment</th>
 							<th>Annual Leave Utilize</th>
 							<th>Annual Leave Balance</th>
+							<th>&nbsp;</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -190,6 +191,9 @@
 							<td>{{ $al->annual_leave_adjustment }}</td>
 							<td>{{ $al->annual_leave_utilize }}</td>
 							<td>{{ $al->annual_leave_balance }}</td>
+							<td>
+								<a href="{{ route('annualleave.edit', $al->id) }}" class="btn btn-sm btn-outline-secondary"><i class="fa-regular fa-pen-to-square"></i></a>
+							</td>
 						</tr>
 					@endforeach
 					</tbody>
@@ -207,6 +211,7 @@
 							<th>MC Leave Adjustment</th>
 							<th>MC Leave Utilize</th>
 							<th>MC Leave Balance</th>
+							<th>&nbsp;</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -217,6 +222,9 @@
 							<td>{{ $al->mc_leave_adjustment }}</td>
 							<td>{{ $al->mc_leave_utilize }}</td>
 							<td>{{ $al->mc_leave_balance }}</td>
+							<td>
+								<a href="{{ route('mcleave.edit', $al->id) }}" class="btn btn-sm btn-outline-secondary"><i class="fa-regular fa-pen-to-square"></i></a>
+							</td>
 						</tr>
 					@endforeach
 					</tbody>
@@ -235,6 +243,7 @@
 								<th>Maternity Leave Adjustment</th>
 								<th>Maternity Leave Utilize</th>
 								<th>Maternity Leave Balance</th>
+								<th>&nbsp;</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -245,6 +254,9 @@
 								<td>{{ $al->maternity_leave_adjustment }}</td>
 								<td>{{ $al->maternity_leave_utilize }}</td>
 								<td>{{ $al->maternity_leave_balance }}</td>
+								<td>
+									<a href="{{ route('maternityleave.edit', $al->id) }}" class="btn btn-sm btn-outline-secondary"><i class="fa-regular fa-pen-to-square"></i></a>
+								</td>
 							</tr>
 						@endforeach
 						</tbody>
@@ -283,6 +295,7 @@
 						<th>Duration</th>
 						<th>Reason</th>
 						<th>Status</th>
+						<th>&nbsp;</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -316,7 +329,7 @@ if ( ($ls->leave_type_id == 9) || ($ls->leave_type_id != 9 && $ls->half_type_id 
 }
 ?>
 					<tr>
-						<td> <a href="{{ route('hrleave.show', $ls->id) }}">HR9-{{ str_pad( $ls->leave_no, 5, "0", STR_PAD_LEFT ) }}/{{ $ls->leave_year }}</a></td>
+						<td>HR9-{{ str_pad( $ls->leave_no, 5, "0", STR_PAD_LEFT ) }}/{{ $ls->leave_year }}</td>
 						<td>{{ $ls->belongstooptleavetype?->leave_type_code }}</td>
 						<td>{{ $dts }}</td>
 						<td>{{ $dte }}</td>
@@ -328,6 +341,11 @@ if ( ($ls->leave_type_id == 9) || ($ls->leave_type_id != 9 && $ls->half_type_id 
 							@else
 								{{ $ls->belongstooptleavestatus?->status }}
 							@endif
+						</td>
+						<td>
+							<a href="{{ route('hrleave.show', $ls->id) }}" class="btn btn-sm btn-outline-secondary">
+								<i class="fa-regular fa-eye"></i>
+							</a>
 						</td>
 					</tr>
 					@endforeach
@@ -354,6 +372,7 @@ if ( ($ls->leave_type_id == 9) || ($ls->leave_type_id != 9 && $ls->half_type_id 
 								<th>Total Day/s</th>
 								<th>Leave Utilize</th>
 								<th>Leave Balance</th>
+								<th>&nbsp;</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -366,6 +385,11 @@ if ( ($ls->leave_type_id == 9) || ($ls->leave_type_id != 9 && $ls->half_type_id 
 								<td>{{ $al->leave_total }}</td>
 								<td>{{ $al->leave_utilize }}</td>
 								<td>{{ $al->leave_balance }}</td>
+								<td>
+									<a href="{{ route('rleave.edit', $al->id) }}" class="btn btn-sm btn-outline-secondary">
+										<i class="fa-regular fa-pen-to-square"></i>
+									</a>
+								</td>
 							</tr>
 						@endforeach
 						</tbody>
@@ -375,6 +399,54 @@ if ( ($ls->leave_type_id == 9) || ($ls->leave_type_id != 9 && $ls->half_type_id 
 				@endif
 			</div>
 		</div>
+	<p>&nbsp;</p>
+	<div class="row justify-content-center">
+		<div class="col-sm-12 row gy-1 gx-1 align-items-start">
+			<h4 class="align-items-center">Disciplinary</h4>
+			@if($staff->hasmanyhrdisciplinary()?->get()?->count())
+				<table class="table table-sm table-hover" style="font-size:12px;" id="disc">
+					<thead>
+						<tr>
+							<th>Discipline Action</th>
+							<th>Violation</th>
+							<th>Reason</th>
+							<th>Date</th>
+							<th>Softcopy</th>
+							<th>&nbsp;</th>
+						</tr>
+					</thead>
+					<tbody>
+					@foreach($staff->hasmanyhrdisciplinary()->orderBy('date', 'DESC')->get() as $al)
+						<tr>
+							<td>{{ $al->belongstooptdisciplinaryaction->disciplinary_action }}</td>
+							<td>{{ $al->belongstooptviolation->violation }}</td>
+							<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-html="true" data-bs-title="{{ $al->reason }}">
+								{{ Str::limit($al->reason, 10, '>') }}
+							</td>
+							<td>{{ \Carbon\Carbon::parse($al->date)->format('j M Y') }}</td>
+							<td>
+								@if($al->softcopy)
+								<a href="{{ asset('storage/disciplinary/' . $al->softcopy) }}" target="_blank" class="btn btn-sm btn-outline-secondary">
+									<i class="bi bi-file-text" style="font-size: 15px;"></i>
+								</a>
+								@endif
+							</td>
+							<td>
+								<a href="{{ route('discipline.edit', $al->id) }}" class="btn btn-sm btn-outline-secondary"><i class="fa-regular fa-pen-to-square"></i></a>
+								&nbsp;
+								<button type="button" class="btn btn-sm btn-outline-secondary delete_discipline" data-id="{{ $al->id }}" data-softcopy="{{ $al->softcopy }}" data-table="discipline">
+									<i class="fa-regular fa-trash-can"></i>
+								</button>
+							</td>
+						</tr>
+					@endforeach
+					</tbody>
+				</table>
+			@else
+				<p>No Disciplinary Action</p>
+			@endif
+		</div>
+	</div>
 </div>
 @endsection
 
@@ -449,8 +521,8 @@ $('#leave').DataTable({
 .on( 'length.dt page.dt order.dt search.dt', function ( e, settings, len ) {
 	$(document).ready(function(){
 		$('[data-bs-toggle="tooltip"]').tooltip();
-	});}
-);
+	});
+});
 
 $('#replacementleave').DataTable({
 	"lengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "All"] ],
@@ -463,6 +535,72 @@ $('#replacementleave').DataTable({
 		$('[data-bs-toggle="tooltip"]').tooltip();
 	});}
 );
+
+$('#disc').DataTable({
+	"lengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "All"] ],
+	"columnDefs": [ { type: 'date', 'targets': [3] } ],
+	"order": [[3, "desc" ]],	// sorting the 6th column descending
+	// responsive: true
+})
+.on( 'length.dt page.dt order.dt search.dt', function ( e, settings, len ) {
+	$(document).ready(function(){
+		$('[data-bs-toggle="tooltip"]').tooltip();
+	});}
+);
+
+// DELETE
+$(document).on('click', '.delete_discipline', function(e){
+	var ackID = $(this).data('id');
+	var ackSoftcopy = $(this).data('softcopy');
+	var ackTable = $(this).data('table');
+	SwalDelete(ackID, ackSoftcopy, ackTable);
+	e.preventDefault();
+});
+
+function SwalDelete(ackID, ackSoftcopy, ackTable){
+	swal.fire({
+		title: 'Delete Discipline',
+		text: 'Are you sure to delete this discipline?',
+		icon: 'info',
+		showCancelButton: true,
+		confirmButtonColor: '#3085d6',
+		cancelButtonColor: '#d33',
+		cancelButtonText: 'Cancel',
+		confirmButtonText: 'Yes',
+		showLoaderOnConfirm: true,
+
+		preConfirm: function() {
+			return new Promise(function(resolve) {
+				$.ajax({
+					url: '{{ url('discipline') }}' + '/' + ackID,
+					type: 'DELETE',
+					dataType: 'json',
+					data: {
+						id: ackID,
+						softcopy: ackSoftcopy,
+						table: ackTable,
+						_token : $('meta[name=csrf-token]').attr('content')
+					},
+				})
+				.done(function(response){
+					swal.fire('Accept', response.message, response.status)
+					.then(function(){
+						window.location.reload(true);
+					});
+				})
+				.fail(function(){
+					swal.fire('Oops...', 'Something went wrong with ajax!', 'error');
+				})
+			});
+		},
+		allowOutsideClick: false
+	})
+	.then((result) => {
+		if (result.dismiss === swal.DismissReason.cancel) {
+			swal.fire('Cancel Action', '', 'info')
+		}
+	});
+}
 
 @endsection
 
