@@ -3208,18 +3208,10 @@ class AjaxDBController extends Controller
 	{
 		$st = Staff::find($request->id);					// need to check date join
 
-		if ($st->join) {
-			$join = Carbon::parse($st->join)->copy();
-		} else {
-			$join = false;
-		}
-
 		$soy = now()->copy()->startOfYear();				// early this year
-		$lsoy = $soy->copy()->subYear();
+		$lsoy = $soy->copy()->subYear();					// early last year
 		// dd($lsoy);
 		// dd($lsoy->diffInMonths(now()));
-
-		// dd($soy->gt($join));								// determine if he is a newbie or otai, false=newbie, true=otai
 
 		for ($i = 0; $i <= $lsoy->diffInMonths(now()); $i++) {// take only 2 years back
 			$sm = $lsoy->copy()->addMonth($i);
@@ -3233,56 +3225,52 @@ class AjaxDBController extends Controller
 				->get();
 				// ->ddRawSql();
 
-			dump($sq->count().' working days count');								// working days
+				$fdl = 0;
+				$a = 0;
+			if ($sq->count()) {
+				$workday = $sq->count();														// working days
+				// dump([$workday, $sm->format('M Y')]);
 
-			$fdl = 0;
-			$h = 0;
-			$a = 0;
-			foreach ($sq as $s) {
-				$fulldayleave = HRLeave::where('staff_id', $st->id)							// get period from here
-								->where(function (Builder $query){
-									$query->where('leave_type_id', '<>', 9)
-									->where(function (Builder $query){
-										$query->where('half_type_id', '<>', 2)
-										->orWhereNull('half_type_id');
-									});
-								})
-								->where(function (Builder $query){
-									$query->whereIn('leave_status_id', [5,6])
-										->orWhereNull('leave_status_id');
-								})
-								->where(function (Builder $query) use ($s){
-										$query->whereDate('date_time_start', '<=', $s->attend_date)
-										->WhereDate('date_time_end', '>=', $s->attend_date);
-								})
-								->get();
-				$fdl += $fulldayleave->count();
-				dump($fulldayleave->count().' fulldayleave count');
+				foreach ($sq as $s) {
+					$fulldayleave = $s->belongstoleave()?->where(function (Builder $query){
+											$query->where('leave_type_id', '<>', 9)
+											->where(function (Builder $query){
+												$query->where('half_type_id', '<>', 2)
+												->orWhereNull('half_type_id');
+											});
+										})
+										->where(function (Builder $query){
+											$query->whereIn('leave_status_id', [5,6])
+											->orWhereNull('leave_status_id');
+										})
+										->where(function (Builder $query) use ($s){
+											$query->whereDate('date_time_start', '<=', $s->attend_date)
+											->WhereDate('date_time_end', '>=', $s->attend_date);
+										})
+										->get();
+					$fdl += $fulldayleave->count();
+					// dump($fulldayleave->count().' fulldayleave count');
 
-				// $holiday = HRHolidayCalendar::where(function (Builder $query) use ($s){
-				// 										$query->whereDate('date_start', '<=', $s->attend_date)
-				// 										->whereDate('date_end', '>=', $s->attend_date);
-				// 									})
-				// 									->get();
-				// $h += $holiday->count();
-				// dump($holiday->count().' holiday');
-
-				// dump($s);
-				$absent = $s->where('attendance_type_id', 1)->get();
-				// $a += $absent->count();
-				dump($absent.' absent');
+					$absent = $s->where('attendance_type_id', 1)->whereDate('attend_date', $s->attend_date)->where('daytype_id', 1)->where('staff_id', $st->id)->get();
+					$a += $absent->count();
+					// dump($absent.' absent');
+				}
+			} else {
+				$workday = 1;
+				$fdl = 1;
 			}
-			dump([$fdl.' fdl', $h.' h', $a.' a']);
-		}
+			$percentage = (($workday - $fdl - $a) / $workday) * 100;
 
-		// $chartdata[] = [
-		// 					'month' => $monthname,
-		// 					'percentage' => $attpercentage,
-		// 					'workdays' => $workday,
-		// 					'leaves' => $leave,
-		// 					'absents' => $absent,
-		// 					'working_days' => ($workday - $absent - $leave),
-		// 				];
+			$chartdata[] = [
+								'month' => $sm->format('M Y'),
+								'percentage' => $percentage,
+								'workdays' => $workday,
+								'leaves' => $fdl,
+								'absents' => $a,
+								'working_days' => ($workday - $fdl - $a),
+							];
+		}
+			return response()->json($chartdata);
 	}
 
 	public function yearworkinghourstart(Request $request): JsonResponse
