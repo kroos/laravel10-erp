@@ -938,7 +938,7 @@ class AjaxDBController extends Controller
 		return response()->json( $l0 );
 	}
 
-	public function staffpercentage(Request $request): JsonResponse
+	public function staffpercentage1(Request $request): JsonResponse
 	{
 		// dd($request->all());
 		// $request->id = staff id
@@ -3202,6 +3202,87 @@ class AjaxDBController extends Controller
 							];
 		}
 		return response()->json($chartdata);
+	}
+
+	public function staffpercentage(Request $request)/*: JsonResponse*/
+	{
+		$st = Staff::find($request->id);					// need to check date join
+
+		if ($st->join) {
+			$join = Carbon::parse($st->join)->copy();
+		} else {
+			$join = false;
+		}
+
+		$soy = now()->copy()->startOfYear();				// early this year
+		$lsoy = $soy->copy()->subYear();
+		// dd($lsoy);
+		// dd($lsoy->diffInMonths(now()));
+
+		// dd($soy->gt($join));								// determine if he is a newbie or otai, false=newbie, true=otai
+
+		for ($i = 0; $i <= $lsoy->diffInMonths(now()); $i++) {// take only 2 years back
+			$sm = $lsoy->copy()->addMonth($i);
+			$em = $sm->copy()->endOfMonth();
+			// dump([$sm, $em]);
+
+			$sq = $st->hasmanyattendance()
+				->whereDate('attend_date', '>=', $sm)
+				->whereDate('attend_date', '<=', $em)
+				->where('daytype_id', 1)
+				->get();
+				// ->ddRawSql();
+
+			dump($sq->count().' working days count');								// working days
+
+			$fdl = 0;
+			$h = 0;
+			$a = 0;
+			foreach ($sq as $s) {
+				$fulldayleave = HRLeave::where('staff_id', $st->id)							// get period from here
+								->where(function (Builder $query){
+									$query->where('leave_type_id', '<>', 9)
+									->where(function (Builder $query){
+										$query->where('half_type_id', '<>', 2)
+										->orWhereNull('half_type_id');
+									});
+								})
+								->where(function (Builder $query){
+									$query->whereIn('leave_status_id', [5,6])
+										->orWhereNull('leave_status_id');
+								})
+								->where(function (Builder $query) use ($s){
+										$query->whereDate('date_time_start', '<=', $s->attend_date)
+										->WhereDate('date_time_end', '>=', $s->attend_date);
+								})
+								->get();
+				$fdl += $fulldayleave->count();
+				dump($fulldayleave->count().' fulldayleave count');
+
+				// $holiday = HRHolidayCalendar::where(function (Builder $query) use ($s){
+				// 										$query->whereDate('date_start', '<=', $s->attend_date)
+				// 										->whereDate('date_end', '>=', $s->attend_date);
+				// 									})
+				// 									->get();
+				// $h += $holiday->count();
+				// dump($holiday->count().' holiday');
+
+				// dump($s);
+				$absent = $s->where('attendance_type_id', 1)->get();
+				// $a += $absent->count();
+				dump($absent.' absent');
+			}
+			dump([$fdl.' fdl', $h.' h', $a.' a']);
+		}
+
+		// $chartdata[] = [
+		// 					'month' => $monthname,
+		// 					'percentage' => $attpercentage,
+		// 					'workdays' => $workday,
+		// 					'leaves' => $leave,
+		// 					'absents' => $absent,
+		// 					'working_days' => ($workday - $absent - $leave),
+		// 				];
 	}
 
 	public function yearworkinghourstart(Request $request): JsonResponse
