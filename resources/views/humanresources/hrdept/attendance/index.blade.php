@@ -133,22 +133,27 @@ $hdate = HRHolidayCalendar::
 if($hdate->isNotEmpty()) {											// date holiday
 	$dayt = OptDayType::find(3)->daytype;							// show what day: HOLIDAY
 	$dtype = false;
+	$s->update(['daytype_id' => 3]);
 } elseif($hdate->isEmpty()) {										// date not holiday
 	if(Carbon::parse($s->attend_date)->dayOfWeek == 0) {			// sunday
 		$dayt = OptDayType::find(2)->daytype;
 		$dtype = false;
+		$s->update(['daytype_id' => 2]);
 	} elseif(Carbon::parse($s->attend_date)->dayOfWeek == 6) {		// saturday
 		$sat = $s->belongstostaff->belongstorestdaygroup?->hasmanyrestdaycalendar()->whereDate('saturday_date', $s->attend_date)->first();
 		if($sat) {													// determine if user belongs to sat group restday
 			$dayt = OptDayType::find(2)->daytype;					// show what day: RESTDAY
 			$dtype = false;
+			$s->update(['daytype_id' => 2]);
 		} else {
 			$dayt = OptDayType::find(1)->daytype;					// show what day: WORKDAY
 			$dtype = true;
+			$s->update(['daytype_id' => 1]);
 		}
 	} else {														// all other day is working day
 		$dayt = OptDayType::find(1)->daytype;						// show what day: WORKDAY
 		$dtype = true;
+		$s->update(['daytype_id' => 1]);
 	}
 }
 
@@ -353,7 +358,7 @@ if ($os->isNotEmpty()) {																							// outstation |
 							if (is_null($s->attendance_type_id)) {
 								if ($break == $resume) {															// check for break and resume is the same value
 									$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
-								} else {
+									} else {
 									$ll = '<a href="'.route('attendance.edit', $s->id).'">Check</a>';					// pls check
 								}
 							} else {
@@ -369,7 +374,7 @@ if ($os->isNotEmpty()) {																							// outstation |
 							if (Carbon::parse(now())->gt($s->attend_date)) {
 								if (is_null($s->attendance_type_id)) {
 									$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
-								} else {
+									} else {
 									$ll = $s->belongstoopttcms->leave;
 								}
 							} else {
@@ -421,7 +426,7 @@ if ($os->isNotEmpty()) {																							// outstation |
 							if (is_null($s->attendance_type_id)) {
 								if ($break == $resume) {															// check for break and resume is the same value
 									$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
-								} else {
+									} else {
 									$ll = '<a href="'.route('attendance.edit', $s->id).'">Check</a>';					// pls check
 								}
 							} else {
@@ -700,15 +705,15 @@ if ($os->isNotEmpty()) {																							// outstation |
 				if ($break) {																						// no outstation | working | leave | no in | no break
 					if ($resume) {																					// no outstation | working | leave | no in | no break | no resume
 						if ($out) {																					// no outstation | working | leave | no in | no break | no resume | no out
-							$ll = $l->belongstooptleavetype->leave_type_code;
+							$ll = $l->belongstooptleavetype?->leave_type_code;
 						} else {																					// no outstation | working | leave | no in | no break | no resume | out
-							$ll = $l->belongstooptleavetype->leave_type_code;
+							$ll = $l->belongstooptleavetype?->leave_type_code;
 						}
 					} else {																						// no outstation | working | leave | no in | no break | resume
 						if ($out) {																					// no outstation | working | leave | no in | no break | resume | no out
-							$ll = $l->belongstooptleavetype->leave_type_code;
+							$ll = $l->belongstooptleavetype?->leave_type_code;
 						} else {																					// no outstation | working | leave | no in | no break | resume | out
-							$ll = $l->belongstooptleavetype->leave_type_code;
+							$ll = $l->belongstooptleavetype?->leave_type_code;
 						}
 					}
 				} else {																							// no outstation | working | leave | no in | break
@@ -729,7 +734,7 @@ if ($os->isNotEmpty()) {																							// outstation |
 			} else {																								// no outstation | working | leave | in
 				if ($break) {																						// no outstation | working | leave | in | no break
 					if ($resume) {																					// no outstation | working | leave | in | no break | no resume
-						if ($out) {																					// working | leave | in | no break | no resume | no out
+						if ($out) {																					// no outstation | working | leave | in | no break | no resume | no out
 							$ll = $l->belongstooptleavetype->leave_type_code;
 						} else {																					// no outstation | working | leave | in | no break | no resume | out
 							$ll = $l->belongstooptleavetype->leave_type_code;
@@ -1063,7 +1068,7 @@ if($l) {
 						</span></td>
 					<td>{{ $s->time_work_hour }}</td>
 					<td>{{ $o?->belongstoovertimerange?->where('active', 1)->first()->total_time }}</td>
-					<td>{{ $s->remarks }} <span class="text-danger">{{ $s->hr_remarks }}</td>
+					<td data-bs-toggle="tooltip" data-bs-custom-class="custom-tooltip" data-bs-html="true" data-bs-title="{{ ($s->remarks)??' ' }} | {{ ($s->hr_remarks)??' ' }}">{{ Str::limit($s->remarks, 8, ' >') }} <span class="text-danger">{{ Str::limit($s->hr_remarks, 8, ' >') }}</td>
 					<td>{{ $s->exception }}</td>
 				</tr>
 			@endif

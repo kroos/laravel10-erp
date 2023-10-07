@@ -15,28 +15,28 @@ use \Carbon\Carbon;
 		<div class="form-group row {{ $errors->has('mc_leave') ? 'has-error' : '' }} mb-3 g-3">
 			{{ Form::label( 'alt', 'Medical Certificate Leave : ', ['class' => 'col-sm-3 col-form-label'] ) }}
 			<div class=" col-sm-2">
-				{{ Form::text('mc_leave', @$value, ['class' => 'form-control form-control-sm', 'id' => 'alt', 'placeholder' => 'Medical Certificate Leave Initialize', 'autocomplete' => 'off']) }}
+				{{ Form::text('mc_leave', @$value, ['class' => 'form-control form-control-sm', 'id' => 'alt', 'placeholder' => 'Medical Certificate Leave Initialize', 'autocomplete' => 'off', 'readOnly']) }}
 			</div>
 		</div>
 
 		<div class="form-group row {{ $errors->has('mc_leave_adjustment') ? 'has-error' : '' }} mb-3 g-3">
 			{{ Form::label( 'ala', 'Medical Certificate Leave Adjustment : ', ['class' => 'col-sm-3 col-form-label'] ) }}
 			<div class=" col-sm-2">
-				{{ Form::text('mc_leave_adjustment', @$value, ['class' => 'form-control form-control-sm', 'id' => 'ala', 'placeholder' => 'Medical Certificate Leave Adjustment', 'autocomplete' => 'off']) }}
+				{{ Form::number('mc_leave_adjustment', @$value, ['class' => 'form-control form-control-sm', 'id' => 'ala', 'placeholder' => 'Medical Certificate Leave Adjustment', 'step' => '0.5', 'autocomplete' => 'off']) }}
 			</div>
 		</div>
 
 		<div class="form-group row {{ $errors->has('mc_leave_utilize') ? 'has-error' : '' }} mb-3 g-3">
 			{{ Form::label( 'alu', 'Medical Certificate Leave Utilize : ', ['class' => 'col-sm-3 col-form-label'] ) }}
 			<div class=" col-sm-2">
-				{{ Form::text('mc_leave_utilize', @$value, ['class' => 'form-control form-control-sm', 'id' => 'alu', 'placeholder' => 'Medical Certificate Leave Utilize', 'autocomplete' => 'off']) }}
+				{{ Form::text('mc_leave_utilize', @$value, ['class' => 'form-control form-control-sm', 'id' => 'alu', 'placeholder' => 'Medical Certificate Leave Utilize', 'autocomplete' => 'off', 'readOnly']) }}
 			</div>
 		</div>
 
 		<div class="form-group row {{ $errors->has('mc_leave_balance') ? 'has-error' : '' }} mb-3 g-3">
 			{{ Form::label( 'alb', 'Medical Certificate Leave Balance : ', ['class' => 'col-sm-3 col-form-label'] ) }}
 			<div class=" col-sm-2">
-				{{ Form::text('mc_leave_balance', @$value, ['class' => 'form-control form-control-sm', 'id' => 'alb', 'placeholder' => 'Medical Certificate Leave Balance', 'autocomplete' => 'off']) }}
+				{{ Form::text('mc_leave_balance', @$value, ['class' => 'form-control form-control-sm', 'id' => 'alb', 'placeholder' => 'Medical Certificate Leave Balance', 'autocomplete' => 'off', 'readOnly']) }}
 			</div>
 		</div>
 
@@ -46,8 +46,6 @@ use \Carbon\Carbon;
 				{{ Form::textarea('remarks', @$value, ['class' => 'form-control form-control-sm', 'id' => 'rem', 'placeholder' => 'Remarks', 'autocomplete' => 'off']) }}
 			</div>
 		</div>
-
-
 
 		<div class="form-group row  mb-3 g-3">
 			<div class="col-sm-10 offset-sm-3">
@@ -61,6 +59,13 @@ use \Carbon\Carbon;
 @endsection
 
 @section('js')
+/////////////////////////////////////////////////////////////////////////////////////////
+// counting annual leave
+$(document).on('keyup mouseup', '#ala', function () {
+	var balance = (($(this).val() * 100)/100) + {{ $mcleave->mc_leave_balance }};
+	$('#alb').val(balance);
+});
+
 /////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////
