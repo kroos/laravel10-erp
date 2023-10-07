@@ -15,28 +15,28 @@ use \Carbon\Carbon;
 		<div class="form-group row {{ $errors->has('annual_leave') ? 'has-error' : '' }} mb-3 g-3">
 			{{ Form::label( 'alt', 'Annual Leave : ', ['class' => 'col-sm-3 col-form-label'] ) }}
 			<div class=" col-sm-2">
-				{{ Form::text('annual_leave', @$value, ['class' => 'form-control form-control-sm', 'id' => 'alt', 'placeholder' => 'Annual Leave Initialize', 'autocomplete' => 'off']) }}
+				{{ Form::text('annual_leave', @$value, ['class' => 'form-control form-control-sm', 'id' => 'alt', 'placeholder' => 'Annual Leave Initialize', 'autocomplete' => 'off', 'readOnly']) }}
 			</div>
 		</div>
 
 		<div class="form-group row {{ $errors->has('annual_leave_adjustment') ? 'has-error' : '' }} mb-3 g-3">
 			{{ Form::label( 'ala', 'Annual Leave Adjustment : ', ['class' => 'col-sm-3 col-form-label'] ) }}
 			<div class=" col-sm-2">
-				{{ Form::text('annual_leave_adjustment', @$value, ['class' => 'form-control form-control-sm', 'id' => 'ala', 'placeholder' => 'Annual Leave Adjustment', 'autocomplete' => 'off']) }}
+				{{ Form::number('annual_leave_adjustment', @$value, ['class' => 'form-control form-control-sm', 'id' => 'ala', 'placeholder' => 'Annual Leave Adjustment', 'pattern' => "^\d*(\.\d{0,1})?$", 'step' => '0.5', 'autocomplete' => 'off']) }}
 			</div>
 		</div>
 
 		<div class="form-group row {{ $errors->has('annual_leave_utilize') ? 'has-error' : '' }} mb-3 g-3">
 			{{ Form::label( 'alu', 'Annual Leave Utilize : ', ['class' => 'col-sm-3 col-form-label'] ) }}
 			<div class=" col-sm-2">
-				{{ Form::text('annual_leave_utilize', @$value, ['class' => 'form-control form-control-sm', 'id' => 'alu', 'placeholder' => 'Annual Leave Utilize', 'autocomplete' => 'off']) }}
+				{{ Form::text('annual_leave_utilize', @$value, ['class' => 'form-control form-control-sm', 'id' => 'alu', 'placeholder' => 'Annual Leave Utilize', 'autocomplete' => 'off', 'readOnly']) }}
 			</div>
 		</div>
 
 		<div class="form-group row {{ $errors->has('annual_leave_balance') ? 'has-error' : '' }} mb-3 g-3">
 			{{ Form::label( 'alb', 'Annual Leave Balance : ', ['class' => 'col-sm-3 col-form-label'] ) }}
 			<div class=" col-sm-2">
-				{{ Form::text('annual_leave_balance', @$value, ['class' => 'form-control form-control-sm', 'id' => 'alb', 'placeholder' => 'Annual Leave Balance', 'autocomplete' => 'off']) }}
+				{{ Form::text('annual_leave_balance', @$value, ['class' => 'form-control form-control-sm', 'id' => 'alb', 'placeholder' => 'Annual Leave Balance', 'autocomplete' => 'off', 'readOnly']) }}
 			</div>
 		</div>
 
@@ -62,8 +62,12 @@ use \Carbon\Carbon;
 
 @section('js')
 /////////////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////////////
+// counting annual leave
+$(document).on('keyup mouseup', '#ala', function () {
+	var balance = (($(this).val() * 100)/100) + {{ $annualleave->annual_leave_balance }};
+	$('#alb').val(balance);
+});
+
 /////////////////////////////////////////////////////////////////////////////////////////
 // validator
 $(document).ready(function() {
