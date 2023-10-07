@@ -705,15 +705,15 @@ if ($os->isNotEmpty()) {																							// outstation |
 				if ($break) {																						// no outstation | working | leave | no in | no break
 					if ($resume) {																					// no outstation | working | leave | no in | no break | no resume
 						if ($out) {																					// no outstation | working | leave | no in | no break | no resume | no out
-							$ll = $l->belongstooptleavetype->leave_type_code;
+							$ll = $l->belongstooptleavetype?->leave_type_code;
 						} else {																					// no outstation | working | leave | no in | no break | no resume | out
-							$ll = $l->belongstooptleavetype->leave_type_code;
+							$ll = $l->belongstooptleavetype?->leave_type_code;
 						}
 					} else {																						// no outstation | working | leave | no in | no break | resume
 						if ($out) {																					// no outstation | working | leave | no in | no break | resume | no out
-							$ll = $l->belongstooptleavetype->leave_type_code;
+							$ll = $l->belongstooptleavetype?->leave_type_code;
 						} else {																					// no outstation | working | leave | no in | no break | resume | out
-							$ll = $l->belongstooptleavetype->leave_type_code;
+							$ll = $l->belongstooptleavetype?->leave_type_code;
 						}
 					}
 				} else {																							// no outstation | working | leave | no in | break
@@ -1068,7 +1068,7 @@ if($l) {
 						</span></td>
 					<td>{{ $s->time_work_hour }}</td>
 					<td>{{ $o?->belongstoovertimerange?->where('active', 1)->first()->total_time }}</td>
-					<td>{{ $s->remarks }} <span class="text-danger">{{ $s->hr_remarks }}</td>
+					<td data-bs-toggle="tooltip" data-bs-custom-class="custom-tooltip" data-bs-html="true" data-bs-title="{{ ($s->remarks)??' ' }} | {{ ($s->hr_remarks)??' ' }}">{{ Str::limit($s->remarks, 8, ' >') }} <span class="text-danger">{{ Str::limit($s->hr_remarks, 8, ' >') }}</td>
 					<td>{{ $s->exception }}</td>
 				</tr>
 			@endif
