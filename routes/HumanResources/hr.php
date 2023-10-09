@@ -46,3 +46,8 @@ Route::resources([
 
 Route::get('/attendancereport', [AttendanceReportController::class, 'index'])->name('attendancereport.index');
 Route::post('/attendancereport', [AttendanceReportController::class, 'create'])->name('attendancereport.create');
+
+
+
+// testing
+Route::get('/rleave', [ReplacementLeaveController::class, 'replacement_ajax'])->name('rleave.replacement_ajax');

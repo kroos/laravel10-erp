@@ -14,7 +14,7 @@
 		</div>
 	</div>
 	<div>
-		<table id="replacement" class="table table-hover table-sm align-middle" style="font-size:12px">
+		<table id="discipline" class="table table-hover table-sm align-middle" style="font-size:12px">
 			<thead>
 				<tr>
 					<th class="text-center" style="max-width: 30px;">ID</th>
@@ -91,7 +91,7 @@
 // datatables
 $.fn.dataTable.moment( 'D MMM YYYY' );
 $.fn.dataTable.moment( 'h:mm a' );
-$('#replacement').DataTable({
+$('#discipline').DataTable({
 	"lengthMenu": [ [10,25,50,-1], [10,25,50,"All"] ],
 	"columnDefs": [
 					{ type: 'date', 'targets': [2] },
