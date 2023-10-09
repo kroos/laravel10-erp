@@ -967,6 +967,7 @@ class AjaxDBController extends Controller
 
 				foreach ($sq as $s) {
 					$fulldayleave = $s->belongstoleave()?->where(function (Builder $query){
+					// $fulldayleave = HRLeave::where(function (Builder $query){
 											$query->where('leave_type_id', '<>', 9)
 											->where(function (Builder $query){
 												$query->where('half_type_id', '<>', 2)
@@ -985,7 +986,12 @@ class AjaxDBController extends Controller
 					$fdl += $fulldayleave->count();
 					// dump($fulldayleave->count().' fulldayleave count');
 
-					$absent = $s->where('attendance_type_id', 1)->whereDate('attend_date', $s->attend_date)->where('daytype_id', 1)->where('staff_id', $st->id)->get();
+					$absent = $s->where('attendance_type_id', 1)
+					// $absent = HRAttendance::where('attendance_type_id', 1)
+								->whereDate('attend_date', $s->attend_date)
+								->where('daytype_id', 1)
+								->where('staff_id', $st->id)
+								->get();
 					$a += $absent->count();
 					// dump($absent.' absent');
 				}
@@ -1086,25 +1092,75 @@ class AjaxDBController extends Controller
 		]);
 	}
 
-	public function staffdaily(Request $request)
+	public function staffdaily(Request $request)/*: JsonResponse*/
 	{
-		$lsoy = now()->copy()->subDays(7);					// early last year
+		// $lsoy = now()->copy()->subDays(6);								// 6 days ago
+		$now = Carbon::parse('2023-08-14');								// 7 days ago
+		$lsoy = $now->copy()->subDays(6);								// 6 days ago
 		// dd([$lsoy, $lsoy->diffInDays(now())]);
 
-		for ($i = 0; $i <= $lsoy->diffInDays(now()); $i++) {// take only 2 years back
+		// for ($i = 0; $i <= $lsoy->copy()->diffInDays(now()); $i++) {	// take only 2 years back
+		for ($i = 0; $i <= $lsoy->copy()->diffInDays($now); $i++) {	// take only 2 years back
 			$sd = $lsoy->copy()->addDays($i);
 			// dump($sd);
 
-			$sq = HRAttendance::whereDate('attend_date', $sd)->get();
-			dump($sq);
+			$sq = HRAttendance::groupBy('attend_date')->whereDate('attend_date', $sd)->get();
+			$workday = HRAttendance::whereDate('attend_date', $sd)->where('daytype_id', 1)->count();
 
+			// dump($sq->first()->daytype_id);
+			if ($workday >= 1) {
+				$working = OptDayType::find($sq->first()->daytype_id)->daytype;
+				$workingpeople = HRAttendance::whereDate('attend_date', $sd)->where('daytype_id', 1)->whereNull('attendance_type_id')->whereNull('leave_id')->count();
+				$absent = HRAttendance::whereDate('attend_date', $sd)->where('daytype_id', 1)->where('attendance_type_id', 1)->count();
+				$halfabsent = HRAttendance::whereDate('attend_date', $sd)->where('daytype_id', 1)->where('attendance_type_id', 2)->count();
+				$outstation = HRAttendance::whereDate('attend_date', $sd)->where('daytype_id', 1)->where('attendance_type_id', 4)->count();
+				$leave = HRLeave::where(function (Builder $query){
+										$query->where('leave_type_id', '<>', 9)
+										->where(function (Builder $query){
+											$query->where('half_type_id', '<>', 2)
+											->orWhereNull('half_type_id');
+										});
+									})
+									->where(function (Builder $query){
+										$query->whereIn('leave_status_id', [5,6])
+										->orWhereNull('leave_status_id');
+									})
+									->where(function (Builder $query) use ($sd){
+										$query->whereDate('date_time_start', '<=', $sd)
+										->whereDate('date_time_end', '>=', $sd);
+									})
+									->count();
 
+				$staffidabsents = HRAttendance::whereDate('attend_date', $sd)->where('daytype_id', 1)->where('attendance_type_id', 1)->get();
+				foreach ($staffidabsents as $staffidabsent) {
+					$branch[] = Staff::find($staffidabsent->staff_id)->belongstomanydepartment()?->wherePivot('main', 1)->get();
+					// OptBranch::find($branch->branch_id)->location;
+				}
+				$overallpercentage = ($workingpeople / $workday) * 100;
 
+			} else {
+				$overallpercentage = 0;
+				$workingpeople = 0;
+				$absent = 0;
+				$halfabsent = 0;
+				$leave = 0;
+				$working = OptDayType::find($sq->first()->daytype_id)->daytype;
+			}
 
-
-
-
-			$chartdata[] = $sd;
+			$chartdata[] = [
+								'sd' => $sd,
+								'date' => Carbon::parse($sd)->format('j M Y'),
+								'overallpercentage' => $overallpercentage,
+								'workday' => $workday,
+								'workingpeople' => $workingpeople,
+								'working' => $working,
+								'outstation' => $outstation,
+								'absent' => $absent,
+								'halfabsent' => $halfabsent,
+								'leave' => $leave,
+								// 'staff' => $staffid,
+								'branch' => $branch,
+							];
 		}
 		return response()->json($chartdata);
 	}

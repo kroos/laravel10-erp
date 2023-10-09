@@ -31,7 +31,7 @@
 
 var xmlhttp = new XMLHttpRequest();
 // xmlhttp.open(method, URL, [async, user, password])
-xmlhttp.open("POST", '{!! route('staffdaily', ['_token' => csrf_token()]) !!}', true);
+xmlhttp.open("GET", '{!! route('staffdaily', ['_token' => csrf_token()]) !!}', true);
 // xmlhttp.responseType = 'json';
 // xmlhttp.onreadystatechange = myfunction;
 xmlhttp.send();
