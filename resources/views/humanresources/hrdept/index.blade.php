@@ -42,30 +42,60 @@ xmlhttp.onload = function() {
 //	console.log(data);
 
 	new Chart(document.getElementById('myChart'), {
-		type: 'line',
+		type: 'bar',
 		data: {
-			labels: data.map(row => row.month),
+			labels: data.map(row => [row.date, row.working]),
 			datasets: [
 						{
-							label: 'Attendance Percentage By Month(%)',
-							data: data.map(row => row.percentage)
+							label: 'Total Attendance Percentage By Day(%)',
+							data: data.map(row => row.overallpercentage)
 						},
 						{
-							label: 'Leaves By Month',
-							data: data.map(row => row.leaves)
+							label: 'Available Staff',
+							data: data.map(row => row.workingpeople)
 						},
 						{
-							label: 'Absents By Month',
-							data: data.map(row => row.absents)
+							label: 'Outstation',
+							data: data.map(row => row.outstation)
 						},
 						{
-							label: 'Working Days By Month (Person Available)',
-							data: data.map(row => row.working_days)
+							label: 'On Leave',
+							data: data.map(row => row.leave)
 						},
 						{
-							label: 'Work Days By Month',
-							data: data.map(row => row.workdays)
+							label: 'Absents',
+							data: data.map(row => row.absent)
 						},
+						{
+							label: 'Half Absents',
+							data: data.map(row => row.halfabsent)
+						},
+						{
+							label: 'Total Staff',
+							data: data.map(row => row.workday)
+						},
+						{
+							label: 'Outstation in ' + data.map(obj => {
+																		const d = obj.locoutstation;
+																		// return d;
+																		// return d.map(obj1 => {
+																		// 	return obj1.key;
+																		// });
+																		return Object.keys(d);
+													}),
+							data: data.map(obj => {
+																		const d = obj.locoutstation;
+																		//return Object.values(d);
+																		// return d.map(obj1 => {
+																		// 	return obj1.value;
+																		// });
+																		return Object.values(d);
+							})
+						},
+						// {
+						// 	label: 'Work Days By Month',
+						// 	data: data.map(row => row.workdays)
+						// },
 			]
 		},
 		options: {
