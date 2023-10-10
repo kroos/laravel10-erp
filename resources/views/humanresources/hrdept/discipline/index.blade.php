@@ -78,9 +78,11 @@
 			</tbody>
 		</table>
 
-		<div class="d-flex justify-content-center">
-			{{ $disciplinary->links() }}
-		</div>
+		<?php
+		// <div class="d-flex justify-content-center">
+		// 	{{ $disciplinary->links() }}
+		// </div>
+		?>
 	</div>
 </div>
 @endsection
@@ -92,7 +94,8 @@
 $.fn.dataTable.moment( 'D MMM YYYY' );
 $.fn.dataTable.moment( 'h:mm a' );
 $('#discipline').DataTable({
-	"lengthMenu": [ [10,25,50,-1], [10,25,50,"All"] ],
+	"paging": true,
+	"lengthMenu": [ [25,50,100,-1], [25,50,100,"All"] ],
 	"columnDefs": [
 					{ type: 'date', 'targets': [2] },
 					{ type: 'time', 'targets': [3] },
