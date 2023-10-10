@@ -35,43 +35,6 @@ class ReplacementLeaveController extends Controller
         $this->middleware('highMgmtAccess:1|5,14', ['only' => ['create', 'store', 'edit', 'update', 'destroy']]);
     }
 
-
-
-
-
-    public function replacement_ajax()
-    {
-        $data = [
-            ["test"],
-            ["test"],
-            ["test"],
-            ["test"],
-            ["test"],
-            ["test"],
-            ["test"],
-            ["test"],
-            ["test"],
-            ["test"],
-            ["test"],
-            ["test"],
-            ["test"],
-            ["test"],
-            ["test"],
-            ["test"],
-            ["test"]
-        ];
-
-        return view('humanresources.hrdept.rleave.index', compact('data'));
-    }
-
-
-
-
-
-
-
-
-
     /**
      * Display a listing of the resource.
      */
@@ -102,7 +65,7 @@ class ReplacementLeaveController extends Controller
 
         // Calculate the difference in days
         $diffInDays = $dateStart->diffInDays($dateEnd, true);
-        $leave_total = $diffInDays + 1;
+        $leave_total = $diffInDays+1;
 
         // Loop through the checkbox values
         foreach ($staffids as $staffid) {
@@ -135,7 +98,7 @@ class ReplacementLeaveController extends Controller
      */
     public function edit(HRLeaveReplacement $rleave): View
     {
-        return view('humanresources.hrdept.rleave.edit', ['rleave' => $rleave]);
+        return view('humanresources.hrdept.rleave.edit', ['rleave'=>$rleave]);
     }
 
     /**
@@ -146,7 +109,7 @@ class ReplacementLeaveController extends Controller
         $rleave->update($request->only(['date_start', 'date_end', 'customer_id', 'reason', 'leave_total', 'leave_utilize', 'leave_balance']));
 
         Session::flash('flash_message', 'Data successfully updated!');
-        return Redirect::route('rleave.index', $rleave);
+		return Redirect::route('rleave.index', $rleave);
     }
 
     /**
@@ -155,16 +118,16 @@ class ReplacementLeaveController extends Controller
     public function destroy(Request $request, HRLeaveReplacement $rleave): JsonResponse
     {
         if ($request->table == 'replacement') {
-            $HRLeaveReplacement = HRLeaveReplacement::destroy(
-                [
-                    'id' => $rleave['id']
-                ]
-            );
+			$HRLeaveReplacement = HRLeaveReplacement::destroy(
+				[
+					'id' => $rleave['id']
+				]
+			);
 
-            return response()->json([
-                'status' => 'success',
-                'message' => 'Your replacement leave has been deleted.',
-            ]);
-        }
+			return response()->json([
+				'status' => 'success',
+				'message' => 'Your replacement leave has been deleted.',
+			]);
+		}
     }
 }

@@ -20,28 +20,61 @@
 			<thead>
 				<tr>
 					<th>ID</th>
+					<th>Name</th>
+					<th>Date Start</th>
+					<th>Date End</th>
+					<th>Customer</th>
+					<th>Reason</th>
+					<th>Total</th>
+					<th>Utilize</th>
+					<th>Balance</th>
+					<th>Remarks</th>
+					<th>Edit</th>
+					<th>Cancel</th>
 				</tr>
 			</thead>
+			<tbody>
+				@foreach ($replacements as $replacement)
+				<tr>
+					<td>{{ $replacement->belongstostaff->hasmanylogin()->where('logins.active', 1)->first()?->username }}</td>
+					<td class="text-truncate" style="max-width: 200px;" data-toggle="tooltip" title="{{ $replacement->belongstostaff->name }}">{{ $replacement->belongstostaff->name }}</td>
+					<td>{{ \Carbon\Carbon::parse($replacement->date_start)->format('j M Y') }}</td>
+					<td>{{ \Carbon\Carbon::parse($replacement->date_end)->format('j M Y') }}</td>
+					<td class="text-truncate" style="max-width: 200px;" data-toggle="tooltip" title="{{ $replacement->belongstocustomer?->customer }}">{{ Str::limit($replacement->belongstocustomer?->customer, 10, '>') }}</td>
+					<td class="text-truncate" style="max-width: 150px;" data-toggle="tooltip" title="{{ $replacement->reason }}">{{ Str::limit($replacement->reason, 10, '>') }}</td>
+					<td class="text-center">{{ $replacement->leave_total }}</td>
+					<td class="text-center">{{ $replacement->leave_utilize }}</td>
+					<td class="text-center">{{ $replacement->leave_balance }}</td>
+					<td class="text-truncate" style="max-width: 100px;" data-toggle="tooltip" title="{{ $replacement->remarks }}">{{ Str::limit($replacement->remarks, 10, '>') }}</td>
+					<td class="text-center">
+						<a href="{{ route('rleave.edit', $replacement->id) }}" class="btn btn-sm btn-outline-secondary">
+							<i class="fa-regular fa-pen-to-square"></i>
+						</a>
+					</td>
+					<td class="text-center">
+						<button type="button" class="btn btn-sm btn-outline-secondary delete_replacement" data-id="{{ $replacement->id }}" data-table="replacement" >
+							<i class="fa-regular fa-trash-can"></i>
+						</button>
+					</td>
+				</tr>
+				@endforeach
+			</tbody>
 		</table>
+
+		<div class="d-flex justify-content-center">
+			{{ $replacements->links() }}
+		</div>
 	</div>
 </div>
 @endsection
 
 
 @section('js')
-$('#replacement').DataTable({
-"ajax": "{{ route('rleave.replacement_ajax') }}",
-"deferRender": true;
-});
-
-
-
-
 /////////////////////////////////////////////////////////////////////////////////////////
 // datatables
 $.fn.dataTable.moment( 'D MMM YYYY' );
 $.fn.dataTable.moment( 'h:mm a' );
-$('#replacement-test').DataTable({
+$('#replacement').DataTable({
 	"paging": false,
 	"lengthMenu": [ [10,25,50,-1], [10,25,50,"All"] ],
 	"columnDefs": [
