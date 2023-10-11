@@ -34,6 +34,11 @@ class HROvertime extends Model
 		return $this->belongsTo(\App\Models\Staff::class, 'staff_id');
 	}
 
+	public function belongstoassignstaff(): BelongsTo
+	{
+		return $this->belongsTo(\App\Models\Staff::class, 'assign_staff_id');
+	}
+
 	public function belongstoovertimerange(): BelongsTo
 	{
 		return $this->belongsTo(\App\Models\HumanResources\HROvertimeRange::class, 'overtime_range_id');

@@ -19,19 +19,9 @@
 /////////////////////////////////////////////////////////////////////////////////////////
 // chartjs also dont use jquery
 
-// const data = [
-// 					{ month: 'January', percentage: 90.59, workdays: 31, leaves: 1, absents: 1, working_days: 25 },
-// 					{ month: 'February', percentage: 93.23, workdays: 28, leaves: 1, absents: 1, working_days: 25 },
-// 					{ month: 'March', percentage: 91.5, workdays: 31, leaves: 1, absents: 1, working_days: 25 },
-// 					{ month: 'April', percentage: 93.45, workdays: 30, leaves: 1, absents: 1, working_days: 25 },
-// 					{ month: 'May', percentage: 81.23, workdays: 31, leaves: 1, absents: 1, working_days: 25 },
-// 					{ month: 'June', percentage: 79.23, workdays: 30, leaves: 1, absents: 1, working_days: 25 },
-// 					{ month: 'July', percentage: 95.59, workdays: 31, leaves: 1, absents: 1, working_days: 25 },
-// 			];
-
 var xmlhttp = new XMLHttpRequest();
 // xmlhttp.open(method, URL, [async, user, password])
-xmlhttp.open("GET", '{!! route('staffdaily', ['_token' => csrf_token()]) !!}', true);
+xmlhttp.open("POST", '{!! route('staffdaily', ['_token' => csrf_token()]) !!}', true);
 // xmlhttp.responseType = 'json';
 // xmlhttp.onreadystatechange = myfunction;
 xmlhttp.send();
@@ -75,27 +65,54 @@ xmlhttp.onload = function() {
 							data: data.map(row => row.workday)
 						},
 						{
-							label: 'Outstation in ' + data.map(obj => {
+							label: 'Outstation Staff From ' + data.map(obj => {
+																		// let d = Object.entries(obj.locoutstation);
 																		const d = obj.locoutstation;
-																		// return d;
-																		// return d.map(obj1 => {
-																		// 	return obj1.key;
-																		// });
 																		return Object.keys(d);
-													}),
+																	}),
 							data: data.map(obj => {
-																		const d = obj.locoutstation;
-																		//return Object.values(d);
-																		// return d.map(obj1 => {
-																		// 	return obj1.value;
-																		// });
-																		return Object.values(d);
-							})
+								// let d = Object.entries(obj.locoutstation);
+								const d = obj.locoutstation;
+								return Object.values(d);
+							}),
 						},
-						// {
-						// 	label: 'Work Days By Month',
-						// 	data: data.map(row => row.workdays)
-						// },
+						{
+							label: 'On Leave Staff From ' + data.map(obj => {
+																		// let d = Object.entries(obj.locationleave);
+																		const d = obj.locationleave;
+																		return Object.keys(d);
+																	}),
+							data: data.map(obj => {
+								// let d = Object.entries(obj.locationleave);
+								const d = obj.locationleave;
+								return Object.values(d);
+							}),
+						},
+						{
+							label: 'Absent Staff From ' + data.map(obj => {
+																		// let d = Object.entries(obj.locationabsent);
+																		const d = obj.locationabsent;
+																		return Object.keys(d);
+																	}),
+							data: data.map(obj => {
+								// let d = Object.entries(obj.locationabsent);
+								const d = obj.locationabsent;
+								return Object.values(d);
+							}),
+						},
+						{
+							label: 'Half Day Absent Staff From ' + data.map(obj => {
+																		// let d = Object.entries(obj.locationhalfabsent);
+																		const d = obj.locationhalfabsent;
+																		return Object.keys(d);
+																	}),
+							data: data.map(obj => {
+								// let d = Object.entries(obj.locationhalfabsent);
+								const d = obj.locationhalfabsent;
+								return Object.values(d);
+							}),
+						},
+
 			]
 		},
 		options: {

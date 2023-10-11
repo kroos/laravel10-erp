@@ -1140,63 +1140,62 @@ class AjaxDBController extends Controller
 
 				$e = 0;
 				foreach ($absent1 as $staffidabsent) {
-					$branch[$e] = Staff::find($staffidabsent->staff_id)
+					$branch[$b][$e] = Staff::find($staffidabsent->staff_id)
 								->belongstomanydepartment()?->wherePivot('main', 1)
 								->first()->belongstobranch?->location;
 					$e++;
 				}
-				$locabsent1 = array_count_values($branch);
-				$ni = 0;
-				foreach ($locabsent1 as $k => $v) {
-					$locabsent[$ni] = ['key' => $k, 'value' => $v];
-					$ni++;
+				if (array_key_exists($b, $branch)) {
+					$locabsent1 = array_count_values($branch[$b]);
+					// foreach() {
+
+					// }
+				} else {
+					$locabsent1 = [];
 				}
 
-				$eh = 0;
+				$eh = 100;
 				foreach ($halfabsent1 as $staffidhalfabsent) {
-					$branchhalfabsent[$eh] = Staff::find($staffidhalfabsent->staff_id)
+					$branchhalfabsent[$b][$eh] = Staff::find($staffidhalfabsent->staff_id)
 								->belongstomanydepartment()?->wherePivot('main', 1)
 								->first()->belongstobranch?->location;
 					$eh++;
 				}
-				$lochalfabsent1 = array_count_values($branchhalfabsent);
-				$nl = 0;
-				foreach ($lochalfabsent1 as $k => $v) {
-					$lochalfabsent[$nl] = ['key' => $k, 'value' => $v];
-					$nl++;
+				if (array_key_exists($b, $branchhalfabsent)) {
+					$lochalfabsent1 = array_count_values($branchhalfabsent[$b]);
+				} else {
+					$lochalfabsent1 = [];
 				}
 
-				$eo = 0;
-				foreach ($outstation1 as $staffidhalfabsent) {
-					$branchoutstaion[$eo] = Staff::find($staffidhalfabsent->staff_id)
+				$eo = 200;
+				foreach ($outstation1 as $staffidoutstation) {
+					$branchoutstaion[$b][$eo] = Staff::find($staffidoutstation->staff_id)
 								->belongstomanydepartment()?->wherePivot('main', 1)
 								->first()->belongstobranch?->location;
-					// dump($staffidhalfabsent->staff_id.' => => '.$sd);
 					$eo++;
 				}
-				$locoutstation1 = array_count_values($branchoutstaion);
-				$nk = 0;
-				foreach ($locoutstation1 as $k => $v) {
-					$locoutstation[$nk] = ['key' => $k, 'value' => $v];
-					$nk++;
+				if (array_key_exists($b, $branchoutstaion)) {
+					$locoutstation1 = array_count_values($branchoutstaion[$b]);
+				} else {
+					$locoutstation1 = [];
 				}
 
-				$leave1 = $leavecount->get();
-				$ep = 0;
-				foreach ($staffleave as $staffleaveloc) {
-					$branchleave[$ep] = Staff::find($staffleaveloc->staff_id)
+				$leave1 = $leave1->get();
+				$ep = 300;
+				foreach ($leave1 as $staffidleaveloc) {
+					$branchleave[$b][$ep] = Staff::find($staffidleaveloc->staff_id)
 								->belongstomanydepartment()?->wherePivot('main', 1)
 								->first()->belongstobranch?->location;
 					$ep++;
 				}
-				$locleave1 = array_count_values($branchleave);
-				$np = 0;
-				foreach ($locleave1 as $k => $v) {
-					$locleave[$np] = ['key' => $k, 'value' => $v];
-					$np++;
+				if (array_key_exists($b, $branchleave)) {
+					$locleave1 = array_count_values($branchleave[$b]);
+				} else {
+					$locleave1 = [];
 				}
 
 				$overallpercentage = ($workingpeople / $workday) * 100;
+
 			} else {
 				$overallpercentage = 0;
 				$workingpeople = 0;
@@ -1211,7 +1210,7 @@ class AjaxDBController extends Controller
 				$locleave1 = [];
 			}
 
-			$chartdata[] = [
+			$chartdata[$b] = [
 								'date' => Carbon::parse($sd)->format('j M Y'),
 								'overallpercentage' => $overallpercentage,
 								'workday' => $workday,
@@ -1225,7 +1224,6 @@ class AjaxDBController extends Controller
 								'locationleave' => $locleave1,
 								'locationabsent' => $locabsent1,
 								'locationhalfabsent' => $lochalfabsent1,
-								// 'location_name' => $r,
 							];
 			$b++;
 		}
