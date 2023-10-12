@@ -15,27 +15,25 @@ use App\Models\HumanResources\HROvertimeRange;
 
 			<div class="form-group row mb-3 {{ $errors->has('ot_date') ? 'has-error' : '' }}">
 				{{ Form::label( 'nam', 'Date Overtime : ', ['class' => 'col-sm-4 col-form-label'] ) }}
-				<div class="col-auto">
+				<div class="col-auto" style="position: relative;">
 					{{ Form::text('ot_date', @$value, ['class' => 'form-control form-control-sm col-auto', 'id' => 'nam', 'placeholder' => 'Date Overtime', 'autocomplete' => 'off']) }}
 				</div>
 			</div>
 
 			<div class="form-group row mb-3 {{ $errors->has('overtime_range_id') ? 'has-error' : '' }}">
 				{{ Form::label( 'mar', 'Overtime : ', ['class' => 'col-sm-4 col-form-label'] ) }}
-				<div class="col-auto">
-					<select name="overtime_range_id" id="mar" class="form-select form-select-sm col-auto" placeholder="Marital Status">
-						<option value="">Please choose</option>
-						@foreach(HROvertimeRange::where('active', 1)->get() as $key)
-							<option value="{{ $key->id }}">{{ \Carbon\Carbon::parse($key->start)->format('g:i a') }} <=> {{ \Carbon\Carbon::parse($key->end)->format('g:i a') }}</option>
-						@endforeach
-					</select>
+				<div class="col-sm-8">
+					<select name="overtime_range_id" id="mar" class="form-select form-select-sm col-sm-8" placeholder="Please Select"></select>
 				</div>
 			</div>
 
 			<div class="form-group row mb-3 {{ $errors->has('staff_id') ? 'has-error' : '' }}">
 				{{ Form::label( 'rel', 'Staff : ', ['class' => 'col-sm-4 col-form-label'] ) }}
-				<div class="col-auto">
-					{{ Form::select('staff_id', Staff::where('active', 1)->pluck('name', 'id')->toArray(), @$value, ['class' => 'form-control form-select form-select-sm col-auto', 'id' => 'rel', 'placeholder' => 'Please Choose', 'autocomplete' => 'off']) }}
+				<div class="col-sm-8">
+					{{ Form::select('staff_id[]', Staff::where('active', 1)->pluck('name', 'id')->toArray(), @$value, ['class' => 'form-control form-select form-select-sm col-auto', 'id' => 'rel', 'autocomplete' => 'off', 'multiple', 'aria-describedby' => 'selectstaff']) }}
+					<div id="selectstaff" class="form-text">
+						You can select multiple staff
+					</div>
 				</div>
 			</div>
 
@@ -52,7 +50,57 @@ use App\Models\HumanResources\HROvertimeRange;
 
 @section('js')
 /////////////////////////////////////////////////////////////////////////////////////////
+$('#rel').select2({
+	placeholder: 'Please Select',
+	width: '100%',
+	ajax: {
+		url: '{{ route('samelocationstaff') }}',
+		type: 'POST',
+		dataType: 'json',
+		data: function (params) {
+			var query = {
+				id: {{ \Auth::user()->belongstostaff->id }},
+				_token: '{!! csrf_token() !!}',
+				search: params.term,
+			}
+			return query;
+		}
+	},
+	allowClear: true,
+	closeOnSelect: true,
+});
+
+$('#mar').select2({
+	placeholder: 'Please Select',
+	width: '100%',
+	ajax: {
+		url: '{{ route('overtimerange') }}',
+		type: 'POST',
+		dataType: 'json',
+		data: function (params) {
+			var query = {
+				id: {{ \Auth::user()->belongstostaff->id }},
+				_token: '{!! csrf_token() !!}',
+				search: params.term,
+			}
+			return query;
+		}
+	},
+	allowClear: true,
+	closeOnSelect: true,
+});
+
 /////////////////////////////////////////////////////////////////////////////////////////
+<?php
+$mi = \Auth::user()->belongstostaff;
+
+// position
+$pos = $mi->div_id;
+
+// dept HR
+$dept = $mi->belongstomanydepartment()->where('main', 1)->first();
+?>
+
 $('#nam').datetimepicker({
 	icons: {
 		time: "fas fas-regular fa-clock fa-beat",
@@ -67,13 +115,11 @@ $('#nam').datetimepicker({
 	},
 	format: 'YYYY-MM-DD',
 	useCurrent: true,
-});
-
-$('#mar, #rel').select2({
-	placeholder: 'Please Select',
-	width: '100%',
-	allowClear: true,
-	closeOnSelect: true,
+	@if( $pos == 4 || ($pos == 1 && $dept->department_id == 21) )
+		minDate: moment().format(),
+	@endif
+}).on("dp.change", function (e) {
+	$('#form').bootstrapValidator('revalidateField', 'ot_date');
 });
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -88,7 +134,11 @@ $('#form').bootstrapValidator({
 		ot_date: {
 			validators: {
 				notEmpty: {
-					message: 'Please insert password. '
+					message: 'Please insert date. '
+				},
+				date: {
+					format: 'YYYY-MM-DD',
+					message: 'The value is not a valid date ',
 				},
 			}
 		},

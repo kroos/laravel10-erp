@@ -17,6 +17,10 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 
+// load cursor pagination
+use Illuminate\Pagination\Paginator;
+use Illuminate\Pagination\CursorPaginator;
+
 // load support
 use \Carbon\Carbon;
 use \Carbon\CarbonPeriod;
@@ -27,8 +31,8 @@ class OvertimeController extends Controller
 	function __construct()
 	{
 		$this->middleware(['auth']);
-		$this->middleware('highMgmtAccess:1|2|4|5,NULL', ['only' => ['index', 'show']]);								// all high management
-		$this->middleware('highMgmtAccess:1|5,14', ['only' => ['create', 'store', 'edit', 'update', 'destroy']]);		// only hod and asst hod HR can access
+		$this->middleware('highMgmtAccess:1|2|4|5,NULL', ['only' => ['create', 'store', 'index', 'show']]);			// all high management
+		$this->middleware('highMgmtAccess:1|5,14', ['only' => ['edit', 'update', 'destroy']]);						// only hod and asst hod HR can access
 	}
 
 	/**
@@ -36,8 +40,21 @@ class OvertimeController extends Controller
 	 */
 	public function index(): View
 	{
-		$overtime = HROvertime::where('active', 1)->orderBy('ot_date', 'DESC')->get();
-		return view('humanresources.hrdept.overtime.index', ['overtime' => $overtime]);
+		Paginator::useBootstrapFive();
+		$sa = HROvertime::SelectRaw('COUNT(staff_id) as totalstaff, ot_date')
+						->where('active', 1)
+						->groupByRaw('YEAR(ot_date)')
+						->orderBy('ot_date', 'DESC')
+						// ->get();
+						// ->ddRawSql();
+						->cursorPaginate(1);
+		// dd($sa);
+		$overtime = HROvertime::select('*')
+						->whereYear('ot_date', $sa->first()->ot_date)
+						->orderBy('ot_date', 'DESC')
+						->cursorPaginate($sa->first()->totalstaff);
+
+		return view('humanresources.hrdept.overtime.index', ['overtime' => $overtime, 'sa' => $sa]);
 	}
 
 	/**
@@ -53,7 +70,18 @@ class OvertimeController extends Controller
 	 */
 	public function store(Request $request): RedirectResponse
 	{
-		//
+		// dd($request->all());
+		foreach ($request->staff_id as $v) {
+			HROvertime::create([
+									'staff_id' => $v,
+									'ot_date' => $request->ot_date,
+									'overtime_range_id' => $request->overtime_range_id,
+									'active' => 1,
+									'assign_staff_id' => \Auth::user()->belongstostaff->id,
+								]);
+		}
+		Session::flash('flash_message', 'Successfully Add Staff Overtime');
+		return redirect()->route('overtime.index');
 	}
 
 	/**
@@ -87,7 +115,7 @@ class OvertimeController extends Controller
 	 */
 	public function destroy(HROvertime $overtime): JsonResponse
 	{
-		$overtime->update(['active' => NULL]);
+		$overtime->delete();
 		return response()->json([
 			'message' => 'Data deleted',
 			'status' => 'success'

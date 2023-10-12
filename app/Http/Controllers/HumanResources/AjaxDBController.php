@@ -22,6 +22,9 @@ use App\Models\HumanResources\HRLeaveEntitlement;
 use App\Models\HumanResources\HRLeaveApprovalBackup;
 use App\Models\HumanResources\HRLeaveApprovalSupervisor;
 use App\Models\HumanResources\HRAttendance;
+use App\Models\HumanResources\OptStatus;
+use App\Models\HumanResources\DepartmentPivot;
+use App\Models\HumanResources\HROvertime;
 
 use App\Models\HumanResources\OptAuthorise;
 use App\Models\HumanResources\OptBranch;
@@ -43,9 +46,7 @@ use App\Models\HumanResources\OptRestdayGroup;
 use App\Models\HumanResources\OptTaxExemptionPercentage;
 use App\Models\HumanResources\OptTcms;
 use App\Models\HumanResources\OptWorkingHour;
-use App\Models\HumanResources\OptStatus;
-use App\Models\HumanResources\DepartmentPivot;
-use App\Models\HumanResources\HROvertime;
+use App\Models\HumanResources\HROvertimeRange;
 
 use Illuminate\Database\Eloquent\Builder;
 
@@ -1093,7 +1094,7 @@ class AjaxDBController extends Controller
 		]);
 	}
 
-	public function staffdaily(Request $request)/*: JsonResponse*/
+	public function staffdaily(Request $request): JsonResponse
 	{
 		// $lsoy = now()->copy()->subDays(6);								// 6 days ago
 		$now = Carbon::parse('2023-08-14');								// 7 days ago
@@ -1228,5 +1229,39 @@ class AjaxDBController extends Controller
 			$b++;
 		}
 		return response()->json($chartdata);
+	}
+
+	public function samelocationstaff(Request $request): JsonResponse
+	{
+		$me = Staff::find($request->id);
+		$mede = $me->belongstomanydepartment()->wherePivot('main', 1)->first();
+		$branch = $mede->branch_id;
+		if ($me->div_id == 1 || $me->div_id == 2 || $me->div_id == 5) {
+			$dep = DepartmentPivot::where([['category_id', 2]])->get();
+		} elseif ($me->div_id == 4) {
+			$dep = DepartmentPivot::where([['branch_id', $branch], ['category_id', 2]])->get();
+		} elseif ($me->authorise_id == 1) {
+			$dep = DepartmentPivot::all();
+		} elseif (is_null($me->div_id) || is_null($me->authorise_id)) {
+			$dep = DepartmentPivot::find(0);
+		}
+
+		// dd($dep);
+		foreach ($dep as $v) {
+			$staff = $v->belongstomanystaff()->wherePivot('main', 1)->where('active', 1)->where('name','LIKE','%'.$request->search.'%')->get();
+			foreach ($staff as $k) {
+				$s['results'][] = ['id' => $k->id, 'text' => $k->name];
+			}
+		}
+		return response()->json($s);
+	}
+
+	public function overtimerange(): JsonResponse
+	{
+		$or = HROvertimeRange::where('active', 1)->get();
+		foreach ($or as $v) {
+		    $l['results'][] = ['id' => $v->id, 'text' => $v->start.' => '.$v->end];
+		}
+		return response()->json($l);
 	}
 }

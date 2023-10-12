@@ -36,7 +36,7 @@ use App\Models\HumanResources\HROvertimeRange;
 			<div class="form-group row mb-3 {{ $errors->has('staff_id') ? 'has-error' : '' }}">
 				{{ Form::label( 'rel', 'Staff : ', ['class' => 'col-sm-4 col-form-label'] ) }}
 				<div class="col-auto">
-					{{ Form::select('staff_id', Staff::where('active', 1)->pluck('name', 'id')->toArray(), @$value, ['class' => 'form-control form-select form-select-sm col-auto', 'id' => 'rel', 'placeholder' => 'Please Choose', 'autocomplete' => 'off', 'multiple']) }}
+					{{ Form::select('staff_id', Staff::where('active', 1)->pluck('name', 'id')->toArray(), @$value, ['class' => 'form-control form-select form-select-sm col-auto', 'id' => 'rel', 'placeholder' => 'Please Choose', 'autocomplete' => 'off']) }}
 				</div>
 			</div>
 
