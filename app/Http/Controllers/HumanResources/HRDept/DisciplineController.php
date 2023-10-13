@@ -41,8 +41,9 @@ class DisciplineController extends Controller
 	 */
 	public function index(): View
 	{
-		Paginator::useBootstrap();
-		$disciplinary = HRDisciplinary::orderBy('date', 'desc')->paginate(30);
+		// Paginator::useBootstrap();
+		// $disciplinary = HRDisciplinary::orderBy('date', 'desc')->paginate(30);
+		$disciplinary = HRDisciplinary::orderBy('date', 'desc')->get();
 		return view('humanresources.hrdept.discipline.index', compact('disciplinary'));
 	}
 
