@@ -20,6 +20,7 @@ use App\Http\Controllers\HumanResources\HRDept\OutstationController;
 use App\Http\Controllers\HumanResources\HRDept\AnnualLeaveController;
 use App\Http\Controllers\HumanResources\HRDept\MCLeaveController;
 use App\Http\Controllers\HumanResources\HRDept\MaternityLeaveController;
+use App\Http\Controllers\HumanResources\HRDept\OvertimeController;
 
 
 Route::resources([
@@ -42,6 +43,7 @@ Route::resources([
 	'annualleave' => AnnualLeaveController::class,
 	'mcleave' => MCLeaveController::class,
 	'maternityleave' => MaternityLeaveController::class,
+	'overtime' => OvertimeController::class,
 ]);
 
 Route::get('/attendancereport', [AttendanceReportController::class, 'index'])->name('attendancereport.index');

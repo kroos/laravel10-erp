@@ -22,6 +22,9 @@ use App\Models\HumanResources\HRLeaveEntitlement;
 use App\Models\HumanResources\HRLeaveApprovalBackup;
 use App\Models\HumanResources\HRLeaveApprovalSupervisor;
 use App\Models\HumanResources\HRAttendance;
+use App\Models\HumanResources\OptStatus;
+use App\Models\HumanResources\DepartmentPivot;
+use App\Models\HumanResources\HROvertime;
 
 use App\Models\HumanResources\OptAuthorise;
 use App\Models\HumanResources\OptBranch;
@@ -43,9 +46,7 @@ use App\Models\HumanResources\OptRestdayGroup;
 use App\Models\HumanResources\OptTaxExemptionPercentage;
 use App\Models\HumanResources\OptTcms;
 use App\Models\HumanResources\OptWorkingHour;
-use App\Models\HumanResources\OptStatus;
-use App\Models\HumanResources\DepartmentPivot;
-use App\Models\HumanResources\HROvertime;
+use App\Models\HumanResources\HROvertimeRange;
 
 use Illuminate\Database\Eloquent\Builder;
 
@@ -55,6 +56,7 @@ use App\Helpers\UnavailableDateTime;
 // load array helper
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
+use Illuminate\Support\Collection;
 
 // load Carbon
 use \Carbon\Carbon;
@@ -967,6 +969,7 @@ class AjaxDBController extends Controller
 
 				foreach ($sq as $s) {
 					$fulldayleave = $s->belongstoleave()?->where(function (Builder $query){
+					// $fulldayleave = HRLeave::where(function (Builder $query){
 											$query->where('leave_type_id', '<>', 9)
 											->where(function (Builder $query){
 												$query->where('half_type_id', '<>', 2)
@@ -985,7 +988,12 @@ class AjaxDBController extends Controller
 					$fdl += $fulldayleave->count();
 					// dump($fulldayleave->count().' fulldayleave count');
 
-					$absent = $s->where('attendance_type_id', 1)->whereDate('attend_date', $s->attend_date)->where('daytype_id', 1)->where('staff_id', $st->id)->get();
+					$absent = $s->where('attendance_type_id', 1)
+					// $absent = HRAttendance::where('attendance_type_id', 1)
+								->whereDate('attend_date', $s->attend_date)
+								->where('daytype_id', 1)
+								->where('staff_id', $st->id)
+								->get();
 					$a += $absent->count();
 					// dump($absent.' absent');
 				}
@@ -1086,26 +1094,174 @@ class AjaxDBController extends Controller
 		]);
 	}
 
-	public function staffdaily(Request $request)
+	public function staffdaily(Request $request): JsonResponse
 	{
-		$lsoy = now()->copy()->subDays(7);					// early last year
+		// $lsoy = now()->copy()->subDays(6);								// 6 days ago
+		$now = Carbon::parse('2023-08-14');								// 7 days ago
+		// $now = now();								// 7 days ago
+		$lsoy = $now->copy()->subDays(6);								// 6 days ago
 		// dd([$lsoy, $lsoy->diffInDays(now())]);
 
-		for ($i = 0; $i <= $lsoy->diffInDays(now()); $i++) {// take only 2 years back
+		$b = 0;
+		// for ($i = 0; $i <= $lsoy->copy()->diffInDays(now()); $i++) {	// take only 2 years back
+		for ($i = 0; $i <= $lsoy->copy()->diffInDays($now); $i++) {	// take only 2 years back
 			$sd = $lsoy->copy()->addDays($i);
-			// dump($sd);
 
-			$sq = HRAttendance::whereDate('attend_date', $sd)->get();
-			dump($sq);
+			$sq = HRAttendance::whereDate('attend_date', $sd)->groupBy('attend_date')->get();
+			$workday1 = HRAttendance::whereDate('attend_date', $sd)->where('daytype_id', 1)->get();
+			$workday = $workday1->count();
 
+			// dump($sq->first()->daytype_id);
+			if ($workday >= 1) {
+				$working = OptDayType::find($sq->first()->daytype_id)->daytype;
+				$workingpeople1 = HRAttendance::whereDate('attend_date', $sd)->where('daytype_id', 1)->whereNull('attendance_type_id')->whereNull('leave_id')->get();
+				$workingpeople = $workingpeople1->count();
+				$outstation1 = HRAttendance::whereDate('attend_date', $sd)->where('daytype_id', 1)->where('attendance_type_id', 4)->get();
+				$outstation = $outstation1->count();
+				$absent1 = HRAttendance::whereDate('attend_date', $sd)->where('daytype_id', 1)->where('attendance_type_id', 1)->get();
+				$absent = $absent1->count();
+				$halfabsent1 = HRAttendance::whereDate('attend_date', $sd)->where('daytype_id', 1)->where('attendance_type_id', 2)->get();
+				$halfabsent = $halfabsent1->count();
+				$leave1 = HRLeave::where(function (Builder $query){
+										$query->where('leave_type_id', '<>', 9)
+										->where(function (Builder $query){
+											$query->where('half_type_id', '<>', 2)
+											->orWhereNull('half_type_id');
+										});
+									})
+									->where(function (Builder $query){
+										$query->whereIn('leave_status_id', [5,6])
+										->orWhereNull('leave_status_id');
+									})
+									->where(function (Builder $query) use ($sd){
+										$query->whereDate('date_time_start', '<=', $sd)
+										->whereDate('date_time_end', '>=', $sd);
+									});
+				$leave = $leave1->count();
 
+				$e = 0;
+				foreach ($absent1 as $staffidabsent) {
+					$branch[$b][$e] = Staff::find($staffidabsent->staff_id)
+								->belongstomanydepartment()?->wherePivot('main', 1)
+								->first()->belongstobranch?->location;
+					$e++;
+				}
+				if (array_key_exists($b, $branch)) {
+					$locabsent1 = array_count_values($branch[$b]);
+					// foreach() {
 
+					// }
+				} else {
+					$locabsent1 = [];
+				}
 
+				$eh = 100;
+				foreach ($halfabsent1 as $staffidhalfabsent) {
+					$branchhalfabsent[$b][$eh] = Staff::find($staffidhalfabsent->staff_id)
+								->belongstomanydepartment()?->wherePivot('main', 1)
+								->first()->belongstobranch?->location;
+					$eh++;
+				}
+				if (array_key_exists($b, $branchhalfabsent)) {
+					$lochalfabsent1 = array_count_values($branchhalfabsent[$b]);
+				} else {
+					$lochalfabsent1 = [];
+				}
 
+				$eo = 200;
+				foreach ($outstation1 as $staffidoutstation) {
+					$branchoutstaion[$b][$eo] = Staff::find($staffidoutstation->staff_id)
+								->belongstomanydepartment()?->wherePivot('main', 1)
+								->first()->belongstobranch?->location;
+					$eo++;
+				}
+				if (array_key_exists($b, $branchoutstaion)) {
+					$locoutstation1 = array_count_values($branchoutstaion[$b]);
+				} else {
+					$locoutstation1 = [];
+				}
 
+				$leave1 = $leave1->get();
+				$ep = 300;
+				foreach ($leave1 as $staffidleaveloc) {
+					$branchleave[$b][$ep] = Staff::find($staffidleaveloc->staff_id)
+								->belongstomanydepartment()?->wherePivot('main', 1)
+								->first()->belongstobranch?->location;
+					$ep++;
+				}
+				if (array_key_exists($b, $branchleave)) {
+					$locleave1 = array_count_values($branchleave[$b]);
+				} else {
+					$locleave1 = [];
+				}
 
-			$chartdata[] = $sd;
+				$overallpercentage = ($workingpeople / $workday) * 100;
+
+			} else {
+				$overallpercentage = 0;
+				$workingpeople = 0;
+				$absent = 0;
+				$halfabsent = 0;
+				$leave = 0;
+				$working = OptDayType::find($sq->first()->daytype_id)->daytype;
+				// $branch = [];
+				$locabsent1 = [];
+				$lochalfabsent1 = [];
+				$locoutstation1 = [];
+				$locleave1 = [];
+			}
+
+			$chartdata[$b] = [
+								'date' => Carbon::parse($sd)->format('j M Y'),
+								'overallpercentage' => $overallpercentage,
+								'workday' => $workday,
+								'workingpeople' => $workingpeople,
+								'working' => $working,
+								'outstation' => $outstation,
+								'leave' => $leave,
+								'absent' => $absent,
+								'halfabsent' => $halfabsent,
+								'locoutstation' => $locoutstation1,
+								'locationleave' => $locleave1,
+								'locationabsent' => $locabsent1,
+								'locationhalfabsent' => $lochalfabsent1,
+							];
+			$b++;
 		}
 		return response()->json($chartdata);
+	}
+
+	public function samelocationstaff(Request $request): JsonResponse
+	{
+		$me = Staff::find($request->id);
+		$mede = $me->belongstomanydepartment()->wherePivot('main', 1)->first();
+		$branch = $mede->branch_id;
+		if ($me->div_id == 1 || $me->div_id == 2 || $me->div_id == 5) {
+			$dep = DepartmentPivot::where([['category_id', 2]])->get();
+		} elseif ($me->div_id == 4) {
+			$dep = DepartmentPivot::where([['branch_id', $branch], ['category_id', 2]])->get();
+		} elseif ($me->authorise_id == 1) {
+			$dep = DepartmentPivot::all();
+		} elseif (is_null($me->div_id) || is_null($me->authorise_id)) {
+			$dep = DepartmentPivot::find(0);
+		}
+
+		// dd($dep);
+		foreach ($dep as $v) {
+			$staff = $v->belongstomanystaff()->wherePivot('main', 1)->where('active', 1)->where('name','LIKE','%'.$request->search.'%')->get();
+			foreach ($staff as $k) {
+				$s['results'][] = ['id' => $k->id, 'text' => $k->name];
+			}
+		}
+		return response()->json($s);
+	}
+
+	public function overtimerange(): JsonResponse
+	{
+		$or = HROvertimeRange::where('active', 1)->get();
+		foreach ($or as $v) {
+		    $l['results'][] = ['id' => $v->id, 'text' => $v->start.' => '.$v->end];
+		}
+		return response()->json($l);
 	}
 }

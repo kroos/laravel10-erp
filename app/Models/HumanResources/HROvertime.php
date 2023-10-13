@@ -3,6 +3,7 @@
 namespace App\Models\HumanResources;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 // use Illuminate\Database\Eloquent\Model;
 use App\Models\Model;
 
@@ -17,7 +18,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class HROvertime extends Model
 {
-	use HasFactory;
+	use HasFactory, SoftDeletes;
 
 	// protected $connection = 'mysql';
 	protected $table = 'hr_overtimes';
@@ -32,6 +33,11 @@ class HROvertime extends Model
 	public function belongstostaff(): BelongsTo
 	{
 		return $this->belongsTo(\App\Models\Staff::class, 'staff_id');
+	}
+
+	public function belongstoassignstaff(): BelongsTo
+	{
+		return $this->belongsTo(\App\Models\Staff::class, 'assign_staff_id');
 	}
 
 	public function belongstoovertimerange(): BelongsTo
