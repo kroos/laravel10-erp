@@ -19,16 +19,6 @@
 /////////////////////////////////////////////////////////////////////////////////////////
 // chartjs also dont use jquery
 
-// const data = [
-// 					{ month: 'January', percentage: 90.59, workdays: 31, leaves: 1, absents: 1, working_days: 25 },
-// 					{ month: 'February', percentage: 93.23, workdays: 28, leaves: 1, absents: 1, working_days: 25 },
-// 					{ month: 'March', percentage: 91.5, workdays: 31, leaves: 1, absents: 1, working_days: 25 },
-// 					{ month: 'April', percentage: 93.45, workdays: 30, leaves: 1, absents: 1, working_days: 25 },
-// 					{ month: 'May', percentage: 81.23, workdays: 31, leaves: 1, absents: 1, working_days: 25 },
-// 					{ month: 'June', percentage: 79.23, workdays: 30, leaves: 1, absents: 1, working_days: 25 },
-// 					{ month: 'July', percentage: 95.59, workdays: 31, leaves: 1, absents: 1, working_days: 25 },
-// 			];
-
 var xmlhttp = new XMLHttpRequest();
 // xmlhttp.open(method, URL, [async, user, password])
 xmlhttp.open("POST", '{!! route('staffdaily', ['_token' => csrf_token()]) !!}', true);
@@ -42,30 +32,87 @@ xmlhttp.onload = function() {
 //	console.log(data);
 
 	new Chart(document.getElementById('myChart'), {
-		type: 'line',
+		type: 'bar',
 		data: {
-			labels: data.map(row => row.month),
+			labels: data.map(row => [row.date, row.working]),
 			datasets: [
 						{
-							label: 'Attendance Percentage By Month(%)',
-							data: data.map(row => row.percentage)
+							label: 'Total Attendance Percentage By Day(%)',
+							data: data.map(row => row.overallpercentage)
 						},
 						{
-							label: 'Leaves By Month',
-							data: data.map(row => row.leaves)
+							label: 'Available Staff',
+							data: data.map(row => row.workingpeople)
 						},
 						{
-							label: 'Absents By Month',
-							data: data.map(row => row.absents)
+							label: 'Outstation',
+							data: data.map(row => row.outstation)
 						},
 						{
-							label: 'Working Days By Month (Person Available)',
-							data: data.map(row => row.working_days)
+							label: 'On Leave',
+							data: data.map(row => row.leave)
 						},
 						{
-							label: 'Work Days By Month',
-							data: data.map(row => row.workdays)
+							label: 'Absents',
+							data: data.map(row => row.absent)
 						},
+						{
+							label: 'Half Absents',
+							data: data.map(row => row.halfabsent)
+						},
+						{
+							label: 'Total Staff',
+							data: data.map(row => row.workday)
+						},
+						{
+							label: 'Outstation Staff From ' + data.map(obj => {
+																		// let d = Object.entries(obj.locoutstation);
+																		const d = obj.locoutstation;
+																		return Object.keys(d);
+																	}),
+							data: data.map(obj => {
+								// let d = Object.entries(obj.locoutstation);
+								const d = obj.locoutstation;
+								return Object.values(d);
+							}),
+						},
+						{
+							label: 'On Leave Staff From ' + data.map(obj => {
+																		// let d = Object.entries(obj.locationleave);
+																		const d = obj.locationleave;
+																		return Object.keys(d);
+																	}),
+							data: data.map(obj => {
+								// let d = Object.entries(obj.locationleave);
+								const d = obj.locationleave;
+								return Object.values(d);
+							}),
+						},
+						{
+							label: 'Absent Staff From ' + data.map(obj => {
+																		// let d = Object.entries(obj.locationabsent);
+																		const d = obj.locationabsent;
+																		return Object.keys(d);
+																	}),
+							data: data.map(obj => {
+								// let d = Object.entries(obj.locationabsent);
+								const d = obj.locationabsent;
+								return Object.values(d);
+							}),
+						},
+						{
+							label: 'Half Day Absent Staff From ' + data.map(obj => {
+																		// let d = Object.entries(obj.locationhalfabsent);
+																		const d = obj.locationhalfabsent;
+																		return Object.keys(d);
+																	}),
+							data: data.map(obj => {
+								// let d = Object.entries(obj.locationhalfabsent);
+								const d = obj.locationhalfabsent;
+								return Object.values(d);
+							}),
+						},
+
 			]
 		},
 		options: {

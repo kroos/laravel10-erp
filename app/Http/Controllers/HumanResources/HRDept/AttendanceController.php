@@ -60,6 +60,7 @@ class AttendanceController extends Controller
 			->where('staffs.active', 1)
 			->groupBy('hr_attendances.attend_date')
 			->orderBy('hr_attendances.attend_date', 'DESC')
+			// ->ddRawSql();
 			->cursorPaginate(1);
 
 		$attendance = HRAttendance::join('staffs', 'hr_attendances.staff_id', '=', 'staffs.id')

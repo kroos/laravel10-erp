@@ -1392,7 +1392,7 @@ class LeaveController extends Controller
 	/**
 	 * Remove the specified resource from storage.
 	 */
-	public function destroy(HRLeave $hrleave): RedirectResponse
+	public function destroy(HRLeave $hrleave): JsonResponse
 	{
 		//
 	}
