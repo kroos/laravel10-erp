@@ -682,22 +682,28 @@ xmlhttp.onload = function() {
 			labels: data.map(row => row.month),
 			datasets: [
 						{
+							type: 'line',
 							label: 'Attendance Percentage By Month(%)',
-							data: data.map(row => row.percentage)
+							data: data.map(row => row.percentage),
+							tension: 0.3,
 						},
 						{
+							type: 'bar',
 							label: 'Leaves By Month',
 							data: data.map(row => row.leaves)
 						},
 						{
+							type: 'bar',
 							label: 'Absents By Month',
 							data: data.map(row => row.absents)
 						},
 						{
+							type: 'bar',
 							label: 'Working Days By Month (Person Available)',
 							data: data.map(row => row.working_days)
 						},
 						{
+							type: 'bar',
 							label: 'Work Days By Month',
 							data: data.map(row => row.workdays)
 						},

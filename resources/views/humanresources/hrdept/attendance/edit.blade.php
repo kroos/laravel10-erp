@@ -176,7 +176,7 @@ if ($leaves->count()) {
 
 			<div class="row mt-2">
 				<div class="col-md-3">
-					{!! Form::label( 'remark', 'REMARK', ['class' => 'form-control border-0'] ) !!}
+					{!! Form::label( 'remarks', 'REMARK', ['class' => 'form-control border-0'] ) !!}
 				</div>
 				<div class="col-md-9 {{ $errors->has('remark') ? 'has-error' : '' }}">
 					{!! Form::text( 'remark', @$attendance->remark, ['class' => 'form-control', 'id' => 'remark', 'placeholder' => ''] ) !!}
@@ -188,7 +188,7 @@ if ($leaves->count()) {
 					{!! Form::label( 'hr_remark', 'HR REMARK', ['class' => 'form-control border-0'] ) !!}
 				</div>
 				<div class="col-md-9 {{ $errors->has('hr_remark') ? 'has-error' : '' }}">
-					{!! Form::text( 'hr_remark', @$attendance->hr_remark, ['class' => 'form-control', 'id' => 'hr_remark', 'placeholder' => ''] ) !!}
+					{!! Form::text( 'hr_remarks', @$attendance->hr_remark, ['class' => 'form-control', 'id' => 'hr_remark', 'placeholder' => ''] ) !!}
 				</div>
 			</div>
 

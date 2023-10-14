@@ -123,15 +123,15 @@ class AttendanceController extends Controller
 			'resume' => $request->resume,
 			'out' => $request->out,
 			'time_work_hour' => $request->time_work_hour,
-			'remark' => $request->remark,
-			'hr_remark' => $request->hr_remark,
+			'remarks' => $request->remarks,
+			'hr_remarks' => $request->hr_remarks,
 			'exception' => $exception,
 		]);
 
 		$attendance->save();
 
 		Session::flash('flash_message', 'Data successfully updated!');
-		return Redirect::route('attendance.index', $attendance);
+		return redirect()->route('attendance.index');
 	}
 
 	/**

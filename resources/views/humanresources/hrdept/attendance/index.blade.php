@@ -163,6 +163,7 @@ $o = HROvertime::where([['staff_id', $s->belongstostaff->id], ['ot_date', $s->at
 // looking for outstation
 // checking for outstation
 $os = HROutstation::where('staff_id', $s->belongstostaff->id)
+		->where('active', 1)
 		->where(function (Builder $query) use ($s){
 			$query->whereDate('date_from', '<=', $s->attend_date)
 			->whereDate('date_to', '>=', $s->attend_date);
@@ -184,11 +185,21 @@ if ($os->isNotEmpty()) {																							// outstation |
 							} else {
 								$ll = $s->belongstoopttcms->leave;
 							}
+							if ($os) {
+								$s->update(['outstation_id' => $os->first()->id, 'attendance_type_id' => 4]);
+							} else {
+								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
+							}
 						} else {																					// outstation | working | leave | no in | no break | no resume | out
 							if (is_null($s->attendance_type_id)) {
 								$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
 							} else {
 								$ll = $s->belongstoopttcms->leave;
+							}
+							if ($os) {
+								$s->update(['outstation_id' => $os->first()->id, 'attendance_type_id' => 4]);
+							} else {
+								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
 							}
 						}
 					} else {																						// outstation | working | leave | no in | no break | resume
@@ -198,11 +209,21 @@ if ($os->isNotEmpty()) {																							// outstation |
 							} else {
 								$ll = $s->belongstoopttcms->leave;
 							}
+							if ($os) {
+								$s->update(['outstation_id' => $os->first()->id, 'attendance_type_id' => 4]);
+							} else {
+								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
+							}
 						} else {																					// outstation | working | leave | no in | no break | resume | out
 							if (is_null($s->attendance_type_id)) {
 								$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
 							} else {
 								$ll = $s->belongstoopttcms->leave;
+							}
+							if ($os) {
+								$s->update(['outstation_id' => $os->first()->id, 'attendance_type_id' => 4]);
+							} else {
+								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
 							}
 						}
 					}
@@ -214,11 +235,21 @@ if ($os->isNotEmpty()) {																							// outstation |
 							} else {
 								$ll = $s->belongstoopttcms->leave;
 							}
+							if ($os) {
+								$s->update(['outstation_id' => $os->first()->id, 'attendance_type_id' => 4]);
+							} else {
+								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
+							}
 						} else {																					// outstation | working | leave | no in | break | no resume | out
 							if (is_null($s->attendance_type_id)) {
 								$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
 							} else {
 								$ll = $s->belongstoopttcms->leave;
+							}
+							if ($os) {
+								$s->update(['outstation_id' => $os->first()->id, 'attendance_type_id' => 4]);
+							} else {
+								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
 							}
 						}
 					} else {																						// outstation | working | leave | no in | break | resume
@@ -228,11 +259,21 @@ if ($os->isNotEmpty()) {																							// outstation |
 							} else {
 								$ll = $s->belongstoopttcms->leave;
 							}
+							if ($os) {
+								$s->update(['outstation_id' => $os->first()->id, 'attendance_type_id' => 4]);
+							} else {
+								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
+							}
 						} else {																					// outstation | working | leave | no in | break | resume | out
 							if (is_null($s->attendance_type_id)) {
 								$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
 							} else {
 								$ll = $s->belongstoopttcms->leave;
+							}
+							if ($os) {
+								$s->update(['outstation_id' => $os->first()->id, 'attendance_type_id' => 4]);
+							} else {
+								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
 							}
 						}
 					}
@@ -246,11 +287,21 @@ if ($os->isNotEmpty()) {																							// outstation |
 							} else {
 								$ll = $s->belongstoopttcms->leave;
 							}
+							if ($os) {
+								$s->update(['outstation_id' => $os->first()->id, 'attendance_type_id' => 4]);
+							} else {
+								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
+							}
 						} else {																					// outstation | working | leave | in | no break | no resume | out
 							if (is_null($s->attendance_type_id)) {
 								$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
 							} else {
 								$ll = $s->belongstoopttcms->leave;
+							}
+							if ($os) {
+								$s->update(['outstation_id' => $os->first()->id, 'attendance_type_id' => 4]);
+							} else {
+								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
 							}
 						}
 					} else {																						// outstation | working | leave | in | no break | resume
@@ -260,11 +311,21 @@ if ($os->isNotEmpty()) {																							// outstation |
 							} else {
 								$ll = $s->belongstoopttcms->leave;
 							}
+							if ($os) {
+								$s->update(['outstation_id' => $os->first()->id, 'attendance_type_id' => 4]);
+							} else {
+								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
+							}
 						} else {																					// outstation | working | leave | in | no break | resume | out
 							if (is_null($s->attendance_type_id)) {
 								$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
 							} else {
 								$ll = $s->belongstoopttcms->leave;
+							}
+							if ($os) {
+								$s->update(['outstation_id' => $os->first()->id, 'attendance_type_id' => 4]);
+							} else {
+								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
 							}
 						}
 					}
@@ -276,11 +337,21 @@ if ($os->isNotEmpty()) {																							// outstation |
 							} else {
 								$ll = $s->belongstoopttcms->leave;
 							}
+							if ($os) {
+								$s->update(['outstation_id' => $os->first()->id, 'attendance_type_id' => 4]);
+							} else {
+								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
+							}
 						} else {																					// outstation | working | leave | in | break | no resume | out
 							if (is_null($s->attendance_type_id)) {
 								$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
 							} else {
 								$ll = $s->belongstoopttcms->leave;
+							}
+							if ($os) {
+								$s->update(['outstation_id' => $os->first()->id, 'attendance_type_id' => 4]);
+							} else {
+								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
 							}
 						}
 					} else {																						// outstation | working | leave | in | break | resume
@@ -290,11 +361,21 @@ if ($os->isNotEmpty()) {																							// outstation |
 							} else {
 								$ll = $s->belongstoopttcms->leave;
 							}
+							if ($os) {
+								$s->update(['outstation_id' => $os->first()->id, 'attendance_type_id' => 4]);
+							} else {
+								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
+							}
 						} else {																					// outstation | working | leave | in | break | resume | out
 							if (is_null($s->attendance_type_id)) {
 								$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
 							} else {
 								$ll = $s->belongstoopttcms->leave;
+							}
+							if ($os) {
+								$s->update(['outstation_id' => $os->first()->id, 'attendance_type_id' => 4]);
+							} else {
+								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
 							}
 						}
 					}
@@ -310,11 +391,21 @@ if ($os->isNotEmpty()) {																							// outstation |
 							} else {
 								$ll = $s->belongstoopttcms->leave;
 							}
+							if ($os) {
+								$s->update(['outstation_id' => $os->first()->id, 'attendance_type_id' => 4]);
+							} else {
+								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
+							}
 						} else {																					// outstation | working | no leave | no in | no break | no resume | out
 							if (is_null($s->attendance_type_id)) {
 								$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
 							} else {
 								$ll = $s->belongstoopttcms->leave;
+							}
+							if ($os) {
+								$s->update(['outstation_id' => $os->first()->id, 'attendance_type_id' => 4]);
+							} else {
+								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
 							}
 						}
 					} else {																						// outstation | working | no leave | no in | no break | resume
@@ -324,11 +415,21 @@ if ($os->isNotEmpty()) {																							// outstation |
 							} else {
 								$ll = $s->belongstoopttcms->leave;
 							}
+							if ($os) {
+								$s->update(['outstation_id' => $os->first()->id, 'attendance_type_id' => 4]);
+							} else {
+								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
+							}
 						} else {																					// outstation | working | no leave | no in | no break | resume | out
 							if (is_null($s->attendance_type_id)) {
 								$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
 							} else {
 								$ll = $s->belongstoopttcms->leave;
+							}
+							if ($os) {
+								$s->update(['outstation_id' => $os->first()->id, 'attendance_type_id' => 4]);
+							} else {
+								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
 							}
 						}
 					}
@@ -340,11 +441,21 @@ if ($os->isNotEmpty()) {																							// outstation |
 							} else {
 								$ll = $s->belongstoopttcms->leave;
 							}
+							if ($os) {
+								$s->update(['outstation_id' => $os->first()->id, 'attendance_type_id' => 4]);
+							} else {
+								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
+							}
 						} else {																					// outstation | working | no leave | no in | break | no resume | out
 							if (is_null($s->attendance_type_id)) {
 								$ll = '<a href="'.route('attendance.edit', $s->id).'">Check</a>';					// pls check
 							} else {
 								$ll = $s->belongstoopttcms->leave;
+							}
+							if ($os) {
+								$s->update(['outstation_id' => $os->first()->id, 'attendance_type_id' => 4]);
+							} else {
+								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
 							}
 						}
 					} else {																						// outstation | working | no leave | no in | break | resume
@@ -353,6 +464,11 @@ if ($os->isNotEmpty()) {																							// outstation |
 								$ll = '<a href="'.route('attendance.edit', $s->id).'">Check</a>';					// pls check
 							} else {
 								$ll = $s->belongstoopttcms->leave;
+							}
+							if ($os) {
+								$s->update(['outstation_id' => $os->first()->id, 'attendance_type_id' => 4]);
+							} else {
+								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
 							}
 						} else {																					// outstation | working | no leave | no in | break | resume | out
 							if (is_null($s->attendance_type_id)) {
@@ -364,6 +480,11 @@ if ($os->isNotEmpty()) {																							// outstation |
 							} else {
 								$ll = $s->belongstoopttcms->leave;
 							}
+							if ($os) {
+								$s->update(['outstation_id' => $os->first()->id, 'attendance_type_id' => 4]);
+							} else {
+								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
+							}
 						}
 					}
 				}
@@ -374,21 +495,31 @@ if ($os->isNotEmpty()) {																							// outstation |
 							if (Carbon::parse(now())->gt($s->attend_date)) {
 								if (is_null($s->attendance_type_id)) {
 									$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
-									} else {
+								} else {
 									$ll = $s->belongstoopttcms->leave;
 								}
 							} else {
 								if (is_null($s->attendance_type_id)) {
-								$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
-							} else {
-								$ll = $s->belongstoopttcms->leave;
+									$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
+								} else {
+									$ll = $s->belongstoopttcms->leave;
+								}
 							}
+							if ($os) {
+								$s->update(['outstation_id' => $os->first()->id, 'attendance_type_id' => 4]);
+							} else {
+								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
 							}
 						} else {																					// outstation | working | no leave | in | no break | no resume | out
 							if (is_null($s->attendance_type_id)) {
 								$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
 							} else {
 								$ll = $s->belongstoopttcms->leave;
+							}
+							if ($os) {
+								$s->update(['outstation_id' => $os->first()->id, 'attendance_type_id' => 4]);
+							} else {
+								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
 							}
 						}
 					} else {																						// outstation | working | no leave | in | no break | resume
@@ -398,11 +529,21 @@ if ($os->isNotEmpty()) {																							// outstation |
 							} else {
 								$ll = $s->belongstoopttcms->leave;
 							}
+							if ($os) {
+								$s->update(['outstation_id' => $os->first()->id, 'attendance_type_id' => 4]);
+							} else {
+								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
+							}
 						} else {																					// outstation | working | no leave | in | no break | resume | out
 							if (is_null($s->attendance_type_id)) {
 								$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
 							} else {
 								$ll = $s->belongstoopttcms->leave;
+							}
+							if ($os) {
+								$s->update(['outstation_id' => $os->first()->id, 'attendance_type_id' => 4]);
+							} else {
+								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
 							}
 						}
 					}
@@ -414,11 +555,21 @@ if ($os->isNotEmpty()) {																							// outstation |
 							} else {
 								$ll = $s->belongstoopttcms->leave;
 							}
+							if ($os) {
+								$s->update(['outstation_id' => $os->first()->id, 'attendance_type_id' => 4]);
+							} else {
+								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
+							}
 						} else {																					// outstation | working | no leave | in | break | no resume | out
 							if (is_null($s->attendance_type_id)) {
 								$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
 							} else {
 								$ll = $s->belongstoopttcms->leave;
+							}
+							if ($os) {
+								$s->update(['outstation_id' => $os->first()->id, 'attendance_type_id' => 4]);
+							} else {
+								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
 							}
 						}
 					} else {																						// outstation | working | no leave | in | break | resume
@@ -432,11 +583,21 @@ if ($os->isNotEmpty()) {																							// outstation |
 							} else {
 								$ll = $s->belongstoopttcms->leave;
 							}
+							if ($os) {
+								$s->update(['outstation_id' => $os->first()->id, 'attendance_type_id' => 4]);
+							} else {
+								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
+							}
 						} else {																					// outstation | working | no leave | in | break | resume | out
 							if (is_null($s->attendance_type_id)) {
 								$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
 							} else {
 								$ll = $s->belongstoopttcms->leave;
+							}
+							if ($os) {
+								$s->update(['outstation_id' => $os->first()->id, 'attendance_type_id' => 4]);
+							} else {
+								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
 							}
 						}
 					}
@@ -454,11 +615,21 @@ if ($os->isNotEmpty()) {																							// outstation |
 							} else {
 								$ll = $s->belongstoopttcms->leave;
 							}
+							if ($os) {
+								$s->update(['outstation_id' => $os->first()->id, 'attendance_type_id' => 4]);
+							} else {
+								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
+							}
 						} else {																					// outstation | no working | leave | no in | no break | no resume | out
 							if (is_null($s->attendance_type_id)) {
 								$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
 							} else {
 								$ll = $s->belongstoopttcms->leave;
+							}
+							if ($os) {
+								$s->update(['outstation_id' => $os->first()->id, 'attendance_type_id' => 4]);
+							} else {
+								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
 							}
 						}
 					} else {																						// outstation | no working | leave | no in | no break | resume
@@ -468,11 +639,21 @@ if ($os->isNotEmpty()) {																							// outstation |
 							} else {
 								$ll = $s->belongstoopttcms->leave;
 							}
+							if ($os) {
+								$s->update(['outstation_id' => $os->first()->id, 'attendance_type_id' => 4]);
+							} else {
+								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
+							}
 						} else {																					// outstation | no working | leave | no in | no break | resume | out
 							if (is_null($s->attendance_type_id)) {
 								$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
 							} else {
 								$ll = $s->belongstoopttcms->leave;
+							}
+							if ($os) {
+								$s->update(['outstation_id' => $os->first()->id, 'attendance_type_id' => 4]);
+							} else {
+								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
 							}
 						}
 					}
@@ -484,11 +665,21 @@ if ($os->isNotEmpty()) {																							// outstation |
 							} else {
 								$ll = $s->belongstoopttcms->leave;
 							}
+							if ($os) {
+								$s->update(['outstation_id' => $os->first()->id, 'attendance_type_id' => 4]);
+							} else {
+								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
+							}
 						} else {																					// outstation | no working | leave | no in | break | no resume | out
 							if (is_null($s->attendance_type_id)) {
 								$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
 							} else {
 								$ll = $s->belongstoopttcms->leave;
+							}
+							if ($os) {
+								$s->update(['outstation_id' => $os->first()->id, 'attendance_type_id' => 4]);
+							} else {
+								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
 							}
 						}
 					} else {																						// outstation | no working | leave | no in | break | resume
@@ -498,11 +689,21 @@ if ($os->isNotEmpty()) {																							// outstation |
 							} else {
 								$ll = $s->belongstoopttcms->leave;
 							}
+							if ($os) {
+								$s->update(['outstation_id' => $os->first()->id, 'attendance_type_id' => 4]);
+							} else {
+								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
+							}
 						} else {																					// outstation | no working | leave | no in | break | resume | out
 							if (is_null($s->attendance_type_id)) {
 								$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
 							} else {
 								$ll = $s->belongstoopttcms->leave;
+							}
+							if ($os) {
+								$s->update(['outstation_id' => $os->first()->id, 'attendance_type_id' => 4]);
+							} else {
+								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
 							}
 						}
 					}
@@ -516,11 +717,21 @@ if ($os->isNotEmpty()) {																							// outstation |
 							} else {
 								$ll = $s->belongstoopttcms->leave;
 							}
+							if ($os) {
+								$s->update(['outstation_id' => $os->first()->id, 'attendance_type_id' => 4]);
+							} else {
+								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
+							}
 						} else {																					// outstation | no working | leave | in | no break | no resume | out
 							if (is_null($s->attendance_type_id)) {
 								$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
 							} else {
 								$ll = $s->belongstoopttcms->leave;
+							}
+							if ($os) {
+								$s->update(['outstation_id' => $os->first()->id, 'attendance_type_id' => 4]);
+							} else {
+								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
 							}
 						}
 					} else {																						// outstation | no working | leave | in | no break | resume
@@ -530,11 +741,21 @@ if ($os->isNotEmpty()) {																							// outstation |
 							} else {
 								$ll = $s->belongstoopttcms->leave;
 							}
+							if ($os) {
+								$s->update(['outstation_id' => $os->first()->id, 'attendance_type_id' => 4]);
+							} else {
+								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
+							}
 						} else {																					// outstation | no working | leave | in | no break | resume | out
 							if (is_null($s->attendance_type_id)) {
 								$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
 							} else {
 								$ll = $s->belongstoopttcms->leave;
+							}
+							if ($os) {
+								$s->update(['outstation_id' => $os->first()->id, 'attendance_type_id' => 4]);
+							} else {
+								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
 							}
 						}
 					}
@@ -546,11 +767,21 @@ if ($os->isNotEmpty()) {																							// outstation |
 							} else {
 								$ll = $s->belongstoopttcms->leave;
 							}
+							if ($os) {
+								$s->update(['outstation_id' => $os->first()->id, 'attendance_type_id' => 4]);
+							} else {
+								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
+							}
 						} else {																					// outstation | no working | leave | in | break | no resume | out
 							if (is_null($s->attendance_type_id)) {
 								$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
 							} else {
 								$ll = $s->belongstoopttcms->leave;
+							}
+							if ($os) {
+								$s->update(['outstation_id' => $os->first()->id, 'attendance_type_id' => 4]);
+							} else {
+								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
 							}
 						}
 					} else {																						// outstation | no working | leave | in | break | resume
@@ -560,11 +791,21 @@ if ($os->isNotEmpty()) {																							// outstation |
 							} else {
 								$ll = $s->belongstoopttcms->leave;
 							}
+							if ($os) {
+								$s->update(['outstation_id' => $os->first()->id, 'attendance_type_id' => 4]);
+							} else {
+								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
+							}
 						} else {																					// outstation | no working | leave | in | break | resume | out
 							if (is_null($s->attendance_type_id)) {
 								$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
 							} else {
 								$ll = $s->belongstoopttcms->leave;
+							}
+							if ($os) {
+								$s->update(['outstation_id' => $os->first()->id, 'attendance_type_id' => 4]);
+							} else {
+								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
 							}
 						}
 					}
@@ -580,11 +821,21 @@ if ($os->isNotEmpty()) {																							// outstation |
 							} else {
 								$ll = $s->belongstoopttcms->leave;
 							}
+							if ($os) {
+								$s->update(['outstation_id' => $os->first()->id, 'attendance_type_id' => 4]);
+							} else {
+								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
+							}
 						} else {																					// outstation | no working | no leave | no in | no break | no resume | out
 							if (is_null($s->attendance_type_id)) {
 								$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
 							} else {
 								$ll = $s->belongstoopttcms->leave;
+							}
+							if ($os) {
+								$s->update(['outstation_id' => $os->first()->id, 'attendance_type_id' => 4]);
+							} else {
+								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
 							}
 						}
 					} else {																						// outstation | no working | no leave | no in | no break | resume
@@ -594,11 +845,21 @@ if ($os->isNotEmpty()) {																							// outstation |
 							} else {
 								$ll = $s->belongstoopttcms->leave;
 							}
+							if ($os) {
+								$s->update(['outstation_id' => $os->first()->id, 'attendance_type_id' => 4]);
+							} else {
+								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
+							}
 						} else {																					// outstation | no working | no leave | no in | no break | resume | out
 							if (is_null($s->attendance_type_id)) {
 								$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
 							} else {
 								$ll = $s->belongstoopttcms->leave;
+							}
+							if ($os) {
+								$s->update(['outstation_id' => $os->first()->id, 'attendance_type_id' => 4]);
+							} else {
+								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
 							}
 						}
 					}
@@ -610,11 +871,21 @@ if ($os->isNotEmpty()) {																							// outstation |
 							} else {
 								$ll = $s->belongstoopttcms->leave;
 							}
+							if ($os) {
+								$s->update(['outstation_id' => $os->first()->id, 'attendance_type_id' => 4]);
+							} else {
+								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
+							}
 						} else {																					// outstation | no working | no leave | no in | break | no resume | out
 							if (is_null($s->attendance_type_id)) {
 								$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
 							} else {
 								$ll = $s->belongstoopttcms->leave;
+							}
+							if ($os) {
+								$s->update(['outstation_id' => $os->first()->id, 'attendance_type_id' => 4]);
+							} else {
+								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
 							}
 						}
 					} else {																						// outstation | no working | no leave | no in | break | resume
@@ -624,11 +895,21 @@ if ($os->isNotEmpty()) {																							// outstation |
 							} else {
 								$ll = $s->belongstoopttcms->leave;
 							}
+							if ($os) {
+								$s->update(['outstation_id' => $os->first()->id, 'attendance_type_id' => 4]);
+							} else {
+								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
+							}
 						} else {																					// outstation | no working | no leave | no in | break | resume | out
 							if (is_null($s->attendance_type_id)) {
 								$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
 							} else {
 								$ll = $s->belongstoopttcms->leave;
+							}
+							if ($os) {
+								$s->update(['outstation_id' => $os->first()->id, 'attendance_type_id' => 4]);
+							} else {
+								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
 							}
 						}
 					}
@@ -642,11 +923,21 @@ if ($os->isNotEmpty()) {																							// outstation |
 							} else {
 								$ll = $s->belongstoopttcms->leave;
 							}
+							if ($os) {
+								$s->update(['outstation_id' => $os->first()->id, 'attendance_type_id' => 4]);
+							} else {
+								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
+							}
 						} else {																					// outstation | no working | no leave | in | no break | no resume | out
 							if (is_null($s->attendance_type_id)) {
 								$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
 							} else {
 								$ll = $s->belongstoopttcms->leave;
+							}
+							if ($os) {
+								$s->update(['outstation_id' => $os->first()->id, 'attendance_type_id' => 4]);
+							} else {
+								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
 							}
 						}
 					} else {																						// outstation | no working | no leave | in | no break | resume
@@ -656,11 +947,21 @@ if ($os->isNotEmpty()) {																							// outstation |
 							} else {
 								$ll = $s->belongstoopttcms->leave;
 							}
+							if ($os) {
+								$s->update(['outstation_id' => $os->first()->id, 'attendance_type_id' => 4]);
+							} else {
+								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
+							}
 						} else {																					// outstation | no working | no leave | in | no break | resume | out
 							if (is_null($s->attendance_type_id)) {
 								$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
 							} else {
 								$ll = $s->belongstoopttcms->leave;
+							}
+							if ($os) {
+								$s->update(['outstation_id' => $os->first()->id, 'attendance_type_id' => 4]);
+							} else {
+								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
 							}
 						}
 					}
@@ -672,11 +973,21 @@ if ($os->isNotEmpty()) {																							// outstation |
 							} else {
 								$ll = $s->belongstoopttcms->leave;
 							}
+							if ($os) {
+								$s->update(['outstation_id' => $os->first()->id, 'attendance_type_id' => 4]);
+							} else {
+								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
+							}
 						} else {																					// outstation | no working | no leave | in | break | no resume | out
 							if (is_null($s->attendance_type_id)) {
 								$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
 							} else {
 								$ll = $s->belongstoopttcms->leave;
+							}
+							if ($os) {
+								$s->update(['outstation_id' => $os->first()->id, 'attendance_type_id' => 4]);
+							} else {
+								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
 							}
 						}
 					} else {																						// outstation | no working | no leave | in | break | resume
@@ -686,11 +997,21 @@ if ($os->isNotEmpty()) {																							// outstation |
 							} else {
 								$ll = $s->belongstoopttcms->leave;
 							}
+							if ($os) {
+								$s->update(['outstation_id' => $os->first()->id, 'attendance_type_id' => 4]);
+							} else {
+								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
+							}
 						} else {																					// outstation | no working | no leave | in | break | resume | out
 							if (is_null($s->attendance_type_id)) {
 								$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
 							} else {
 								$ll = $s->belongstoopttcms->leave;
+							}
+							if ($os) {
+								$s->update(['outstation_id' => $os->first()->id, 'attendance_type_id' => 4]);
+							} else {
+								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
 							}
 						}
 					}
@@ -1067,7 +1388,18 @@ if($l) {
 							{{ ($out)?'':Carbon::parse($s->out)->format('g:i a') }}
 						</span></td>
 					<td>{{ $s->time_work_hour }}</td>
-					<td>{{ $o?->belongstoovertimerange?->where('active', 1)->first()->total_time }}</td>
+					<td>
+						{{ $o?->belongstoovertimerange?->where('active', 1)->first()->total_time }}
+						<?php
+							if(is_null($s->overtime_id)) {
+								if ($o) {
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => NULL]);
+								}
+							}
+						?>
+					</td>
 					<td data-bs-toggle="tooltip" data-bs-custom-class="custom-tooltip" data-bs-html="true" data-bs-title="{{ ($s->remarks)??' ' }} | {{ ($s->hr_remarks)??' ' }}">{{ Str::limit($s->remarks, 8, ' >') }} <span class="text-danger">{{ Str::limit($s->hr_remarks, 8, ' >') }}</td>
 					<td>{{ $s->exception }}</td>
 				</tr>
