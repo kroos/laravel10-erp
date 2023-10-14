@@ -217,7 +217,7 @@ if ($me1) {																				// hod
 								<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#staff_{{ $s->id }}">
 									{{ $s->name }}
 								</button>
-								<div class="modal fade" id="staff_{{ $s->id }}" tabindex="-1" aria-labelledby="label_{{ $s->id }}" aria-hidden="true">
+								<div class="modal fade" id="staff_{{ $s->id }}" tabindex="-1" aria-labelledby="label_{{ $s->id }}" aria-hidden="true" data-backdrop="false">
 									<div class="modal-dialog modal-dialog-centered">
 										<div class="modal-content">
 											<div class="modal-header">

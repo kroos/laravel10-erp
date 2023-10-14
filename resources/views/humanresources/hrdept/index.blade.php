@@ -21,7 +21,7 @@
 
 var xmlhttp = new XMLHttpRequest();
 // xmlhttp.open(method, URL, [async, user, password])
-xmlhttp.open("POST", '{!! route('staffdaily', ['_token' => csrf_token()]) !!}', true);
+xmlhttp.open("GET", '{!! route('staffdaily', ['_token' => csrf_token()]) !!}', true);
 // xmlhttp.responseType = 'json';
 // xmlhttp.onreadystatechange = myfunction;
 xmlhttp.send();
@@ -32,88 +32,107 @@ xmlhttp.onload = function() {
 //	console.log(data);
 
 	new Chart(document.getElementById('myChart'), {
-		type: 'bar',
+		// type: 'bar',
 		data: {
 			labels: data.map(row => [row.date, row.working]),
 			datasets: [
 						{
+							type: 'line',
 							label: 'Total Attendance Percentage By Day(%)',
-							data: data.map(row => row.overallpercentage)
+							data: data.map(row => row.overallpercentage),
+							tension: 0.3,
 						},
 						{
+							type: 'bar',
 							label: 'Available Staff',
 							data: data.map(row => row.workingpeople)
 						},
 						{
+							type: 'bar',
 							label: 'Outstation',
 							data: data.map(row => row.outstation)
 						},
 						{
+							type: 'bar',
 							label: 'On Leave',
 							data: data.map(row => row.leave)
 						},
 						{
+							type: 'bar',
 							label: 'Absents',
 							data: data.map(row => row.absent)
 						},
 						{
+							type: 'bar',
 							label: 'Half Absents',
 							data: data.map(row => row.halfabsent)
 						},
 						{
+							type: 'bar',
 							label: 'Total Staff',
 							data: data.map(row => row.workday)
 						},
-						{
-							label: 'Outstation Staff From ' + data.map(obj => {
-																		// let d = Object.entries(obj.locoutstation);
-																		const d = obj.locoutstation;
-																		return Object.keys(d);
-																	}),
-							data: data.map(obj => {
-								// let d = Object.entries(obj.locoutstation);
-								const d = obj.locoutstation;
-								return Object.values(d);
-							}),
-						},
-						{
-							label: 'On Leave Staff From ' + data.map(obj => {
-																		// let d = Object.entries(obj.locationleave);
-																		const d = obj.locationleave;
-																		return Object.keys(d);
-																	}),
-							data: data.map(obj => {
-								// let d = Object.entries(obj.locationleave);
-								const d = obj.locationleave;
-								return Object.values(d);
-							}),
-						},
-						{
-							label: 'Absent Staff From ' + data.map(obj => {
-																		// let d = Object.entries(obj.locationabsent);
-																		const d = obj.locationabsent;
-																		return Object.keys(d);
-																	}),
-							data: data.map(obj => {
-								// let d = Object.entries(obj.locationabsent);
-								const d = obj.locationabsent;
-								return Object.values(d);
-							}),
-						},
-						{
-							label: 'Half Day Absent Staff From ' + data.map(obj => {
-																		// let d = Object.entries(obj.locationhalfabsent);
-																		const d = obj.locationhalfabsent;
-																		return Object.keys(d);
-																	}),
-							data: data.map(obj => {
-								// let d = Object.entries(obj.locationhalfabsent);
-								const d = obj.locationhalfabsent;
-								return Object.values(d);
-							}),
-						},
-
-			]
+						// {
+						// 	type: 'bar',
+						// 	label:
+						// 														// data.forEach((s, index, array) => {
+						// 														// 	const d = s.locoutstation;
+						// 														// 	// console.log(d);
+						// 														// 	// console.log(Object.keys(d));
+						// 														// 	// console.log(Object.keys(array[index].locoutstation));
+						// 														// 	return Object.keys(array[index].locoutstation);
+						// 														// })
+						// 											data.map((obj, index) => {
+						// 												const d = obj.locoutstation;
+						// 												console.log(Object.keys(d))
+						// 											})
+						// 											,
+						// 	data: data.map(obj => {
+						// 							// let d = Object.entries(obj.locoutstation);
+						// 							const d = obj.locoutstation;
+						// 							return Object.values(d);
+						// 						})
+						// },
+//						{
+//							type: 'bar',
+//							label: 'On Leave Staff From ' + data.map(obj => {
+//																		// let d = Object.entries(obj.locationleave);
+//																		const d = obj.locationleave;
+//																		return Object.keys(d);
+//																	}),
+//							data: data.map(obj => {
+//								// let d = Object.entries(obj.locationleave);
+//								const d = obj.locationleave;
+//								return Object.values(d);
+//							}),
+//						},
+//						{
+//							type: 'bar',
+//							label: 'Absent Staff From ' + data.map(obj => {
+//																		// let d = Object.entries(obj.locationabsent);
+//																		const d = obj.locationabsent;
+//																		return Object.keys(d);
+//																	}),
+//							data: data.map(obj => {
+//								// let d = Object.entries(obj.locationabsent);
+//								const d = obj.locationabsent;
+//								return Object.values(d);
+//							}),
+//						},
+//						{
+//							type: 'bar',
+//							label: 'Half Day Absent Staff From ' + data.map(obj => {
+//																		// let d = Object.entries(obj.locationhalfabsent);
+//																		const d = obj.locationhalfabsent;
+//																		return Object.keys(d);
+//																	}),
+//							data: data.map(obj => {
+//								// let d = Object.entries(obj.locationhalfabsent);
+//								const d = obj.locationhalfabsent;
+//								return Object.values(d);
+//							}),
+//						},
+			],
 		},
 		options: {
 			responsive: true,

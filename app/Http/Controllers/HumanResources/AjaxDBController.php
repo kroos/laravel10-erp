@@ -940,7 +940,7 @@ class AjaxDBController extends Controller
 		return response()->json( $l0 );
 	}
 
-	public function staffpercentage(Request $request)/*: JsonResponse*/
+	public function staffpercentage(Request $request): JsonResponse
 	{
 		$st = Staff::find($request->id);					// need to check date join
 
@@ -1096,15 +1096,12 @@ class AjaxDBController extends Controller
 
 	public function staffdaily(Request $request): JsonResponse
 	{
-		// $lsoy = now()->copy()->subDays(6);								// 6 days ago
 		$now = Carbon::parse('2023-08-14');								// 7 days ago
-		// $now = now();								// 7 days ago
+		// $now = now();													// 7 days ago
 		$lsoy = $now->copy()->subDays(6);								// 6 days ago
-		// dd([$lsoy, $lsoy->diffInDays(now())]);
 
 		$b = 0;
-		// for ($i = 0; $i <= $lsoy->copy()->diffInDays(now()); $i++) {	// take only 2 years back
-		for ($i = 0; $i <= $lsoy->copy()->diffInDays($now); $i++) {	// take only 2 years back
+		for ($i = 0; $i <= $lsoy->copy()->diffInDays($now->copy()); $i++) {	// take only 2 years back
 			$sd = $lsoy->copy()->addDays($i);
 
 			$sq = HRAttendance::whereDate('attend_date', $sd)->groupBy('attend_date')->get();
@@ -1148,11 +1145,8 @@ class AjaxDBController extends Controller
 				}
 				if (array_key_exists($b, $branch)) {
 					$locabsent1 = array_count_values($branch[$b]);
-					// foreach() {
-
-					// }
 				} else {
-					$locabsent1 = [];
+					$locabsent1 = json_decode("{}");
 				}
 
 				$eh = 100;
@@ -1165,7 +1159,7 @@ class AjaxDBController extends Controller
 				if (array_key_exists($b, $branchhalfabsent)) {
 					$lochalfabsent1 = array_count_values($branchhalfabsent[$b]);
 				} else {
-					$lochalfabsent1 = [];
+					$lochalfabsent1 = json_decode("{}");
 				}
 
 				$eo = 200;
@@ -1178,7 +1172,7 @@ class AjaxDBController extends Controller
 				if (array_key_exists($b, $branchoutstaion)) {
 					$locoutstation1 = array_count_values($branchoutstaion[$b]);
 				} else {
-					$locoutstation1 = [];
+					$locoutstation1 = json_decode("{}");
 				}
 
 				$leave1 = $leave1->get();
@@ -1192,7 +1186,7 @@ class AjaxDBController extends Controller
 				if (array_key_exists($b, $branchleave)) {
 					$locleave1 = array_count_values($branchleave[$b]);
 				} else {
-					$locleave1 = [];
+					$locleave1 = json_decode("{}");
 				}
 
 				$overallpercentage = ($workingpeople / $workday) * 100;
@@ -1204,11 +1198,14 @@ class AjaxDBController extends Controller
 				$halfabsent = 0;
 				$leave = 0;
 				$working = OptDayType::find($sq->first()->daytype_id)->daytype;
-				// $branch = [];
-				$locabsent1 = [];
-				$lochalfabsent1 = [];
-				$locoutstation1 = [];
-				$locleave1 = [];
+				// $locabsent1 = [];
+				// $lochalfabsent1 = [];
+				// $locoutstation1 = [];
+				// $locleave1 = [];
+				$locabsent1 = json_decode("{}");
+				$lochalfabsent1 = json_decode("{}");
+				$locoutstation1 = json_decode("{}");
+				$locleave1 = json_decode("{}");
 			}
 
 			$chartdata[$b] = [
