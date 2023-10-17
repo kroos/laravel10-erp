@@ -1096,8 +1096,8 @@ class AjaxDBController extends Controller
 
 	public function staffdaily(Request $request): JsonResponse
 	{
-		$now = Carbon::parse('2023-08-14');								// 7 days ago
-		// $now = now();													// 7 days ago
+		// $now = Carbon::parse('2023-08-14');								// 7 days ago
+		$now = now();													// 7 days ago
 		$lsoy = $now->copy()->subDays(6);								// 6 days ago
 
 		$b = 0;
@@ -1150,11 +1150,15 @@ class AjaxDBController extends Controller
 				}
 
 				$eh = 100;
-				foreach ($halfabsent1 as $staffidhalfabsent) {
-					$branchhalfabsent[$b][$eh] = Staff::find($staffidhalfabsent->staff_id)
-								->belongstomanydepartment()?->wherePivot('main', 1)
-								->first()->belongstobranch?->location;
-					$eh++;
+				if($halfabsent) {
+					foreach ($halfabsent1 as $staffidhalfabsent) {
+						$branchhalfabsent[$b][$eh] = Staff::find($staffidhalfabsent->staff_id)
+									->belongstomanydepartment()?->wherePivot('main', 1)
+									->first()->belongstobranch?->location;
+						$eh++;
+					}
+				} else {
+					$branchhalfabsent[$b] = [];
 				}
 				if (array_key_exists($b, $branchhalfabsent)) {
 					$lochalfabsent1 = array_count_values($branchhalfabsent[$b]);
@@ -1163,11 +1167,15 @@ class AjaxDBController extends Controller
 				}
 
 				$eo = 200;
-				foreach ($outstation1 as $staffidoutstation) {
-					$branchoutstaion[$b][$eo] = Staff::find($staffidoutstation->staff_id)
-								->belongstomanydepartment()?->wherePivot('main', 1)
-								->first()->belongstobranch?->location;
-					$eo++;
+				if ($outstation) {
+					foreach ($outstation1 as $staffidoutstation) {
+						$branchoutstaion[$b][$eo] = Staff::find($staffidoutstation->staff_id)
+									->belongstomanydepartment()?->wherePivot('main', 1)
+									->first()->belongstobranch?->location;
+						$eo++;
+					}
+				} else {
+					$branchoutstaion[$b] = [];
 				}
 				if (array_key_exists($b, $branchoutstaion)) {
 					$locoutstation1 = array_count_values($branchoutstaion[$b]);
@@ -1177,11 +1185,15 @@ class AjaxDBController extends Controller
 
 				$leave1 = $leave1->get();
 				$ep = 300;
-				foreach ($leave1 as $staffidleaveloc) {
-					$branchleave[$b][$ep] = Staff::find($staffidleaveloc->staff_id)
-								->belongstomanydepartment()?->wherePivot('main', 1)
-								->first()->belongstobranch?->location;
-					$ep++;
+				if ($leave) {
+					foreach ($leave1 as $staffidleaveloc) {
+						$branchleave[$b][$ep] = Staff::find($staffidleaveloc->staff_id)
+									->belongstomanydepartment()?->wherePivot('main', 1)
+									->first()->belongstobranch?->location;
+						$ep++;
+					}
+				} else {
+					$branchleave[$b] = [];
 				}
 				if (array_key_exists($b, $branchleave)) {
 					$locleave1 = array_count_values($branchleave[$b]);
