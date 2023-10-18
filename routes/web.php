@@ -35,6 +35,11 @@ require __DIR__.'/auth.php';
 require __DIR__.'/HumanResources/hr.php';
 require __DIR__.'/HumanResources/ajax_hr.php';
 
+#############################################################################################
+// ipma erp cps (sales department) controller
+require __DIR__.'/CPS/cps.php';
+require __DIR__.'/CPS/ajax_cps.php';
+
 
 
 
