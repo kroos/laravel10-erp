@@ -1,0 +1,20 @@
+@extends('layouts.app')
+
+@section('content')
+<div class="col-sm-12 row">
+@include('cps.navhr')
+	<div class="row justify-content-center">
+
+	</div>
+</div>
+@endsection
+
+@section('js')
+/////////////////////////////////////////////////////////////////////////////////////////
+@endsection
+
+@section('nonjquery')
+/////////////////////////////////////////////////////////////////////////////////////////
+@endsection
+
+
