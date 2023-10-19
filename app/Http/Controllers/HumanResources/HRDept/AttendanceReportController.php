@@ -56,7 +56,7 @@ class AttendanceReportController extends Controller
 	public function create(Request $request): View
 	{
 		// dd($request->all());
-		$sa = \App\Models\HumanResources\HRAttendance::select('staff_id')
+		$sa = HRAttendance::select('staff_id')
 					->whereIn('staff_id', $request->staff_id)
 					->where(function (Builder $query) use ($request){
 						$query->whereDate('attend_date', '>=', $request->from)

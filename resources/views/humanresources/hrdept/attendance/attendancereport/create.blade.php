@@ -67,7 +67,15 @@ $l = HRLeave::where('staff_id', $v->staff_id)
 		})
 		->first();
 
-// dump($l);
+$o = HROvertime::where([['staff_id', $v->staff_id], ['ot_date', $v1->attend_date], ['active', 1]])->first();
+
+$os = HROutstation::where('staff_id', $v->staff_id)
+		->where(function (Builder $query) use ($v1){
+			$query->whereDate('date_from', '<=', $v1->attend_date)
+			->whereDate('date_to', '>=', $v1->attend_date);
+		})
+		->get();
+
 $in = Carbon::parse($v1->in)->equalTo('00:00:00');
 $break = Carbon::parse($v1->break)->equalTo('00:00:00');
 $resume = Carbon::parse($v1->resume)->equalTo('00:00:00');
@@ -105,20 +113,6 @@ if($hdate->isNotEmpty()) {											// date holiday
 		$dtype = true;
 	}
 }
-
-$o = HROvertime::where([['staff_id', $v->belongstostaff->id], ['ot_date', $v1->attend_date], ['active', 1]])->first();
-// dump($o);
-
-// looking for outstation
-// checking for outstation
-$os = HROutstation::where('staff_id', $v->belongstostaff->id)
-		->where(function (Builder $query) use ($v1){
-			$query->whereDate('date_from', '<=', $v1->attend_date)
-			->whereDate('date_to', '>=', $v1->attend_date);
-		})
-		->get();
-
-// dump($os);
 
 // detect all
 if ($os->isNotEmpty()) {																							// outstation |

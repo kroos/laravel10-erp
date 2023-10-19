@@ -1105,6 +1105,8 @@ class AjaxDBController extends Controller
 			$sd = $lsoy->copy()->addDays($i);
 
 			$sq = HRAttendance::whereDate('attend_date', $sd)->groupBy('attend_date')->get();
+			// dump($sq);
+			// exit;
 			$workday1 = HRAttendance::whereDate('attend_date', $sd)->where('daytype_id', 1)->get();
 			$workday = $workday1->count();
 
