@@ -4,18 +4,15 @@ namespace App\Imports;
 
 use App\Models\HumanResources\HRTempPunchTime;
 use Maatwebsite\Excel\Concerns\ToModel;
+use Maatwebsite\Excel\Concerns\WithHeadingRow;
 
-class AttendanceImport implements ToModel
+class AttendanceImport implements ToModel, WithHeadingRow
 {
     public function model(array $row)
     {
-		if (!isset($row[0])) {
-			return null;
-		}
-		
         return new HRTempPunchTime([
-           'EmployeeCode' => $row[0],
-           'Att_Time' => $row[1], 
+            'EmployeeCode' => $row['employeecode'],
+            'Att_Time' => $row['att_time'],
         ]);
     }
 }

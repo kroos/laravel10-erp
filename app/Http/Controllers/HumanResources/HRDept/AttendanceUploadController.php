@@ -40,19 +40,6 @@ class AttendanceUploadController extends Controller
 		$this->middleware('highMgmtAccess:1|5,14', ['only' => ['create', 'store', 'edit', 'update', 'destroy']]);
 	}
 
-
-
-	/**
-	 * Import Excel File To Attendance.
-	 */
-	public function import()
-	{
-		Excel::import(new AttendanceImport, request()->file('your_file'));
-
-		Session::flash('flash_message', 'Data successfully upload!');
-		return redirect()->route('attendance.index');
-	}
-
 	/**
 	 * Display a listing of the resource.
 	 */
@@ -72,24 +59,17 @@ class AttendanceUploadController extends Controller
 	/**
 	 * Store a newly created resource in storage.
 	 */
-	public function store(Request $request, HRTempPunchTime $attendanceupload): RedirectResponse
+	public function store(Request $request): RedirectResponse
 	{
+		HRTempPunchTime::truncate();
+
 		if ($request->file('softcopy')) {
-			// UPLOAD SOFTCOPY
+			// UPLOAD SOFTCOPY AND DATA EXCEL INTO DATABASE
 			$fileName = $request->file('softcopy')->getClientOriginalName();
 			$currentDate = Carbon::now()->format('Y-m-d His');
 			$file = $currentDate . '_' . $fileName;
-			$request->file('softcopy')->storeAs('public/disciplinary', $file);
-
-			// INSERT NEW DATABASE
-			HRDisciplinary::create([
-				'staff_id' => $request->staff_id,
-				'disciplinary_action_id' => $request->disciplinary_action_id,
-				'violation_id' => $request->violation_id,
-				'date' => $request->date,
-				'reason' => $request->reason,
-				'softcopy' => $file,
-			]);
+			$request->file('softcopy')->storeAs('public/attendance', $file);
+			Excel::import(new AttendanceImport, $request->file('softcopy'));
 		} 
 
 		Session::flash('flash_message', 'Successfully upload excel.');
