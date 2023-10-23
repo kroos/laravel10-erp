@@ -20,7 +20,7 @@ $c = Customer::orderBy('customer')->pluck('customer', 'id')->toArray();
 	<div class="form-group row mb-3 {{ $errors->has('date_from') ? 'has-error' : '' }}">
 		{{ Form::label( 'staff', 'Outstation Staff : ', ['class' => 'col-sm-2 col-form-label'] ) }}
 		<div class="col-auto">
-			{{ Form::select('staff_id[]', $s, @$value, ['class' => 'form-control form-control-sm col-auto', 'id' => 'staff', 'placeholder' => 'Please choose', 'autocomplete' => 'off', 'multiple' => 'multiple']) }}
+			{{ Form::select('staff_id[]', $s, @$value, ['class' => 'form-control form-control-sm col-auto', 'id' => 'staff', 'autocomplete' => 'off', 'multiple' => 'multiple']) }}
 		</div>
 	</div>
 

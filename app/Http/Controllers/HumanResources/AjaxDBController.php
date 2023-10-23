@@ -1103,14 +1103,21 @@ class AjaxDBController extends Controller
 		$b = 0;
 		for ($i = 0; $i <= $lsoy->copy()->diffInDays($now->copy()); $i++) {	// take only 2 years back
 			$sd = $lsoy->copy()->addDays($i);
+			// dd($sd);
 
 			$sq = HRAttendance::whereDate('attend_date', $sd)->groupBy('attend_date')->get();
+			// dump($sq);
+			// exit;
 			$workday1 = HRAttendance::whereDate('attend_date', $sd)->where('daytype_id', 1)->get();
 			$workday = $workday1->count();
 
 			// dump($sq->first()->daytype_id);
 			if ($workday >= 1) {
-				$working = OptDayType::find($sq->first()->daytype_id)->daytype;
+				if (Carbon::parse($sd)->dayOfWeek == Carbon::SATURDAY) {
+					$working = OptDayType::find(1)->daytype;
+				} else {
+					$working = OptDayType::find($sq->first()->daytype_id)->daytype;
+				}
 				$workingpeople1 = HRAttendance::whereDate('attend_date', $sd)->where('daytype_id', 1)->whereNull('attendance_type_id')->whereNull('leave_id')->get();
 				$workingpeople = $workingpeople1->count();
 				$outstation1 = HRAttendance::whereDate('attend_date', $sd)->where('daytype_id', 1)->where('attendance_type_id', 4)->get();
