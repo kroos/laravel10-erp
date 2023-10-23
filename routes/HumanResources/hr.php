@@ -21,6 +21,7 @@ use App\Http\Controllers\HumanResources\HRDept\AnnualLeaveController;
 use App\Http\Controllers\HumanResources\HRDept\MCLeaveController;
 use App\Http\Controllers\HumanResources\HRDept\MaternityLeaveController;
 use App\Http\Controllers\HumanResources\HRDept\OvertimeController;
+use App\Http\Controllers\HumanResources\HRDept\AttendanceUploadController;
 
 
 Route::resources([
@@ -48,3 +49,5 @@ Route::resources([
 
 Route::get('/attendancereport', [AttendanceReportController::class, 'index'])->name('attendancereport.index');
 Route::post('/attendancereport', [AttendanceReportController::class, 'create'])->name('attendancereport.create');
+Route::get('/attendanceupload', [AttendanceUploadController::class, 'create'])->name('attendanceupload.create');
+Route::post('/attendanceupload', [AttendanceUploadController::class, 'store'])->name('attendanceupload.store');
