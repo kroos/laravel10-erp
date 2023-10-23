@@ -39,8 +39,8 @@ use Illuminate\Support\Str;
 					@foreach(HROutstation::where('active', 1)->whereYear('date_from', $tp->year)->orderBy('date_from', 'DESC')->get() as $outstation)
 						<tr>
 							<td>{{ $outstation->id }}</td>
-							<td>{{ $outstation->belongstostaff->name }}</td>
-							<td>{{ $outstation->belongstocustomer->customer }}</td>
+							<td>{{ $outstation->belongstostaff?->name }}</td>
+							<td>{{ $outstation->belongstocustomer?->customer }}</td>
 							<td>{{ Carbon::parse($outstation->date_from)->format('D, j M Y') }}</td>
 							<td>{{ Carbon::parse($outstation->date_to)->format('D, j M Y') }}</td>
 							<td>{{ Carbon::parse($outstation->date_from)->toPeriod($outstation->date_to, 1, 'day')->count() }} day/s</td>

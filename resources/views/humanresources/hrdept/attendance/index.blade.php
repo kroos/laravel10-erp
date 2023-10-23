@@ -34,6 +34,7 @@ use Illuminate\Database\Eloquent\Builder;
 
 // load helper
 use App\Models\HumanResources\HRHolidayCalendar;
+use App\Models\HumanResources\HRLeave;
 use App\Models\HumanResources\OptDayType;
 use App\Models\HumanResources\OptTcms;
 use App\Models\HumanResources\HROvertime;
@@ -105,7 +106,8 @@ if ($me1) {																				// hod
 $wh = UnavailableDateTime::workinghourtime($s->attend_date, $s->belongstostaff->id)->first();
 
 // looking for leave of each staff
-$l = $s->belongstostaff->hasmanyleave()
+// $l = $s->belongstostaff->hasmanyleave()
+$l = HRLeave::where('staff_id', $s->staff_id)
 		->where(function (Builder $query) {
 			$query->whereIn('leave_status_id', [5, 6])->orWhereNull('leave_status_id');
 		})
@@ -115,6 +117,17 @@ $l = $s->belongstostaff->hasmanyleave()
 		})
 		->first();
 // dump($l);
+
+$o = HROvertime::where([['staff_id', $s->staff_id], ['ot_date', $s->attend_date], ['active', 1]])->first();
+
+$os = HROutstation::where('staff_id', $s->staff_id)
+		->where('active', 1)
+		->where(function (Builder $query) use ($s){
+			$query->whereDate('date_from', '<=', $s->attend_date)
+			->whereDate('date_to', '>=', $s->attend_date);
+		})
+		->get();
+
 $in = Carbon::parse($s->in)->equalTo('00:00:00');
 $break = Carbon::parse($s->break)->equalTo('00:00:00');
 $resume = Carbon::parse($s->resume)->equalTo('00:00:00');
@@ -156,21 +169,6 @@ if($hdate->isNotEmpty()) {											// date holiday
 		$s->update(['daytype_id' => 1]);
 	}
 }
-
-$o = HROvertime::where([['staff_id', $s->belongstostaff->id], ['ot_date', $s->attend_date], ['active', 1]])->first();
-// dump($o);
-
-// looking for outstation
-// checking for outstation
-$os = HROutstation::where('staff_id', $s->belongstostaff->id)
-		->where('active', 1)
-		->where(function (Builder $query) use ($s){
-			$query->whereDate('date_from', '<=', $s->attend_date)
-			->whereDate('date_to', '>=', $s->attend_date);
-		})
-		->get();
-
-// dump($os);
 
 // detect all
 if ($os->isNotEmpty()) {																							// outstation |
