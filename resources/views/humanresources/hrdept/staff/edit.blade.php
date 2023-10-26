@@ -1361,18 +1361,18 @@ $('#form').bootstrapValidator({
 				notEmpty: {
 					message: 'Please insert username. '
 				},
-				remote: {
-					type: 'POST',
-					url: '{{ route('loginuser.loginuser') }}',
-					message: 'Username exist. Please use another username. ',
-					data: function(validator) {
-								return {
-											_token: '{!! csrf_token() !!}',
-											username: $('#unam').val(),
-								};
-							},
-					delay: 1,		// wait 0.001 seconds
-				},
+				// remote: {
+				// 	type: 'POST',
+				// 	url: '{{ route('loginuser') }}',
+				// 	message: 'Username exist. Please use another username. ',
+				// 	data: function(validator) {
+				// 				return {
+				// 							_token: '{!! csrf_token() !!}',
+				// 							username: $('#unam').val(),
+				// 				};
+				// 			},
+				// 	delay: 1,		// wait 0.001 seconds
+				// },
 			}
 		},
 		password: {
