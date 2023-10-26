@@ -67,36 +67,20 @@ class AttendanceUploadController extends Controller
    */
   public function store(Request $request): RedirectResponse
   {
-    // HRTempPunchTime::truncate();
+    ini_set('max_execution_time', '0');
 
-    // if ($request->file('softcopy')) {
-    // 	// UPLOAD SOFTCOPY AND DATA EXCEL INTO DATABASE
-    // 	$fileName = $request->file('softcopy')->getClientOriginalName();
-    // 	$currentDate = Carbon::now()->format('Y-m-d His');
-    // 	$file = $currentDate . '_' . $fileName;
-    // 	$request->file('softcopy')->storeAs('public/attendance', $file);
-    // 	Excel::import(new AttendanceImport, $request->file('softcopy'));
-    // }
+    HRTempPunchTime::truncate();
 
+    if ($request->file('softcopy')) {
+      // UPLOAD SOFTCOPY AND DATA EXCEL INTO DATABASE
+      $fileName = $request->file('softcopy')->getClientOriginalName();
+      $currentDate = Carbon::now()->format('Y-m-d His');
+      $file = $currentDate . '_' . $fileName;
+      $request->file('softcopy')->storeAs('public/attendance', $file);
+      Excel::import(new AttendanceImport, $request->file('softcopy'));
+    }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    
     // FETCH ACTIVE STAFF USER INFO
     $query_Recordset1 = DB::select('SELECT `logins`.username, `staffs`.id, `staffs`.`name`, `staffs`.restday_group_id FROM `logins` JOIN `staffs` ON `logins`.staff_id = `staffs`.id WHERE `staffs`.active = ? AND `logins`.active = ?', [1, 1]);
 
@@ -118,16 +102,16 @@ class AttendanceUploadController extends Controller
       $staffs[] = $staff;
     }
 
+    // GET THE LATEST ATTENDANCE RECORD DATE IN DATABASE 
+    $query_Recordset3 = DB::select('SELECT `hr_attendances`.attend_date FROM `hr_attendances` GROUP BY `hr_attendances`.attend_date ORDER BY `hr_attendances`.attend_date DESC LIMIT 1');
+    $row_Recordset3 = $query_Recordset3[0]->attend_date;
+
+    // GET THE LATEST ATTENDANCE RECORD DATE IN FACESCAN 
+    $query_Recordset5 = DB::select('SELECT DATE(`hr_temp_punch_time`.Att_Time) AS CurrentDate FROM `hr_temp_punch_time` GROUP BY DATE(`hr_temp_punch_time`.Att_Time) ORDER BY CurrentDate DESC LIMIT 1');
+    $row_Recordset5 = $query_Recordset5[0]->CurrentDate;
+
     // LOOP STAFF FROM ARRAY TO FETCH THE ATTENDANCE
     foreach ($staffs as $staff) {
-
-      // GET THE LATEST ATTENDANCE RECORD DATE IN DATABASE 
-      $query_Recordset3 = DB::select('SELECT `hr_attendances`.attend_date FROM `hr_attendances` WHERE `hr_attendances`.staff_id = ? AND (`hr_attendances`.`in` != ? OR `hr_attendances`.`break` != ? OR `hr_attendances`.`resume` != ? OR `hr_attendances`.`out` != ?)  ORDER BY `hr_attendances`.attend_date DESC LIMIT 1', [$staff['staff_id'], '00:00:00', '00:00:00', '00:00:00', '00:00:00']);
-      $row_Recordset3 = $query_Recordset3[0]->attend_date;
-
-      // GET THE LATEST ATTENDANCE RECORD DATE IN FACESCAN 
-      $query_Recordset5 = DB::select('SELECT DATE(`hr_temp_punch_time`.Att_Time) AS CurrentDate FROM `hr_temp_punch_time` GROUP BY DATE(`hr_temp_punch_time`.Att_Time) ORDER BY CurrentDate DESC LIMIT 1');
-      $row_Recordset5 = $query_Recordset5[0]->CurrentDate;
 
       for ($a = strtotime($row_Recordset3); $a <= strtotime($row_Recordset5); $a = strtotime('+1 day', $a)) {
         $date = date('Y-m-d', $a);
@@ -159,80 +143,67 @@ class AttendanceUploadController extends Controller
         }
 
 
-
-
-
-
-        
         // IN
         $in = "00:00:00";
+        $row_IN = HRTempPunchTime::selectRAW("DATE_FORMAT(Att_Time, '%H:%i:00') AS formatted_time")->where('EmployeeCode', '=', $staff['username'])->whereRaw('DATE(Att_Time) = ?', [$date])->whereRaw('TIME(Att_Time) <= ?', [$row_work_hour->time_end_am])->groupBy('formatted_time')->orderBy('Att_Time', 'asc')->first();
 
-
-        $query_IN = HRTempPunchTime::selectRAW("DATE_FORMAT(Att_Time, '%H:%i:00') AS formatted_time")->where('EmployeeCode', '=', $staff['username'])->whereRaw('DATE(Att_Time) = ?', [$date])->whereRaw('TIME(Att_Time) <= ?', [$row_work_hour->time_end_am])->groupBy('formatted_time')->orderBy('Att_Time', 'asc')->first();
-
-dd($query_IN);
-
-        // $query_IN = $hanvon->query("SELECT DATE_FORMAT(`kqz_card`.CardTime, '%H:%i:00') AS formatted_time FROM `kqz_card` JOIN `kqz_employee` ON `kqz_card`.EmployeeID = `kqz_employee`.EmployeeID WHERE `kqz_employee`.RealEmployeeCode = '" . $staff['username'] . "' AND DATE(`kqz_card`.CardTime) = '" . $date . "' AND TIME(`kqz_card`.CardTime) <= '" . $row_work_hour['time_end_am'] . "' GROUP BY formatted_time ORDER BY `kqz_card`.CardTime ASC LIMIT 1");
-
-        while ($row_IN = $query_IN->fetch_assoc()) {
-          $in = $row_IN['formatted_time'];
+        if ($row_IN != NULL) {
+          $in = $row_IN->formatted_time;
         }
 
 
         // OUT
         $out = "00:00:00";
-        $query_OUT = $hanvon->query("SELECT DATE_FORMAT(`kqz_card`.CardTime, '%H:%i:00') AS formatted_time FROM `kqz_card` JOIN `kqz_employee` ON `kqz_card`.EmployeeID = `kqz_employee`.EmployeeID WHERE `kqz_employee`.RealEmployeeCode = '" . $staff['username'] . "' AND DATE(`kqz_card`.CardTime) = '" . $date . "' AND TIME(`kqz_card`.CardTime) >= '" . $row_work_hour['time_start_pm'] . "' GROUP BY formatted_time ORDER BY `kqz_card`.CardTime DESC LIMIT 1");
-        if ($row_OUT = $query_OUT->fetch_assoc()) {
-          $out = $row_OUT['formatted_time'];
+        $row_OUT = HRTempPunchTime::selectRAW("DATE_FORMAT(Att_Time, '%H:%i:00') AS formatted_time")->where('EmployeeCode', '=', $staff['username'])->whereRaw('DATE(Att_Time) = ?', [$date])->whereRaw('TIME(Att_Time) >= ?', [$row_work_hour->time_start_pm])->groupBy('formatted_time')->orderBy('Att_Time', 'desc')->first();
+        if ($row_OUT != NULL) {
+          $out = $row_OUT->formatted_time;
         }
 
 
         // BREAK1 (FETCH THE LAST ROW BEFORE BREAK TIME)
         $break1 = "00:00:00";
-        $query_BREAK1 = $hanvon->query("SELECT DATE_FORMAT(`kqz_card`.CardTime, '%H:%i:00') AS formatted_time FROM `kqz_card` JOIN `kqz_employee` ON `kqz_card`.EmployeeID = `kqz_employee`.EmployeeID WHERE `kqz_employee`.RealEmployeeCode = '" . $staff['username'] . "' AND DATE(`kqz_card`.CardTime) = '" . $date . "' AND TIME(`kqz_card`.CardTime) <= '" . $row_work_hour['time_end_am'] . "' GROUP BY formatted_time ORDER BY `kqz_card`.CardTime DESC LIMIT 1");
-        if ($row_BREAK1 = $query_BREAK1->fetch_assoc()) {
-          $break1 = $row_BREAK1['formatted_time'];
+        $row_BREAK1 = HRTempPunchTime::selectRAW("DATE_FORMAT(Att_Time, '%H:%i:00') AS formatted_time")->where('EmployeeCode', '=', $staff['username'])->whereRaw('DATE(Att_Time) = ?', [$date])->whereRaw('TIME(Att_Time) <= ?', [$row_work_hour->time_end_am])->groupBy('formatted_time')->orderBy('Att_Time', 'desc')->first();
+        if ($row_BREAK1 != NULL) {
+          $break1 = $row_BREAK1->formatted_time;
         }
 
 
         // BREAK2 (FETCH THE FIRST ROW BETWEEN BREAK AND RESUME)
         $break2 = "00:00:00";
         $break2_difference = "00:00";
-        $query_BREAK2 = $hanvon->query("SELECT DATE_FORMAT(`kqz_card`.CardTime, '%H:%i:00') AS formatted_time FROM `kqz_card` JOIN `kqz_employee` ON `kqz_card`.EmployeeID = `kqz_employee`.EmployeeID WHERE `kqz_employee`.RealEmployeeCode = '" . $staff['username'] . "' AND DATE(`kqz_card`.CardTime) = '" . $date . "' AND TIME(`kqz_card`.CardTime) >= '" . $row_work_hour['time_end_am'] . "' AND TIME(`kqz_card`.CardTime) <= '" . $row_work_hour['time_start_pm'] . "' GROUP BY formatted_time ORDER BY `kqz_card`.CardTime ASC LIMIT 1");
-        if ($row_BREAK2 = $query_BREAK2->fetch_assoc()) {
-          $break2 = $row_BREAK2['formatted_time'];
+        $row_BREAK2 = HRTempPunchTime::selectRAW("DATE_FORMAT(Att_Time, '%H:%i:00') AS formatted_time")->where('EmployeeCode', '=', $staff['username'])->whereRaw('DATE(Att_Time) = ?', [$date])->whereRaw('TIME(Att_Time) >= ?', [$row_work_hour->time_end_am])->whereRaw('TIME(Att_Time) <= ?', [$row_work_hour->time_start_pm])->groupBy('formatted_time')->orderBy('Att_Time', 'asc')->first();
+        if ($row_BREAK2 != NULL) {
+          $break2 = $row_BREAK2->formatted_time;
 
           // CALCULATE INTERVAL TIME BETWEEN PUNCH AND BREAK
-          $break2_date1 = new DateTime($date . ' ' . $row_work_hour['time_end_am']);
-          $break2_date2 = new DateTime($date . ' ' . $row_BREAK2['formatted_time']);
+          $break2_date1 = Carbon::parse($date . ' ' . $row_work_hour->time_end_am);
+          $break2_date2 = Carbon::parse($date . ' ' . $row_BREAK2->formatted_time);
           $break2_interval = $break2_date1->diff($break2_date2);
           $break2_difference = ($break2_interval->h * 60) + $break2_interval->i;
         }
-        $totalRows_BREAK2 = $query_BREAK2->num_rows;
 
 
         // RESUME1 (FETCH THE FIRST ROW AFTER RESUME TIME)
         $resume1 = "00:00:00";
-        $query_RESUME1 = $hanvon->query("SELECT DATE_FORMAT(`kqz_card`.CardTime, '%H:%i:00') AS formatted_time FROM `kqz_card` JOIN `kqz_employee` ON `kqz_card`.EmployeeID = `kqz_employee`.EmployeeID WHERE `kqz_employee`.RealEmployeeCode = '" . $staff['username'] . "' AND DATE(`kqz_card`.CardTime) = '" . $date . "' AND TIME(`kqz_card`.CardTime) >= '" . $row_work_hour['time_start_pm'] . "' GROUP BY formatted_time ORDER BY `kqz_card`.CardTime ASC LIMIT 1");
-        if ($row_RESUME1 = $query_RESUME1->fetch_assoc()) {
-          $resume1 = $row_RESUME1['formatted_time'];
+        $row_RESUME1 = HRTempPunchTime::selectRAW("DATE_FORMAT(Att_Time, '%H:%i:00') AS formatted_time")->where('EmployeeCode', '=', $staff['username'])->whereRaw('DATE(Att_Time) = ?', [$date])->whereRaw('TIME(Att_Time) >= ?', [$row_work_hour->time_start_pm])->groupBy('formatted_time')->orderBy('Att_Time', 'asc')->first();
+        if ($row_RESUME1 != NULL) {
+          $resume1 = $row_RESUME1->formatted_time;
         }
 
 
         // RESUME2 (FETCH THE LAST ROW BETWEEN BREAK AND RESUME)
         $resume2 = "00:00:00";
         $resume2_difference = "00:00";
-        $query_RESUME2 = $hanvon->query("SELECT DATE_FORMAT(`kqz_card`.CardTime, '%H:%i:00') AS formatted_time FROM `kqz_card` JOIN `kqz_employee` ON `kqz_card`.EmployeeID = `kqz_employee`.EmployeeID WHERE `kqz_employee`.RealEmployeeCode = '" . $staff['username'] . "' AND DATE(`kqz_card`.CardTime) = '" . $date . "' AND TIME(`kqz_card`.CardTime) >= '" . $row_work_hour['time_end_am'] . "' AND TIME(`kqz_card`.CardTime) <= '" . $row_work_hour['time_start_pm'] . "' GROUP BY formatted_time ORDER BY `kqz_card`.CardTime DESC LIMIT 1");
-        if ($row_RESUME2 = $query_RESUME2->fetch_assoc()) {
+        $row_RESUME2 = HRTempPunchTime::selectRAW("DATE_FORMAT(Att_Time, '%H:%i:00') AS formatted_time")->where('EmployeeCode', '=', $staff['username'])->whereRaw('DATE(Att_Time) = ?', [$date])->whereRaw('TIME(Att_Time) >= ?', [$row_work_hour->time_end_am])->whereRaw('TIME(Att_Time) <= ?', [$row_work_hour->time_start_pm])->groupBy('formatted_time')->orderBy('Att_Time', 'desc')->first();
+        if ($row_RESUME2 != NULL) {
           $resume2 = $row_RESUME2['formatted_time'];
 
           // CALCULATE INTERVAL TIME BETWEEN PUNCH AND RESUME
-          $resume2_date1 = new DateTime($date . ' ' . $row_work_hour['time_start_pm']);
-          $resume2_date2 = new DateTime($date . ' ' . $row_RESUME2['formatted_time']);
+          $resume2_date1 = Carbon::parse($date . ' ' . $row_work_hour->time_start_pm);
+          $resume2_date2 = Carbon::parse($date . ' ' . $row_RESUME2->formatted_time);
           $resume2_interval = $resume2_date1->diff($resume2_date2);
           $resume2_difference = ($resume2_interval->h * 60) + $resume2_interval->i;
         }
-        $totalRows_RESUME2 = $query_RESUME2->num_rows;
 
 
         $break = "00:00:00";
@@ -262,31 +233,31 @@ dd($query_IN);
         if (($in != '00:00:00' && $break != '00:00:00') || ($in != '00:00:00' && $out != '00:00:00') || ($resume != '00:00:00' && $out != '00:00:00')) {
 
           // BEGIN TIME
-          if ($in <= $row_work_hour['time_start_am'] && $in != '00:00:00') {
-            $begin_time = $row_work_hour['time_start_am'];
-          } elseif ($in >= $row_work_hour['time_start_am'] && $in != '00:00:00') {
+          if ($in <= $row_work_hour->time_start_am && $in != '00:00:00') {
+            $begin_time = $row_work_hour->time_start_am;
+          } elseif ($in >= $row_work_hour->time_start_am && $in != '00:00:00') {
             $begin_time = $in;
-          } elseif ($resume <= $row_work_hour['time_start_pm'] && $resume != '00:00:00') {
-            $begin_time = $row_work_hour['time_start_pm'];
-          } elseif ($resume >= $row_work_hour['time_start_pm'] && $resume != '00:00:00') {
+          } elseif ($resume <= $row_work_hour->time_start_pm && $resume != '00:00:00') {
+            $begin_time = $row_work_hour->time_start_pm;
+          } elseif ($resume >= $row_work_hour->time_start_pm && $resume != '00:00:00') {
             $begin_time = $resume;
           }
 
           // END TIME
-          if ($out >= $row_work_hour['time_end_pm'] && $out != '00:00:00') {
-            $end_time = $row_work_hour['time_end_pm'];
-          } elseif ($out <= $row_work_hour['time_end_pm'] && $out != '00:00:00') {
+          if ($out >= $row_work_hour->time_end_pm && $out != '00:00:00') {
+            $end_time = $row_work_hour->time_end_pm;
+          } elseif ($out <= $row_work_hour->time_end_pm && $out != '00:00:00') {
             $end_time = $out;
-          } elseif ($break >= $row_work_hour['time_end_am'] && $break != '00:00:00') {
-            $end_time = $row_work_hour['time_end_am'];
-          } elseif ($break <= $row_work_hour['time_end_am'] && $break != '00:00:00') {
+          } elseif ($break >= $row_work_hour->time_end_am && $break != '00:00:00') {
+            $end_time = $row_work_hour->time_end_am;
+          } elseif ($break <= $row_work_hour->time_end_am && $break != '00:00:00') {
             $end_time = $break;
           }
 
           // CALCULATE LUNCH TIME
-          if ($begin_time <= $row_work_hour['time_end_am'] && $end_time >= $row_work_hour['time_start_pm']) {
-            $lunch_break = new DateTime($date . ' ' . $row_work_hour['time_end_am']);
-            $lunch_resume = new DateTime($date . ' ' . $row_work_hour['time_start_pm']);
+          if ($begin_time <= $row_work_hour->time_end_am && $end_time >= $row_work_hour->time_start_pm) {
+            $lunch_break = Carbon::parse($date . ' ' . $row_work_hour->time_end_am);
+            $lunch_resume = Carbon::parse($date . ' ' . $row_work_hour->time_start_pm);
             $lunch_interval = $lunch_break->diff($lunch_resume);
             $lunch_difference = ($lunch_interval->h * 60) + $lunch_interval->i;
           } else {
@@ -294,8 +265,8 @@ dd($query_IN);
           }
 
           // CALCULATE WORK HOUR
-          $begin = new DateTime($date . ' ' . $begin_time);
-          $end = new DateTime($date . ' ' . $end_time);
+          $begin = Carbon::parse($date . ' ' . $begin_time);
+          $end = Carbon::parse($date . ' ' . $end_time);
           $total_interval = $begin->diff($end);
           $total_difference = ($total_interval->h * 60) + $total_interval->i;
 
@@ -304,15 +275,13 @@ dd($query_IN);
           $minutes = str_pad(($total_minutes % 60), 2, '0', STR_PAD_LEFT);
           $work_hour = $hours . ":" . $minutes;
         } else {
-          $work_hour = '0';
+          $work_hour = '00:00:00';
         }
 
         // INSERT/UPDATE DATABASE
-        $query_Recordset4 = $eLeave->query("SELECT `hr_attendances`.id, `hr_attendances`.`in`, `hr_attendances`.`break`, `hr_attendances`.`resume`, `hr_attendances`.`out`, `hr_attendances`.time_work_hour FROM `hr_attendances` WHERE `hr_attendances`.attend_date = '" . $date . "' AND `hr_attendances`.staff_id = '" . $staff['staff_id'] . "'");
-        $row_Recordset4 = $query_Recordset4->fetch_assoc();
-        $totalRows_Recordset4 = $query_Recordset4->num_rows;
+        $row_Recordset4 = HRAttendance::select('id', 'in', 'break', 'resume', 'out', 'time_work_hour')->where('attend_date', '=', $date)->where('staff_id', '=', $staff['staff_id'])->first();
 
-        if ($totalRows_Recordset4 > 0) {
+        if ($row_Recordset4 != NULL) {
 
           $new_in = $in;
           $new_break = $break;
@@ -320,91 +289,49 @@ dd($query_IN);
           $new_out = $out;
           $new_work_hour = $work_hour;
 
-          if ($row_Recordset4['in'] != '00:00:00' && $in != '00:00:00' && $row_Recordset4['in'] <= $in) {
-            $new_in = $row_Recordset4['in'];
+          if ($row_Recordset4->in != '00:00:00' && $in != '00:00:00' && $row_Recordset4->in <= $in) {
+            $new_in = $row_Recordset4->in;
           }
 
-          if ($row_Recordset4['break'] != '00:00:00' && $break != '00:00:00' && $row_Recordset4['break'] <= $break) {
-            $new_break = $row_Recordset4['break'];
+          if ($row_Recordset4->break != '00:00:00' && $break != '00:00:00' && $row_Recordset4->break <= $break) {
+            $new_break = $row_Recordset4->break;
           }
 
-          if ($row_Recordset4['resume'] != '00:00:00' && $resume != '00:00:00' && $row_Recordset4['resume'] >= $resume) {
-            $new_resume = $row_Recordset4['resume'];
+          if ($row_Recordset4->resume != '00:00:00' && $resume != '00:00:00' && $row_Recordset4->resume >= $resume) {
+            $new_resume = $row_Recordset4->resume;
           }
 
-          if ($row_Recordset4['out'] != '00:00:00' && $out != '00:00:00' && $row_Recordset4['out'] >= $out) {
-            $new_out = $row_Recordset4['out'];
+          if ($row_Recordset4->out != '00:00:00' && $out != '00:00:00' && $row_Recordset4->out >= $out) {
+            $new_out = $row_Recordset4->out;
           }
 
-          if ($row_Recordset4['time_work_hour'] != '' && $row_Recordset4['time_work_hour'] != NULL && $row_Recordset4['time_work_hour'] >= $work_hour) {
-            $new_work_hour = $row_Recordset4['time_work_hour'];
+          if ($row_Recordset4->time_work_hour != '' && $row_Recordset4->time_work_hour != NULL && $row_Recordset4->time_work_hour >= $work_hour) {
+            $new_work_hour = $row_Recordset4->time_work_hour;
           }
 
-          $update = "UPDATE `hr_attendances` SET `in`=?, `break`=?, `resume`=?, `out`=?, time_work_hour=? WHERE id=?";
-
-          if ($stmt = $eLeave->prepare($update)) {
-            $stmt->bind_param("sssssi", $new_in, $new_break, $new_resume, $new_out, $new_work_hour, $row_Recordset4['id']);
-
-            if ($stmt->execute()) {
-              echo "Attendance updated successfully<br/>";
-            } else {
-              echo "Error updating attendance: " . $stmt->error;
-            }
-
-            $stmt->close();
-          } else {
-            echo "Error preparing statement: " . $eLeave->error;
-          }
+          HRAttendance::find($row_Recordset4->id)->update([
+            'in' => $new_in,
+            'break' => $new_break,
+            'resume' => $new_resume,
+            'out' => $new_out,
+            'time_work_hour' => $new_work_hour,
+          ]);
         } else {
-          $insert = "INSERT INTO `hr_attendances` (staff_id, daytype_id, attend_date, `in`, `break`, `resume`, `out`, time_work_hour) VALUE (?,?,?,?,?,?,?,?,?)";
-
-          if ($stmt = $eLeave->prepare($insert)) {
-            $stmt->bind_param("iiissssss", $staff['staff_id'], $daytype_id, $date, $in, $break, $resume, $out, $work_hour);
-
-            if ($stmt->execute()) {
-              echo "Attendance inserted successfully<br/>";
-            } else {
-              echo "Error inserting attendance: " . $stmt->error;
-            }
-
-            $stmt->close();
-          } else {
-            echo "Error preparing statement: " . $eLeave->error;
-          }
+          HRAttendance::create([
+            'staff_id' => $staff['staff_id'],
+            'daytype_id' => $daytype_id,
+            'attend_date' => $date,
+            'in' => $in,
+            'break' => $break,
+            'resume' => $resume,
+            'out' => $out,
+            'time_work_hour' => $work_hour,
+          ]);
         }
       }
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     Session::flash('flash_message', 'Successfully upload excel.');
-    // return redirect()->route('attendance.index');
     return redirect()->route('attendanceupload.create');
   }
 
