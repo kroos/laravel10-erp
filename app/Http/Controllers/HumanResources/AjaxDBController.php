@@ -1096,7 +1096,6 @@ class AjaxDBController extends Controller
 
 	public function staffdaily(Request $request): JsonResponse
 	{
-		// $now = Carbon::parse('2023-08-14');								// 7 days ago
 		$now = now();													// 7 days ago
 		$lsoy = $now->copy()->subDays(6);								// 6 days ago
 
