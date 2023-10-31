@@ -1143,11 +1143,15 @@ class AjaxDBController extends Controller
 				$leave = $leave1->count();
 
 				$e = 0;
-				foreach ($absent1 as $staffidabsent) {
-					$branch[$b][$e] = Staff::find($staffidabsent->staff_id)
-								->belongstomanydepartment()?->wherePivot('main', 1)
-								->first()->belongstobranch?->location;
-					$e++;
+				if ($absent) {
+					foreach ($absent1 as $staffidabsent) {
+						$branch[$b][$e] = Staff::find($staffidabsent->staff_id)
+									->belongstomanydepartment()?->wherePivot('main', 1)
+									->first()->belongstobranch?->location;
+						$e++;
+					}
+				} else {
+					$branch[$b] = [];
 				}
 				if (array_key_exists($b, $branch)) {
 					$locabsent1 = array_count_values($branch[$b]);
