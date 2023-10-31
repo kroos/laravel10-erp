@@ -1096,7 +1096,6 @@ class AjaxDBController extends Controller
 
 	public function staffdaily(Request $request): JsonResponse
 	{
-		// $now = Carbon::parse('2023-08-14');								// 7 days ago
 		$now = now();													// 7 days ago
 		$lsoy = $now->copy()->subDays(6);								// 6 days ago
 
@@ -1144,11 +1143,15 @@ class AjaxDBController extends Controller
 				$leave = $leave1->count();
 
 				$e = 0;
-				foreach ($absent1 as $staffidabsent) {
-					$branch[$b][$e] = Staff::find($staffidabsent->staff_id)
-								->belongstomanydepartment()?->wherePivot('main', 1)
-								->first()->belongstobranch?->location;
-					$e++;
+				if ($absent) {
+					foreach ($absent1 as $staffidabsent) {
+						$branch[$b][$e] = Staff::find($staffidabsent->staff_id)
+									->belongstomanydepartment()?->wherePivot('main', 1)
+									->first()->belongstobranch?->location;
+						$e++;
+					}
+				} else {
+					$branch[$b] = [];
 				}
 				if (array_key_exists($b, $branch)) {
 					$locabsent1 = array_count_values($branch[$b]);
