@@ -50,9 +50,9 @@ class OvertimeController extends Controller
 						->cursorPaginate(1);
 		// dd($sa);
 		$overtime = HROvertime::select('*')
-						->whereYear('ot_date', $sa->first()->ot_date)
+						->whereYear('ot_date', $sa->first()?->ot_date)
 						->orderBy('ot_date', 'DESC')
-						->cursorPaginate($sa->first()->totalstaff);
+						->cursorPaginate($sa->first()?->totalstaff);
 
 		return view('humanresources.hrdept.overtime.index', ['overtime' => $overtime, 'sa' => $sa]);
 	}
