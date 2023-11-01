@@ -110,8 +110,8 @@ if ( ($ul->leave_type_id == 9) || ($ul->leave_type_id != 9 && $ul->half_type_id 
 }
 ?>
 					<tr>
-						<td><a href="{{ route('staff.show', $ul->belongstostaff->id) }}">{{ $ul->belongstostaff->hasmanylogin()->where('active', 1)->first()->username }}</a></td>
-						<td>{{ $ul->belongstostaff->name }}</td>
+						<td><a href="{{ route('staff.show', $ul->staff_id) }}">{{ App\Models\Login::where([['staff_id', $ul->staff_id], ['active', 1]])->first()->username ?? NULL }}</a></td>
+						<td>{{ $ul->belongstostaff?->name }}</td>
 						<td><a href="{{ route('hrleave.show', $ul->id) }}">HR9-{{ str_pad( $ul->leave_no, 5, "0", STR_PAD_LEFT ) }}/{{ $ul->leave_year }}</a></td>
 						<td>{{ $ul->belongstooptleavetype?->leave_type_code }}</td>
 						<td>{{ Carbon::parse($ul->created_at)->format('j M Y') }}</td>
@@ -181,8 +181,8 @@ if ( ($ul->leave_type_id == 9) || ($ul->leave_type_id != 9 && $ul->half_type_id 
 }
 ?>
 					<tr>
-						<td><a href="{{ route('staff.show', $ul->belongstostaff->id) }}">{{ $ul->belongstostaff->hasmanylogin()->where('active', 1)->first()->username }}</a></td>
-						<td>{{ $ul->belongstostaff->name }}</td>
+						<td><a href="{{ route('staff.show', $ul->staff_id) }}">{{ App\Models\Login::where([['staff_id', $ul->staff_id], ['active', 1]])->first()->username ?? NULL }}</a></td>
+						<td>{{ $ul->belongstostaff?->name }}</td>
 						<td><a href="{{ route('hrleave.show', $ul->id) }}">HR9-{{ str_pad( $ul->leave_no, 5, "0", STR_PAD_LEFT ) }}/{{ $ul->leave_year }}</a></td>
 						<td>{{ $ul->belongstooptleavetype?->leave_type_code }}</td>
 						<td>{{ Carbon::parse($ul->created_at)->format('j M Y') }}</td>
@@ -252,8 +252,8 @@ if ( ($ul->leave_type_id == 9) || ($ul->leave_type_id != 9 && $ul->half_type_id 
 }
 ?>
 					<tr>
-						<td><a href="{{ route('staff.show', $ul->belongstostaff->id) }}">{{ $ul->belongstostaff->hasmanylogin()->where('active', 1)->first()?->username }}</a></td>
-						<td>{{ $ul->belongstostaff->name }}</td>
+						<td><a href="{{ route('staff.show', $ul->staff_id) }}">{{ App\Models\Login::where([['staff_id', $ul->staff_id], ['active', 1]])->first()->username ?? NULL }}</a></td>
+						<td>{{ $ul->belongstostaff?->name }}</td>
 						<td><a href="{{ route('hrleave.show', $ul->id) }}">HR9-{{ str_pad( $ul->leave_no, 5, "0", STR_PAD_LEFT ) }}/{{ $ul->leave_year }}</a></td>
 						<td>{{ $ul->belongstooptleavetype?->leave_type_code }}</td>
 						<td>{{ Carbon::parse($ul->created_at)->format('j M Y') }}</td>
