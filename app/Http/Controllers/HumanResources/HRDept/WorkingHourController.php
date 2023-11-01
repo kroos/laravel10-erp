@@ -191,7 +191,7 @@ class WorkingHourController extends Controller
 			],
 		]);
 		Session::flash('flash_message', 'Data successfully edited!');
-		return redirect( route('workingHour.index') );
+		return redirect( route('workinghour.index') );
 	}
 
 	/**
