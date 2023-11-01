@@ -1220,7 +1220,8 @@ class AjaxDBController extends Controller
 				$absent = 0;
 				$halfabsent = 0;
 				$leave = 0;
-				$working = OptDayType::find($sq->first()->daytype_id)->daytype;
+				$outstation = 0;
+				$working = OptDayType::find($sq->first()?->daytype_id)?->daytype;
 				// $locabsent1 = [];
 				// $lochalfabsent1 = [];
 				// $locoutstation1 = [];
