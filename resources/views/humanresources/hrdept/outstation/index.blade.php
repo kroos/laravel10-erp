@@ -15,6 +15,7 @@ use Illuminate\Support\Str;
 	<h4>Outstation List&nbsp;<a class="btn btn-sm btn-outline-secondary" href="{{ route('outstation.create') }}"><i class="fa-solid fa-person-digging fa-beat"></i> Add Outstation</a></h4>
 
 	<div class="table-responsive">
+		@if(HROutstation::count())
 		<table id="outstation" class="table table-hover table-sm align-middle" style="font-size:12px">
 			@foreach(HROutstation::where('active', 1)->groupByRaw('YEAR(date_from)')->selectRaw('YEAR(date_from) as year')->orderBy('date_from', 'DESC')->get() as $tp)
 				<thead>
@@ -54,6 +55,7 @@ use Illuminate\Support\Str;
 				</tbody>
 			@endforeach
 		</table>
+		@endif
 	</div>
 </div>
 @endsection

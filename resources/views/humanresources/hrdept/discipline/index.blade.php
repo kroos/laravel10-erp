@@ -14,6 +14,7 @@
 		</div>
 	</div>
 	<div>
+		@if($disciplinary->count())
 		<table id="discipline" class="table table-hover table-sm align-middle" style="font-size:12px">
 			<thead>
 				<tr>
@@ -31,21 +32,20 @@
 			</thead>
 			<tbody>
 				@foreach ($disciplinary as $discipline)
-
 				<tr>
 					<td class="text-center">
 						<a href="{{ route('discipline.show', $discipline->id) }}">
-							{{ $discipline->belongstostaff->hasmanylogin()->where('logins.active', 1)->first()->username }}
+							{{ App\Models\Login::where([['staff_id', $discipline->staff_id], ['active', 1]])->first()?->username }}
 						</a>
 					</td>
-					<td class="text-truncate" style="max-width: 120px;" data-toggle="tooltip" title="{{ $discipline->belongstostaff->name }}">
-						{{ $discipline->belongstostaff->name }}
+					<td class="text-truncate" style="max-width: 120px;" data-toggle="tooltip" title="{{ $discipline->belongstostaff?->name }}">
+						{{ $discipline->belongstostaff?->name }}
 					</td>
 					<td class="text-center">
 						{{ \Carbon\Carbon::parse($discipline->date)->format('j M Y') }}
 					</td>
 					<td class="text-center">
-						{{ $discipline->belongstostaff->belongstomanydepartment()?->wherePivot('main', 1)->first()->code }}
+						{{ $discipline->belongstostaff?->belongstomanydepartment()?->wherePivot('main', 1)->first()->code }}
 					</td>
 					<td class="text-truncate" style="max-width: 110px;" data-toggle="tooltip" title="{{ $discipline->belongstooptdisciplinaryaction->disciplinary_action }}">
 						{{ $discipline->belongstooptdisciplinaryaction->disciplinary_action }}
@@ -77,12 +77,7 @@
 				@endforeach
 			</tbody>
 		</table>
-
-		<?php
-		// <div class="d-flex justify-content-center">
-		// 	{{ $disciplinary->links() }}
-		// </div>
-		?>
+		@endif
 	</div>
 </div>
 @endsection

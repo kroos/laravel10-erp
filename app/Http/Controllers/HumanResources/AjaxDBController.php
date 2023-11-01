@@ -1182,6 +1182,7 @@ class AjaxDBController extends Controller
 						$branchoutstaion[$b][$eo] = Staff::find($staffidoutstation->staff_id)
 									->belongstomanydepartment()?->wherePivot('main', 1)
 									->first()?->belongstobranch?->location;
+						$branchoutstaion[$b][$eo] = [];
 						$eo++;
 					}
 				} else {
