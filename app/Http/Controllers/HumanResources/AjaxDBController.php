@@ -1202,6 +1202,7 @@ class AjaxDBController extends Controller
 									->first()->belongstobranch?->location;
 						$ep++;
 					}
+					exit;
 				} else {
 					$branchleave[$b] = [];
 				}

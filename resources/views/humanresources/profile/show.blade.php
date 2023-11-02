@@ -78,7 +78,7 @@ $childrens = $profile->hasmanychildren()->get();
               <div class="row mt-3">
                 <div class="col-md-6">
                   <label class="labels">CATEGORY</label>
-                  <input type="text" class="form-control" value="{{ $profile->belongstomanydepartment->first()->belongstocategory->category }}" readonly>
+                  <input type="text" class="form-control" value="{{ $profile->belongstomanydepartment?->first()?->belongstocategory->category }}" readonly>
                 </div>
                 <div class="col-md-6">
                   <label class="labels">SATURDAY GROUPING</label>
@@ -101,22 +101,22 @@ $childrens = $profile->hasmanychildren()->get();
               <div class="row mt-3">
                 <div class="col-md-6">
                   <label class="labels">NATIONALITY</label>
-                  <input type="text" class="form-control" value="{{ $profile->belongstonationality->country }}" readonly>
+                  <input type="text" class="form-control" value="{{ $profile->belongstonationality?->country }}" readonly>
                 </div>
                 <div class="col-md-6">
                   <label class="labels">RACE</label>
-                  <input type="text" class="form-control" value="{{ $profile->belongstorace->race }}" readonly>
+                  <input type="text" class="form-control" value="{{ $profile->belongstorace?->race }}" readonly>
                 </div>
               </div>
 
               <div class="row mt-3">
                 <div class="col-md-6">
                   <label class="labels">RELIGION</label>
-                  <input type="text" class="form-control" value="{{ $profile->belongstoreligion->religion }}" readonly>
+                  <input type="text" class="form-control" value="{{ $profile->belongstoreligion?->religion }}" readonly>
                 </div>
                 <div class="col-md-6">
                   <label class="labels">MARITAL STATUS</label>
-                  <input type="text" class="form-control" value="{{ $profile->belongstomaritalstatus->marital_status }}" readonly>
+                  <input type="text" class="form-control" value="{{ $profile->belongstomaritalstatus?->marital_status }}" readonly>
                 </div>
               </div>
 
@@ -158,7 +158,7 @@ $childrens = $profile->hasmanychildren()->get();
                 <div class="row mt-3">
                   <div class="col-md-6">
                     <label class="labels">RELATIONSHIP</label>
-                    <input type="text" class="form-control" value="{{ $emergency->belongstorelationship->relationship}}" readonly>
+                    <input type="text" class="form-control" value="{{ $emergency->belongstorelationship?->relationship}}" readonly>
                   </div>
                   <div class="col-md-6">
                     <label class="labels">PHONE NUMBER</label>
@@ -196,7 +196,7 @@ $childrens = $profile->hasmanychildren()->get();
                 <div class="row mt-3">
                   <div class="col-md-6">
                     <label class="labels">RELATIONSHIP</label>
-                    <input type="text" class="form-control" value="{{ $emergency->belongstorelationship->relationship }}" readonly>
+                    <input type="text" class="form-control" value="{{ $emergency->belongstorelationship?->relationship }}" readonly>
                   </div>
                   <div class="col-md-6">
                     <label class="labels">PHONE NUMBER</label>
@@ -344,21 +344,21 @@ $childrens = $profile->hasmanychildren()->get();
                   </div>
                   <div class="col-md-6">
                     <label class="labels">Gender</label>
-                    <input type="text" class="form-control" value="{{ $children->belongstogender->gender }}" readonly>
+                    <input type="text" class="form-control" value="{{ $children->belongstogender?->gender }}" readonly>
                   </div>
                 </div>
 
                 <div class="row mt-3">
                   <div class="col-md-12">
                     <label class="labels">Health Condition</label>
-                    <input type="text" class="form-control" value="{{ $children->belongstohealthstatus->health_status }}" readonly>
+                    <input type="text" class="form-control" value="{{ $children->belongstohealthstatus?->health_status }}" readonly>
                   </div>
                 </div>
 
                 <div class="row mt-3">
                   <div class="col-md-12">
                     <label class="labels">Education Level</label>
-                    <input type="text" class="form-control" value="{{ $children->belongstoeducationlevel->education_level }}" readonly>
+                    <input type="text" class="form-control" value="{{ $children->belongstoeducationlevel?->education_level }}" readonly>
                   </div>
                 </div>
               </div>
@@ -389,21 +389,21 @@ $childrens = $profile->hasmanychildren()->get();
                   </div>
                   <div class="col-md-6">
                     <label class="labels">Gender</label>
-                    <input type="text" class="form-control" value="{{ $children->belongstogender->gender }}" readonly>
+                    <input type="text" class="form-control" value="{{ $children->belongstogender?->gender }}" readonly>
                   </div>
                 </div>
 
                 <div class="row mt-3">
                   <div class="col-md-12">
                     <label class="labels">Health Condition</label>
-                    <input type="text" class="form-control" value="{{ $children->belongstohealthstatus->health_status }}" readonly>
+                    <input type="text" class="form-control" value="{{ $children->belongstohealthstatus?->health_status }}" readonly>
                   </div>
                 </div>
 
                 <div class="row mt-3">
                   <div class="col-md-12">
                     <label class="labels">Education Level</label>
-                    <input type="text" class="form-control" value="{{ $children->belongstoeducationlevel->education_level }}" readonly>
+                    <input type="text" class="form-control" value="{{ $children->belongstoeducationlevel?->education_level }}" readonly>
                   </div>
                 </div>
               </div>

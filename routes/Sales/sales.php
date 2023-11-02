@@ -1,9 +1,8 @@
 <?php
 // Continuence from routes/web.php
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\CPS\CPSDeptController;
-
+use App\Http\Controllers\sales\SalesDeptController;
 
 Route::resources([
-	'cpsdept' => CPSDeptController::class,
+	'salesdept' => SalesDeptController::class,
 ]);
