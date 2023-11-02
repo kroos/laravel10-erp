@@ -67,7 +67,8 @@ $(document).ready(function(){
 $.fn.dataTable.moment( 'D MMM YYYY' );
 $.fn.dataTable.moment( 'D MMM YYYY h:mm a' );
 $('#overtime').DataTable({
-	"lengthMenu": [ [10,25,50,100,150,200,-1], [10,25,50,100,150,200,"All"] ],
+	// "lengthMenu": [ [10,25,50,100,150,200,-1], [10,25,50,100,150,200,"All"] ],
+	"lengthMenu": [ [-1], ["All"] ],
 	"columnDefs": [
 					{ type: 'date', 'targets': [2] },
 					{ type: 'time', 'targets': [3] },
@@ -92,8 +93,8 @@ $(document).on('click', '.delete_overtime', function(e){
 
 function SwalDelete(ackID, ackSoftcopy, ackTable){
 	swal.fire({
-		title: 'Delete Discipline',
-		text: 'Are you sure to delete this discipline?',
+		title: 'Delete Overtime',
+		text: 'Are you sure to delete this overtime?',
 		icon: 'info',
 		showCancelButton: true,
 		confirmButtonColor: '#3085d6',

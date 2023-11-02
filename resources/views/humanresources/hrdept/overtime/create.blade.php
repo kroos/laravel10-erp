@@ -1,10 +1,27 @@
 <?php
 use App\Models\Staff;
+use App\Models\Login;
 use App\Models\HumanResources\HROvertimeRange;
 ?>
 @extends('layouts.app')
 
 @section('content')
+<style>
+	.scrollable-div {
+		/* Set the width height as needed */
+/*		width: 100%;*/
+		height: 400px;
+		background-color: blanchedalmond;
+		/* Add scrollbars when content overflows */
+		overflow: auto;
+	}
+
+	p {
+		margin-top: 4px;
+		margin-bottom: 4px;
+	}
+</style>
+
 <div class="container justify-content-center align-items-start">
 @include('humanresources.hrdept.navhr')
 	<h4 class="align-items-start">Add Overtime Staff</h4>
@@ -12,6 +29,23 @@ use App\Models\HumanResources\HROvertimeRange;
 
 	<div class="row justify-content-center">
 		<div class="col-sm-6 gy-1 gx-1 align-items-start">
+
+			<div class="form-group row mb-3 {{ $errors->has('staff_id') ? 'has-error' : '' }}">
+				{{ Form::label( 'rel', 'Staff : ', ['class' => 'col-sm-4 col-form-label'] ) }}
+				<div class="col-sm-8 scrollable-div">
+					@if(Staff::where('active', 1)->count())
+						<?php $i = 1 ?>
+						@foreach(Staff::where('active', 1)->get() as $k)
+							<div class="form-check mb-1 g-3">
+								<input class="form-check-input" name="staff_id[]" type="checkbox" value="{{ $k->id }}" id="staff_{{ $i }}">
+								<label class="form-check-label" for="staff_{{ $i }}">{{ Login::where([['staff_id', $k->id], ['active', 1]])->first()?->username }} - {{ $k->name }}</label>
+							</div>
+							<?php $i++ ?>
+						@endforeach
+					@endif
+
+				</div>
+			</div>
 
 			<div class="form-group row mb-3 {{ $errors->has('ot_date') ? 'has-error' : '' }}">
 				{{ Form::label( 'nam', 'Date Overtime : ', ['class' => 'col-sm-4 col-form-label'] ) }}
@@ -24,16 +58,6 @@ use App\Models\HumanResources\HROvertimeRange;
 				{{ Form::label( 'mar', 'Overtime : ', ['class' => 'col-sm-4 col-form-label'] ) }}
 				<div class="col-sm-8">
 					<select name="overtime_range_id" id="mar" class="form-select form-select-sm col-sm-8" placeholder="Please Select"></select>
-				</div>
-			</div>
-
-			<div class="form-group row mb-3 {{ $errors->has('staff_id') ? 'has-error' : '' }}">
-				{{ Form::label( 'rel', 'Staff : ', ['class' => 'col-sm-4 col-form-label'] ) }}
-				<div class="col-sm-8">
-					{{ Form::select('staff_id[]', Staff::where('active', 1)->pluck('name', 'id')->toArray(), @$value, ['class' => 'form-control form-select form-select-sm col-auto', 'id' => 'rel', 'autocomplete' => 'off', 'multiple', 'aria-describedby' => 'selectstaff']) }}
-					<div id="selectstaff" class="form-text">
-						You can select multiple staff
-					</div>
 				</div>
 			</div>
 
