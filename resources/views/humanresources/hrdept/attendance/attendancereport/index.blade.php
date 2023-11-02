@@ -22,7 +22,6 @@ use Illuminate\Database\Eloquent\Builder;
 		</div>
 	</div>
 	<div class="g-3 wrap_checkbox">
-
 	</div>
 	{{ Form::close() }}
 </div>

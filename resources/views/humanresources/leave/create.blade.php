@@ -97,7 +97,7 @@ $('#leave_id').select2({
 // start setting up the leave accordingly.
 <?php
 $user = \Auth::user()->belongstostaff;
-$userneedbackup = $user->belongstoleaveapprovalflow->backup_approval;
+$userneedbackup = $user->belongstoleaveapprovalflow?->backup_approval;
 $setHalfDayMC = \App\Models\Setting::find(2)->active;
 // dd($setHalfDayMC);
 // checking for overlapped leave only for half day leave

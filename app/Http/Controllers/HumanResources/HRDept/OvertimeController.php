@@ -43,7 +43,8 @@ class OvertimeController extends Controller
 		Paginator::useBootstrapFive();
 		$sa = HROvertime::SelectRaw('COUNT(staff_id) as totalstaff, ot_date')
 						->where('active', 1)
-						->groupByRaw('YEAR(ot_date)')
+						// ->groupByRaw('YEAR(ot_date)')
+						->groupByRaw('MONTH(ot_date)')
 						->orderBy('ot_date', 'DESC')
 						// ->get();
 						// ->ddRawSql();
