@@ -31,11 +31,11 @@ use \Carbon\Carbon;
 				@foreach($overtime as $key)
 					<tr>
 						<td>{{ $key->belongstostaff->hasmanylogin()->where('active', 1)->first()?->username }}</td>
-						<td>{{ $key->belongstostaff->name }}</td>
+						<td>{{ $key->belongstostaff?->name }}</td>
 						<td>{{ Carbon::parse($key->ot_date)->format('j M Y') }}</td>
-						<td>{{ Carbon::parse($key->belongstoovertimerange->start)->format('g:i a') }}</td>
-						<td>{{ Carbon::parse($key->belongstoovertimerange->end)->format('g:i a') }}</td>
-						<td>{{ $key->belongstoassignstaff->name }}</td>
+						<td>{{ Carbon::parse($key->belongstoovertimerange?->start)->format('g:i a') }}</td>
+						<td>{{ Carbon::parse($key->belongstoovertimerange?->end)->format('g:i a') }}</td>
+						<td>{{ $key->belongstoassignstaff?->name }}</td>
 						<td>
 							<a href="{{ route('overtime.edit', $key->id) }}" class="btn btn-sm btn-outline-secondary">
 								<i class="bi bi-pencil-square" style="font-size: 15px;"></i>

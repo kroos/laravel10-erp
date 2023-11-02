@@ -58,7 +58,7 @@ Route::post('/yearworkinghourstart', [AjaxDBController::class, 'yearworkinghours
 Route::post('/yearworkinghourend', [AjaxDBController::class, 'yearworkinghourend'])->name('yearworkinghourend');
 Route::post('/hcaldstart', [AjaxDBController::class, 'hcaldstart'])->name('hcaldstart');
 Route::post('/hcaldend', [AjaxDBController::class, 'hcaldend'])->name('hcaldend');
-Route::post('/staffdaily', [AjaxDBController::class, 'staffdaily'])->name('staffdaily');
+Route::get('/staffdaily', [AjaxDBController::class, 'staffdaily'])->name('staffdaily');
 Route::post('/samelocationstaff', [AjaxDBController::class, 'samelocationstaff'])->name('samelocationstaff');
 Route::post('/overtimerange', [AjaxDBController::class, 'overtimerange'])->name('overtimerange');
 
