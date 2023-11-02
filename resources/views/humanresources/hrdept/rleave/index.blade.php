@@ -36,8 +36,8 @@
 			<tbody>
 				@foreach ($replacements as $replacement)
 				<tr>
-					<td>{{ $replacement->belongstostaff->hasmanylogin()->where('logins.active', 1)->first()?->username }}</td>
-					<td class="text-truncate" style="max-width: 200px;" data-toggle="tooltip" title="{{ $replacement->belongstostaff->name }}">{{ $replacement->belongstostaff->name }}</td>
+					<td>{{ $replacement->belongstostaff?->hasmanylogin()->where('logins.active', 1)->first()?->username }}</td>
+					<td class="text-truncate" style="max-width: 200px;" data-toggle="tooltip" title="{{ $replacement->belongstostaff?->name }}">{{ $replacement->belongstostaff?->name }}</td>
 					<td>{{ \Carbon\Carbon::parse($replacement->date_start)->format('j M Y') }}</td>
 					<td>{{ \Carbon\Carbon::parse($replacement->date_end)->format('j M Y') }}</td>
 					<td class="text-truncate" style="max-width: 200px;" data-toggle="tooltip" title="{{ $replacement->belongstocustomer?->customer }}">{{ Str::limit($replacement->belongstocustomer?->customer, 10, '>') }}</td>
