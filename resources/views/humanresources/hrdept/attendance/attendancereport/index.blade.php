@@ -5,12 +5,27 @@
 use Illuminate\Database\Eloquent\Builder;
 
 ?>
+<style>
+	.scrollable-div {
+		/* Set the width height as needed */
+/*		width: 100%;*/
+		height: 400px;
+		background-color: blanchedalmond;
+		/* Add scrollbars when content overflows */
+		overflow: auto;
+	}
+
+	p {
+		margin-top: 4px;
+		margin-bottom: 4px;
+	}
+</style>
 <div class="container table-responsive row align-items-start justify-content-center">
 @include('humanresources.hrdept.navhr')
 	<h4>Human Resource Attendance</h4>
 
 	{{ Form::open(['route' => 'attendancereport.create', 'method' => 'post',  'id' => 'form', 'class' => 'form-horizontal', 'autocomplete' => 'off', 'files' => true]) }}
-	<div class="row g-3">
+	<div class="row g-3 mb-3">
 		<div class="col-auto">
 			<input type="text" name="from" class="form-control form-control-sm" id="from" value="" placeholder="Date From">
 		</div>
@@ -21,7 +36,7 @@ use Illuminate\Database\Eloquent\Builder;
 			<input type="submit" class="form-control form-control-sm btn btn-sm btn-outline-secondary" id="to" value="Submit">
 		</div>
 	</div>
-	<div class="g-3 wrap_checkbox">
+	<div class="g-3 mb-3 py-3 scrollable-div col-sm 5 wrap_checkbox">
 	</div>
 	{{ Form::close() }}
 </div>

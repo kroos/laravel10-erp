@@ -90,8 +90,8 @@
 
 <?php
 // dd($hrleave);
-$staff = $hrleave->belongstostaff()->get()->first();
-$login = $staff->hasmanylogin()->get()->first();
+$staff = $hrleave->belongstostaff()?->first();
+$login = \App\Models\Login::where([['staff_id', $hrleave->staff_id], ['active', 1]])->first();
 
 $count = 0;
 $supervisor_no = 0;
@@ -99,11 +99,11 @@ $hod_no = 0;
 $director_no = 0;
 $hr_no = 0;
 
-$backup = $hrleave->hasmanyleaveapprovalbackup->first();
-$supervisor = $hrleave->hasmanyleaveapprovalsupervisor->first();
-$hod = $hrleave->hasmanyleaveapprovalhod->first();
-$director = $hrleave->hasmanyleaveapprovaldir->first();
-$hr = $hrleave->hasmanyleaveapprovalhr->first();
+$backup = $hrleave->hasmanyleaveapprovalbackup?->first();
+$supervisor = $hrleave->hasmanyleaveapprovalsupervisor?->first();
+$hod = $hrleave->hasmanyleaveapprovalhod?->first();
+$director = $hrleave->hasmanyleaveapprovaldir?->first();
+$hr = $hrleave->hasmanyleaveapprovalhr?->first();
 
 if ($supervisor) {
 	$count++;
@@ -150,7 +150,7 @@ if ($hrleave->period_day !== 0.0 &&$hrleave->period_time == NULL) {
 }
 
 if ($backup) {
-	$backup_name = $backup->belongstostaff->name;
+	$backup_name = $backup->belongstostaff?->name;
 
 	if ($backup->created_at == $backup->updated_at) {
 		$approved_date = '-';

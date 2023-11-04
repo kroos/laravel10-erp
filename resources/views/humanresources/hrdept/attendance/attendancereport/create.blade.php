@@ -2,11 +2,13 @@
 
 @section('content')
 <?php
+// use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Builder;
 use App\Helpers\UnavailableDateTime;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 
+use App\Helpers\TimeCalculator;
 use App\Models\HumanResources\HRHolidayCalendar;
 use App\Models\HumanResources\HRLeave;
 use App\Models\HumanResources\OptDayType;
@@ -21,8 +23,10 @@ use App\Models\HumanResources\HROutstation;
 		<h4>Attendance By Staff</h4>
 		<p>&nbsp;</p>
 		@if($sa)
+			<? $i = 0 ?>
 			@foreach($sa as $v)
 				<?php
+				$n = 0;
 				$ha = \App\Models\HumanResources\HRAttendance::where('staff_id', $v->staff_id)
 						->where(function (Builder $query) use ($request){
 							$query->whereDate('attend_date', '>=', $request->from)
@@ -998,14 +1002,40 @@ if($l) {
 								">
 									{{ ($out)?'':Carbon::parse($v1->out)->format('g:i a') }}
 								</span></td>
-							<td>{{ $v1->time_work_hour }}</td>
-							<td>{{ $o?->belongstoovertimerange?->where('active', 1)->first()->total_time }}</td>
-							<td>{{ $v1->remarks }} <span class="text-danger">{{ $v1->hr_remarks }}</span> </td>
+							<td>
+								{{ $v1->time_work_hour }}
+								<?php
+									if (!is_null($v1->time_work_hour)) {
+										$m[$i][$n] = Carbon::parse($v1->time_work_hour)->format('H:i:s');
+									} else {
+										$m[$i][$n] = Carbon::parse('00:00:00')->format('H:i:s');
+									}
+								?>
+							</td>
+							<td>
+								{{ $o?->belongstoovertimerange?->where('active', 1)->first()?->total_time }}<br />
+								<?php
+									if (!is_null($o?->belongstoovertimerange?->where('active', 1)->first()?->total_time)) {
+										$p[$i][$n] = Carbon::parse($o?->belongstoovertimerange?->where('active', 1)->first()?->total_time)->format('H:i:s');
+									} else {
+										$p[$i][$n] = Carbon::parse('00:00:00')->format('H:i:s');
+									}
+								?>
+							</td>
+							<td>{{ $v1->remarks }} <br /><span class="text-danger">{{ $v1->hr_remarks }}</span> </td>
 							<td>{{ $v1->exception }}</td>
 						</tr>
+						<? $n++ ?>
 					@endforeach
+						<tr>
+							<td colspan="8" rowspan="1"></td>
+							<td><strong class="text-success">{{ TimeCalculator::total_time($m[$i]) }}</strong></td>
+							<td><strong class="text-success">{{ TimeCalculator::total_time($p[$i]) }}</strong></td>
+							<td colspan="2" rowspan="1"></td>
+						</tr>
 					</tbody>
 				</table>
+				<? $i++ ?>
 			@endforeach
 		@else
 		@endif
