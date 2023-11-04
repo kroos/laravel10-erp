@@ -85,12 +85,16 @@ class UnavailableDateTime
 		->get();
 
 		$holiday = [];
-		foreach ($hdate as $nda) {
-			$period = \Carbon\CarbonPeriod::create($nda->date_start, '1 days', $nda->date_end);
-			foreach ($period as $key) {
-				// echo 'moment("'.$key->format('Y-m-d').'"),';
-				$holiday[] = $key->format('Y-m-d');
+		if ($hdate->count()) {
+			foreach ($hdate as $nda) {
+				$period = \Carbon\CarbonPeriod::create($nda->date_start, '1 days', $nda->date_end);
+				foreach ($period as $key) {
+					// echo 'moment("'.$key->format('Y-m-d').'"),';
+					$holiday[] = $key->format('Y-m-d');
+				}
 			}
+		} else {
+			$holiday = [];
 		}
 
 		// block saturday according to group
@@ -103,7 +107,7 @@ class UnavailableDateTime
 		})
 		// ->ddRawSql();
 		->get();
-		if(!is_null($sat)) {
+		if($sat->count()) {
 			$saturdays = [];
 			foreach ($sat as $key) {
 				$saturdays[] = $key->saturday_date;
@@ -149,32 +153,37 @@ class UnavailableDateTime
 		})
 		// ->ddRawSql();
 		->get();
-		// dd($aleaveday);
 
 		// echo $leaveday;
 		// dd([$aleaveday->count(), $hleaveday->count()]);
-		// dd([$aleaveday, $hleaveday]);
+		// dd($aleaveday, $hleaveday);
 
 		$leavday = [];
-		if(!is_null($aleaveday)) {
+		// if(!is_null($aleaveday)) {
+		if($aleaveday->count()) {
 			foreach ($aleaveday as $v1) {
 				$period1 = \Carbon\CarbonPeriod::create($v1->date_time_start, '1 days', $v1->date_time_end);
 				foreach ($period1 as $key1) {
 					$leavday1[] = $key1->format('Y-m-d');
 				}
 			}
+		} else {
+			$leavday1 = [];
 		}
+		// dd($leavday1);
 
 		$leavday2 = [];
-		if(!is_null($hleaveday)) {
+		if($hleaveday->count()) {
 			foreach ($hleaveday as $v2) {
 				$period2 = \Carbon\CarbonPeriod::create($v2->date_time_start, '1 days', $v2->date_time_end);
 				foreach ($period2 as $key2) {
 					$leavday2[] = $key2->format('Y-m-d');
 				}
 			}
+		} else {
+			$leavday2 = [];
 		}
-		//$leaveo = array_diff($leavday1, $leavday2);
+		// $leaveo = array_diff($leavday1, $leavday2);
 		// dd($leaveo);
 
 		if(Setting::find(1)->active == 1) {																				// overlapped leave date checking
