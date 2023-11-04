@@ -59,9 +59,21 @@ $paleave = HRLeave::where(function (Builder $query) {
 			->orderBy('date_time_end', 'DESC')
 			->get();
 			// ->ddRawSql();
+
+
+
+// who am i?
+$me1 = \Auth::user()->belongstostaff->div_id == 1;		// hod
+$me2 = \Auth::user()->belongstostaff->div_id == 5;		// hod assistant
+$me3 = \Auth::user()->belongstostaff->div_id == 4;		// supervisor
+$me4 = \Auth::user()->belongstostaff->div_id == 3;		// HR
+$me5 = \Auth::user()->belongstostaff->authorise_id == 1;	// admin
+$me6 = \Auth::user()->belongstostaff->div_id == 2;		// director
+$dept = \Auth::user()->belongstostaff->belongstomanydepartment()->wherePivot('main', 1)->first();
+$deptid = $dept->id;
+$branch = $dept->branch_id;
+$category = $dept->category_id;
 ?>
-
-
 <div class="col-sm-12 row">
 @include('humanresources.hrdept.navhr')
 	<h4>Leaves</h4>
@@ -108,27 +120,63 @@ if ( ($ul->leave_type_id == 9) || ($ul->leave_type_id != 9 && $ul->half_type_id 
 	$dte = \Carbon\Carbon::parse($ul->date_time_end)->format('j M Y ');
 	$dper = $ul->period_day.' day/s';
 }
+
+if ($me1) {																				// hod
+	if ($deptid == 21) {																// hod | dept prod A
+		$ha = Staff::find($ul->staff_id)?->belongstomanydepartment()?->wherePivot('main', 1)->first()?->id == $deptid || Staff::find($ul->staff_id)?->belongstomanydepartment()?->wherePivot('main', 1)->first()?->category_id == 2;
+	} elseif($deptid == 28) {															// hod | not dept prod A | dept prod B
+		$ha = Staff::find($ul->staff_id)?->belongstomanydepartment()?->wherePivot('main', 1)->first()?->id == $deptid || Staff::find($ul->staff_id)?->belongstomanydepartment()?->wherePivot('main', 1)->first()?->category_id == 2;
+	} elseif($deptid == 14) {															// hod | not dept prod A | not dept prod B | HR
+		$ha = true;
+	} elseif($deptid == 6) {															// hod | not dept prod A | not dept prod B | not HR | cust serv
+		$ha = Staff::find($ul->staff_id)?->belongstomanydepartment()?->wherePivot('main', 1)->first()?->id == $deptid || Staff::find($ul->staff_id)?->belongstomanydepartment()?->wherePivot('main', 1)->first()?->id == 7;
+	} elseif ($deptid == 23) {															// hod | not dept prod A | not dept prod B | not HR | not cust serv | puchasing
+		$ha = Staff::find($ul->staff_id)?->belongstomanydepartment()?->wherePivot('main', 1)->first()?->id == $deptid || Staff::find($ul->staff_id)?->belongstomanydepartment()?->wherePivot('main', 1)->first()?->id == 16 || Staff::find($ul->staff_id)?->belongstomanydepartment()?->wherePivot('main', 1)->first()?->id == 17;
+	} else {																			// hod | not dept prod A | not dept prod B | not HR | not cust serv | not puchasing | other dept
+		$ha = Staff::find($ul->staff_id)?->belongstomanydepartment()?->wherePivot('main', 1)->first()?->id == $deptid;
+	}
+} elseif($me2) {																		// not hod | asst hod
+	if($deptid == 14) {																	// not hod | not dept prod A | not dept prod B | HR
+		$ha = true;
+	} elseif($deptid == 6) {															// not hod | not dept prod A | not dept prod B | not HR | cust serv
+		$ha = Staff::find($ul->staff_id)?->belongstomanydepartment()?->wherePivot('main', 1)->first()?->id == $deptid || Staff::find($ul->staff_id)?->belongstomanydepartment()?->wherePivot('main', 1)->first()?->id == 7;
+	}
+} elseif($me3) {																		// not hod | not asst hod | supervisor
+	if($branch == 1) {																	// not hod | not asst hod | supervisor | branch A
+		$ha = Staff::find($ul->staff_id)?->belongstomanydepartment()?->wherePivot('main', 1)->first()?->id == $deptid || (Staff::find($ul->staff_id)?->belongstomanydepartment()?->wherePivot('main', 1)->first()?->category_id == 2 && Staff::find($ul->staff_id)?->belongstomanydepartment()?->wherePivot('main', 1)->first()?->branch_id == $branch);
+	} elseif ($branch == 2) {															// not hod | not asst hod | supervisor | not branch A | branch B
+		$ha = Staff::find($ul->staff_id)?->belongstomanydepartment()?->wherePivot('main', 1)->first()?->id == $deptid || (Staff::find($ul->staff_id)?->belongstomanydepartment()?->wherePivot('main', 1)->first()?->category_id == 2 && Staff::find($ul->staff_id)?->belongstomanydepartment()?->wherePivot('main', 1)->first()?->branch_id == $branch);
+	}
+} elseif($me6) {																		// not hod | not asst hod | not supervisor | director
+	$ha = true;
+} elseif($me5) {																		// not hod | not asst hod | not supervisor | not director | admin
+	$ha = true;
+} else {
+	$ha = false;
+}
 ?>
-					<tr>
-						<td><a href="{{ route('staff.show', $ul->staff_id) }}">{{ App\Models\Login::where([['staff_id', $ul->staff_id], ['active', 1]])->first()->username ?? NULL }}</a></td>
-						<td>{{ $ul->belongstostaff?->name }}</td>
-						<td><a href="{{ route('hrleave.show', $ul->id) }}">HR9-{{ str_pad( $ul->leave_no, 5, "0", STR_PAD_LEFT ) }}/{{ $ul->leave_year }}</a></td>
-						<td>{{ $ul->belongstooptleavetype?->leave_type_code }}</td>
-						<td>{{ Carbon::parse($ul->created_at)->format('j M Y') }}</td>
-						<td>{{ $dts }}</td>
-						<td>{{ $dte }}</td>
-						<td>{{ $dper }}</td>
-						<td data-bs-toggle="tooltip" data-bs-custom-class="custom-tooltip" data-bs-html="true" data-bs-title="{{ $ul->reason }}">{{ Str::limit($ul->reason, 10, ' >') }}</td>
-						<td>
-							@if(is_null($ul->leave_status_id))
-								Pending
-							@else
-								{{ $ul->belongstooptleavestatus?->status }}
-							@endif
-						</td>
-						<td data-bs-toggle="tooltip" data-bs-custom-class="custom-tooltip" data-bs-html="true" data-bs-title="{{ ($ul->remarks)??' ' }}">{{ Str::limit($ul->remarks, 10, ' >') }}</td>
-						<td data-bs-toggle="tooltip" data-bs-custom-class="custom-tooltip" data-bs-html="true" data-bs-title="{{ ($ul->hasmanyleaveamend()->first()?->amend_note)??' ' }}">{{ Str::limit($ul->hasmanyleaveamend()->first()?->amend_note, 10, ' >') }}</td>
-					</tr>
+					@if( $ha )
+						<tr>
+							<td><a href="{{ route('staff.show', $ul->staff_id) }}">{{ App\Models\Login::where([['staff_id', $ul->staff_id], ['active', 1]])->first()->username ?? NULL }}</a></td>
+							<td>{{ $ul->belongstostaff?->name }}</td>
+							<td><a href="{{ route('hrleave.show', $ul->id) }}">HR9-{{ str_pad( $ul->leave_no, 5, "0", STR_PAD_LEFT ) }}/{{ $ul->leave_year }}</a></td>
+							<td>{{ $ul->belongstooptleavetype?->leave_type_code }}</td>
+							<td>{{ Carbon::parse($ul->created_at)->format('j M Y') }}</td>
+							<td>{{ $dts }}</td>
+							<td>{{ $dte }}</td>
+							<td>{{ $dper }}</td>
+							<td data-bs-toggle="tooltip" data-bs-custom-class="custom-tooltip" data-bs-html="true" data-bs-title="{{ $ul->reason }}">{{ Str::limit($ul->reason, 10, ' >') }}</td>
+							<td>
+								@if(is_null($ul->leave_status_id))
+									Pending
+								@else
+									{{ $ul->belongstooptleavestatus?->status }}
+								@endif
+							</td>
+							<td data-bs-toggle="tooltip" data-bs-custom-class="custom-tooltip" data-bs-html="true" data-bs-title="{{ ($ul->remarks)??' ' }}">{{ Str::limit($ul->remarks, 10, ' >') }}</td>
+							<td data-bs-toggle="tooltip" data-bs-custom-class="custom-tooltip" data-bs-html="true" data-bs-title="{{ ($ul->hasmanyleaveamend()->first()?->amend_note)??' ' }}">{{ Str::limit($ul->hasmanyleaveamend()->first()?->amend_note, 10, ' >') }}</td>
+						</tr>
+					@endif
 				@endforeach
 			</tbody>
 		</table>
@@ -179,27 +227,63 @@ if ( ($ul->leave_type_id == 9) || ($ul->leave_type_id != 9 && $ul->half_type_id 
 	$dte = \Carbon\Carbon::parse($ul->date_time_end)->format('j M Y ');
 	$dper = $ul->period_day.' day/s';
 }
+
+if ($me1) {																				// hod
+	if ($deptid == 21) {																// hod | dept prod A
+		$ha = Staff::find($ul->staff_id)?->belongstomanydepartment()?->wherePivot('main', 1)->first()?->id == $deptid || Staff::find($ul->staff_id)?->belongstomanydepartment()?->wherePivot('main', 1)->first()?->category_id == 2;
+	} elseif($deptid == 28) {															// hod | not dept prod A | dept prod B
+		$ha = Staff::find($ul->staff_id)?->belongstomanydepartment()?->wherePivot('main', 1)->first()?->id == $deptid || Staff::find($ul->staff_id)?->belongstomanydepartment()?->wherePivot('main', 1)->first()?->category_id == 2;
+	} elseif($deptid == 14) {															// hod | not dept prod A | not dept prod B | HR
+		$ha = true;
+	} elseif($deptid == 6) {															// hod | not dept prod A | not dept prod B | not HR | cust serv
+		$ha = Staff::find($ul->staff_id)?->belongstomanydepartment()?->wherePivot('main', 1)->first()?->id == $deptid || Staff::find($ul->staff_id)?->belongstomanydepartment()?->wherePivot('main', 1)->first()?->id == 7;
+	} elseif ($deptid == 23) {															// hod | not dept prod A | not dept prod B | not HR | not cust serv | puchasing
+		$ha = Staff::find($ul->staff_id)?->belongstomanydepartment()?->wherePivot('main', 1)->first()?->id == $deptid || Staff::find($ul->staff_id)?->belongstomanydepartment()?->wherePivot('main', 1)->first()?->id == 16 || Staff::find($ul->staff_id)?->belongstomanydepartment()?->wherePivot('main', 1)->first()?->id == 17;
+	} else {																			// hod | not dept prod A | not dept prod B | not HR | not cust serv | not puchasing | other dept
+		$ha = Staff::find($ul->staff_id)?->belongstomanydepartment()?->wherePivot('main', 1)->first()?->id == $deptid;
+	}
+} elseif($me2) {																		// not hod | asst hod
+	if($deptid == 14) {																	// not hod | not dept prod A | not dept prod B | HR
+		$ha = true;
+	} elseif($deptid == 6) {															// not hod | not dept prod A | not dept prod B | not HR | cust serv
+		$ha = Staff::find($ul->staff_id)?->belongstomanydepartment()?->wherePivot('main', 1)->first()?->id == $deptid || Staff::find($ul->staff_id)?->belongstomanydepartment()?->wherePivot('main', 1)->first()?->id == 7;
+	}
+} elseif($me3) {																		// not hod | not asst hod | supervisor
+	if($branch == 1) {																	// not hod | not asst hod | supervisor | branch A
+		$ha = Staff::find($ul->staff_id)?->belongstomanydepartment()?->wherePivot('main', 1)->first()?->id == $deptid || (Staff::find($ul->staff_id)?->belongstomanydepartment()?->wherePivot('main', 1)->first()?->category_id == 2 && Staff::find($ul->staff_id)?->belongstomanydepartment()?->wherePivot('main', 1)->first()?->branch_id == $branch);
+	} elseif ($branch == 2) {															// not hod | not asst hod | supervisor | not branch A | branch B
+		$ha = Staff::find($ul->staff_id)?->belongstomanydepartment()?->wherePivot('main', 1)->first()?->id == $deptid || (Staff::find($ul->staff_id)?->belongstomanydepartment()?->wherePivot('main', 1)->first()?->category_id == 2 && Staff::find($ul->staff_id)?->belongstomanydepartment()?->wherePivot('main', 1)->first()?->branch_id == $branch);
+	}
+} elseif($me6) {																		// not hod | not asst hod | not supervisor | director
+	$ha = true;
+} elseif($me5) {																		// not hod | not asst hod | not supervisor | not director | admin
+	$ha = true;
+} else {
+	$ha = false;
+}
 ?>
-					<tr>
-						<td><a href="{{ route('staff.show', $ul->staff_id) }}">{{ App\Models\Login::where([['staff_id', $ul->staff_id], ['active', 1]])->first()->username ?? NULL }}</a></td>
-						<td>{{ $ul->belongstostaff?->name }}</td>
-						<td><a href="{{ route('hrleave.show', $ul->id) }}">HR9-{{ str_pad( $ul->leave_no, 5, "0", STR_PAD_LEFT ) }}/{{ $ul->leave_year }}</a></td>
-						<td>{{ $ul->belongstooptleavetype?->leave_type_code }}</td>
-						<td>{{ Carbon::parse($ul->created_at)->format('j M Y') }}</td>
-						<td>{{ $dts }}</td>
-						<td>{{ $dte }}</td>
-						<td>{{ $dper }}</td>
-						<td data-bs-toggle="tooltip" data-bs-custom-class="custom-tooltip" data-bs-html="true" data-bs-title="{{ $ul->reason }}">{{ Str::limit($ul->reason, 10, ' >') }}</td>
-						<td>
-							@if(is_null($ul->leave_status_id))
-								Pending
-							@else
-								{{ $ul->belongstooptleavestatus?->status }}
-							@endif
-						</td>
-						<td data-bs-toggle="tooltip" data-bs-custom-class="custom-tooltip" data-bs-html="true" data-bs-title="{{ ($ul->remarks)??' ' }}">{{ Str::limit($ul->remarks, 10, ' >') }}</td>
-						<td data-bs-toggle="tooltip" data-bs-custom-class="custom-tooltip" data-bs-html="true" data-bs-title="{{ ($ul->hasmanyleaveamend()->first()?->amend_note)??' ' }}">{{ Str::limit($ul->hasmanyleaveamend()->first()?->amend_note, 10, ' >') }}</td>
-					</tr>
+					@if( $ha )
+						<tr>
+							<td><a href="{{ route('staff.show', $ul->staff_id) }}">{{ App\Models\Login::where([['staff_id', $ul->staff_id], ['active', 1]])->first()->username ?? NULL }}</a></td>
+							<td>{{ $ul->belongstostaff?->name }}</td>
+							<td><a href="{{ route('hrleave.show', $ul->id) }}">HR9-{{ str_pad( $ul->leave_no, 5, "0", STR_PAD_LEFT ) }}/{{ $ul->leave_year }}</a></td>
+							<td>{{ $ul->belongstooptleavetype?->leave_type_code }}</td>
+							<td>{{ Carbon::parse($ul->created_at)->format('j M Y') }}</td>
+							<td>{{ $dts }}</td>
+							<td>{{ $dte }}</td>
+							<td>{{ $dper }}</td>
+							<td data-bs-toggle="tooltip" data-bs-custom-class="custom-tooltip" data-bs-html="true" data-bs-title="{{ $ul->reason }}">{{ Str::limit($ul->reason, 10, ' >') }}</td>
+							<td>
+								@if(is_null($ul->leave_status_id))
+									Pending
+								@else
+									{{ $ul->belongstooptleavestatus?->status }}
+								@endif
+							</td>
+							<td data-bs-toggle="tooltip" data-bs-custom-class="custom-tooltip" data-bs-html="true" data-bs-title="{{ ($ul->remarks)??' ' }}">{{ Str::limit($ul->remarks, 10, ' >') }}</td>
+							<td data-bs-toggle="tooltip" data-bs-custom-class="custom-tooltip" data-bs-html="true" data-bs-title="{{ ($ul->hasmanyleaveamend()->first()?->amend_note)??' ' }}">{{ Str::limit($ul->hasmanyleaveamend()->first()?->amend_note, 10, ' >') }}</td>
+						</tr>
+					@endif
 				@endforeach
 			</tbody>
 		</table>
@@ -250,27 +334,63 @@ if ( ($ul->leave_type_id == 9) || ($ul->leave_type_id != 9 && $ul->half_type_id 
 	$dte = \Carbon\Carbon::parse($ul->date_time_end)->format('j M Y ');
 	$dper = $ul->period_day.' day/s';
 }
+
+if ($me1) {																				// hod
+	if ($deptid == 21) {																// hod | dept prod A
+		$ha = Staff::find($ul->staff_id)?->belongstomanydepartment()?->wherePivot('main', 1)->first()?->id == $deptid || Staff::find($ul->staff_id)?->belongstomanydepartment()?->wherePivot('main', 1)->first()?->category_id == 2;
+	} elseif($deptid == 28) {															// hod | not dept prod A | dept prod B
+		$ha = Staff::find($ul->staff_id)?->belongstomanydepartment()?->wherePivot('main', 1)->first()?->id == $deptid || Staff::find($ul->staff_id)?->belongstomanydepartment()?->wherePivot('main', 1)->first()?->category_id == 2;
+	} elseif($deptid == 14) {															// hod | not dept prod A | not dept prod B | HR
+		$ha = true;
+	} elseif($deptid == 6) {															// hod | not dept prod A | not dept prod B | not HR | cust serv
+		$ha = Staff::find($ul->staff_id)?->belongstomanydepartment()?->wherePivot('main', 1)->first()?->id == $deptid || Staff::find($ul->staff_id)?->belongstomanydepartment()?->wherePivot('main', 1)->first()?->id == 7;
+	} elseif ($deptid == 23) {															// hod | not dept prod A | not dept prod B | not HR | not cust serv | puchasing
+		$ha = Staff::find($ul->staff_id)?->belongstomanydepartment()?->wherePivot('main', 1)->first()?->id == $deptid || Staff::find($ul->staff_id)?->belongstomanydepartment()?->wherePivot('main', 1)->first()?->id == 16 || Staff::find($ul->staff_id)?->belongstomanydepartment()?->wherePivot('main', 1)->first()?->id == 17;
+	} else {																			// hod | not dept prod A | not dept prod B | not HR | not cust serv | not puchasing | other dept
+		$ha = Staff::find($ul->staff_id)?->belongstomanydepartment()?->wherePivot('main', 1)->first()?->id == $deptid;
+	}
+} elseif($me2) {																		// not hod | asst hod
+	if($deptid == 14) {																	// not hod | not dept prod A | not dept prod B | HR
+		$ha = true;
+	} elseif($deptid == 6) {															// not hod | not dept prod A | not dept prod B | not HR | cust serv
+		$ha = Staff::find($ul->staff_id)?->belongstomanydepartment()?->wherePivot('main', 1)->first()?->id == $deptid || Staff::find($ul->staff_id)?->belongstomanydepartment()?->wherePivot('main', 1)->first()?->id == 7;
+	}
+} elseif($me3) {																		// not hod | not asst hod | supervisor
+	if($branch == 1) {																	// not hod | not asst hod | supervisor | branch A
+		$ha = Staff::find($ul->staff_id)?->belongstomanydepartment()?->wherePivot('main', 1)->first()?->id == $deptid || (Staff::find($ul->staff_id)?->belongstomanydepartment()?->wherePivot('main', 1)->first()?->category_id == 2 && Staff::find($ul->staff_id)?->belongstomanydepartment()?->wherePivot('main', 1)->first()?->branch_id == $branch);
+	} elseif ($branch == 2) {															// not hod | not asst hod | supervisor | not branch A | branch B
+		$ha = Staff::find($ul->staff_id)?->belongstomanydepartment()?->wherePivot('main', 1)->first()?->id == $deptid || (Staff::find($ul->staff_id)?->belongstomanydepartment()?->wherePivot('main', 1)->first()?->category_id == 2 && Staff::find($ul->staff_id)?->belongstomanydepartment()?->wherePivot('main', 1)->first()?->branch_id == $branch);
+	}
+} elseif($me6) {																		// not hod | not asst hod | not supervisor | director
+	$ha = true;
+} elseif($me5) {																		// not hod | not asst hod | not supervisor | not director | admin
+	$ha = true;
+} else {
+	$ha = false;
+}
 ?>
-					<tr>
-						<td><a href="{{ route('staff.show', $ul->staff_id) }}">{{ App\Models\Login::where([['staff_id', $ul->staff_id], ['active', 1]])->first()->username ?? NULL }}</a></td>
-						<td>{{ $ul->belongstostaff?->name }}</td>
-						<td><a href="{{ route('hrleave.show', $ul->id) }}">HR9-{{ str_pad( $ul->leave_no, 5, "0", STR_PAD_LEFT ) }}/{{ $ul->leave_year }}</a></td>
-						<td>{{ $ul->belongstooptleavetype?->leave_type_code }}</td>
-						<td>{{ Carbon::parse($ul->created_at)->format('j M Y') }}</td>
-						<td>{{ $dts }}</td>
-						<td>{{ $dte }}</td>
-						<td>{{ $dper }}</td>
-						<td data-bs-toggle="tooltip" data-bs-custom-class="custom-tooltip" data-bs-html="true" data-bs-title="{{ $ul->reason }}">{{ Str::limit($ul->reason, 10, ' >') }}</td>
-						<td>
-							@if(is_null($ul->leave_status_id))
-								Pending
-							@else
-								{{ $ul->belongstooptleavestatus?->status }}
-							@endif
-						</td>
-						<td data-bs-toggle="tooltip" data-bs-custom-class="custom-tooltip" data-bs-html="true" data-bs-title="{{ ($ul->remarks)??' ' }}">{{ Str::limit($ul->remarks, 10, ' >') }}</td>
-						<td data-bs-toggle="tooltip" data-bs-custom-class="custom-tooltip" data-bs-html="true" data-bs-title="{{ ($ul->hasmanyleaveamend()->first()?->amend_note)??' ' }}">{{ Str::limit($ul->hasmanyleaveamend()->first()?->amend_note, 10, ' >') }}</td>
-					</tr>
+					@if( $ha )
+						<tr>
+							<td><a href="{{ route('staff.show', $ul->staff_id) }}">{{ App\Models\Login::where([['staff_id', $ul->staff_id], ['active', 1]])->first()->username ?? NULL }}</a></td>
+							<td>{{ $ul->belongstostaff?->name }}</td>
+							<td><a href="{{ route('hrleave.show', $ul->id) }}">HR9-{{ str_pad( $ul->leave_no, 5, "0", STR_PAD_LEFT ) }}/{{ $ul->leave_year }}</a></td>
+							<td>{{ $ul->belongstooptleavetype?->leave_type_code }}</td>
+							<td>{{ Carbon::parse($ul->created_at)->format('j M Y') }}</td>
+							<td>{{ $dts }}</td>
+							<td>{{ $dte }}</td>
+							<td>{{ $dper }}</td>
+							<td data-bs-toggle="tooltip" data-bs-custom-class="custom-tooltip" data-bs-html="true" data-bs-title="{{ $ul->reason }}">{{ Str::limit($ul->reason, 10, ' >') }}</td>
+							<td>
+								@if(is_null($ul->leave_status_id))
+									Pending
+								@else
+									{{ $ul->belongstooptleavestatus?->status }}
+								@endif
+							</td>
+							<td data-bs-toggle="tooltip" data-bs-custom-class="custom-tooltip" data-bs-html="true" data-bs-title="{{ ($ul->remarks)??' ' }}">{{ Str::limit($ul->remarks, 10, ' >') }}</td>
+							<td data-bs-toggle="tooltip" data-bs-custom-class="custom-tooltip" data-bs-html="true" data-bs-title="{{ ($ul->hasmanyleaveamend()->first()?->amend_note)??' ' }}">{{ Str::limit($ul->hasmanyleaveamend()->first()?->amend_note, 10, ' >') }}</td>
+						</tr>
+					@endif
 				@endforeach
 			</tbody>
 		</table>
@@ -315,7 +435,7 @@ $('#toleave').DataTable({
 					{ type: 'date', 'targets': [4,5,6] },
 					// { type: 'time', 'targets': [6] },
 				],
-	"order": [ 6, 'desc' ],
+	"order": [ 5, 'desc' ],
 	responsive: true
 })
 .on( 'length.dt page.dt order.dt search.dt', function ( e, settings, len ) {
@@ -330,7 +450,7 @@ $('#paleave').DataTable({
 					{ type: 'date', 'targets': [4,5,6] },
 					// { type: 'time', 'targets': [6] },
 				],
-	"order": [ 6, 'desc' ],
+	"order": [ 5, 'desc' ],
 	responsive: true
 })
 .on( 'length.dt page.dt order.dt search.dt', function ( e, settings, len ) {

@@ -107,7 +107,7 @@ class UnavailableDateTime
 		})
 		// ->ddRawSql();
 		->get();
-		if($sat->count()) {
+		if(!is_null($sat)) {
 			$saturdays = [];
 			foreach ($sat as $key) {
 				$saturdays[] = $key->saturday_date;

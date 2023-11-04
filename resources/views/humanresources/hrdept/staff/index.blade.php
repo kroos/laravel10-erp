@@ -82,7 +82,6 @@ if ($me1) {																				// hod
 } else {
 	$ha = false;
 }
-
 ?>
 					@if( $ha )
 						<tr>

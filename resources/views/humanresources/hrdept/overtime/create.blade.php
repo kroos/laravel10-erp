@@ -33,14 +33,64 @@ use App\Models\HumanResources\HROvertimeRange;
 			<div class="form-group row mb-3 {{ $errors->has('staff_id') ? 'has-error' : '' }}">
 				{{ Form::label( 'rel', 'Staff : ', ['class' => 'col-sm-4 col-form-label'] ) }}
 				<div class="col-sm-8 scrollable-div">
+<?php
+// who am i?
+$me1 = \Auth::user()->belongstostaff->div_id == 1;		// hod
+$me2 = \Auth::user()->belongstostaff->div_id == 5;		// hod assistant
+$me3 = \Auth::user()->belongstostaff->div_id == 4;		// supervisor
+$me4 = \Auth::user()->belongstostaff->div_id == 3;		// HR
+$me5 = \Auth::user()->belongstostaff->authorise_id == 1;	// admin
+$me6 = \Auth::user()->belongstostaff->div_id == 2;		// director
+$dept = \Auth::user()->belongstostaff->belongstomanydepartment()->wherePivot('main', 1)->first();
+$deptid = $dept->id;
+$branch = $dept->branch_id;
+$category = $dept->category_id;
+?>
 					@if(Staff::where('active', 1)->count())
 						<?php $i = 1 ?>
 						@foreach(Staff::where('active', 1)->get() as $k)
-							<div class="form-check mb-1 g-3">
-								<input class="form-check-input" name="staff_id[]" type="checkbox" value="{{ $k->id }}" id="staff_{{ $i }}">
-								<label class="form-check-label" for="staff_{{ $i }}">{{ Login::where([['staff_id', $k->id], ['active', 1]])->first()?->username }} - {{ $k->name }}</label>
-							</div>
-							<?php $i++ ?>
+<?php
+if ($me1) {																				// hod
+	if ($deptid == 21) {																// hod | dept prod A
+		$ha = $k->belongstomanydepartment()->wherePivot('main', 1)->first()->id == $deptid || $k->belongstomanydepartment()->wherePivot('main', 1)->first()->category_id == 2;
+	} elseif($deptid == 28) {															// hod | not dept prod A | dept prod B
+		$ha = $k->belongstomanydepartment()->wherePivot('main', 1)->first()->id == $deptid || $k->belongstomanydepartment()->wherePivot('main', 1)->first()->category_id == 2;
+	} elseif($deptid == 14) {															// hod | not dept prod A | not dept prod B | HR
+		$ha = true;
+	} elseif($deptid == 6) {															// hod | not dept prod A | not dept prod B | not HR | cust serv
+		$ha = $k->belongstomanydepartment()->wherePivot('main', 1)->first()->id == $deptid || $k->belongstomanydepartment()->wherePivot('main', 1)->first()->id == 7;
+	} elseif ($deptid == 23) {															// hod | not dept prod A | not dept prod B | not HR | not cust serv | puchasing
+		$ha = $k->belongstomanydepartment()->wherePivot('main', 1)->first()->id == $deptid || $k->belongstomanydepartment()->wherePivot('main', 1)->first()->id == 16 || $k->belongstomanydepartment()->wherePivot('main', 1)->first()->id == 17;
+	} else {																			// hod | not dept prod A | not dept prod B | not HR | not cust serv | not puchasing | other dept
+		$ha = $k->belongstomanydepartment()->wherePivot('main', 1)->first()->id == $deptid;
+	}
+} elseif($me2) {																		// not hod | asst hod
+	if($deptid == 14) {																	// not hod | not dept prod A | not dept prod B | HR
+		$ha = true;
+	} elseif($deptid == 6) {															// not hod | not dept prod A | not dept prod B | not HR | cust serv
+		$ha = $k->belongstomanydepartment()->wherePivot('main', 1)->first()->id == $deptid || $k->belongstomanydepartment()->wherePivot('main', 1)->first()->id == 7;
+	}
+} elseif($me3) {																		// not hod | not asst hod | supervisor
+	if($branch == 1) {																	// not hod | not asst hod | supervisor | branch A
+		$ha = $k->belongstomanydepartment()->wherePivot('main', 1)->first()->id == $deptid || ($k->belongstomanydepartment()->wherePivot('main', 1)->first()->category_id == 2 && $k->belongstomanydepartment()->wherePivot('main', 1)->first()->branch_id == $branch);
+	} elseif ($branch == 2) {															// not hod | not asst hod | supervisor | not branch A | branch B
+		$ha = $k->belongstomanydepartment()->wherePivot('main', 1)->first()->id == $deptid || ($k->belongstomanydepartment()->wherePivot('main', 1)->first()->category_id == 2 && $k->belongstomanydepartment()->wherePivot('main', 1)->first()->branch_id == $branch);
+	}
+} elseif($me6) {																		// not hod | not asst hod | not supervisor | director
+	$ha = true;
+} elseif($me5) {																		// not hod | not asst hod | not supervisor | not director | admin
+	$ha = true;
+} else {
+	$ha = false;
+}
+?>
+							@if( $ha )
+								<div class="form-check mb-1 g-3">
+									<input class="form-check-input" name="staff_id[]" type="checkbox" value="{{ $k->id }}" id="staff_{{ $i }}">
+									<label class="form-check-label" for="staff_{{ $i }}">{{ Login::where([['staff_id', $k->id], ['active', 1]])->first()?->username }} - {{ $k->name }}</label>
+								</div>
+								<?php $i++ ?>
+							@endif
 						@endforeach
 					@endif
 
