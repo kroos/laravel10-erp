@@ -129,35 +129,35 @@ class AjaxDBController extends Controller
 		$leaveMC =  $user->hasmanyleavemc()->where('year', date('Y'))->first();
 		$leaveMa =  $user->hasmanyleavematernity()->where('year', date('Y'))->first();
 		// cari kalau ada replacement leave
-		$oi = $user->hasmanyleavereplacement()->where('leave_balance', '<>', 0)->whereYear('date_start', date('Y'))->get();
+		$oi = $user->hasmanyleavereplacement()?->where('leave_balance', '<>', 0)->whereYear('date_start', date('Y'))->get();
 
-		// dd($oi->sum('leave_balance'));
+		// dd($oi?->sum('leave_balance'));
 
 		if(Setting::where('id', 3)->first()->active == 1){																		// special unpaid leave activated
 			if($user->gender_id == 1){																							// laki
-				if($oi->sum('leave_balance') < 0.5){																			// laki | no nrl
-					if($leaveAL->annual_leave_balance < 0.5){																	// laki | no nrl | no al
-						if($leaveMC->mc_leave_balance < 0.5){																	// laki | no nrl | no al | no mc
+				if($oi?->sum('leave_balance') < 0.5){																			// laki | no nrl
+					if($leaveAL?->annual_leave_balance < 0.5){																	// laki | no nrl | no al
+						if($leaveMC?->mc_leave_balance < 0.5){																	// laki | no nrl | no al | no mc
 							$er = OptLeaveType::whereIn('id', [3,6,9,11,12])->get()->sortBy('sorting');
 						} else {																								// laki | no nrl | no al | mc
 							$er = OptLeaveType::whereIn('id', [2,3,6,9,12])->get()->sortBy('sorting');
 						}
 					} else {																									// laki | no nrl | al
-						if($leaveMC->mc_leave_balance < 0.5){																	// laki | no nrl | al | no mc
+						if($leaveMC?->mc_leave_balance < 0.5){																	// laki | no nrl | al | no mc
 							$er = OptLeaveType::whereIn('id', [1,5,9,11,12])->get()->sortBy('sorting');
 						} else {																								// laki | no nrl | al | mc
 							$er = OptLeaveType::whereIn('id', [1,2,5,9,12])->get()->sortBy('sorting');
 						}
 					}
 				} else {																										// laki | nrl
-					if($leaveAL->annual_leave_balance < 0.5){																	// laki | nrl | no al
-						if($leaveMC->mc_leave_balance < 0.5){																	// laki | nrl | no al | no mc
+					if($leaveAL?->annual_leave_balance < 0.5){																	// laki | nrl | no al
+						if($leaveMC?->mc_leave_balance < 0.5){																	// laki | nrl | no al | no mc
 							$er = OptLeaveType::whereIn('id', [3,4,6,9,10,11,12])->get()->sortBy('sorting');
 						} else {																								// laki | nrl | no al | mc
 							$er = OptLeaveType::whereIn('id', [2,3,4,6,9,10,12])->get()->sortBy('sorting');
 						}
 					} else {																									// laki | nrl | al
-						if($leaveMC->mc_leave_balance < 0.5){																	// laki | nrl | al | no mc
+						if($leaveMC?->mc_leave_balance < 0.5){																	// laki | nrl | al | no mc
 							$er = OptLeaveType::whereIn('id', [1,4,5,9,10,11,12])->get()->sortBy('sorting');
 						} else {																								// laki | nrl | al | mc
 							$er = OptLeaveType::whereIn('id', [1,2,4,5,9,10,12])->get()->sortBy('sorting');
@@ -165,30 +165,30 @@ class AjaxDBController extends Controller
 					}
 				}
 			} else {																											// pempuan
-				if($oi->sum('leave_balance') < 0.5){																			// pempuan | no nrl
-					if($leaveAL->annual_leave_balance < 0.5){																	// pempuan | no nrl | no al
-						if($leaveMC->mc_leave_balance < 0.5){																	// pempuan | no nrl | no al | no mc
-							if($leaveMa->maternity_leave_balance < 0.5){														// pempuan | no nrl | no al |  no mc | no maternity
+				if($oi?->sum('leave_balance') < 0.5){																			// pempuan | no nrl
+					if($leaveAL?->annual_leave_balance < 0.5){																	// pempuan | no nrl | no al
+						if($leaveMC?->mc_leave_balance < 0.5){																	// pempuan | no nrl | no al | no mc
+							if($leaveMa?->maternity_leave_balance < 0.5){														// pempuan | no nrl | no al |  no mc | no maternity
 								$er = OptLeaveType::whereIn('id', [3,6,9,11,12])->get()->sortBy('sorting');
 							} else {																							// pempuan | no nrl | no al |  no mc | maternity
 								$er = OptLeaveType::whereIn('id', [3,6,7,9,11,12])->get()->sortBy('sorting');
 							}
 						} else {																								// pempuan | no nrl | no al | mc
-							if($leaveMa->maternity_leave_balance < 0.5){														// pempuan | no nrl | no al | mc | no maternity
+							if($leaveMa?->maternity_leave_balance < 0.5){														// pempuan | no nrl | no al | mc | no maternity
 								$er = OptLeaveType::whereIn('id', [2,3,6,9,12])->get()->sortBy('sorting');
 							} else {																							// pempuan | no nrl | no al | mc | maternity
 								$er = OptLeaveType::whereIn('id', [2,3,6,7,9,12])->get()->sortBy('sorting');
 							}
 						}
 					} else {																									// pempuan | no nrl | al
-						if($leaveMC->mc_leave_balance < 0.5){																	// pempuan | no nrl | al | no mc
-							if($leaveMa->maternity_leave_balance < 0.5){														// pempuan | no nrl | al | no mc | no maternity
+						if($leaveMC?->mc_leave_balance < 0.5){																	// pempuan | no nrl | al | no mc
+							if($leaveMa?->maternity_leave_balance < 0.5){														// pempuan | no nrl | al | no mc | no maternity
 								$er = OptLeaveType::whereIn('id', [1,5,9,11,12])->get()->sortBy('sorting');
 							} else {																							// pempuan | no nrl | al | no mc | maternity
 								$er = OptLeaveType::whereIn('id', [1,5,7,9,11,12])->get()->sortBy('sorting');
 							}
 						} else {																								// pempuan | no nrl | al | mc
-							if($leaveMa->maternity_leave_balance < 0.5){														// pempuan | no nrl | al | mc | no maternity
+							if($leaveMa?->maternity_leave_balance < 0.5){														// pempuan | no nrl | al | mc | no maternity
 								$er = OptLeaveType::whereIn('id', [1,2,5,9,12])->get()->sortBy('sorting');
 							} else {																							// pempuan | no nrl | al | mc | maternity
 								$er = OptLeaveType::whereIn('id', [1,2,5,7,9,12])->get()->sortBy('sorting');
@@ -196,29 +196,29 @@ class AjaxDBController extends Controller
 						}
 					}
 				} else {																										// pempuan | nrl
-					if($leaveAL->annual_leave_balance < 0.5){																	// pempuan | nrl | no al
-						if($leaveMC->mc_leave_balance < 0.5){																	// pempuan | nrl | no al | no mc
-							if($leaveMa->maternity_leave_balance < 0.5){														// pempuan | nrl | no al | no mc | no maternity
+					if($leaveAL?->annual_leave_balance < 0.5){																	// pempuan | nrl | no al
+						if($leaveMC?->mc_leave_balance < 0.5){																	// pempuan | nrl | no al | no mc
+							if($leaveMa?->maternity_leave_balance < 0.5){														// pempuan | nrl | no al | no mc | no maternity
 								$er = OptLeaveType::whereIn('id', [3,4,6,7,9,10,11,12])->get()->sortBy('sorting');
 							} else {																							// pempuan | nrl | no al | no mc | maternity
 								$er = OptLeaveType::whereIn('id', [3,4,6,7,9,10,11,12])->get()->sortBy('sorting');
 							}
 						} else {																								// pempuan | nrl | no al | mc
-							if($leaveMa->maternity_leave_balance < 0.5){														// pempuan | nrl | no al | mc | no maternity
+							if($leaveMa?->maternity_leave_balance < 0.5){														// pempuan | nrl | no al | mc | no maternity
 								$er = OptLeaveType::whereIn('id', [2,3,4,6,9,10,12])->get()->sortBy('sorting');
 							} else {																							// pempuan | nrl | no al | mc | maternity
 								$er = OptLeaveType::whereIn('id', [2,3,4,6,7,9,10,12])->get()->sortBy('sorting');
 							}
 						}
 					} else {																									// pempuan | nrl | al
-						if($leaveMC->mc_leave_balance < 0.5){																	// pempuan | nrl | al | no mc
-							if($leaveMa->maternity_leave_balance < 0.5){														// pempuan | nrl | al | no mc | no maternity
+						if($leaveMC?->mc_leave_balance < 0.5){																	// pempuan | nrl | al | no mc
+							if($leaveMa?->maternity_leave_balance < 0.5){														// pempuan | nrl | al | no mc | no maternity
 								$er = OptLeaveType::whereIn('id', [1,4,5,9,10,11,12])->get()->sortBy('sorting');
 							} else {																							// pempuan | nrl | al | no mc | maternity
 								$er = OptLeaveType::whereIn('id', [1,4,5,7,9,10,11,12])->get()->sortBy('sorting');
 							}
 						} else {																								// pempuan | nrl | al | mc
-							if($leaveMa->maternity_leave_balance < 0.5){														// pempuan | nrl | al | mc | no maternity
+							if($leaveMa?->maternity_leave_balance < 0.5){														// pempuan | nrl | al | mc | no maternity
 								$er = OptLeaveType::whereIn('id', [1,2,4,5,9,10,12])->get()->sortBy('sorting');
 							} else {																							// pempuan | nrl | al | mc | maternity
 								$er = OptLeaveType::whereIn('id', [1,2,4,5,7,9,10,12])->get()->sortBy('sorting');
@@ -229,29 +229,29 @@ class AjaxDBController extends Controller
 			}
 		} else {																												// special unpaid leave deactivated
 			if($user->gender_id == 1){																							// laki
-				if($oi->sum('leave_balance') < 0.5){																			// laki | no nrl
-					if($leaveAL->annual_leave_balance < 0.5){																	// laki | no nrl | no al
-						if($leaveMC->mc_leave_balance < 0.5){																	// laki | no nrl | no al | no mc
+				if($oi?->sum('leave_balance') < 0.5){																			// laki | no nrl
+					if($leaveAL?->annual_leave_balance < 0.5){																	// laki | no nrl | no al
+						if($leaveMC?->mc_leave_balance < 0.5){																	// laki | no nrl | no al | no mc
 							$er = OptLeaveType::whereIn('id', [3,6,9,11])->get()->sortBy('sorting');
 						} else {																								// laki | no nrl | no al | mc
 							$er = OptLeaveType::whereIn('id', [2,3,6,9])->get()->sortBy('sorting');
 						}
 					} else {																									// laki | no nrl | al
-						if($leaveMC->mc_leave_balance < 0.5){																	// laki | no nrl | al | no mc
+						if($leaveMC?->mc_leave_balance < 0.5){																	// laki | no nrl | al | no mc
 							$er = OptLeaveType::whereIn('id', [1,5,9,11])->get()->sortBy('sorting');
 						} else {																								// laki | no nrl | al | mc
 							$er = OptLeaveType::whereIn('id', [1,2,5,9])->get()->sortBy('sorting');
 						}
 					}
 				} else {																										// laki | nrl
-					if($leaveAL->annual_leave_balance < 0.5){																	// laki | nrl | no al
-						if($leaveMC->mc_leave_balance < 0.5){																	// laki | nrl | no al | no mc
+					if($leaveAL?->annual_leave_balance < 0.5){																	// laki | nrl | no al
+						if($leaveMC?->mc_leave_balance < 0.5){																	// laki | nrl | no al | no mc
 							$er = OptLeaveType::whereIn('id', [3,4,6,9,10,11])->get()->sortBy('sorting');
 						} else {																								// laki | nrl | no al | mc
 							$er = OptLeaveType::whereIn('id', [2,3,4,6,9,10])->get()->sortBy('sorting');
 						}
 					} else {																									// laki | nrl | al
-						if($leaveMC->mc_leave_balance < 0.5){																	// laki | nrl | al | no mc
+						if($leaveMC?->mc_leave_balance < 0.5){																	// laki | nrl | al | no mc
 							$er = OptLeaveType::whereIn('id', [1,4,5,9,10,11])->get()->sortBy('sorting');
 						} else {																								// laki | nrl | al | mc
 							$er = OptLeaveType::whereIn('id', [1,2,4,5,9,10])->get()->sortBy('sorting');
@@ -259,30 +259,30 @@ class AjaxDBController extends Controller
 					}
 				}
 			} else {																											// pempuan
-				if($oi->sum('leave_balance') < 0.5){																			// pempuan | no nrl
-					if($leaveAL->annual_leave_balance < 0.5){																	// pempuan | no nrl | no al
-						if($leaveMC->mc_leave_balance < 0.5){																	// pempuan | no nrl | no al | no mc
-							if($leaveMa->maternity_leave_balance < 0.5){														// pempuan | nrl | al | mc | no maternity
+				if($oi?->sum('leave_balance') < 0.5){																			// pempuan | no nrl
+					if($leaveAL?->annual_leave_balance < 0.5){																	// pempuan | no nrl | no al
+						if($leaveMC?->mc_leave_balance < 0.5){																	// pempuan | no nrl | no al | no mc
+							if($leaveMa?->maternity_leave_balance < 0.5){														// pempuan | nrl | al | mc | no maternity
 								$er = OptLeaveType::whereIn('id', [3,6,9,11])->get()->sortBy('sorting');
 							} else {																							// pempuan | nrl | al | mc | maternity
 								$er = OptLeaveType::whereIn('id', [3,6,7,9,11])->get()->sortBy('sorting');
 							}
 						} else {																								// pempuan | no nrl | no al | mc
-							if($leaveMa->maternity_leave_balance < 0.5){														// pempuan | no nrl | no al | mc | no maternity
+							if($leaveMa?->maternity_leave_balance < 0.5){														// pempuan | no nrl | no al | mc | no maternity
 								$er = OptLeaveType::whereIn('id', [2,3,6,9])->get()->sortBy('sorting');
 							} else {																							// pempuan | no nrl | no al | mc | maternity
 								$er = OptLeaveType::whereIn('id', [2,3,6,7,9])->get()->sortBy('sorting');
 							}
 						}
 					} else {																									// pempuan | no nrl | al
-						if($leaveMC->mc_leave_balance < 0.5){																	// pempuan | no nrl | al | no mc
-							if($leaveMa->maternity_leave_balance < 0.5){														// pempuan | no nrl | al | no mc | no maternity
+						if($leaveMC?->mc_leave_balance < 0.5){																	// pempuan | no nrl | al | no mc
+							if($leaveMa?->maternity_leave_balance < 0.5){														// pempuan | no nrl | al | no mc | no maternity
 								$er = OptLeaveType::whereIn('id', [1,5,7,9,11])->get()->sortBy('sorting');
 							} else {																							// pempuan | no nrl | al | no mc | maternity
 								$er = OptLeaveType::whereIn('id', [1,5,7,9,11])->get()->sortBy('sorting');
 							}
 						} else {																								// pempuan | no nrl | al | mc
-							if($leaveMa->maternity_leave_balance < 0.5){														// pempuan | no nrl | al | mc | no maternity
+							if($leaveMa?->maternity_leave_balance < 0.5){														// pempuan | no nrl | al | mc | no maternity
 								$er = OptLeaveType::whereIn('id', [1,2,5,9])->get()->sortBy('sorting');
 							} else {																							// pempuan | no nrl | al | mc | maternity
 								$er = OptLeaveType::whereIn('id', [1,2,5,7,9])->get()->sortBy('sorting');
@@ -290,29 +290,29 @@ class AjaxDBController extends Controller
 						}
 					}
 				} else {																										// pempuan | nrl
-					if($leaveAL->annual_leave_balance < 0.5){																	// pempuan | nrl | no al
-						if($leaveMC->mc_leave_balance < 0.5){																	// pempuan | nrl | no al | no mc
-							if($leaveMa->maternity_leave_balance < 0.5){														// pempuan | nrl | no al | no mc | no maternity
+					if($leaveAL?->annual_leave_balance < 0.5){																	// pempuan | nrl | no al
+						if($leaveMC?->mc_leave_balance < 0.5){																	// pempuan | nrl | no al | no mc
+							if($leaveMa?->maternity_leave_balance < 0.5){														// pempuan | nrl | no al | no mc | no maternity
 								$er = OptLeaveType::whereIn('id', [3,4,6,9,10,11])->get()->sortBy('sorting');
 							} else {																							// pempuan | nrl | no al | no mc | maternity
 								$er = OptLeaveType::whereIn('id', [3,4,6,7,9,10,11])->get()->sortBy('sorting');
 							}
 						} else {																								// pempuan | nrl | no al | mc
-							if($leaveMa->maternity_leave_balance < 0.5){														// pempuan | nrl | no al | mc | no maternity
+							if($leaveMa?->maternity_leave_balance < 0.5){														// pempuan | nrl | no al | mc | no maternity
 								$er = OptLeaveType::whereIn('id', [2,3,4,6,9,10])->get()->sortBy('sorting');
 							} else {																							// pempuan | nrl | no al | mc | maternity
 								$er = OptLeaveType::whereIn('id', [2,3,4,6,7,9,10])->get()->sortBy('sorting');
 							}
 						}
 					} else {																									// pempuan | nrl | al
-						if($leaveMC->mc_leave_balance < 0.5){																	// pempuan | nrl | al | no mc
-							if($leaveMa->maternity_leave_balance < 0.5){														// pempuan | nrl | al | no mc | no maternity
+						if($leaveMC?->mc_leave_balance < 0.5){																	// pempuan | nrl | al | no mc
+							if($leaveMa?->maternity_leave_balance < 0.5){														// pempuan | nrl | al | no mc | no maternity
 								$er = OptLeaveType::whereIn('id', [1,4,5,9,10,11])->get()->sortBy('sorting');
 							} else {																							// pempuan | nrl | al | no mc | maternity
 								$er = OptLeaveType::whereIn('id', [1,4,5,7,9,10,11])->get()->sortBy('sorting');
 							}
 						} else {																								// pempuan | nrl | al | mc
-							if($leaveMa->maternity_leave_balance < 0.5){														// pempuan | nrl | al | no mc | no maternity
+							if($leaveMa?->maternity_leave_balance < 0.5){														// pempuan | nrl | al | no mc | no maternity
 								$er = OptLeaveType::whereIn('id', [1,2,4,5,9,10])->get()->sortBy('sorting');
 							} else {																							// pempuan | nrl | al | no mc | maternity
 								$er = OptLeaveType::whereIn('id', [1,2,4,5,7,9,10])->get()->sortBy('sorting');
