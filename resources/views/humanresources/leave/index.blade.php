@@ -12,13 +12,13 @@ use App\Models\HumanResources\OptLeaveStatus;
 
 // check emergency person
 $us = \Auth::user()->belongstostaff;
-$emer = $us->hasmanyemergency()->get();
+$emer = $us->hasmanyemergency()?->get();
 // check email
 $email = $us->email;
-$e =  $us->hasmanyemergency()->get();
-$leaveAL =  $us->hasmanyleaveannual()->where('year', date('Y'))->first();
-$leaveMC =  $us->hasmanyleavemc()->where('year', date('Y'))->first();
-$leaveMa =  $us->hasmanyleavematernity()->where('year', date('Y'))->first();
+$e =  $us->hasmanyemergency()?->get();
+$leaveAL =  $us->hasmanyleaveannual()?->where('year', date('Y'))->first();
+$leaveMC =  $us->hasmanyleavemc()?->where('year', date('Y'))->first();
+$leaveMa =  $us->hasmanyleavematernity()?->where('year', date('Y'))->first();
 // $leaveALMC =  $us->hasmanyleaveentitlements()->whereFirst('year', date('Y'));
 // dd($leaveALMC);
 
@@ -34,8 +34,6 @@ foreach ($c as $v) {
 }
 // print_r ($ls);
 // exit;
-
-
 ?>
 <div class="col-sm-12">
 	<div class="col-auto table-responsive">
@@ -56,42 +54,42 @@ foreach ($c as $v) {
 			<tr>
 				<th rowspan="2">Annual Leave :</th>
 				<td>Initialize :</td>
-				<td>{{ $leaveAL->annual_leave + $leaveAL->annual_leave_adjustment }} days</td>
+				<td>{{ $leaveAL?->annual_leave + $leaveAL?->annual_leave_adjustment }} days</td>
 			</tr>
 			<tr>
 				<td>Balance:</td>
-				<td><span class=" {{ ($leaveAL->annual_leave_balance < 4)?'text-danger font-weight-bold':'' }}">{{ $leaveAL->annual_leave_balance }} days</span></td>
+				<td><span class=" {{ ($leaveAL?->annual_leave_balance < 4)?'text-danger font-weight-bold':'' }}">{{ $leaveAL?->annual_leave_balance }} days</span></td>
 			</tr>
 			<tr>
 				<th rowspan="2">Medical Certificate Leave :</th>
 				<td>Initialize :</td>
-				<td>{{ $leaveMC->mc_leave + $leaveMC->mc_leave_adjustment }} days</td>
+				<td>{{ $leaveMC?->mc_leave + $leaveMC?->mc_leave_adjustment }} days</td>
 			</tr>
 			<tr>
 				<td>Balance :</td>
-				<td><span class=" {{ ($leaveMC->mc_leave_balance < 4)?'text-danger font-weight-bold':'' }}">{{ $leaveMC->mc_leave_balance }} days</span></td>
+				<td><span class=" {{ ($leaveMC?->mc_leave_balance < 4)?'text-danger font-weight-bold':'' }}">{{ $leaveMC?->mc_leave_balance }} days</span></td>
 			</tr>
 			@if( $us->gender_id == 2 )
 			<tr>
 				<th rowspan="2">Maternity Leave :</th>
 				<td>Initialize :</td>
-				<td>{{ $leaveMa->maternity_leave + $leaveMa->maternity_leave_adjustment }} days</td>
+				<td>{{ $leaveMa?->maternity_leave + $leaveMa?->maternity_leave_adjustment }} days</td>
 			</tr>
 			<tr>
 				<td>Balance :</td>
-				<td><span class=" {{ ($leaveMa->maternity_leave_balance < 4)?'text-danger font-weight-bold':'' }}">{{ $leaveMa->maternity_leave_balance }} days</span></td>
+				<td><span class=" {{ ($leaveMa?->maternity_leave_balance < 4)?'text-danger font-weight-bold':'' }}">{{ $leaveMa?->maternity_leave_balance }} days</span></td>
 			</tr>
 			@endif
 			<tr>
 				<th>Unpaid Leave :</th>
-				<td colspan="2">{{  $us->hasmanyleave()->whereYear( 'date_time_start', date('Y') )->whereIn('leave_type_id', [3, 6])->get()->sum('period_day') }} days</td>
+				<td colspan="2">{{  $us->hasmanyleave()?->whereYear( 'date_time_start', date('Y') )->whereIn('leave_type_id', [3, 6])->get()->sum('period_day') }} days</td>
 			</tr>
-			@if($us->hasmanyleavereplacement()->where('leave_balance', '<>', 0)->get()->sum('leave_balance') > 0)
+			@if($us->hasmanyleavereplacement()?->where('leave_balance', '<>', 0)->get()->sum('leave_balance') > 0)
 			<tr>
 				<th>
 					Replacement Leave :
 				</th>
-				<td colspan="2">{{ $us->hasmanyleavereplacement()->sum('leave_balance') }} days</td>
+				<td colspan="2">{{ $us->hasmanyleavereplacement()?->sum('leave_balance') }} days</td>
 			</tr>
 			@endif
 			@if($us->belongstoleaveapprovalflow?->backup_approval == 1)
@@ -380,8 +378,8 @@ foreach ($c as $v) {
 					<tbody>
 						@foreach(HRLeaveApprovalSupervisor::whereNull('leave_status_id')->get() as $a)
 							<?php
-							$ul = $a->belongstostaffleave->belongstostaff->belongstomanydepartment->first()->branch_id;				//get user leave branch_id
-							$us = \Auth::user()->belongstostaff->belongstomanydepartment->first()->branch_id;						//get user supervisor branch_id
+							$ul = $a->belongstostaffleave?->belongstostaff?->belongstomanydepartment->first()?->branch_id;				//get user leave branch_id
+							$us = \Auth::user()->belongstostaff->belongstomanydepartment->first()?->branch_id;						//get user supervisor branch_id
 							// echo $ul.' | '.$us;
 
 								if ( ($a->belongstostaffleave->leave_type_id == 9) || ($a->belongstostaffleave->leave_type_id != 9 && $a->belongstostaffleave->half_type_id == 2) || ($a->belongstostaffleave->leave_type_id != 9 && $a->belongstostaffleave->half_type_id == 1) ) {
@@ -826,7 +824,7 @@ $.fn.dataTable.moment( 'D MMM YYYY h:mm a' );
 $('#leaves').DataTable({
 	"lengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "All"] ],
 	"columnDefs": [ { type: 'date', 'targets': [4] } ],
-	"order": [[0, "asc" ]],	// sorting the 6th column descending
+	"order": [[4, "desc" ]],	// sorting the 6th column descending
 	responsive: true
 });
 

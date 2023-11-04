@@ -60,6 +60,8 @@ class AjaxController extends Controller
 	function __construct()
 	{
 		$this->middleware(['auth']);
+		$this->middleware('highMgmtAccess:1|5,14', ['only' => ['deactivatestaff', 'deletecrossbackup', 'staffactivate', 'generateannualleave', 'generatemcleave', 'generatematernityleave']]);	// HOD n asst HOD HR only
+		// $this->middleware('highMgmtAccess:1,14', ['only' => ['deactivatestaff', 'deletecrossbackup', 'staffactivate', 'generateannualleave', 'generatemcleave', 'generatematernityleave']]);	// HOD HR only
 	}
 
 	// cancel leave
@@ -200,31 +202,31 @@ class AjaxController extends Controller
 				$n->update(['period_time' => 0, 'leave_status_id' => 3, 'remarks' => 'Cancelled By '.\Auth::user()->belongstostaff->name]);
 			}
 			// finally update at all the approver according to his/her leave flow
-			if($n->belongstostaff->belongstoleaveapprovalflow->backup_approval == 1) {
+			if($n->belongstostaff->belongstoleaveapprovalflow?->backup_approval == 1) {
 				$n->hasmanyleaveapprovalbackup()->update([
 					'leave_status_id' => 3,
 					'remarks' => 'Cancelled By '.\Auth::user()->belongstostaff->name
 				]);
 			}
-			if($n->belongstostaff->belongstoleaveapprovalflow->supervisor_approval == 1) {
+			if($n->belongstostaff->belongstoleaveapprovalflow?->supervisor_approval == 1) {
 				$n->hasoneleaveapprovalsupervisor()->update([
 					'leave_status_id' => 3,
 					'remarks' => 'Cancelled By '.\Auth::user()->belongstostaff->name
 				]);
 			}
-			if($n->belongstostaff->belongstoleaveapprovalflow->hod_approval == 1) {
+			if($n->belongstostaff->belongstoleaveapprovalflow?->hod_approval == 1) {
 				$n->hasoneleaveapprovalhod()->update([
 					'leave_status_id' => 3,
 					'remarks' => 'Cancelled By '.\Auth::user()->belongstostaff->name
 				]);
 			}
-			if($n->belongstostaff->belongstoleaveapprovalflow->director_approval == 1) {
+			if($n->belongstostaff->belongstoleaveapprovalflow?->director_approval == 1) {
 				$n->hasoneleaveapprovaldir()->update([
 					'leave_status_id' => 3,
 					'remarks' => 'Cancelled By '.\Auth::user()->belongstostaff->name
 				]);
 			}
-			if($n->belongstostaff->belongstoleaveapprovalflow->hr_approval == 1) {
+			if($n->belongstostaff->belongstoleaveapprovalflow?->hr_approval == 1) {
 				$n->hasoneleaveapprovalhr()->update([
 					'leave_status_id' => 3,
 					'remarks' => 'Cancelled By '.\Auth::user()->belongstostaff->name
