@@ -1126,21 +1126,23 @@ class AjaxDBController extends Controller
 				$absent = $absent1->count();
 				$halfabsent1 = HRAttendance::whereDate('attend_date', $sd)->where('daytype_id', 1)->where('attendance_type_id', 2)->get();
 				$halfabsent = $halfabsent1->count();
-				$leave1 = HRLeave::where(function (Builder $query){
-										$query->where('leave_type_id', '<>', 9)
-										->where(function (Builder $query){
-											$query->where('half_type_id', '<>', 2)
-											->orWhereNull('half_type_id');
-										});
-									})
-									->where(function (Builder $query){
-										$query->whereIn('leave_status_id', [5,6])
-										->orWhereNull('leave_status_id');
-									})
-									->where(function (Builder $query) use ($sd){
-										$query->whereDate('date_time_start', '<=', $sd)
-										->whereDate('date_time_end', '>=', $sd);
-									});
+				// $leave1 = HRLeave::where(function (Builder $query){
+				// 						$query->where('leave_type_id', '<>', 9)
+				// 						->where(function (Builder $query){
+				// 							$query->where('half_type_id', '<>', 2)
+				// 							->orWhereNull('half_type_id');
+				// 						});
+				// 					})
+				// 					->where(function (Builder $query){
+				// 						$query->whereIn('leave_status_id', [5,6])
+				// 						->orWhereNull('leave_status_id');
+				// 					})
+				// 					->where(function (Builder $query) use ($sd){
+				// 						$query->whereDate('date_time_start', '<=', $sd)
+				// 						->whereDate('date_time_end', '>=', $sd);
+				// 					});																							// this will get only full day leave
+				$leave1 = HRAttendance::whereDate('attend_date', $sd)->where('daytype_id', 1)->whereNotNull('leave_id');		// this will get all leave including TF and half day leave
+				// $leave = $leave1->ddrawsql();
 				$leave = $leave1->count();
 
 				$e = 0;
