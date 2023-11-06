@@ -23,7 +23,7 @@ use App\Models\HumanResources\HROutstation;
 		<h4>Attendance By Staff</h4>
 		<p>&nbsp;</p>
 		@if($sa)
-			<? $i = 0 ?>
+			<?php $i = 0; ?>
 			@foreach($sa as $v)
 				<?php
 				$n = 0;
@@ -1025,7 +1025,7 @@ if($l) {
 							<td>{{ $v1->remarks }} <br /><span class="text-danger">{{ $v1->hr_remarks }}</span> </td>
 							<td>{{ $v1->exception }}</td>
 						</tr>
-						<? $n++ ?>
+						<?php $n++; ?>
 					@endforeach
 						<tr>
 							<td colspan="8" rowspan="1"></td>
@@ -1035,7 +1035,7 @@ if($l) {
 						</tr>
 					</tbody>
 				</table>
-				<? $i++ ?>
+				<?php $i++; ?>
 			@endforeach
 		@else
 		@endif
