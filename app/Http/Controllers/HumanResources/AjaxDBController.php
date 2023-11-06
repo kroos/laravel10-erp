@@ -1096,13 +1096,13 @@ class AjaxDBController extends Controller
 
 	public function staffdaily(Request $request): JsonResponse
 	{
-		$now = now();													// 7 days ago
+		$now = now();
 		$lsoy = $now->copy()->subDays(6);								// 6 days ago
 
 		$b = 0;
 		for ($i = 0; $i <= $lsoy->copy()->diffInDays($now->copy()); $i++) {	// take only 2 years back
 			$sd = $lsoy->copy()->addDays($i);
-			// dd($sd);
+			// dump($sd);
 
 			$sq = HRAttendance::whereDate('attend_date', $sd)->groupBy('attend_date')->get();
 			// dump($sq);
@@ -1111,6 +1111,7 @@ class AjaxDBController extends Controller
 			$workday = $workday1->count();
 
 			// dump($sq->first()->daytype_id);
+			// dump($workday1);
 			if ($workday >= 1) {
 				if (Carbon::parse($sd)->dayOfWeek == Carbon::SATURDAY) {
 					$working = OptDayType::find(1)->daytype;
@@ -1202,7 +1203,7 @@ class AjaxDBController extends Controller
 									->first()->belongstobranch?->location;
 						$ep++;
 					}
-					exit;
+					// exit;
 				} else {
 					$branchleave[$b] = [];
 				}
@@ -1212,7 +1213,7 @@ class AjaxDBController extends Controller
 					$locleave1 = json_decode("{}");
 				}
 
-				$overallpercentage = ($workingpeople / $workday) * 100;
+				$overallpercentage = number_format((($workingpeople - $outstation - $absent - $leave) / $workingpeople) * 100, 2);
 
 			} else {
 				$overallpercentage = 0;
