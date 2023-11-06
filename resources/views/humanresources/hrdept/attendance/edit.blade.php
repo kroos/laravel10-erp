@@ -179,7 +179,7 @@ if ($leaves->count()) {
 					{!! Form::label( 'remarks', 'REMARK', ['class' => 'form-control border-0'] ) !!}
 				</div>
 				<div class="col-md-9 {{ $errors->has('remark') ? 'has-error' : '' }}">
-					{!! Form::text( 'remark', @$attendance->remark, ['class' => 'form-control', 'id' => 'remark', 'placeholder' => ''] ) !!}
+					{!! Form::text( 'remarks', @$attendance->remarks, ['class' => 'form-control', 'id' => 'remarks', 'placeholder' => ''] ) !!}
 				</div>
 			</div>
 

@@ -368,15 +368,17 @@ class AjaxDBController extends Controller
 	{
 		// we r going to find a backup person
 		// 1st, we need to take a look into his/her department.
+		// dd($request->all());
 		$user = Staff::find($request->id);
-		// dd($user);
-		$dept = $user->belongstomanydepartment()->first();
+		// dd($request->id, $user);
+		$dept = $user->belongstomanydepartment()->wherePivot('main', 1)->first();
 		$userindept = $dept->belongstomanystaff()->where('active', 1)->get();
+		// dd($dept, $userindept);
 
 		// backup from own department if he/she have
 		// https://select2.org/data-sources/formats
 		$backup['results'][] = [];
-		if ($userindept) {
+		if ($userindept->count()) {
 			foreach($userindept as $key){
 				if($key->id != $user->id){
 					$chkavailability = $key->hasmanyleave()
