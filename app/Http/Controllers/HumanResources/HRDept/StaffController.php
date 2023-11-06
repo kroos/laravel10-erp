@@ -219,21 +219,18 @@ class StaffController extends Controller
 
 		$staff->belongstomanydepartment()->sync($request->only(['pivot_dept_id']), ['main' => 1]);
 		$staff->crossbackupto()->sync($request->only(['backup_staff_id'], ['active' => 1]));
-		$staff->hasmanyleaveannual()->whereYear('year', now())->updateOrCreate([
-																					'year' => Carbon::now()->format('Y'),
-																					'annual_leave' => $request->annual_leave,
-																					'annual_leave_balance' => $request->annual_leave,
-																				]);
-		$staff->hasmanyleavemc()->whereYear('year', now())->updateOrCreate([
-																					'year' => Carbon::now()->format('Y'),
-																					'mc_leave' => $request->mc_leave,
-																					'mc_leave_balance' => $request->mc_leave,
-																				]);
-		$staff->hasmanyleavematernity()->whereYear('year', now())->updateOrCreate([
-																					'year' => Carbon::now()->format('Y'),
-																					'maternity_leave' => $request->maternity_leave,
-																					'maternity_leave_balance' => $request->maternity_leave,
-																				]);
+		// $staff->hasmanyleaveannual()->whereYear('year', now())->updateOrCreate([
+		// 																			'year' => Carbon::now()->format('Y'),
+		// 																			'annual_leave' => $request->annual_leave,
+		// 																		]);
+		// $staff->hasmanyleavemc()->whereYear('year', now())->updateOrCreate([
+		// 																			'year' => Carbon::now()->format('Y'),
+		// 																			'mc_leave' => $request->mc_leave,
+		// 																		]);
+		// $staff->hasmanyleavematernity()->whereYear('year', now())->updateOrCreate([
+		// 																			'year' => Carbon::now()->format('Y'),
+		// 																			'maternity_leave' => $request->maternity_leave,
+		// 																		]);
 		if ($request->has('crossbackup')) {
 			// syncWithPivotValues([1, 2, 3], ['active' => true])
 			foreach ($request->crossbackup as $k => $v) {

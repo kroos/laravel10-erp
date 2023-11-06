@@ -79,6 +79,7 @@ class OvertimeController extends Controller
 									'overtime_range_id' => $request->overtime_range_id,
 									'active' => 1,
 									'assign_staff_id' => \Auth::user()->belongstostaff->id,
+									'remark' => $request->remark,
 								]);
 		}
 		Session::flash('flash_message', 'Successfully Add Staff Overtime');
@@ -106,7 +107,7 @@ class OvertimeController extends Controller
 	 */
 	public function update(Request $request, HROvertime $overtime): RedirectResponse
 	{
-		$overtime->update(Arr::add($request->only(['ot_date', 'overtime_range_id', 'staff_id']), 'assign_staff_id', \Auth::user()->belongstostaff->id));
+		$overtime->update(Arr::add($request->only(['ot_date', 'overtime_range_id', 'staff_id', 'remark']), 'assign_staff_id', \Auth::user()->belongstostaff->id));
 		Session::flash('flash_message', 'Successfully Update Staff Overtime');
 		return redirect()->route('overtime.index');
 	}

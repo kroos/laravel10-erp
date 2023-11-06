@@ -97,6 +97,13 @@ if ($me1) {																				// hod
 				</div>
 			</div>
 
+			<div class="form-group row mb-3 {{ $errors->has('overtime_range_id') ? 'has-error' : '' }}">
+				{{ Form::label( 'mar', 'Overtime : ', ['class' => 'col-sm-4 col-form-label'] ) }}
+				<div class="col-sm-8">
+					<select name="overtime_range_id" id="mar" class="form-select form-select-sm col-sm-8" placeholder="Please Select"></select>
+				</div>
+			</div>
+
 			<div class="form-group row mb-3 {{ $errors->has('ot_date') ? 'has-error' : '' }}">
 				{{ Form::label( 'nam', 'Date Overtime : ', ['class' => 'col-sm-4 col-form-label'] ) }}
 				<div class="col-auto" style="position: relative;">
@@ -104,10 +111,10 @@ if ($me1) {																				// hod
 				</div>
 			</div>
 
-			<div class="form-group row mb-3 {{ $errors->has('overtime_range_id') ? 'has-error' : '' }}">
-				{{ Form::label( 'mar', 'Overtime : ', ['class' => 'col-sm-4 col-form-label'] ) }}
-				<div class="col-sm-8">
-					<select name="overtime_range_id" id="mar" class="form-select form-select-sm col-sm-8" placeholder="Please Select"></select>
+			<div class="form-group row mb-3 {{ $errors->has('ot_date') ? 'has-error' : '' }}">
+				{{ Form::label( 'rem', 'Remarks : ', ['class' => 'col-sm-4 col-form-label'] ) }}
+				<div class="col-sm-6">
+					{{ Form::textarea('remark', @$value, ['class' => 'form-control form-control-sm col-auto', 'id' => 'rem', 'placeholder' => 'Remarks', 'autocomplete' => 'off']) }}
 				</div>
 			</div>
 
