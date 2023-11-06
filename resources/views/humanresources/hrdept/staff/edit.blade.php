@@ -447,24 +447,22 @@ use App\Models\HumanResources\HRLeaveApprovalFlow;
 				</div>
 			</div>
 
-
-
-			<div class="form-group row mb-3 {{ $errors->has('annual_leave') ? 'has-error' : '' }}">
+<!-- 			<div class="form-group row mb-3 {{ $errors->has('annual_leave') ? 'has-error' : '' }}">
 				{{ Form::label( 'annu', 'Annual Leave : ', ['class' => 'col-sm-4 col-form-label'] ) }}
 				<div class="col-auto">
 					{{ Form::text('annual_leave', $staff->hasmanyleaveannual()->whereYear('year', \Carbon\Carbon::now()->format('Y'))->first()?->annual_leave, ['class' => 'form-control form-control-sm col-auto', 'id' => 'annu', 'placeholder' => 'Annual Leave', 'autocomplete' => 'off']) }}
 				</div>
-			</div>
+			</div> -->
 
-			<div class="form-group row mb-3 {{ $errors->has('mc_leave') ? 'has-error' : '' }}">
+<!-- 			<div class="form-group row mb-3 {{ $errors->has('mc_leave') ? 'has-error' : '' }}">
 				{{ Form::label( 'mcl', 'Medical Certificate Leave : ', ['class' => 'col-sm-4 col-form-label'] ) }}
 				<div class="col-auto">
 					{{ Form::text('mc_leave', $staff->hasmanyleavemc()->whereYear('year', \Carbon\Carbon::now()->format('Y'))->first()?->mc_leave, ['class' => 'form-control form-control-sm col-auto', 'id' => 'mcl', 'placeholder' => 'Medical Certificate Leave', 'autocomplete' => 'off']) }}
 				</div>
-			</div>
+			</div> -->
 
 			@if($staff->gender_id == 2)
-			<div id="wrapmaternity">
+<!-- 			<div id="wrapmaternity">
 				<div id="append">
 					<div class="form-group row mb-3 {{ $errors->has('maternity_leave') ? 'has-error' : '' }}">
 						<label for="matl" id="matl" class="col-sm-4 col-form-label">Maternity Leave : </label>
@@ -473,7 +471,7 @@ use App\Models\HumanResources\HRLeaveApprovalFlow;
 						</div>
 					</div>
 				</div>
-			</div>
+			</div> -->
 			@endif
 
 		</div>
@@ -1263,7 +1261,7 @@ $(eadd_buttons).click(function(){
 	}
 })
 
-$(ewrappers).on("click",".children_remove", function(e){
+$(ewrappers).on("click",".emergency_remove", function(e){
 	//user click on remove text
 	e.preventDefault();
 	var $row = $(this).parent().parent();

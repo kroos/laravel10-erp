@@ -50,11 +50,11 @@ class StaffRequestUpdate extends FormRequest
 			'image' => 'nullable|file|max:5120|mimes:jpeg,jpg,png,bmp',
 			// 'document' => 'sometimes|file|max:5120|mimes:jpeg,jpg,png,bmp,pdf,doc,docx',
 
-			'username' => 'required|alpha_num:ascii|unique:logins,username,'.$this->staff['id'],
+			// 'username' => 'required|alpha_num:ascii|unique:logins,username,'.$this->staff['id'],
 			'password' => 'nullable',
-			'annual_leave' => 'required',
-			'mc_leave' => 'required',
-			'maternity_leave' => 'sometimes',
+			// 'annual_leave' => 'required',
+			// 'mc_leave' => 'required',
+			// 'maternity_leave' => 'sometimes',
 
 			'staffspouse.*.spouse' => 'sometimes',
 			'staffspouse.*.phone' => 'required_with:staffspouse.*.spouse',
@@ -105,9 +105,9 @@ class StaffRequestUpdate extends FormRequest
 
 			'username' => 'Work ID No',
 			'password' => 'Password',
-			'annual_leave' => 'Annual Leave',
-			'mc_leave' => 'Medical Certificate Leave',
-			'maternity_leave' => 'Maternity Leave',
+			// 'annual_leave' => 'Annual Leave',
+			// 'mc_leave' => 'Medical Certificate Leave',
+			// 'maternity_leave' => 'Maternity Leave',
 
 			'staffspouse.*.spouse' => 'Spouse',
 			'staffspouse.*.phone' => 'Spouse Phone No',
