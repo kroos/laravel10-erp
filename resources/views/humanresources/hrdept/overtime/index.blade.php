@@ -21,6 +21,7 @@ use \Carbon\Carbon;
 					<th rowspan="2">Date</th>
 					<th colspan="2" rowspan="1">Overtime</th>
 					<th rowspan="2">Assign By</th>
+					<th rowspan="2">Remarks</th>
 					<th rowspan="2">#</th>
 				</tr>
 				<tr>
@@ -87,6 +88,7 @@ if ($me1) {																				// hod
 							<td>{{ Carbon::parse($key->belongstoovertimerange?->start)->format('g:i a') }}</td>
 							<td>{{ Carbon::parse($key->belongstoovertimerange?->end)->format('g:i a') }}</td>
 							<td>{{ $key->belongstoassignstaff?->name }}</td>
+							<td>{{ $key->remark }}</td>
 							<td>
 								<a href="{{ route('overtime.edit', $key->id) }}" class="btn btn-sm btn-outline-secondary">
 									<i class="bi bi-pencil-square" style="font-size: 15px;"></i>
