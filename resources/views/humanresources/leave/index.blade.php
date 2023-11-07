@@ -3,6 +3,8 @@
 @section('content')
 <?php
 use Illuminate\Support\Str;
+use \App\Models\HumanResources\HRLeave;
+use \App\Models\Staff;
 use \App\Models\HumanResources\HRLeaveApprovalSupervisor;
 use \App\Models\HumanResources\HRLeaveApprovalHOD;
 use \App\Models\HumanResources\HRLeaveApprovalDirector;
@@ -357,23 +359,13 @@ foreach ($c as $v) {
 	<p>&nbsp;</p>
 
 	@if($s1)
-<?php
-// $me = \Auth::user()->
-
-
-
-
-
-
-
-
-?>
 		@if(HRLeaveApprovalSupervisor::whereNull('leave_status_id')->get()->count())
 			<div class="col-auto table-responsive">
 				<h4>Supervisor Approval</h4>
 				<table class="table table-hover table-sm" id="sapprover" style="font-size:12px">
 					<thead>
 						<tr>
+							<th rowspan="2">ID Leave</th>
 							<th rowspan="2">Name</th>
 							<th rowspan="2">Leave</th>
 							<th rowspan="2">Reason</th>
@@ -387,11 +379,15 @@ foreach ($c as $v) {
 						</tr>
 					</thead>
 					<tbody>
+						<?php
+						$us = \Auth::user()->belongstostaff->belongstomanydepartment->first()?->branch_id;							//get user supervisor branch_id
+						?>
 						@foreach(HRLeaveApprovalSupervisor::whereNull('leave_status_id')->get() as $a)
 							<?php
 							$ul = $a->belongstostaffleave?->belongstostaff?->belongstomanydepartment->first()?->branch_id;				//get user leave branch_id
-							$us = \Auth::user()->belongstostaff->belongstomanydepartment->first()?->branch_id;						//get user supervisor branch_id
-							// echo $ul.' | '.$us;
+							// echo $us.' | '.$ul.'<br />';
+							// dd($a);
+							$leav = HRLeave::find($a->leave_id);
 
 								if ( ($a->belongstostaffleave->leave_type_id == 9) || ($a->belongstostaffleave->leave_type_id != 9 && $a->belongstostaffleave->half_type_id == 2) || ($a->belongstostaffleave->leave_type_id != 9 && $a->belongstostaffleave->half_type_id == 1) ) {
 									$dts = \Carbon\Carbon::parse($a->belongstostaffleave->date_time_start)->format('j M Y g:i a');
@@ -424,6 +420,9 @@ foreach ($c as $v) {
 							?>
 							@if($ul == $us)
 								<tr class="{{ $u }}" >
+									<td>
+										HR9-{{ str_pad( $leav->leave_no, 5, "0", STR_PAD_LEFT ) }}/{{ $leav->leave_year }}
+									</td>
 									<td>{{ $a->belongstostaffleave->belongstostaff?->name }}</td>
 									<td>{{ $a->belongstostaffleave->belongstooptleavetype?->leave_type_code }}</td>
 									<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="{{ $a->belongstostaffleave->reason }}">{{ str($a->belongstostaffleave->reason)->words(3, ' >') }}</td>
@@ -490,6 +489,7 @@ foreach ($c as $v) {
 				<table class="table table-hover table-sm" id="sapprover" style="font-size:12px">
 					<thead>
 						<tr>
+							<th rowspan="2">Leave ID</th>
 							<th rowspan="2">Name</th>
 							<th rowspan="2">Leave</th>
 							<th rowspan="2">Reason</th>
@@ -503,91 +503,613 @@ foreach ($c as $v) {
 						</tr>
 					</thead>
 					<tbody>
+						<?php
+						$dept = \Auth::user()->belongstostaff->belongstomanydepartment()->wherePivot('main', 1)->first();
+						$deptid = $dept->id;
+						$branch = $dept->branch_id;
+						$category = $dept->category_id;
+						$i = 1;
+						// dump($deptid, $branch, $category);
+						?>
 						@foreach(HRLeaveApprovalHOD::whereNull('leave_status_id')->get() as $a)
 							<?php
-							$ul = $a->belongstostaffleave->belongstostaff->belongstomanydepartment->first()->branch_id;				//get user leave branch_id
-							$us = \Auth::user()->belongstostaff->belongstomanydepartment->first()->branch_id;						//get user hod branch_id
 							// echo $ul.' | '.$us;
+							$leav = HRLeave::find($a->leave_id);
+							$staff = Staff::find($leav->staff_id);
+							// dump($staff);
+							$sta = $staff->belongstomanydepartment()->wherePivot('main', 1)->first();
+							$stadept = $sta->id;
+							$stacate = $sta->category_id;
+							// dd($stadept, $stacate);
 
-								if ( ($a->belongstostaffleave->leave_type_id == 9) || ($a->belongstostaffleave->leave_type_id != 9 && $a->belongstostaffleave->half_type_id == 2) || ($a->belongstostaffleave->leave_type_id != 9 && $a->belongstostaffleave->half_type_id == 1) ) {
-									$dts = \Carbon\Carbon::parse($a->belongstostaffleave->date_time_start)->format('j M Y g:i a');
-									$dte = \Carbon\Carbon::parse($a->belongstostaffleave->date_time_end)->format('j M Y g:i a');
+							if ( ($a->belongstostaffleave->leave_type_id == 9) || ($a->belongstostaffleave->leave_type_id != 9 && $a->belongstostaffleave->half_type_id == 2) || ($a->belongstostaffleave->leave_type_id != 9 && $a->belongstostaffleave->half_type_id == 1) ) {
+								$dts = \Carbon\Carbon::parse($a->belongstostaffleave->date_time_start)->format('j M Y g:i a');
+								$dte = \Carbon\Carbon::parse($a->belongstostaffleave->date_time_end)->format('j M Y g:i a');
 
-									if ($a->belongstostaffleave->leave_type_id != 9) {
-										if ($a->belongstostaffleave->half_type_id == 2) {
-											$dper = $a->belongstostaffleave->period_day.' Day';
-										} elseif($a->belongstostaffleave->half_type_id == 1) {
-											$dper = $a->belongstostaffleave->period_day.' Day';
-										}
-									}elseif ($a->belongstostaffleave->leave_type_id == 9) {
-										$i = \Carbon\Carbon::parse($a->belongstostaffleave->period_time);
-										$dper = $i->hour.' hour, '.$i->minute.' minutes';
+								if ($a->belongstostaffleave->leave_type_id != 9) {
+									if ($a->belongstostaffleave->half_type_id == 2) {
+										$dper = $a->belongstostaffleave->period_day.' Day';
+									} elseif($a->belongstostaffleave->half_type_id == 1) {
+										$dper = $a->belongstostaffleave->period_day.' Day';
 									}
+								}elseif ($a->belongstostaffleave->leave_type_id == 9) {
+									$i = \Carbon\Carbon::parse($a->belongstostaffleave->period_time);
+									$dper = $i->hour.' hour, '.$i->minute.' minutes';
+								}
 
-								} else {
-									$dts = \Carbon\Carbon::parse($a->belongstostaffleave->date_time_start)->format('j M Y ');
-									$dte = \Carbon\Carbon::parse($a->belongstostaffleave->date_time_end)->format('j M Y ');
-									$dper = $a->belongstostaffleave->period_day.' day/s';
-								}
-								$z = \Carbon\Carbon::parse(now())->daysUntil($a->belongstostaffleave->date_time_start, 1)->count();
-								if(3 >= $z && $z >= 2){
-									$u = 'table-warning';
-								} elseif($z < 2){
-									$u = 'table-danger';
-								} else {
-									$u = NULL;
-								}
+							} else {
+								$dts = \Carbon\Carbon::parse($a->belongstostaffleave->date_time_start)->format('j M Y ');
+								$dte = \Carbon\Carbon::parse($a->belongstostaffleave->date_time_end)->format('j M Y ');
+								$dper = $a->belongstostaffleave->period_day.' day/s';
+							}
+							$z = \Carbon\Carbon::parse(now())->daysUntil($a->belongstostaffleave->date_time_start, 1)->count();
+							if(3 >= $z && $z >= 2){
+								$u = 'table-warning';
+							} elseif($z < 2){
+								$u = 'table-danger';
+							} else {
+								$u = NULL;
+							}
 							?>
-							@if($ul == $us)
-								<tr class="{{ $u }}" >
-									<td>{{ $a->belongstostaffleave->belongstostaff?->name }}</td>
-									<td>{{ $a->belongstostaffleave->belongstooptleavetype?->leave_type_code }}</td>
-									<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="{{ $a->belongstostaffleave->reason }}">{{ str($a->belongstostaffleave->reason)->words(3, ' >') }}</td>
-									<td>{{ $dts }}</td>
-									<td>{{ $dte }}</td>
-									<td>{{ $dper }}</td>
-									<td>
-										<!-- Button trigger modal -->
-										<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#hodapproval{{ $a->id }}" data-id="{{ $a->id }}"><i class="bi bi-box-arrow-in-down"></i></button>
+							@if($deptid == 28 || $deptid == 21)				<!-- production manager -->
+								@if(($stacate == 2 && ($stadept == 2 || $stadept == 3 || $stadept == 4 || $stadept == 8 || $stadept == 18 || $stadept == 19 || $stadept == 20 || $stadept == 25 || $stadept == 27 || $stadept == 30)) || ($staff->div_id == 4) || ($stadept == 21 || $stadept == 28))
+									<tr class="{{ $u }}" >
+										<td>
+											HR9-{{ str_pad( $leav->leave_no, 5, "0", STR_PAD_LEFT ) }}/{{ $leav->leave_year }}
+										</td>
+										<td>{{ $a->belongstostaffleave->belongstostaff?->name }}</td>
+										<td>{{ $a->belongstostaffleave->belongstooptleavetype?->leave_type_code }}</td>
+										<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="{{ $a->belongstostaffleave->reason }}">{{ str($a->belongstostaffleave->reason)->words(3, ' >') }}</td>
+										<td>{{ $dts }}</td>
+										<td>{{ $dte }}</td>
+										<td>{{ $dper }}</td>
+										<td>
+											<!-- Button trigger modal -->
+											<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#hodapproval{{ $a->id }}" data-id="{{ $a->id }}"><i class="bi bi-box-arrow-in-down"></i></button>
 
-										<!-- Modal for supervisor approval-->
-										<div class="modal fade" id="hodapproval{{ $a->id }}" aria-labelledby="hodlabel{{ $a->id }}" aria-hidden="true">
-										<!-- <div class="modal fade" id="hodapproval{{ $a->id }}" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false"> -->
-											<div class="modal-dialog modal-dialog-centered">
-												<div class="modal-content">
-													<div class="modal-header">
-														<h1 class="modal-title fs-5" id="hodlabel{{ $a->id }}">Head of Department Approval</h1>
-														<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-													</div>
-													<div class="modal-body">
-														{{ Form::open(['route' => ['leavestatus.hodstatus'], 'method' => 'patch', 'id' => 'form', 'autocomplete' => 'off', 'files' => true, 'data-toggle' => 'validator']) }}
-														{{ Form::hidden('id', $a->id) }}
-														@foreach($ls as $k => $val)
-														<div class="form-check form-check-inline {{ $errors->has('leave_status_id') ? 'has-error' : '' }}">
-															<input type="radio" name="leave_status_id" value="{{ $val['id'] }}" id="hodstatus{{ $a->id.$val['id'] }}" class="form-check-input">
-															<label class="form-check-label" for="hodstatus{{ $a->id.$val['id'] }}">{{ $val['text'] }}</label>
+											<!-- Modal for supervisor approval-->
+											<div class="modal fade" id="hodapproval{{ $a->id }}" aria-labelledby="hodlabel{{ $a->id }}" aria-hidden="true">
+											<!-- <div class="modal fade" id="hodapproval{{ $a->id }}" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false"> -->
+												<div class="modal-dialog modal-dialog-centered">
+													<div class="modal-content">
+														<div class="modal-header">
+															<h1 class="modal-title fs-5" id="hodlabel{{ $a->id }}">Head of Department Approval</h1>
+															<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 														</div>
-														@endforeach
-														<div class="mb-3 row">
-															<div class="form-group row {{ $errors->has('verify_code') ? 'has-error' : '' }}">
-																<label for="hodcode{{ $val['id'] }}" class="col-auto col-form-label col-form-label-sm">Verify Code :</label>
-																<div class="col-auto">
-																	<input type="text" name="verify_code" value="{{ @$value }}" id="hodcode{{ $val['id'] }}" class="form-control form-control-sm" placeholder="Verify Code">
+														<div class="modal-body">
+															{{ Form::open(['route' => ['leavestatus.hodstatus'], 'method' => 'patch', 'id' => 'form', 'autocomplete' => 'off', 'files' => true, 'data-toggle' => 'validator']) }}
+															{{ Form::hidden('id', $a->id) }}
+															@foreach($ls as $k => $val)
+															<div class="form-check form-check-inline {{ $errors->has('leave_status_id') ? 'has-error' : '' }}">
+																<input type="radio" name="leave_status_id" value="{{ $val['id'] }}" id="hodstatus{{ $a->id.$val['id'] }}" class="form-check-input">
+																<label class="form-check-label" for="hodstatus{{ $a->id.$val['id'] }}">{{ $val['text'] }}</label>
+															</div>
+															@endforeach
+															<div class="mb-3 row">
+																<div class="form-group row {{ $errors->has('verify_code') ? 'has-error' : '' }}">
+																	<label for="hodcode{{ $val['id'] }}" class="col-auto col-form-label col-form-label-sm">Verify Code :</label>
+																	<div class="col-auto">
+																		<input type="text" name="verify_code" value="{{ @$value }}" id="hodcode{{ $val['id'] }}" class="form-control form-control-sm" placeholder="Verify Code">
+																	</div>
 																</div>
 															</div>
 														</div>
+														<div class="modal-footer">
+															<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+															{{ Form::submit('Submit', ['class' => 'btn btn-sm btn-outline-secondary']) }}
+														</div>
+															{{ Form::close() }}
 													</div>
-													<div class="modal-footer">
-														<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Close</button>
-														{{ Form::submit('Submit', ['class' => 'btn btn-sm btn-outline-secondary']) }}
-													</div>
-														{{ Form::close() }}
 												</div>
 											</div>
-										</div>
 
-									</td>
-								</tr>
+										</td>
+									</tr>
+								@endif
+							@endif
+							@if($deptid == 6)				<!-- cs office -->
+								@if($stadept == 6 || ($stacate == 2 && $stadept == 7))
+									<tr class="{{ $u }}" >
+										<td>
+											HR9-{{ str_pad( $leav->leave_no, 5, "0", STR_PAD_LEFT ) }}/{{ $leav->leave_year }}
+										</td>
+										<td>{{ $a->belongstostaffleave->belongstostaff?->name }}</td>
+										<td>{{ $a->belongstostaffleave->belongstooptleavetype?->leave_type_code }}</td>
+										<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="{{ $a->belongstostaffleave->reason }}">{{ str($a->belongstostaffleave->reason)->words(3, ' >') }}</td>
+										<td>{{ $dts }}</td>
+										<td>{{ $dte }}</td>
+										<td>{{ $dper }}</td>
+										<td>
+											<!-- Button trigger modal -->
+											<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#hodapproval{{ $a->id }}" data-id="{{ $a->id }}"><i class="bi bi-box-arrow-in-down"></i></button>
+
+											<!-- Modal for supervisor approval-->
+											<div class="modal fade" id="hodapproval{{ $a->id }}" aria-labelledby="hodlabel{{ $a->id }}" aria-hidden="true">
+											<!-- <div class="modal fade" id="hodapproval{{ $a->id }}" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false"> -->
+												<div class="modal-dialog modal-dialog-centered">
+													<div class="modal-content">
+														<div class="modal-header">
+															<h1 class="modal-title fs-5" id="hodlabel{{ $a->id }}">Head of Department Approval</h1>
+															<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+														</div>
+														<div class="modal-body">
+															{{ Form::open(['route' => ['leavestatus.hodstatus'], 'method' => 'patch', 'id' => 'form', 'autocomplete' => 'off', 'files' => true, 'data-toggle' => 'validator']) }}
+															{{ Form::hidden('id', $a->id) }}
+															@foreach($ls as $k => $val)
+															<div class="form-check form-check-inline {{ $errors->has('leave_status_id') ? 'has-error' : '' }}">
+																<input type="radio" name="leave_status_id" value="{{ $val['id'] }}" id="hodstatus{{ $a->id.$val['id'] }}" class="form-check-input">
+																<label class="form-check-label" for="hodstatus{{ $a->id.$val['id'] }}">{{ $val['text'] }}</label>
+															</div>
+															@endforeach
+															<div class="mb-3 row">
+																<div class="form-group row {{ $errors->has('verify_code') ? 'has-error' : '' }}">
+																	<label for="hodcode{{ $val['id'] }}" class="col-auto col-form-label col-form-label-sm">Verify Code :</label>
+																	<div class="col-auto">
+																		<input type="text" name="verify_code" value="{{ @$value }}" id="hodcode{{ $val['id'] }}" class="form-control form-control-sm" placeholder="Verify Code">
+																	</div>
+																</div>
+															</div>
+														</div>
+														<div class="modal-footer">
+															<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+															{{ Form::submit('Submit', ['class' => 'btn btn-sm btn-outline-secondary']) }}
+														</div>
+															{{ Form::close() }}
+													</div>
+												</div>
+											</div>
+
+										</td>
+									</tr>
+								@endif
+							@endif
+							@if($deptid == 23)				<!-- purchasing -->
+								@if($stadept == 23 || $stadept == 17 || ($stacate == 2 && ($stadept == 11 || $stadept == 16)))
+									<tr class="{{ $u }}" >
+										<td>
+											HR9-{{ str_pad( $leav->leave_no, 5, "0", STR_PAD_LEFT ) }}/{{ $leav->leave_year }}
+										</td>
+										<td>{{ $a->belongstostaffleave->belongstostaff?->name }}</td>
+										<td>{{ $a->belongstostaffleave->belongstooptleavetype?->leave_type_code }}</td>
+										<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="{{ $a->belongstostaffleave->reason }}">{{ str($a->belongstostaffleave->reason)->words(3, ' >') }}</td>
+										<td>{{ $dts }}</td>
+										<td>{{ $dte }}</td>
+										<td>{{ $dper }}</td>
+										<td>
+											<!-- Button trigger modal -->
+											<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#hodapproval{{ $a->id }}" data-id="{{ $a->id }}"><i class="bi bi-box-arrow-in-down"></i></button>
+
+											<!-- Modal for supervisor approval-->
+											<div class="modal fade" id="hodapproval{{ $a->id }}" aria-labelledby="hodlabel{{ $a->id }}" aria-hidden="true">
+											<!-- <div class="modal fade" id="hodapproval{{ $a->id }}" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false"> -->
+												<div class="modal-dialog modal-dialog-centered">
+													<div class="modal-content">
+														<div class="modal-header">
+															<h1 class="modal-title fs-5" id="hodlabel{{ $a->id }}">Head of Department Approval</h1>
+															<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+														</div>
+														<div class="modal-body">
+															{{ Form::open(['route' => ['leavestatus.hodstatus'], 'method' => 'patch', 'id' => 'form', 'autocomplete' => 'off', 'files' => true, 'data-toggle' => 'validator']) }}
+															{{ Form::hidden('id', $a->id) }}
+															@foreach($ls as $k => $val)
+															<div class="form-check form-check-inline {{ $errors->has('leave_status_id') ? 'has-error' : '' }}">
+																<input type="radio" name="leave_status_id" value="{{ $val['id'] }}" id="hodstatus{{ $a->id.$val['id'] }}" class="form-check-input">
+																<label class="form-check-label" for="hodstatus{{ $a->id.$val['id'] }}">{{ $val['text'] }}</label>
+															</div>
+															@endforeach
+															<div class="mb-3 row">
+																<div class="form-group row {{ $errors->has('verify_code') ? 'has-error' : '' }}">
+																	<label for="hodcode{{ $val['id'] }}" class="col-auto col-form-label col-form-label-sm">Verify Code :</label>
+																	<div class="col-auto">
+																		<input type="text" name="verify_code" value="{{ @$value }}" id="hodcode{{ $val['id'] }}" class="form-control form-control-sm" placeholder="Verify Code">
+																	</div>
+																</div>
+															</div>
+														</div>
+														<div class="modal-footer">
+															<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+															{{ Form::submit('Submit', ['class' => 'btn btn-sm btn-outline-secondary']) }}
+														</div>
+															{{ Form::close() }}
+													</div>
+												</div>
+											</div>
+
+										</td>
+									</tr>
+								@endif
+							@endif
+							@if($deptid == 1)				<!-- account -->
+								@if($stadept == 1)
+									<tr class="{{ $u }}" >
+										<td>
+											HR9-{{ str_pad( $leav->leave_no, 5, "0", STR_PAD_LEFT ) }}/{{ $leav->leave_year }}
+										</td>
+										<td>{{ $a->belongstostaffleave->belongstostaff?->name }}</td>
+										<td>{{ $a->belongstostaffleave->belongstooptleavetype?->leave_type_code }}</td>
+										<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="{{ $a->belongstostaffleave->reason }}">{{ str($a->belongstostaffleave->reason)->words(3, ' >') }}</td>
+										<td>{{ $dts }}</td>
+										<td>{{ $dte }}</td>
+										<td>{{ $dper }}</td>
+										<td>
+											<!-- Button trigger modal -->
+											<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#hodapproval{{ $a->id }}" data-id="{{ $a->id }}"><i class="bi bi-box-arrow-in-down"></i></button>
+
+											<!-- Modal for supervisor approval-->
+											<div class="modal fade" id="hodapproval{{ $a->id }}" aria-labelledby="hodlabel{{ $a->id }}" aria-hidden="true">
+											<!-- <div class="modal fade" id="hodapproval{{ $a->id }}" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false"> -->
+												<div class="modal-dialog modal-dialog-centered">
+													<div class="modal-content">
+														<div class="modal-header">
+															<h1 class="modal-title fs-5" id="hodlabel{{ $a->id }}">Head of Department Approval</h1>
+															<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+														</div>
+														<div class="modal-body">
+															{{ Form::open(['route' => ['leavestatus.hodstatus'], 'method' => 'patch', 'id' => 'form', 'autocomplete' => 'off', 'files' => true, 'data-toggle' => 'validator']) }}
+															{{ Form::hidden('id', $a->id) }}
+															@foreach($ls as $k => $val)
+															<div class="form-check form-check-inline {{ $errors->has('leave_status_id') ? 'has-error' : '' }}">
+																<input type="radio" name="leave_status_id" value="{{ $val['id'] }}" id="hodstatus{{ $a->id.$val['id'] }}" class="form-check-input">
+																<label class="form-check-label" for="hodstatus{{ $a->id.$val['id'] }}">{{ $val['text'] }}</label>
+															</div>
+															@endforeach
+															<div class="mb-3 row">
+																<div class="form-group row {{ $errors->has('verify_code') ? 'has-error' : '' }}">
+																	<label for="hodcode{{ $val['id'] }}" class="col-auto col-form-label col-form-label-sm">Verify Code :</label>
+																	<div class="col-auto">
+																		<input type="text" name="verify_code" value="{{ @$value }}" id="hodcode{{ $val['id'] }}" class="form-control form-control-sm" placeholder="Verify Code">
+																	</div>
+																</div>
+															</div>
+														</div>
+														<div class="modal-footer">
+															<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+															{{ Form::submit('Submit', ['class' => 'btn btn-sm btn-outline-secondary']) }}
+														</div>
+															{{ Form::close() }}
+													</div>
+												</div>
+											</div>
+
+										</td>
+									</tr>
+								@endif
+							@endif
+							@if($deptid == 5)				<!-- costing -->
+								@if($stadept == 5)
+									<tr class="{{ $u }}" >
+										<td>
+											HR9-{{ str_pad( $leav->leave_no, 5, "0", STR_PAD_LEFT ) }}/{{ $leav->leave_year }}
+										</td>
+										<td>{{ $a->belongstostaffleave->belongstostaff?->name }}</td>
+										<td>{{ $a->belongstostaffleave->belongstooptleavetype?->leave_type_code }}</td>
+										<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="{{ $a->belongstostaffleave->reason }}">{{ str($a->belongstostaffleave->reason)->words(3, ' >') }}</td>
+										<td>{{ $dts }}</td>
+										<td>{{ $dte }}</td>
+										<td>{{ $dper }}</td>
+										<td>
+											<!-- Button trigger modal -->
+											<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#hodapproval{{ $a->id }}" data-id="{{ $a->id }}"><i class="bi bi-box-arrow-in-down"></i></button>
+
+											<!-- Modal for supervisor approval-->
+											<div class="modal fade" id="hodapproval{{ $a->id }}" aria-labelledby="hodlabel{{ $a->id }}" aria-hidden="true">
+											<!-- <div class="modal fade" id="hodapproval{{ $a->id }}" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false"> -->
+												<div class="modal-dialog modal-dialog-centered">
+													<div class="modal-content">
+														<div class="modal-header">
+															<h1 class="modal-title fs-5" id="hodlabel{{ $a->id }}">Head of Department Approval</h1>
+															<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+														</div>
+														<div class="modal-body">
+															{{ Form::open(['route' => ['leavestatus.hodstatus'], 'method' => 'patch', 'id' => 'form', 'autocomplete' => 'off', 'files' => true, 'data-toggle' => 'validator']) }}
+															{{ Form::hidden('id', $a->id) }}
+															@foreach($ls as $k => $val)
+															<div class="form-check form-check-inline {{ $errors->has('leave_status_id') ? 'has-error' : '' }}">
+																<input type="radio" name="leave_status_id" value="{{ $val['id'] }}" id="hodstatus{{ $a->id.$val['id'] }}" class="form-check-input">
+																<label class="form-check-label" for="hodstatus{{ $a->id.$val['id'] }}">{{ $val['text'] }}</label>
+															</div>
+															@endforeach
+															<div class="mb-3 row">
+																<div class="form-group row {{ $errors->has('verify_code') ? 'has-error' : '' }}">
+																	<label for="hodcode{{ $val['id'] }}" class="col-auto col-form-label col-form-label-sm">Verify Code :</label>
+																	<div class="col-auto">
+																		<input type="text" name="verify_code" value="{{ @$value }}" id="hodcode{{ $val['id'] }}" class="form-control form-control-sm" placeholder="Verify Code">
+																	</div>
+																</div>
+															</div>
+														</div>
+														<div class="modal-footer">
+															<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+															{{ Form::submit('Submit', ['class' => 'btn btn-sm btn-outline-secondary']) }}
+														</div>
+															{{ Form::close() }}
+													</div>
+												</div>
+											</div>
+
+										</td>
+									</tr>
+								@endif
+							@endif
+							@if($deptid == 12)				<!-- engineering -->
+								@if($stadept == 12)
+									<tr class="{{ $u }}" >
+										<td>
+											HR9-{{ str_pad( $leav->leave_no, 5, "0", STR_PAD_LEFT ) }}/{{ $leav->leave_year }}
+										</td>
+										<td>{{ $a->belongstostaffleave->belongstostaff?->name }}</td>
+										<td>{{ $a->belongstostaffleave->belongstooptleavetype?->leave_type_code }}</td>
+										<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="{{ $a->belongstostaffleave->reason }}">{{ str($a->belongstostaffleave->reason)->words(3, ' >') }}</td>
+										<td>{{ $dts }}</td>
+										<td>{{ $dte }}</td>
+										<td>{{ $dper }}</td>
+										<td>
+											<!-- Button trigger modal -->
+											<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#hodapproval{{ $a->id }}" data-id="{{ $a->id }}"><i class="bi bi-box-arrow-in-down"></i></button>
+
+											<!-- Modal for supervisor approval-->
+											<div class="modal fade" id="hodapproval{{ $a->id }}" aria-labelledby="hodlabel{{ $a->id }}" aria-hidden="true">
+											<!-- <div class="modal fade" id="hodapproval{{ $a->id }}" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false"> -->
+												<div class="modal-dialog modal-dialog-centered">
+													<div class="modal-content">
+														<div class="modal-header">
+															<h1 class="modal-title fs-5" id="hodlabel{{ $a->id }}">Head of Department Approval</h1>
+															<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+														</div>
+														<div class="modal-body">
+															{{ Form::open(['route' => ['leavestatus.hodstatus'], 'method' => 'patch', 'id' => 'form', 'autocomplete' => 'off', 'files' => true, 'data-toggle' => 'validator']) }}
+															{{ Form::hidden('id', $a->id) }}
+															@foreach($ls as $k => $val)
+															<div class="form-check form-check-inline {{ $errors->has('leave_status_id') ? 'has-error' : '' }}">
+																<input type="radio" name="leave_status_id" value="{{ $val['id'] }}" id="hodstatus{{ $a->id.$val['id'] }}" class="form-check-input">
+																<label class="form-check-label" for="hodstatus{{ $a->id.$val['id'] }}">{{ $val['text'] }}</label>
+															</div>
+															@endforeach
+															<div class="mb-3 row">
+																<div class="form-group row {{ $errors->has('verify_code') ? 'has-error' : '' }}">
+																	<label for="hodcode{{ $val['id'] }}" class="col-auto col-form-label col-form-label-sm">Verify Code :</label>
+																	<div class="col-auto">
+																		<input type="text" name="verify_code" value="{{ @$value }}" id="hodcode{{ $val['id'] }}" class="form-control form-control-sm" placeholder="Verify Code">
+																	</div>
+																</div>
+															</div>
+														</div>
+														<div class="modal-footer">
+															<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+															{{ Form::submit('Submit', ['class' => 'btn btn-sm btn-outline-secondary']) }}
+														</div>
+															{{ Form::close() }}
+													</div>
+												</div>
+											</div>
+
+										</td>
+									</tr>
+								@endif
+							@endif
+							@if($deptid == 14)				<!-- hr -->
+								@if($stadept == 14)
+									<tr class="{{ $u }}" >
+										<td>
+											HR9-{{ str_pad( $leav->leave_no, 5, "0", STR_PAD_LEFT ) }}/{{ $leav->leave_year }}
+										</td>
+										<td>{{ $a->belongstostaffleave->belongstostaff?->name }}</td>
+										<td>{{ $a->belongstostaffleave->belongstooptleavetype?->leave_type_code }}</td>
+										<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="{{ $a->belongstostaffleave->reason }}">{{ str($a->belongstostaffleave->reason)->words(3, ' >') }}</td>
+										<td>{{ $dts }}</td>
+										<td>{{ $dte }}</td>
+										<td>{{ $dper }}</td>
+										<td>
+											<!-- Button trigger modal -->
+											<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#hodapproval{{ $a->id }}" data-id="{{ $a->id }}"><i class="bi bi-box-arrow-in-down"></i></button>
+
+											<!-- Modal for supervisor approval-->
+											<div class="modal fade" id="hodapproval{{ $a->id }}" aria-labelledby="hodlabel{{ $a->id }}" aria-hidden="true">
+											<!-- <div class="modal fade" id="hodapproval{{ $a->id }}" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false"> -->
+												<div class="modal-dialog modal-dialog-centered">
+													<div class="modal-content">
+														<div class="modal-header">
+															<h1 class="modal-title fs-5" id="hodlabel{{ $a->id }}">Head of Department Approval</h1>
+															<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+														</div>
+														<div class="modal-body">
+															{{ Form::open(['route' => ['leavestatus.hodstatus'], 'method' => 'patch', 'id' => 'form', 'autocomplete' => 'off', 'files' => true, 'data-toggle' => 'validator']) }}
+															{{ Form::hidden('id', $a->id) }}
+															@foreach($ls as $k => $val)
+															<div class="form-check form-check-inline {{ $errors->has('leave_status_id') ? 'has-error' : '' }}">
+																<input type="radio" name="leave_status_id" value="{{ $val['id'] }}" id="hodstatus{{ $a->id.$val['id'] }}" class="form-check-input">
+																<label class="form-check-label" for="hodstatus{{ $a->id.$val['id'] }}">{{ $val['text'] }}</label>
+															</div>
+															@endforeach
+															<div class="mb-3 row">
+																<div class="form-group row {{ $errors->has('verify_code') ? 'has-error' : '' }}">
+																	<label for="hodcode{{ $val['id'] }}" class="col-auto col-form-label col-form-label-sm">Verify Code :</label>
+																	<div class="col-auto">
+																		<input type="text" name="verify_code" value="{{ @$value }}" id="hodcode{{ $val['id'] }}" class="form-control form-control-sm" placeholder="Verify Code">
+																	</div>
+																</div>
+															</div>
+														</div>
+														<div class="modal-footer">
+															<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+															{{ Form::submit('Submit', ['class' => 'btn btn-sm btn-outline-secondary']) }}
+														</div>
+															{{ Form::close() }}
+													</div>
+												</div>
+											</div>
+
+										</td>
+									</tr>
+								@endif
+							@endif
+							@if($deptid == 15)				<!-- it -->
+								@if($stadept == 15)
+									<tr class="{{ $u }}" >
+										<td>
+											HR9-{{ str_pad( $leav->leave_no, 5, "0", STR_PAD_LEFT ) }}/{{ $leav->leave_year }}
+										</td>
+										<td>{{ $a->belongstostaffleave->belongstostaff?->name }}</td>
+										<td>{{ $a->belongstostaffleave->belongstooptleavetype?->leave_type_code }}</td>
+										<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="{{ $a->belongstostaffleave->reason }}">{{ str($a->belongstostaffleave->reason)->words(3, ' >') }}</td>
+										<td>{{ $dts }}</td>
+										<td>{{ $dte }}</td>
+										<td>{{ $dper }}</td>
+										<td>
+											<!-- Button trigger modal -->
+											<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#hodapproval{{ $a->id }}" data-id="{{ $a->id }}"><i class="bi bi-box-arrow-in-down"></i></button>
+
+											<!-- Modal for supervisor approval-->
+											<div class="modal fade" id="hodapproval{{ $a->id }}" aria-labelledby="hodlabel{{ $a->id }}" aria-hidden="true">
+											<!-- <div class="modal fade" id="hodapproval{{ $a->id }}" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false"> -->
+												<div class="modal-dialog modal-dialog-centered">
+													<div class="modal-content">
+														<div class="modal-header">
+															<h1 class="modal-title fs-5" id="hodlabel{{ $a->id }}">Head of Department Approval</h1>
+															<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+														</div>
+														<div class="modal-body">
+															{{ Form::open(['route' => ['leavestatus.hodstatus'], 'method' => 'patch', 'id' => 'form', 'autocomplete' => 'off', 'files' => true, 'data-toggle' => 'validator']) }}
+															{{ Form::hidden('id', $a->id) }}
+															@foreach($ls as $k => $val)
+															<div class="form-check form-check-inline {{ $errors->has('leave_status_id') ? 'has-error' : '' }}">
+																<input type="radio" name="leave_status_id" value="{{ $val['id'] }}" id="hodstatus{{ $a->id.$val['id'] }}" class="form-check-input">
+																<label class="form-check-label" for="hodstatus{{ $a->id.$val['id'] }}">{{ $val['text'] }}</label>
+															</div>
+															@endforeach
+															<div class="mb-3 row">
+																<div class="form-group row {{ $errors->has('verify_code') ? 'has-error' : '' }}">
+																	<label for="hodcode{{ $val['id'] }}" class="col-auto col-form-label col-form-label-sm">Verify Code :</label>
+																	<div class="col-auto">
+																		<input type="text" name="verify_code" value="{{ @$value }}" id="hodcode{{ $val['id'] }}" class="form-control form-control-sm" placeholder="Verify Code">
+																	</div>
+																</div>
+															</div>
+														</div>
+														<div class="modal-footer">
+															<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+															{{ Form::submit('Submit', ['class' => 'btn btn-sm btn-outline-secondary']) }}
+														</div>
+															{{ Form::close() }}
+													</div>
+												</div>
+											</div>
+
+										</td>
+									</tr>
+								@endif
+							@endif
+							@if($deptid == 22)				<!-- plc programmer -->
+								@if($stadept == 22)
+									<tr class="{{ $u }}" >
+										<td>
+											HR9-{{ str_pad( $leav->leave_no, 5, "0", STR_PAD_LEFT ) }}/{{ $leav->leave_year }}
+										</td>
+										<td>{{ $a->belongstostaffleave->belongstostaff?->name }}</td>
+										<td>{{ $a->belongstostaffleave->belongstooptleavetype?->leave_type_code }}</td>
+										<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="{{ $a->belongstostaffleave->reason }}">{{ str($a->belongstostaffleave->reason)->words(3, ' >') }}</td>
+										<td>{{ $dts }}</td>
+										<td>{{ $dte }}</td>
+										<td>{{ $dper }}</td>
+										<td>
+											<!-- Button trigger modal -->
+											<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#hodapproval{{ $a->id }}" data-id="{{ $a->id }}"><i class="bi bi-box-arrow-in-down"></i></button>
+
+											<!-- Modal for supervisor approval-->
+											<div class="modal fade" id="hodapproval{{ $a->id }}" aria-labelledby="hodlabel{{ $a->id }}" aria-hidden="true">
+											<!-- <div class="modal fade" id="hodapproval{{ $a->id }}" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false"> -->
+												<div class="modal-dialog modal-dialog-centered">
+													<div class="modal-content">
+														<div class="modal-header">
+															<h1 class="modal-title fs-5" id="hodlabel{{ $a->id }}">Head of Department Approval</h1>
+															<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+														</div>
+														<div class="modal-body">
+															{{ Form::open(['route' => ['leavestatus.hodstatus'], 'method' => 'patch', 'id' => 'form', 'autocomplete' => 'off', 'files' => true, 'data-toggle' => 'validator']) }}
+															{{ Form::hidden('id', $a->id) }}
+															@foreach($ls as $k => $val)
+															<div class="form-check form-check-inline {{ $errors->has('leave_status_id') ? 'has-error' : '' }}">
+																<input type="radio" name="leave_status_id" value="{{ $val['id'] }}" id="hodstatus{{ $a->id.$val['id'] }}" class="form-check-input">
+																<label class="form-check-label" for="hodstatus{{ $a->id.$val['id'] }}">{{ $val['text'] }}</label>
+															</div>
+															@endforeach
+															<div class="mb-3 row">
+																<div class="form-group row {{ $errors->has('verify_code') ? 'has-error' : '' }}">
+																	<label for="hodcode{{ $val['id'] }}" class="col-auto col-form-label col-form-label-sm">Verify Code :</label>
+																	<div class="col-auto">
+																		<input type="text" name="verify_code" value="{{ @$value }}" id="hodcode{{ $val['id'] }}" class="form-control form-control-sm" placeholder="Verify Code">
+																	</div>
+																</div>
+															</div>
+														</div>
+														<div class="modal-footer">
+															<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+															{{ Form::submit('Submit', ['class' => 'btn btn-sm btn-outline-secondary']) }}
+														</div>
+															{{ Form::close() }}
+													</div>
+												</div>
+											</div>
+
+										</td>
+									</tr>
+								@endif
+							@endif
+							@if($deptid == 24)				<!-- Sales -->
+								@if($stadept == 24)
+									<tr class="{{ $u }}" >
+										<td>
+											HR9-{{ str_pad( $leav->leave_no, 5, "0", STR_PAD_LEFT ) }}/{{ $leav->leave_year }}
+										</td>
+										<td>{{ $a->belongstostaffleave->belongstostaff?->name }}</td>
+										<td>{{ $a->belongstostaffleave->belongstooptleavetype?->leave_type_code }}</td>
+										<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="{{ $a->belongstostaffleave->reason }}">{{ str($a->belongstostaffleave->reason)->words(3, ' >') }}</td>
+										<td>{{ $dts }}</td>
+										<td>{{ $dte }}</td>
+										<td>{{ $dper }}</td>
+										<td>
+											<!-- Button trigger modal -->
+											<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#hodapproval{{ $a->id }}" data-id="{{ $a->id }}"><i class="bi bi-box-arrow-in-down"></i></button>
+
+											<!-- Modal for supervisor approval-->
+											<div class="modal fade" id="hodapproval{{ $a->id }}" aria-labelledby="hodlabel{{ $a->id }}" aria-hidden="true">
+											<!-- <div class="modal fade" id="hodapproval{{ $a->id }}" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false"> -->
+												<div class="modal-dialog modal-dialog-centered">
+													<div class="modal-content">
+														<div class="modal-header">
+															<h1 class="modal-title fs-5" id="hodlabel{{ $a->id }}">Head of Department Approval</h1>
+															<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+														</div>
+														<div class="modal-body">
+															{{ Form::open(['route' => ['leavestatus.hodstatus'], 'method' => 'patch', 'id' => 'form', 'autocomplete' => 'off', 'files' => true, 'data-toggle' => 'validator']) }}
+															{{ Form::hidden('id', $a->id) }}
+															@foreach($ls as $k => $val)
+															<div class="form-check form-check-inline {{ $errors->has('leave_status_id') ? 'has-error' : '' }}">
+																<input type="radio" name="leave_status_id" value="{{ $val['id'] }}" id="hodstatus{{ $a->id.$val['id'] }}" class="form-check-input">
+																<label class="form-check-label" for="hodstatus{{ $a->id.$val['id'] }}">{{ $val['text'] }}</label>
+															</div>
+															@endforeach
+															<div class="mb-3 row">
+																<div class="form-group row {{ $errors->has('verify_code') ? 'has-error' : '' }}">
+																	<label for="hodcode{{ $val['id'] }}" class="col-auto col-form-label col-form-label-sm">Verify Code :</label>
+																	<div class="col-auto">
+																		<input type="text" name="verify_code" value="{{ @$value }}" id="hodcode{{ $val['id'] }}" class="form-control form-control-sm" placeholder="Verify Code">
+																	</div>
+																</div>
+															</div>
+														</div>
+														<div class="modal-footer">
+															<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+															{{ Form::submit('Submit', ['class' => 'btn btn-sm btn-outline-secondary']) }}
+														</div>
+															{{ Form::close() }}
+													</div>
+												</div>
+											</div>
+
+										</td>
+									</tr>
+								@endif
 							@endif
 						@endforeach
 					</tbody>
@@ -604,6 +1126,7 @@ foreach ($c as $v) {
 				<table class="table table-hover table-sm" id="sapprover" style="font-size:12px">
 					<thead>
 						<tr>
+							<th rowspan="2">ID Leave</th>
 							<th rowspan="2">Name</th>
 							<th rowspan="2">Leave</th>
 							<th rowspan="2">Reason</th>
@@ -617,11 +1140,14 @@ foreach ($c as $v) {
 						</tr>
 					</thead>
 					<tbody>
+						<?php
+						$us = \Auth::user()->belongstostaff->belongstomanydepartment->first()->branch_id;						//get user director branch_id
+						?>
 						@foreach(HRLeaveApprovalDirector::whereNull('leave_status_id')->get() as $a)
 							<?php
 							$ul = $a->belongstostaffleave->belongstostaff->belongstomanydepartment->first()->branch_id;				//get user leave branch_id
-							$us = \Auth::user()->belongstostaff->belongstomanydepartment->first()->branch_id;						//get user director branch_id
 							// echo $ul.' | '.$us;
+							$leav = HRLeave::find($a->leave_id);
 
 								if ( ($a->belongstostaffleave->leave_type_id == 9) || ($a->belongstostaffleave->leave_type_id != 9 && $a->belongstostaffleave->half_type_id == 2) || ($a->belongstostaffleave->leave_type_id != 9 && $a->belongstostaffleave->half_type_id == 1) ) {
 									$dts = \Carbon\Carbon::parse($a->belongstostaffleave->date_time_start)->format('j M Y g:i a');
@@ -653,6 +1179,9 @@ foreach ($c as $v) {
 								}
 							?>
 							<tr class="{{ $u }}" >
+								<td>
+									HR9-{{ str_pad( $leav->leave_no, 5, "0", STR_PAD_LEFT ) }}/{{ $leav->leave_year }}
+								</td>
 								<td>{{ $a->belongstostaffleave->belongstostaff?->name }}</td>
 								<td>{{ $a->belongstostaffleave->belongstooptleavetype?->leave_type_code }}</td>
 								<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="{{ $a->belongstostaffleave->reason }}">{{ str($a->belongstostaffleave->reason)->words(3, ' >') }}</td>
@@ -715,6 +1244,7 @@ foreach ($c as $v) {
 				<table class="table table-hover table-sm" id="sapprover" style="font-size:12px">
 					<thead>
 						<tr>
+							<th rowspan="2">Leave ID</th>
 							<th rowspan="2">Name</th>
 							<th rowspan="2">Leave</th>
 							<th rowspan="2">Reason</th>
@@ -728,11 +1258,14 @@ foreach ($c as $v) {
 						</tr>
 					</thead>
 					<tbody>
+						<?php
+							$us = \Auth::user()->belongstostaff->belongstomanydepartment->first()->branch_id;						//get user hr branch_id
+						?>
 						@foreach(HRLeaveApprovalHR::whereNull('leave_status_id')->get() as $a)
 							<?php
 							$ul = $a->belongstostaffleave->belongstostaff->belongstomanydepartment->first()->branch_id;				//get user leave branch_id
-							$us = \Auth::user()->belongstostaff->belongstomanydepartment->first()->branch_id;						//get user hr branch_id
 							// echo $ul.' | '.$us;
+							$leav = HRLeave::find($a->leave_id);
 
 								if ( ($a->belongstostaffleave->leave_type_id == 9) || ($a->belongstostaffleave->leave_type_id != 9 && $a->belongstostaffleave->half_type_id == 2) || ($a->belongstostaffleave->leave_type_id != 9 && $a->belongstostaffleave->half_type_id == 1) ) {
 									$dts = \Carbon\Carbon::parse($a->belongstostaffleave->date_time_start)->format('j M Y g:i a');
@@ -764,6 +1297,9 @@ foreach ($c as $v) {
 								}
 							?>
 							<tr class="{{ $u }}" >
+								<td>
+									HR9-{{ str_pad( $leav->leave_no, 5, "0", STR_PAD_LEFT ) }}/{{ $leav->leave_year }}
+								</td>
 								<td>{{ $a->belongstostaffleave->belongstostaff?->name }}</td>
 								<td>{{ $a->belongstostaffleave->belongstooptleavetype?->leave_type_code }}</td>
 								<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="{{ $a->belongstostaffleave->reason }}">{{ str($a->belongstostaffleave->reason)->words(3, ' >') }}</td>
@@ -841,7 +1377,7 @@ $('#leaves').DataTable({
 
 $('#bapprover, #sapprover, #hodapprover, #dirapprover, #hrapprover').DataTable({
 	"lengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "All"] ],
-	"order": [[3, "asc" ]],	// sorting the 4th column descending
+	"order": [[4, "desc" ]],	// sorting the 4th column descending
 	responsive: true
 });
 
