@@ -357,6 +357,17 @@ foreach ($c as $v) {
 	<p>&nbsp;</p>
 
 	@if($s1)
+<?php
+// $me = \Auth::user()->
+
+
+
+
+
+
+
+
+?>
 		@if(HRLeaveApprovalSupervisor::whereNull('leave_status_id')->get()->count())
 			<div class="col-auto table-responsive">
 				<h4>Supervisor Approval</h4>
@@ -700,7 +711,7 @@ foreach ($c as $v) {
 	@if($r1)
 		@if(HRLeaveApprovalHR::whereNull('leave_status_id')->get()->count())
 			<div class="col-auto table-responsive">
-				<h4>Director Approval</h4>
+				<h4>Human Resource Approval</h4>
 				<table class="table table-hover table-sm" id="sapprover" style="font-size:12px">
 					<thead>
 						<tr>

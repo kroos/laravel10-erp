@@ -2348,7 +2348,7 @@ if(obj.time_start_pm == itime_start) {
 						id: {{ \Auth::user()->belongstostaff->id }},
 						_token: '{!! csrf_token() !!}',
 						date_from: $('#from').val(),
-						date_to: $('#to').val(),
+						date_to: $('#from').val(),
 					}
 					return query;
 				}
@@ -2373,7 +2373,7 @@ if(obj.time_start_pm == itime_start) {
 			},
 			format:'YYYY-MM-DD',
 			useCurrent: false,
-			disabledDates:data,
+			disabledDates:data4,
 			// minDate: moment().format('YYYY-MM-DD'),
 			// daysOfWeekDisabled: [0],
 		})
