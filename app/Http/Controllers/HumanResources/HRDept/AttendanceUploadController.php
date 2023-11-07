@@ -82,7 +82,7 @@ class AttendanceUploadController extends Controller
 
     
     // FETCH ACTIVE STAFF USER INFO
-    $query_Recordset1 = DB::select('SELECT `logins`.username, `staffs`.id, `staffs`.`name`, `staffs`.restday_group_id FROM `logins` JOIN `staffs` ON `logins`.staff_id = `staffs`.id WHERE `staffs`.active = ? AND `logins`.active = ?', [1, 1]);
+    $query_Recordset1 = DB::select('SELECT `logins`.username, `staffs`.id, `staffs`.`name`, `staffs`.restday_group_id FROM `logins` JOIN `staffs` ON `logins`.staff_id = `staffs`.id WHERE `staffs`.active = ? AND `logins`.active = ? AND `staffs`.id != ? AND `staffs`.id != ?', [1, 1, 61, 62]);
 
 
     // LOOP ALL ACTIVE STAFF INFO INTO ARRAY
@@ -102,9 +102,9 @@ class AttendanceUploadController extends Controller
       $staffs[] = $staff;
     }
 
-    // GET THE LATEST ATTENDANCE RECORD DATE IN DATABASE 
-    $query_Recordset3 = DB::select('SELECT `hr_attendances`.attend_date FROM `hr_attendances` GROUP BY `hr_attendances`.attend_date ORDER BY `hr_attendances`.attend_date DESC LIMIT 1');
-    $row_Recordset3 = $query_Recordset3[0]->attend_date;
+    // GET THE LATEST ATTENDANCE RECORD DATE IN FACESCAN 
+    $query_Recordset3 = DB::select('SELECT DATE(`hr_temp_punch_time`.Att_Time) AS LastDate FROM `hr_temp_punch_time` GROUP BY DATE(`hr_temp_punch_time`.Att_Time) ORDER BY LastDate ASC LIMIT 1');
+    $row_Recordset3 = $query_Recordset3[0]->LastDate;
 
     // GET THE LATEST ATTENDANCE RECORD DATE IN FACESCAN 
     $query_Recordset5 = DB::select('SELECT DATE(`hr_temp_punch_time`.Att_Time) AS CurrentDate FROM `hr_temp_punch_time` GROUP BY DATE(`hr_temp_punch_time`.Att_Time) ORDER BY CurrentDate DESC LIMIT 1');
@@ -146,9 +146,10 @@ class AttendanceUploadController extends Controller
         // IN
         $in = "00:00:00";
         $row_IN = HRTempPunchTime::selectRAW("DATE_FORMAT(Att_Time, '%H:%i:00') AS formatted_time")->where('EmployeeCode', '=', $staff['username'])->whereRaw('DATE(Att_Time) = ?', [$date])->whereRaw('TIME(Att_Time) <= ?', [$row_work_hour->time_end_am])->groupBy('formatted_time')->orderBy('Att_Time', 'asc')->first();
-
         if ($row_IN != NULL) {
           $in = $row_IN->formatted_time;
+
+          $in_add = Carbon::parse($in)->addMinutes(1)->format('H:i:s');;
         }
 
 
@@ -207,7 +208,7 @@ class AttendanceUploadController extends Controller
 
 
         $break = "00:00:00";
-        if ($in != $break1) {
+        if ($in != $break1 && $in_add != $break1) {
           $break = $break1;
         }
 
@@ -289,19 +290,28 @@ class AttendanceUploadController extends Controller
           $new_out = $out;
           $new_work_hour = $work_hour;
 
-          if ($row_Recordset4->in != '00:00:00' && $in != '00:00:00' && $row_Recordset4->in <= $in) {
+
+          if ($row_Recordset4->in != '00:00:00' && $in == '00:00:00') {
+            $new_in = $row_Recordset4->in;
+          } elseif ($row_Recordset4->in != '00:00:00' && $in != '00:00:00' && $row_Recordset4->in <= $in) {
             $new_in = $row_Recordset4->in;
           }
 
-          if ($row_Recordset4->break != '00:00:00' && $break != '00:00:00' && $row_Recordset4->break <= $break) {
+          if ($row_Recordset4->break != '00:00:00' && $break == '00:00:00') {
+            $new_break = $row_Recordset4->break;
+          } elseif ($row_Recordset4->break != '00:00:00' && $break != '00:00:00' && $row_Recordset4->break <= $break) {
             $new_break = $row_Recordset4->break;
           }
 
-          if ($row_Recordset4->resume != '00:00:00' && $resume != '00:00:00' && $row_Recordset4->resume >= $resume) {
+          if ($row_Recordset4->resume != '00:00:00' && $resume == '00:00:00') {
+            $new_resume = $row_Recordset4->resume;
+          } if ($row_Recordset4->resume != '00:00:00' && $resume != '00:00:00' && $row_Recordset4->resume >= $resume) {
             $new_resume = $row_Recordset4->resume;
           }
 
-          if ($row_Recordset4->out != '00:00:00' && $out != '00:00:00' && $row_Recordset4->out >= $out) {
+          if ($row_Recordset4->out != '00:00:00' && $out == '00:00:00') {
+            $new_out = $row_Recordset4->out;
+          } elseif ($row_Recordset4->out != '00:00:00' && $out != '00:00:00' && $row_Recordset4->out >= $out) {
             $new_out = $row_Recordset4->out;
           }
 
