@@ -93,6 +93,7 @@ $category = $dept->category_id;
 					<th>Duration</th>
 					<th>Reason</th>
 					<th>Status</th>
+					<th>Supp Doc</th>
 					<th>Remarks</th>
 					<th>Remarks HR</th>
 				</tr>
@@ -173,6 +174,34 @@ if ($me1) {																				// hod
 									{{ $ul->belongstooptleavestatus?->status }}
 								@endif
 							</td>
+							<td>
+								@if($ul->softcopy)
+									<!-- Button trigger modal -->
+									<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#staticBackdrop_{{ $ul->id }}">
+										<i class="bi bi-file-richtext"></i>
+									</button>
+
+									<!-- Modal -->
+									<div class="modal fade" id="staticBackdrop_{{ $ul->id }}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel_{{ $ul->id }}" aria-hidden="true">
+										<div class="modal-dialog">
+											<div class="modal-content">
+												<div class="modal-header">
+													<h1 class="modal-title fs-5" id="staticBackdropLabel_{{ $ul->id }}">Supporting Document</h1>
+													<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+												</div>
+												<div class="modal-body text-center">
+													<div class="col-sm-12 justify-content-center align-items-center">
+														<img src="{{ asset('storage/leaves/'.$ul->softcopy) }}" class="img-fluid" alt="Supporting Document">
+													</div>
+												</div>
+												<div class="modal-footer">
+													<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+												</div>
+											</div>
+										</div>
+									</div>
+								@endif
+							</td>
 							<td data-bs-toggle="tooltip" data-bs-custom-class="custom-tooltip" data-bs-html="true" data-bs-title="{{ ($ul->remarks)??' ' }}">{{ Str::limit($ul->remarks, 10, ' >') }}</td>
 							<td data-bs-toggle="tooltip" data-bs-custom-class="custom-tooltip" data-bs-html="true" data-bs-title="{{ ($ul->hasmanyleaveamend()->first()?->amend_note)??' ' }}">{{ Str::limit($ul->hasmanyleaveamend()->first()?->amend_note, 10, ' >') }}</td>
 						</tr>
@@ -200,6 +229,7 @@ if ($me1) {																				// hod
 					<th>Duration</th>
 					<th>Reason</th>
 					<th>Status</th>
+					<th>Supp Doc</th>
 					<th>Remarks</th>
 					<th>Remarks HR</th>
 				</tr>
@@ -280,6 +310,34 @@ if ($me1) {																				// hod
 									{{ $ul->belongstooptleavestatus?->status }}
 								@endif
 							</td>
+							<td>
+								@if($ul->softcopy)
+									<!-- Button trigger modal -->
+									<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#staticBackdrop_{{ $ul->id }}">
+										<i class="bi bi-file-richtext"></i>
+									</button>
+
+									<!-- Modal -->
+									<div class="modal fade" id="staticBackdrop_{{ $ul->id }}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel_{{ $ul->id }}" aria-hidden="true">
+										<div class="modal-dialog">
+											<div class="modal-content">
+												<div class="modal-header">
+													<h1 class="modal-title fs-5" id="staticBackdropLabel_{{ $ul->id }}">Supporting Document</h1>
+													<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+												</div>
+												<div class="modal-body text-center">
+													<div class="col-sm-12 justify-content-center align-items-center">
+														<img src="{{ asset('storage/leaves/'.$ul->softcopy) }}" class="img-fluid" alt="Supporting Document">
+													</div>
+												</div>
+												<div class="modal-footer">
+													<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+												</div>
+											</div>
+										</div>
+									</div>
+								@endif
+							</td>
 							<td data-bs-toggle="tooltip" data-bs-custom-class="custom-tooltip" data-bs-html="true" data-bs-title="{{ ($ul->remarks)??' ' }}">{{ Str::limit($ul->remarks, 10, ' >') }}</td>
 							<td data-bs-toggle="tooltip" data-bs-custom-class="custom-tooltip" data-bs-html="true" data-bs-title="{{ ($ul->hasmanyleaveamend()->first()?->amend_note)??' ' }}">{{ Str::limit($ul->hasmanyleaveamend()->first()?->amend_note, 10, ' >') }}</td>
 						</tr>
@@ -307,6 +365,7 @@ if ($me1) {																				// hod
 					<th>Duration</th>
 					<th>Reason</th>
 					<th>Status</th>
+					<th>Supp Doc</th>
 					<th>Remarks</th>
 					<th>Remarks HR</th>
 				</tr>
@@ -385,6 +444,34 @@ if ($me1) {																				// hod
 									Pending
 								@else
 									{{ $ul->belongstooptleavestatus?->status }}
+								@endif
+							</td>
+							<td>
+								@if($ul->softcopy)
+									<!-- Button trigger modal -->
+									<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#staticBackdrop_{{ $ul->id }}">
+										<i class="bi bi-file-richtext"></i>
+									</button>
+
+									<!-- Modal -->
+									<div class="modal fade" id="staticBackdrop_{{ $ul->id }}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel_{{ $ul->id }}" aria-hidden="true">
+										<div class="modal-dialog">
+											<div class="modal-content">
+												<div class="modal-header">
+													<h1 class="modal-title fs-5" id="staticBackdropLabel_{{ $ul->id }}">Supporting Document</h1>
+													<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+												</div>
+												<div class="modal-body text-center">
+													<div class="col-sm-12 justify-content-center align-items-center">
+														<img src="{{ asset('storage/leaves/'.$ul->softcopy) }}" class="img-fluid" alt="Supporting Document">
+													</div>
+												</div>
+												<div class="modal-footer">
+													<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+												</div>
+											</div>
+										</div>
+									</div>
 								@endif
 							</td>
 							<td data-bs-toggle="tooltip" data-bs-custom-class="custom-tooltip" data-bs-html="true" data-bs-title="{{ ($ul->remarks)??' ' }}">{{ Str::limit($ul->remarks, 10, ' >') }}</td>

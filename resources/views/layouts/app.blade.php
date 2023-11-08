@@ -16,28 +16,41 @@
 <body>
 	<div class="container">
 		<header class="border-bottom lh-1 py-3">
-			<div class="row flex-nowrap justify-content-between align-items-center">
-				<div class="col-4 pt-1">
-					<!-- <a class="link-secondary" href="#">Subscribe</a> -->
-				</div>
-				<div class="col-4 text-center">
-					<a class="blog-header-logo text-body-emphasis text-decoration-none" href="{{ url('/') }}">{!! config('app.name') !!}</a>
-					<noscript>
-						<style type="text/css">
-							.pagecontainer {display:none;}
-						</style>
-						<div class="noscriptmsg text-danger">
-							This page requires JavaScript. Please enable it or you can contact your IT administrator.
-							<meta http-equiv="refresh" content="0; url={{ url('/') }}" />
-						</div>
-					</noscript>
-				</div>
-				<div class="col-4 d-flex justify-content-end align-items-center">
-<!-- 					<a class="link-secondary" href="#" aria-label="Search">
-						<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="mx-3" role="img" viewBox="0 0 24 24"><title>Search</title><circle cx="10.5" cy="10.5" r="7.5"/><path d="M21 21l-5.2-5.2"/></svg>
-					</a>
- -->					@if (Route::has('login'))
-						<div class="sm:fixed sm:top-0 sm:right-0 p-6 text-right z-10">
+			<!-- navigator -->
+			<nav class="navbar navbar-expand-lg bg-body-tertiary">
+				<div class="container-fluid">
+					<a class="navbar-brand" href="{{ url('/') }}"> <img src="{{ asset('images/logo.png') }}" class="img-fluid rounded" alt="Home" width="40%"> </a>
+					<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor04" aria-controls="navbarColor04" aria-expanded="false" aria-label="Toggle navigation">
+						<span class="navbar-toggler-icon"></span>
+					</button>
+					<div class="collapse navbar-collapse" id="navbarColor04">
+						<ul class="navbar-nav me-auto">
+							<li class="nav-item">
+								<a class="nav-link active" href="{{ url('/') }}">Home
+									<span class="visually-hidden">(current)</span>
+								</a>
+							</li>
+							<!-- <li class="nav-item">
+								<a class="nav-link" href="#">Features</a>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link" href="#">Pricing</a>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link" href="#">About</a>
+							</li>
+							<li class="nav-item dropdown">
+								<a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Dropdown</a>
+								<div class="dropdown-menu">
+									<a class="dropdown-item" href="#">Action</a>
+									<a class="dropdown-item" href="#">Another action</a>
+									<a class="dropdown-item" href="#">Something else here</a>
+									<div class="dropdown-divider"></div>
+									<a class="dropdown-item" href="#">Separated link</a>
+								</div>
+							</li> -->
+						</ul>
+						@if (Route::has('login'))
 							@auth
 								<div class="dropdown">
 									<a href="{{ url('/dashboard') }}" class="btn btn-sm btn-outline-secondary dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">{{ Auth::user()->belongstostaff->name }}</a>
@@ -56,8 +69,29 @@
 							@else
 								<a class="btn btn-sm btn-outline-secondary" href="{{ route('login') }}">Sign in</a>
 							@endauth
+						@endif
+					</div>
+				</div>
+			</nav>
+			<!-- end navigator -->
+			<div class="row flex-nowrap justify-content-between align-items-center">
+				<div class="col-4 pt-1">
+					<!-- <a class="link-secondary" href="#">Subscribe</a> -->
+				</div>
+				<div class="col-4 text-center">
+					<a class="blog-header-logo text-body-emphasis text-decoration-none" href="{{ url('/') }}">{!! config('app.name') !!}</a>
+					<noscript>
+						<style type="text/css">
+							.pagecontainer {display:none;}
+						</style>
+						<div class="noscriptmsg text-danger">
+							This page requires JavaScript. Please enable it or you can contact your IT administrator.
+							<meta http-equiv="refresh" content="0; url={{ url('/') }}" />
 						</div>
-					@endif
+					</noscript>
+				</div>
+				<div class="col-4 d-flex justify-content-end align-items-center">
+					&nbsp;
 				</div>
 			</div>
 		</header>

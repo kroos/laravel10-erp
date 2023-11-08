@@ -4,6 +4,7 @@ namespace App\Models\HumanResources;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 // use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\Model;
 
 // db relation class to load
@@ -17,7 +18,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class HRLeaveAnnual extends Model
 {
-	use HasFactory;
+	use HasFactory, SoftDeletes;
 
 	// protected $connection = 'mysql';
 	protected $table = 'hr_leave_annuals';

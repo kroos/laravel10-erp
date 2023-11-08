@@ -5,7 +5,6 @@ namespace App\Http\Controllers\HumanResources\HRDept;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-
 // for controller output
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
