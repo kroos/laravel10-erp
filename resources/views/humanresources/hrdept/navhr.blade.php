@@ -15,9 +15,9 @@
 			<!-- <li><a class="dropdown-item btn btn-sm btn-outline-secondary" href="{{ route('attendancedailyreport.index') }}"><i class="bi bi-calendar-x"></i> Attendance Daily Report</a></li> -->
 			<li><a class="dropdown-item btn btn-sm btn-outline-secondary" href="{{ route('attendancereport.index') }}"><i class="fa-regular fa-calendar fa-beat"></i> Attendance Report</a></li>
 			<li><a class="dropdown-item btn btn-sm btn-outline-secondary" href="{{ route('attendanceupload.create') }}"><i class="fa-regular fa-calendar fa-beat"></i> Attendance Upload</a></li>
-<!-- 		<li><a class="dropdown-item" href="#">Something else here</a></li>
 			<li><hr class="dropdown-divider"></li>
-			<li><a class="dropdown-item" href="#">Separated link</a></li> -->
+			<li><a class="dropdown-item btn btn-sm btn-outline-secondary" href="{{ route('excelreport.create') }}"><i class="fa-regular fa-file-excel fa-beat"></i> Excel Report</a></li>
+
 		</ul>
 	</li>
 	<li class="nav-item dropdown">
