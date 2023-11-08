@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Models\Model;
 
 // db relation class to load
+use Illuminate\Database\Eloquent\SoftDeletes;
 // use Illuminate\Database\Eloquent\Relations\HasOne;
 // use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 // use Illuminate\Database\Eloquent\Relations\HasOneOrMany;
@@ -17,8 +18,7 @@ use App\Models\Model;
 
 class Setting extends Model
 {
-	use HasFactory;
+	use HasFactory, SoftDeletes;
 	// protected $connection = 'mysql';
 	protected $table = 'settings';
-
 }
