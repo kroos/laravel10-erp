@@ -190,7 +190,7 @@ class WorkingHourController extends Controller
 				'remarks' => 'Maintenance - Friday - Ramadhan'
 			],
 		]);
-		Session::flash('flash_message', 'Data successfully edited!');
+		Session::flash('flash_message', 'Data successfully generated!');
 		return redirect( route('workinghour.index') );
 	}
 
