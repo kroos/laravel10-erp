@@ -8,7 +8,8 @@ use \App\Models\Customer;
 
 use \Carbon\Carbon;
 
-$s = Staff::where('active', 1)->orderBy('name')->pluck('name', 'id')->toArray();
+
+$s = $outstation->belongstostaff;
 $c = Customer::orderBy('customer')->pluck('customer', 'id')->toArray();
 ?>
 
@@ -19,36 +20,36 @@ $c = Customer::orderBy('customer')->pluck('customer', 'id')->toArray();
 
 	<div class="form-group row mb-3 {{ $errors->has('date_from') ? 'has-error' : '' }}">
 		{{ Form::label( 'staff', 'Outstation Staff : ', ['class' => 'col-sm-2 col-form-label'] ) }}
-		<div class="col-auto">
-			{{ Form::select('staff_id', $s, @$value, ['class' => 'form-control form-control-sm col-auto', 'id' => 'staff', 'placeholder' => 'Please choose', 'autocomplete' => 'off']) }}
+		<div class="col-md-5">
+		{{ Form::label( 'staff', $s->name, ['class' => 'form-control form-control-sm col-auto'] ) }}
 		</div>
 	</div>
 
 	<div class="form-group row mb-3 {{ $errors->has('date_from') ? 'has-error' : '' }}">
 		{{ Form::label( 'loc', 'Location : ', ['class' => 'col-sm-2 col-form-label'] ) }}
-		<div class="col-auto">
+		<div class="col-md-8">
 			{{ Form::select('customer_id', $c, @$value, ['class' => 'form-control form-control-sm col-auto', 'id' => 'loc', 'placeholder' => 'Please choose', 'autocomplete' => 'off']) }}
 		</div>
 	</div>
 
 	<div class="form-group row mb-3 {{ $errors->has('date_from') ? 'has-error' : '' }}">
 		{{ Form::label( 'from', 'From : ', ['class' => 'col-sm-2 col-form-label'] ) }}
-		<div class="col-auto" style="position: relative">
+		<div class="col-md-10" style="position: relative">
 			{{ Form::text('date_from', @$value, ['class' => 'form-control form-control-sm col-auto', 'id' => 'from', 'placeholder' => 'Date From', 'autocomplete' => 'off']) }}
 		</div>
 	</div>
 
 	<div class="form-group row mb-3 {{ $errors->has('date_to') ? 'has-error' : '' }}">
 		{{ Form::label( 'to', 'To : ', ['class' => 'col-sm-2 col-form-label'] ) }}
-		<div class="col-auto" style="position: relative">
+		<div class="col-md-10" style="position: relative">
 			{{ Form::text('date_to', @$value, ['class' => 'form-control form-control-sm col-auto', 'id' => 'to', 'placeholder' => 'Date To', 'autocomplete' => 'off']) }}
 		</div>
 	</div>
 
 	<div class="form-group row mb-3 {{ $errors->has('remarks') ? 'has-error' : '' }}">
 		{{ Form::label( 'rem', 'Remarks : ', ['class' => 'col-sm-2 col-form-label'] ) }}
-		<div class="col-auto">
-			{{ Form::textarea('remarks', @$value, ['class' => 'form-control form-control-sm col-auto', 'id' => 'rem', 'placeholder' => 'Remarks', 'autocomplete' => 'off']) }}
+		<div class="col-md-10">
+			{{ Form::textarea('remarks', @$value, ['class' => 'form-control form-control-sm col-auto', 'id' => 'rem', 'placeholder' => 'Remarks', 'autocomplete' => 'off', 'cols' => '120', 'rows' => '3']) }}
 		</div>
 	</div>
 
@@ -64,7 +65,7 @@ $c = Customer::orderBy('customer')->pluck('customer', 'id')->toArray();
 
 @section('js')
 /////////////////////////////////////////////////////////////////////////////////////////
-$('#staff,#loc').select2({
+$('#loc').select2({
 	placeholder: 'Please choose',
 	allowClear: true,
 	closeOnSelect: true,
@@ -126,20 +127,6 @@ $('#form').bootstrapValidator({
 		validating: ''
 	},
 	fields: {
-		'staff_id[]': {
-			validators: {
-				notEmpty: {
-					message: 'Please choose '
-				},
-			}
-		},
-		'customer_id': {
-			validators: {
-				notEmpty: {
-					message: 'Please choose '
-				},
-			}
-		},
 		'date_from': {
 			validators: {
 				notEmpty: {
