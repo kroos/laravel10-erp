@@ -1,23 +1,6 @@
 <?php
 namespace App\Helpers;
 
-use App\Models\HumanResources\HRLeave;
-use App\Models\HumanResources\HRHolidayCalendar;
-use App\Models\HumanResources\HRLeaveAnnual;
-use App\Models\HumanResources\HRLeaveMC;
-use App\Models\HumanResources\HRLeaveMaternity;
-use App\Models\HumanResources\OptWorkingHour;
-use App\Models\Staff;
-use App\Models\Setting;
-
-use Illuminate\Database\Query\Builder;
-// use Illuminate\Database\Eloquent\Builder;
-
-use \Carbon\Carbon;
-use \Carbon\CarbonPeriod;
-use Illuminate\Support\Arr;
-
-
 class TimeCalculator
 {
 	public function __construct()
