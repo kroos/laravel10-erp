@@ -9,6 +9,8 @@ use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 
 use App\Helpers\TimeCalculator;
+use App\Models\Staff;
+use App\Models\Login;
 use App\Models\HumanResources\HRHolidayCalendar;
 use App\Models\HumanResources\HRLeave;
 use App\Models\HumanResources\OptDayType;
@@ -34,10 +36,12 @@ use App\Models\HumanResources\HROutstation;
 						})
 						->get();
 				?>
-				<h5>{{ \App\Models\Staff::where('id', $v->staff_id)->first()->name }} Attendance</h5>
+				<h5>{{ Staff::where('id', $v->staff_id)->first()->name }} Attendance</h5>
 				<table id="attendancestaff_" class="table table-hover table-sm align-middle" style="font-size:12px">
 					<thead>
 						<tr>
+							<th>ID</th>
+							<th>Name</th>
 							<th>Type</th>
 							<th>Cause</th>
 							<th>Leave</th>
@@ -652,29 +656,61 @@ if ($os->isNotEmpty()) {																							// outstation |
 				if ($break) {																						// no outstation | working | leave | no in | no break
 					if ($resume) {																					// no outstation | working | leave | no in | no break | no resume
 						if ($out) {																					// no outstation | working | leave | no in | no break | no resume | no out
-							$ll = $l->belongstooptleavetype->leave_type_code;
+							if (is_null($v1->attendance_type_id)) {
+								$ll = $l->belongstooptleavetype?->leave_type_code;
+							} else {
+								$ll = $v1->belongstoopttcms->leave;
+							}
 						} else {																					// no outstation | working | leave | no in | no break | no resume | out
-							$ll = $l->belongstooptleavetype->leave_type_code;
+							if (is_null($v1->attendance_type_id)) {
+								$ll = $l->belongstooptleavetype?->leave_type_code;
+							} else {
+								$ll = $v1->belongstoopttcms->leave;
+							}
 						}
 					} else {																						// no outstation | working | leave | no in | no break | resume
 						if ($out) {																					// no outstation | working | leave | no in | no break | resume | no out
-							$ll = $l->belongstooptleavetype->leave_type_code;
+							if (is_null($v1->attendance_type_id)) {
+								$ll = $l->belongstooptleavetype?->leave_type_code;
+							} else {
+								$ll = $v1->belongstoopttcms->leave;
+							}
 						} else {																					// no outstation | working | leave | no in | no break | resume | out
-							$ll = $l->belongstooptleavetype->leave_type_code;
+							if (is_null($v1->attendance_type_id)) {
+								$ll = $l->belongstooptleavetype?->leave_type_code;
+							} else {
+								$ll = $v1->belongstoopttcms->leave;
+							}
 						}
 					}
 				} else {																							// no outstation | working | leave | no in | break
 					if ($resume) {																					// no outstation | working | leave | no in | break | no resume
 						if ($out) {																					// no outstation | working | leave | no in | break | no resume | no out
-							$ll = $l->belongstooptleavetype->leave_type_code;
+							if (is_null($v1->attendance_type_id)) {
+								$ll = $l->belongstooptleavetype?->leave_type_code;
+							} else {
+								$ll = $v1->belongstoopttcms->leave;
+							}
 						} else {																					// no outstation | working | leave | no in | break | no resume | out
-							$ll = $l->belongstooptleavetype->leave_type_code;
+							if (is_null($v1->attendance_type_id)) {
+								$ll = $l->belongstooptleavetype?->leave_type_code;
+							} else {
+								$ll = $v1->belongstoopttcms->leave;
+							}
 						}
 					} else {																						// no outstation | working | leave | no in | break | resume
 						if ($out) {																					// no outstation | working | leave | no in | break | resume | no out
-							$ll = $l->belongstooptleavetype->leave_type_code;
+							if (is_null($v1->attendance_type_id)) {
+								$ll = $l->belongstooptleavetype?->leave_type_code;
+							} else {
+								$ll = $v1->belongstoopttcms->leave;
+							}
 						} else {																					// no outstation | working | leave | no in | break | resume | out
-							$ll = $l->belongstooptleavetype->leave_type_code;
+							if (is_null($v1->attendance_type_id)) {
+								$ll = $l->belongstooptleavetype?->leave_type_code;
+							} else {
+								$ll = $v1->belongstoopttcms->leave;
+							}
 						}
 					}
 				}
@@ -682,29 +718,61 @@ if ($os->isNotEmpty()) {																							// outstation |
 				if ($break) {																						// no outstation | working | leave | in | no break
 					if ($resume) {																					// no outstation | working | leave | in | no break | no resume
 						if ($out) {																					// working | leave | in | no break | no resume | no out
-							$ll = $l->belongstooptleavetype->leave_type_code;
+							if (is_null($v1->attendance_type_id)) {
+								$ll = $l->belongstooptleavetype?->leave_type_code;
+							} else {
+								$ll = $v1->belongstoopttcms->leave;
+							}
 						} else {																					// no outstation | working | leave | in | no break | no resume | out
-							$ll = $l->belongstooptleavetype->leave_type_code;
+							if (is_null($v1->attendance_type_id)) {
+								$ll = $l->belongstooptleavetype?->leave_type_code;
+							} else {
+								$ll = $v1->belongstoopttcms->leave;
+							}
 						}
 					} else {																						// no outstation | working | leave | in | no break | resume
 						if ($out) {																					// no outstation | working | leave | in | no break | resume | no out
-							$ll = $l->belongstooptleavetype->leave_type_code;
+							if (is_null($v1->attendance_type_id)) {
+								$ll = $l->belongstooptleavetype?->leave_type_code;
+							} else {
+								$ll = $v1->belongstoopttcms->leave;
+							}
 						} else {																					// no outstation | working | leave | in | no break | resume | out
-							$ll = $l->belongstooptleavetype->leave_type_code;
+							if (is_null($v1->attendance_type_id)) {
+								$ll = $l->belongstooptleavetype?->leave_type_code;
+							} else {
+								$ll = $v1->belongstoopttcms->leave;
+							}
 						}
 					}
 				} else {																							// no outstation | working | leave | in | break
 					if ($resume) {																					// no outstation | working | leave | in | break | no resume
 						if ($out) {																					// no outstation | working | leave | in | break | no resume | no out
-							$ll = $l->belongstooptleavetype->leave_type_code;
+							if (is_null($v1->attendance_type_id)) {
+								$ll = $l->belongstooptleavetype?->leave_type_code;
+							} else {
+								$ll = $v1->belongstoopttcms->leave;
+							}
 						} else {																					// no outstation | working | leave | in | break | no resume | out
-							$ll = $l->belongstooptleavetype->leave_type_code;
+							if (is_null($v1->attendance_type_id)) {
+								$ll = $l->belongstooptleavetype?->leave_type_code;
+							} else {
+								$ll = $v1->belongstoopttcms->leave;
+							}
 						}
 					} else {																						// no outstation | working | leave | in | break | resume
 						if ($out) {																					// no outstation | working | leave | in | break | resume | no out
-							$ll = $l->belongstooptleavetype->leave_type_code;
+							if (is_null($v1->attendance_type_id)) {
+								$ll = $l->belongstooptleavetype?->leave_type_code;
+							} else {
+								$ll = $v1->belongstoopttcms->leave;
+							}
 						} else {																					// no outstation | working | leave | in | break | resume | out
-							$ll = $l->belongstooptleavetype->leave_type_code;
+							if (is_null($v1->attendance_type_id)) {
+								$ll = $l->belongstooptleavetype?->leave_type_code;
+							} else {
+								$ll = $v1->belongstoopttcms->leave;
+							}
 						}
 					}
 				}
@@ -966,15 +1034,24 @@ if($l) {
 } else {
 	$lea = NULL;
 }
+$username = Login::where('staff_id', $v->staff_id)->first()->username;
 ?>
 						<tr class="{{ (Carbon::parse($v1->attend_date)->dayOfWeek == 0)?'table-secondary':NULL }}">
+							<td>{{ $username }}</td>
+							<td>{{ Staff::find($v->staff_id)->name }}</td>
 							<td>{{ $dayt }}</td>
 							<td>{!! $ll !!}</td>
 							<td>{!! $lea !!}</td>
 							<td>{{ Carbon::parse($v1->attend_date)->format('j M Y') }}</td>
-							<td><span class="{{ ($in)?'text-info':((Carbon::parse($v1->in)->gt($wh?->time_start_am))?'text-danger':'') }}">{{ ($in)?'':Carbon::parse($v1->in)->format('g:i a') }}</span></td>
-							<td><span class="{{ ($break)?'text-info':((Carbon::parse($v1->break)->lt($wh?->time_end_am))?'text-danger':'') }}">{{ ($break)?'':Carbon::parse($v1->break)->format('g:i a') }}</span></td>
-							<td><span class="{{ ($resume)?'text-info':((Carbon::parse($v1->resume)->gt($wh?->time_start_pm))?'text-danger':'') }}">{{ ($resume)?'':Carbon::parse($v1->resume)->format('g:i a') }}</span></td>
+							<td>
+								<span class="{{ ($in)?'text-info':((Carbon::parse($v1->in)->gt($wh?->time_start_am))?'text-danger':'') }}">{{ ($in)?'':Carbon::parse($v1->in)->format('g:i a') }}</span>
+							</td>
+							<td>
+								<span class="{{ ($break)?'text-info':((Carbon::parse($v1->break)->lt($wh?->time_end_am))?'text-danger':'') }}">{{ ($break)?'':Carbon::parse($v1->break)->format('g:i a') }}</span>
+							</td>
+							<td>
+								<span class="{{ ($resume)?'text-info':((Carbon::parse($v1->resume)->gt($wh?->time_start_pm))?'text-danger':'') }}">{{ ($resume)?'':Carbon::parse($v1->resume)->format('g:i a') }}</span>
+							</td>
 							<td><span class="
 									<?php
 										if($out) {																													// no punch out
@@ -1028,7 +1105,7 @@ if($l) {
 						<?php $n++; ?>
 					@endforeach
 						<tr>
-							<td colspan="8" rowspan="1"></td>
+							<td colspan="10" rowspan="1"></td>
 							<td><strong class="text-success">{{ TimeCalculator::total_time($m[$i]) }}</strong></td>
 							<td><strong class="text-success">{{ TimeCalculator::total_time($p[$i]) }}</strong></td>
 							<td colspan="2" rowspan="1"></td>

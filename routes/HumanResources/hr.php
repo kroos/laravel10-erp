@@ -23,6 +23,7 @@ use App\Http\Controllers\HumanResources\HRDept\MaternityLeaveController;
 use App\Http\Controllers\HumanResources\HRDept\OvertimeController;
 use App\Http\Controllers\HumanResources\HRDept\AttendanceUploadController;
 use App\Http\Controllers\HumanResources\HRDept\AttendanceDailyReportController;
+use App\Http\Controllers\HumanResources\HRDept\AttendanceExcelReportController;
 
 
 Route::resources([
@@ -47,6 +48,10 @@ Route::resources([
 	'maternityleave' => MaternityLeaveController::class,
 	'overtime' => OvertimeController::class,
 ]);
+
+Route::get('/excelreport', [AttendanceExcelReportController::class, 'index'])->name('excelreport.index');
+Route::get('/excelreport/create', [AttendanceExcelReportController::class, 'create'])->name('excelreport.create');
+Route::post('/excelreport', [AttendanceExcelReportController::class, 'store'])->name('excelreport.store');
 
 Route::get('/attendancedailyreport', [AttendanceDailyReportController::class, 'index'])->name('attendancedailyreport.index');
 Route::get('/attendancereport', [AttendanceReportController::class, 'index'])->name('attendancereport.index');
