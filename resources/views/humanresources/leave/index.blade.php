@@ -331,11 +331,11 @@ foreach ($c as $v) {
 					$dper = $a->belongstostaffleave->period_day.' day/s';
 				}
 				$z = \Carbon\Carbon::parse(now())->daysUntil($a->belongstostaffleave->date_time_start, 1)->count();
-				if(3 <= $z && $z >= 2){
+				if(3 >= $z && $z >= 2){
 					$u = 'table-warning';
 				} elseif($z < 2){
 					$u = 'table-danger';
-				} elseif($z > 3){
+				} else {
 					$u = NULL;
 				}
 				?>
