@@ -4,7 +4,7 @@
 <div class="col-sm-12 row">
 @include('humanresources.hrdept.navhr')
 	<h4>Attendance</h4>
-	<div class="">
+	<div class="col-sm-12">
 		<div class="d-flex justify-content-center">
 			{!! $sa->links() !!} <!-- check this for this type of pagination -->
 		</div>
@@ -1024,29 +1024,61 @@ if ($os->isNotEmpty()) {																							// outstation |
 				if ($break) {																						// no outstation | working | leave | no in | no break
 					if ($resume) {																					// no outstation | working | leave | no in | no break | no resume
 						if ($out) {																					// no outstation | working | leave | no in | no break | no resume | no out
-							$ll = $l->belongstooptleavetype?->leave_type_code;
+							if (is_null($s->attendance_type_id)) {
+								$ll = $l->belongstooptleavetype?->leave_type_code;
+							} else {
+								$ll = $s->belongstoopttcms->leave;
+							}
 						} else {																					// no outstation | working | leave | no in | no break | no resume | out
-							$ll = $l->belongstooptleavetype?->leave_type_code;
+							if (is_null($s->attendance_type_id)) {
+								$ll = $l->belongstooptleavetype?->leave_type_code;
+							} else {
+								$ll = $s->belongstoopttcms->leave;
+							}
 						}
 					} else {																						// no outstation | working | leave | no in | no break | resume
 						if ($out) {																					// no outstation | working | leave | no in | no break | resume | no out
-							$ll = $l->belongstooptleavetype?->leave_type_code;
+							if (is_null($s->attendance_type_id)) {
+								$ll = $l->belongstooptleavetype?->leave_type_code;
+							} else {
+								$ll = $s->belongstoopttcms->leave;
+							}
 						} else {																					// no outstation | working | leave | no in | no break | resume | out
-							$ll = $l->belongstooptleavetype?->leave_type_code;
+							if (is_null($s->attendance_type_id)) {
+								$ll = $l->belongstooptleavetype?->leave_type_code;
+							} else {
+								$ll = $s->belongstoopttcms->leave;
+							}
 						}
 					}
 				} else {																							// no outstation | working | leave | no in | break
 					if ($resume) {																					// no outstation | working | leave | no in | break | no resume
 						if ($out) {																					// no outstation | working | leave | no in | break | no resume | no out
-							$ll = $l->belongstooptleavetype->leave_type_code;
+							if (is_null($s->attendance_type_id)) {
+								$ll = $l->belongstooptleavetype->leave_type_code;
+							} else {
+								$ll = $s->belongstoopttcms->leave;
+							}
 						} else {																					// no outstation | working | leave | no in | break | no resume | out
-							$ll = $l->belongstooptleavetype->leave_type_code;
+							if (is_null($s->attendance_type_id)) {
+								$ll = $l->belongstooptleavetype->leave_type_code;
+							} else {
+								$ll = $s->belongstoopttcms->leave;
+							}
 						}
 					} else {																						// no outstation | working | leave | no in | break | resume
 						if ($out) {																					// no outstation | working | leave | no in | break | resume | no out
-							$ll = $l->belongstooptleavetype->leave_type_code;
+							if (is_null($s->attendance_type_id)) {
+								$ll = $l->belongstooptleavetype->leave_type_code;
+							} else {
+								$ll = $s->belongstoopttcms->leave;
+							}
 						} else {																					// no outstation | working | leave | no in | break | resume | out
-							$ll = $l->belongstooptleavetype->leave_type_code;
+							if (is_null($s->attendance_type_id)) {
+								$ll = $l->belongstooptleavetype->leave_type_code;
+							} else {
+								$ll = $s->belongstoopttcms->leave;
+							}
 						}
 					}
 				}
@@ -1054,29 +1086,61 @@ if ($os->isNotEmpty()) {																							// outstation |
 				if ($break) {																						// no outstation | working | leave | in | no break
 					if ($resume) {																					// no outstation | working | leave | in | no break | no resume
 						if ($out) {																					// no outstation | working | leave | in | no break | no resume | no out
-							$ll = $l->belongstooptleavetype->leave_type_code;
+							if (is_null($s->attendance_type_id)) {
+								$ll = $l->belongstooptleavetype->leave_type_code;
+							} else {
+								$ll = $s->belongstoopttcms->leave;
+							}
 						} else {																					// no outstation | working | leave | in | no break | no resume | out
-							$ll = $l->belongstooptleavetype->leave_type_code;
+							if (is_null($s->attendance_type_id)) {
+								$ll = $l->belongstooptleavetype->leave_type_code;
+							} else {
+								$ll = $s->belongstoopttcms->leave;
+							}
 						}
 					} else {																						// no outstation | working | leave | in | no break | resume
 						if ($out) {																					// no outstation | working | leave | in | no break | resume | no out
-							$ll = $l->belongstooptleavetype->leave_type_code;
+							if (is_null($s->attendance_type_id)) {
+								$ll = $l->belongstooptleavetype->leave_type_code;
+							} else {
+								$ll = $s->belongstoopttcms->leave;
+							}
 						} else {																					// no outstation | working | leave | in | no break | resume | out
-							$ll = $l->belongstooptleavetype->leave_type_code;
+							if (is_null($s->attendance_type_id)) {
+								$ll = $l->belongstooptleavetype->leave_type_code;
+							} else {
+								$ll = $s->belongstoopttcms->leave;
+							}
 						}
 					}
 				} else {																							// no outstation | working | leave | in | break
 					if ($resume) {																					// no outstation | working | leave | in | break | no resume
 						if ($out) {																					// no outstation | working | leave | in | break | no resume | no out
-							$ll = $l->belongstooptleavetype->leave_type_code;
+							if (is_null($s->attendance_type_id)) {
+								$ll = $l->belongstooptleavetype->leave_type_code;
+							} else {
+								$ll = $s->belongstoopttcms->leave;
+							}
 						} else {																					// no outstation | working | leave | in | break | no resume | out
-							$ll = $l->belongstooptleavetype->leave_type_code;
+							if (is_null($s->attendance_type_id)) {
+								$ll = $l->belongstooptleavetype->leave_type_code;
+							} else {
+								$ll = $s->belongstoopttcms->leave;
+							}
 						}
 					} else {																						// no outstation | working | leave | in | break | resume
 						if ($out) {																					// no outstation | working | leave | in | break | resume | no out
-							$ll = $l->belongstooptleavetype->leave_type_code;
+							if (is_null($s->attendance_type_id)) {
+								$ll = $l->belongstooptleavetype->leave_type_code;
+							} else {
+								$ll = $s->belongstoopttcms->leave;
+							}
 						} else {																					// no outstation | working | leave | in | break | resume | out
-							$ll = $l->belongstooptleavetype->leave_type_code;
+							if (is_null($s->attendance_type_id)) {
+								$ll = $l->belongstooptleavetype->leave_type_code;
+							} else {
+								$ll = $s->belongstoopttcms->leave;
+							}
 						}
 					}
 				}

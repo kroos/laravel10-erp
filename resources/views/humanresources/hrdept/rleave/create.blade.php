@@ -18,7 +18,6 @@
 </style>
 
 <?php
-
 use App\Models\Staff;
 use App\Models\Customer;
 

@@ -22,7 +22,7 @@ use Illuminate\Database\Eloquent\Builder;
 </style>
 <div class="container table-responsive row align-items-start justify-content-center">
 @include('humanresources.hrdept.navhr')
-	<h4>Human Resource Attendance</h4>
+	<h4>Attendance Report</h4>
 
 	{{ Form::open(['route' => 'attendancereport.create', 'method' => 'post',  'id' => 'form', 'class' => 'form-horizontal', 'autocomplete' => 'off', 'files' => true]) }}
 	<div class="row g-3 mb-3">
@@ -37,6 +37,11 @@ use Illuminate\Database\Eloquent\Builder;
 		</div>
 	</div>
 	<div class="g-3 mb-3 py-3 scrollable-div col-sm 5 wrap_checkbox">
+			<div class="row col-sm-12 ">
+				<input type="checkbox" id="checkAll"> <label for="checkAll">Check All</label>&nbsp;&nbsp;&nbsp;&nbsp;
+				<input type="checkbox" id="checkG1"> <label for="checkG1">Check Group 1</label>&nbsp;&nbsp;&nbsp;&nbsp;
+				<input type="checkbox" id="checkG2"> <label for="checkG2">Check Group 2</label>&nbsp;&nbsp;&nbsp;&nbsp;
+			</div>
 	</div>
 	{{ Form::close() }}
 </div>
