@@ -1,14 +1,6 @@
 @extends('layouts.app')
 
 @section('content')
-
-
-
-
-
-
-
-
 <?php
 use \App\Models\HumanResources\HRLeave;
 use \Illuminate\Database\Eloquent\Builder;

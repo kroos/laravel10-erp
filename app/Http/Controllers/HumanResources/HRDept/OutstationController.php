@@ -92,7 +92,7 @@ class OutstationController extends Controller
 	public function update(Request $request, HROutstation $outstation): RedirectResponse
 	{
 		// dd($request->all());
-		$outstation->update($request->only(['staff_id', 'customer_id', 'date_from', 'date_to', 'remarks']));
+		$outstation->update($request->only(['customer_id', 'date_from', 'date_to', 'remarks']));
 		Session::flash('flash_message', 'Successfully edit staff for outstation');
 		return redirect()->route('outstation.index');
 	}
