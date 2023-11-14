@@ -937,9 +937,18 @@ class AjaxDBController extends Controller
 			->groupBy('hr_attendances.staff_id')
 			->get();
 		foreach ($sa as $v) {
-			$l0[] = ['id' => $v->staff_id, 'name' => Staff::where('id', $v->staff_id)->first()->name];
+			$l0[] = ['id' => $v->staff_id, 'name' => Staff::find($v->staff_id)->name, 'branch' => Staff::find($v->staff_id)->belongstomanydepartment()->wherePivot('main', 1)->first()->branch_id];
 		}
 		return response()->json( $l0 );
+	}
+
+	public function branchattendancelist(Request $request): JsonResponse
+	{
+		$sa = OptBranch::all();
+		foreach ($sa as $v) {
+			$l1[] = ['id' => $v->id, 'location' => $v->location];
+		}
+		return response()->json( $l1 );
 	}
 
 	public function staffpercentage(Request $request): JsonResponse

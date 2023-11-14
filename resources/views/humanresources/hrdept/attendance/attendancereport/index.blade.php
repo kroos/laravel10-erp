@@ -26,10 +26,10 @@ use Illuminate\Database\Eloquent\Builder;
 
 	{{ Form::open(['route' => 'attendancereport.create', 'method' => 'post',  'id' => 'form', 'class' => 'form-horizontal', 'autocomplete' => 'off', 'files' => true]) }}
 	<div class="row g-3 mb-3">
-		<div class="col-auto">
+		<div class="col-auto" style="position:relative;">
 			<input type="text" name="from" class="form-control form-control-sm" id="from" value="" placeholder="Date From">
 		</div>
-		<div class="col-auto">
+		<div class="col-auto" style="position:relative;">
 			<input type="text" name="to" class="form-control form-control-sm" id="to" value="" placeholder="Date To">
 		</div>
 		<div class="col-auto">
@@ -37,11 +37,6 @@ use Illuminate\Database\Eloquent\Builder;
 		</div>
 	</div>
 	<div class="g-3 mb-3 py-3 scrollable-div col-sm 5 wrap_checkbox">
-			<div class="row col-sm-12 ">
-				<input type="checkbox" id="checkAll"> <label for="checkAll">Check All</label>&nbsp;&nbsp;&nbsp;&nbsp;
-				<input type="checkbox" id="checkG1"> <label for="checkG1">Check Group 1</label>&nbsp;&nbsp;&nbsp;&nbsp;
-				<input type="checkbox" id="checkG2"> <label for="checkG2">Check Group 2</label>&nbsp;&nbsp;&nbsp;&nbsp;
-			</div>
 	</div>
 	{{ Form::close() }}
 </div>
@@ -91,20 +86,50 @@ $('#from').datetimepicker({
 							}
 						}).responseText;
 
+		var b = $.ajax({
+							url: "{{ route('branchattendancelist') }}",
+							type: "POST",
+							data: {
+									_token: '{!! csrf_token() !!}',
+								},
+							dataType: 'json',
+							global: false,
+							async:false,
+							success: function (response) {
+								// you will get response from your php page (what you echo or print)
+								return response;
+							},
+							error: function(jqXHR, textStatus, errorThrown) {
+								console.log(textStatus, errorThrown);
+							}
+						}).responseText;
+
 		// convert data10 into json
 		var obj = $.parseJSON( a );
+		var brc = $.parseJSON( b );
 		var i = 1;
 		if($('.wrap_checkbox').children().length === 0) {
 			$('.wrap_checkbox').append(
-											'<div class="form-check mb-1 g-3 remove_checkbox">' +
-												'<input class="form-check-input" type="checkbox" value="" id="checkAll" checked>' +
+											'<div class="form-check form-check-inline mb-1 g-3 remove_checkbox">' +
+												'<input class="form-check-input" type="checkbox" value="" id="checkAll">' +
 												'<label class="form-check-label" for="checkAll">Name</label>' +
 											'</div>'
 			);
+			$.each( brc, function() {
+				$('.wrap_checkbox').append(
+											'<div class="form-check form-check-inline mb-1 g-3 remove_checkbox">' +
+												'<input class="form-check-input" type="checkbox" value="" id="branch_' + this.id + '">' +
+												'<label class="form-check-label" for="branch_' + this.id + '">' + this.location + '</label>' +
+											'</div>'
+				);
+				$("#branch_' + this.id + '").change(function () {
+					$("input:checkbox").prop('checked', this.checked);
+				});
+			});
 			$.each( obj, function() {
 				$('.wrap_checkbox').append(
 											'<div class="form-check mb-1 g-3 remove_checkbox">' +
-												'<input class="form-check-input" name="staff_id" type="checkbox" value="' + this.id + '" id="staff_' + i + '" checked>' +
+												'<input class="form-check-input" name="staff_id" type="checkbox" value="' + this.id + '" id="staff_' + i + '" >' +
 												'<label class="form-check-label" for="staff_' + i + '">' + this.name + '</label>' +
 											'</div>'
 				);
@@ -113,6 +138,11 @@ $('#from').datetimepicker({
 			$("#checkAll").change(function () {
 				$("input:checkbox").prop('checked', this.checked);
 			});
+			@foreach(App\Models\HumanResources\OptBranch::all() as $br)
+				$("#branch_{{ $br->id }}").change(function () {
+					$("input.{{ $br->id }}[type=checkbox]").prop('checked', this.checked);
+				});
+			@endforeach
 		}
 	}
 });
@@ -158,20 +188,47 @@ $('#to').datetimepicker({
 							}
 						}).responseText;
 
+		var b = $.ajax({
+							url: "{{ route('branchattendancelist') }}",
+							type: "POST",
+							data: {
+									_token: '{!! csrf_token() !!}',
+								},
+							dataType: 'json',
+							global: false,
+							async:false,
+							success: function (response) {
+								// you will get response from your php page (what you echo or print)
+								return response;
+							},
+							error: function(jqXHR, textStatus, errorThrown) {
+								console.log(textStatus, errorThrown);
+							}
+						}).responseText;
+
 		// convert data10 into json
 		var obj = $.parseJSON( a );
+		var brc = $.parseJSON( b );
 		var i = 1;
 		if($('.wrap_checkbox').children().length === 0) {
 			$('.wrap_checkbox').append(
-											'<div class="form-check mb-1 g-3 remove_checkbox">' +
-												'<input class="form-check-input" type="checkbox" value="" id="checkAll" checked>' +
+											'<div class="form-check form-check-inline mb-1 g-3 remove_checkbox">' +
+												'<input class="form-check-input" type="checkbox" value="" id="checkAll">' +
 												'<label class="form-check-label" for="checkAll">Name</label>' +
 											'</div>'
 			);
+			$.each( brc, function() {
+				$('.wrap_checkbox').append(
+											'<div class="form-check form-check-inline mb-1 g-3 remove_checkbox">' +
+												'<input class="form-check-input" type="checkbox" value="" id="branch_' + this.id + '">' +
+												'<label class="form-check-label" for="branch_' + this.id + '">' + this.location + '</label>' +
+											'</div>'
+				);
+			});
 			$.each( obj, function() {
 				$('.wrap_checkbox').append(
 							'<div class="form-check mb-1 g-3 remove_checkbox">' +
-								'<input class="form-check-input" name="staff_id[]" type="checkbox" value="' + this.id + '" id="staff_' + i + '" checked>' +
+								'<input class="form-check-input ' + this.branch + '" name="staff_id[]" type="checkbox" value="' + this.id + '" id="staff_' + i + '">' +
 								'<label class="form-check-label" for="staff_' + i + '">' + this.name + '</label>' +
 							'</div>'
 				);
@@ -180,6 +237,11 @@ $('#to').datetimepicker({
 			$("#checkAll").change(function () {
 				$("input:checkbox").prop('checked', this.checked);
 			});
+			@foreach(App\Models\HumanResources\OptBranch::all() as $br)
+				$("#branch_{{ $br->id }}").change(function () {
+					$("input.{{ $br->id }}[type=checkbox]").prop('checked', this.checked);
+				});
+			@endforeach
 		}
 	}
 });

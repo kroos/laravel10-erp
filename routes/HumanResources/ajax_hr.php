@@ -61,6 +61,7 @@ Route::post('/hcaldend', [AjaxDBController::class, 'hcaldend'])->name('hcaldend'
 Route::post('/staffdaily', [AjaxDBController::class, 'staffdaily'])->name('staffdaily');
 Route::post('/samelocationstaff', [AjaxDBController::class, 'samelocationstaff'])->name('samelocationstaff');
 Route::post('/overtimerange', [AjaxDBController::class, 'overtimerange'])->name('overtimerange');
+Route::post('/branchattendancelist', [AjaxDBController::class, 'branchattendancelist'])->name('branchattendancelist');
 
 // Route::get('/login/{login}', [
 // 	'as' => 'login.edit',
