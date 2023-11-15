@@ -23,6 +23,7 @@
 					<th>Out</th>
 					<th>Duration</th>
 					<th>Overtime</th>
+					<th>Outstation</th>
 					<th>Remarks</th>
 					<th>Exception</th>
 				</tr>
@@ -1462,6 +1463,7 @@ if($l) {
 							}
 						?>
 					</td>
+					<td>{{ ($s->outstation_id)?HROutstation::find($s->outstation_id)->belongstocustomer?->customer:NULL }}</td>
 					<td data-bs-toggle="tooltip" data-bs-custom-class="custom-tooltip" data-bs-html="true" data-bs-title="{{ ($s->remarks)??' ' }} | {{ ($s->hr_remarks)??' ' }}">{{ Str::limit($s->remarks, 8, ' >') }}<br /><span class="text-danger">{{ Str::limit($s->hr_remarks, 8, ' >') }}</td>
 					<td>{{ $s->exception }}</td>
 				</tr>
