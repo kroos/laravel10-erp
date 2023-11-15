@@ -25,6 +25,7 @@ use App\Http\Controllers\HumanResources\HRDept\AttendanceUploadController;
 use App\Http\Controllers\HumanResources\HRDept\AttendanceDailyReportController;
 use App\Http\Controllers\HumanResources\HRDept\AttendanceExcelReportController;
 use App\Http\Controllers\HumanResources\HRDept\AttendanceReportPDFController;
+use App\Http\Controllers\HumanResources\HRDept\OvertimeReportController;
 
 
 Route::resources([
@@ -60,6 +61,9 @@ Route::post('/attendancereport', [AttendanceReportController::class, 'create'])-
 Route::get('/attendanceupload', [AttendanceUploadController::class, 'create'])->name('attendanceupload.create');
 Route::post('/attendanceupload', [AttendanceUploadController::class, 'store'])->name('attendanceupload.store');
 
+
 Route::get('/attendancereportpdf/store', [AttendanceReportPDFController::class, 'store'])->name('attendancereportpdf.store');
 
 
+Route::get('/overtimereport', [OvertimeReportController::class, 'index'])->name('overtimereport.index');
+Route::post('/overtimereport', [OvertimeReportController::class, 'index'])->name('overtimereport.index');
