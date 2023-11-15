@@ -190,7 +190,7 @@ $pdf->AddPage();
 $pdf->SetTitle('Attendance Report');
 
 // reset font
-$pdf->SetFont('Arial', NULL, 9);
+$pdf->SetFont('Arial', NULL, 8);
 
 if ($sa) {
 	$i = 0;
@@ -204,22 +204,1064 @@ if ($sa) {
 						// ->whereDate('attend_date', '<=', $request->to);
 						->whereDate('attend_date', '<=', '2023-11-14');
 					})
-					->groupBy('hr_attendances.staff_id')
 					->get();
-		$pdf->Cell(30, 5, 'Order Date :', 0, 0, 'L');
-		$pdf->SetFont('Arial', 'B', 9);
-		$pdf->Cell(30, 5, 'test', 0, 0, 'L');
+		// $ha = HRAttendance::where('staff_id', $v->staff_id)
+		// 		->where(function (Builder $query) use ($request){
+		// 			$query->whereDate('attend_date', '>=', $request->from)
+		// 			->whereDate('attend_date', '<=', $request->to);
+		// 		})
+		// 		->get();
+
+
+
+		$pdf->SetFont('Arial', 'B', 8);
+		$pdf->Cell(20, 5, Login::where([['staff_id', $v->staff_id], ['active', 1]])->first()?->username, 0, 0, 'L');
+		$pdf->Cell(70, 5, Staff::find($v->staff_id)->name, 0, 1, 'L');
+		$pdf->SetFont('Arial', null, 8);
+		$pdf->Cell(20, 5, 'Department :', 0, 0, 'L');
+		$pdf->Cell(0, 5, Staff::find($v->staff_id)->belongstomanydepartment()->wherePivot('main', 1)->first()->department, 0, 1, 'L');
+		if (!is_null(Staff::find($v->staff_id)->restday_group_id)) {
+			$pdf->Cell(20, 5, 'Group :', 0, 0, 'L');
+			$pdf->Cell(0, 5, Staff::find($v->staff_id)->belongstorestdaygroup?->group, 0, 1, 'L');
+		}
+
+		/////////////////////////////
+		// 14 columns
+		$pdf->SetFont('Arial', null, 6);
+		$pdf->Cell(10, 5, 'ID', 1, 0, 'C');
+		$pdf->Cell(34, 5, 'Name', 1, 0, 'C');
+		$pdf->Cell(20, 5, 'Type', 1, 0, 'C');
+		$pdf->Cell(13, 5, 'Cause', 1, 0, 'C');
+		$pdf->Cell(10, 5, 'Leave', 1, 0, 'C');
+		$pdf->Cell(21, 5, 'Date', 1, 0, 'C');
+		$pdf->Cell(13, 5, 'In', 1, 0, 'C');
+		$pdf->Cell(13, 5, 'Break', 1, 0, 'C');
+		$pdf->Cell(13, 5, 'Resume', 1, 0, 'C');
+		$pdf->Cell(13, 5, 'Out', 1, 0, 'C');
+		$pdf->Cell(16, 5, 'Duration', 1, 0, 'C');
+		$pdf->Cell(14, 5, 'Overtime', 1, 0, 'C');
+		$pdf->Cell(15, 5, 'Outstation', 1, 0, 'C');
+		$pdf->Cell(57, 5, 'Remarks', 1, 0, 'C');
+		$pdf->Cell(15, 5, 'Exception', 1, 1, 'C');
+
+		// starting PDF_MC_Table
+		// set width for each column (5 columns)
+		$pdf->SetWidths([10, 34, 20, 13, 10, 21, 13, 13, 13, 13, 16, 14, 15, 57, 15]);
+
+		// set alignment
+		$pdf->SetAligns(['C', 'C', 'C', 'C', 'C', 'C', 'C', 'C', 'C', 'C', 'C', 'C', 'C', 'C', 'C']);
+
+		// set line heights. This is the height of each lines, not rows.
+		$pdf->SetLineHeight(5);
+		/////////////////////////////
+
+		// loop attendance for each staff
+		foreach ($ha as $v1) {
+
+			/////////////////////////////
+			// to determine working hour of each user
+			$wh = UnavailableDateTime::workinghourtime($v1->attend_date, $v->belongstostaff->id)->first();
+
+			// looking for leave of each staff
+			// $l = $v->belongstostaff->hasmanyleave()
+			$l = HRLeave::where('staff_id', $v->staff_id)
+					->where(function (Builder $query) {
+						$query->whereIn('leave_status_id', [5, 6])->orWhereNull('leave_status_id');
+					})
+					->where(function (Builder $query) use ($v1){
+						$query->whereDate('date_time_start', '<=', $v1->attend_date)
+						->whereDate('date_time_end', '>=', $v1->attend_date);
+					})
+					->first();
+
+			$o = HROvertime::where([['staff_id', $v->staff_id], ['ot_date', $v1->attend_date], ['active', 1]])->first();
+
+			$os = HROutstation::where('staff_id', $v->staff_id)
+					->where(function (Builder $query) use ($v1){
+						$query->whereDate('date_from', '<=', $v1->attend_date)
+						->whereDate('date_to', '>=', $v1->attend_date);
+					})
+					->get();
+
+			$in = Carbon::parse($v1->in)->equalTo('00:00:00');
+			$break = Carbon::parse($v1->break)->equalTo('00:00:00');
+			$resume = Carbon::parse($v1->resume)->equalTo('00:00:00');
+			$out = Carbon::parse($v1->out)->equalTo('00:00:00');
+
+			// looking for RESTDAY, WORKDAY & HOLIDAY
+			$sun = Carbon::parse($v1->attend_date)->dayOfWeek == 0;		// sunday
+			$sat = Carbon::parse($v1->attend_date)->dayOfWeek == 6;		// saturday
+
+			$hdate = HRHolidayCalendar::
+					where(function (Builder $query) use ($v1){
+						$query->whereDate('date_start', '<=', $v1->attend_date)
+						->whereDate('date_end', '>=', $v1->attend_date);
+					})
+					->get();
+
+			if($hdate->isNotEmpty()) {											// date holiday
+				$dayt = OptDayType::find(3)->daytype;							// show what day: HOLIDAY
+				$dtype = false;
+			} elseif($hdate->isEmpty()) {										// date not holiday
+				if(Carbon::parse($v1->attend_date)->dayOfWeek == 0) {			// sunday
+					$dayt = OptDayType::find(2)->daytype;
+					$dtype = false;
+				} elseif(Carbon::parse($v1->attend_date)->dayOfWeek == 6) {		// saturday
+					$sat = $v->belongstostaff->belongstorestdaygroup?->hasmanyrestdaycalendar()->whereDate('saturday_date', $v1->attend_date)->first();
+					if($sat) {													// determine if user belongs to sat group restday
+						$dayt = OptDayType::find(2)->daytype;					// show what day: RESTDAY
+						$dtype = false;
+					} else {
+						$dayt = OptDayType::find(1)->daytype;					// show what day: WORKDAY
+						$dtype = true;
+					}
+				} else {														// all other day is working day
+					$dayt = OptDayType::find(1)->daytype;						// show what day: WORKDAY
+					$dtype = true;
+				}
+			}
+
+
+
+
+
+			// detect all
+			if ($os->isNotEmpty()) {																							// outstation |
+				if ($dtype) {																									// outstation | working
+					if ($l) {																									// outstation | working | leave
+						if ($in) {																								// outstation | working | leave | no in
+							if ($break) {																						// outstation | working | leave | no in | no break
+								if ($resume) {																					// outstation | working | leave | no in | no break | no resume
+									if ($out) {																					// outstation | working | leave | no in | no break | no resume | no out
+										if (is_null($v1->attendance_type_id)) {
+											$ll = OptTcms::find(4)->leave;					// outstation
+										} else {
+											$ll = OptTcms::find($v1->attendance_type_id)->leave;
+										}
+									} else {																					// outstation | working | leave | no in | no break | no resume | out
+										if (is_null($v1->attendance_type_id)) {
+											$ll = OptTcms::find(4)->leave;					// outstation
+										} else {
+											$ll = OptTcms::find($v1->attendance_type_id)->leave;
+										}
+									}
+								} else {																						// outstation | working | leave | no in | no break | resume
+									if ($out) {																					// outstation | working | leave | no in | no break | resume | no out
+										if (is_null($v1->attendance_type_id)) {
+											$ll = OptTcms::find(4)->leave;					// outstation
+										} else {
+											$ll = OptTcms::find($v1->attendance_type_id)->leave;
+										}
+									} else {																					// outstation | working | leave | no in | no break | resume | out
+										if (is_null($v1->attendance_type_id)) {
+											$ll = OptTcms::find(4)->leave;					// outstation
+										} else {
+											$ll = OptTcms::find($v1->attendance_type_id)->leave;
+										}
+									}
+								}
+							} else {																							// outstation | working | leave | no in | break
+								if ($resume) {																					// outstation | working | leave | no in | break | no resume
+									if ($out) {																					// outstation | working | leave | no in | break | no resume | no out
+										if (is_null($v1->attendance_type_id)) {
+											$ll = OptTcms::find(4)->leave;					// outstation
+										} else {
+											$ll = OptTcms::find($v1->attendance_type_id)->leave;
+										}
+									} else {																					// outstation | working | leave | no in | break | no resume | out
+										if (is_null($v1->attendance_type_id)) {
+											$ll = OptTcms::find(4)->leave;					// outstation
+										} else {
+											$ll = OptTcms::find($v1->attendance_type_id)->leave;
+										}
+									}
+								} else {																						// outstation | working | leave | no in | break | resume
+									if ($out) {																					// outstation | working | leave | no in | break | resume | no out
+										if (is_null($v1->attendance_type_id)) {
+											$ll = OptTcms::find(4)->leave;					// outstation
+										} else {
+											$ll = OptTcms::find($v1->attendance_type_id)->leave;
+										}
+									} else {																					// outstation | working | leave | no in | break | resume | out
+										if (is_null($v1->attendance_type_id)) {
+											$ll = OptTcms::find(4)->leave;					// outstation
+										} else {
+											$ll = OptTcms::find($v1->attendance_type_id)->leave;
+										}
+									}
+								}
+							}
+						} else {																								// outstation | working | leave | in
+							if ($break) {																						// outstation | working | leave | in | no break
+								if ($resume) {																					// outstation | working | leave | in | no break | no resume
+									if ($out) {																					// outstation | working | leave | in | no break | no resume | no out
+										if (is_null($v1->attendance_type_id)) {
+											$ll = OptTcms::find(4)->leave;					// outstation
+										} else {
+											$ll = OptTcms::find($v1->attendance_type_id)->leave;
+										}
+									} else {																					// outstation | working | leave | in | no break | no resume | out
+										if (is_null($v1->attendance_type_id)) {
+											$ll = OptTcms::find(4)->leave;					// outstation
+										} else {
+											$ll = OptTcms::find($v1->attendance_type_id)->leave;
+										}
+									}
+								} else {																						// outstation | working | leave | in | no break | resume
+									if ($out) {																					// outstation | working | leave | in | no break | resume | no out
+										if (is_null($v1->attendance_type_id)) {
+											$ll = OptTcms::find(4)->leave;					// outstation
+										} else {
+											$ll = OptTcms::find($v1->attendance_type_id)->leave;
+										}
+									} else {																					// outstation | working | leave | in | no break | resume | out
+										if (is_null($v1->attendance_type_id)) {
+											$ll = OptTcms::find(4)->leave;					// outstation
+										} else {
+											$ll = OptTcms::find($v1->attendance_type_id)->leave;
+										}
+									}
+								}
+							} else {																							// outstation | working | leave | in | break
+								if ($resume) {																					// outstation | working | leave | in | break | no resume
+									if ($out) {																					// outstation | working | leave | in | break | no resume | no out
+										if (is_null($v1->attendance_type_id)) {
+											$ll = OptTcms::find(4)->leave;					// outstation
+										} else {
+											$ll = OptTcms::find($v1->attendance_type_id)->leave;
+										}
+									} else {																					// outstation | working | leave | in | break | no resume | out
+										if (is_null($v1->attendance_type_id)) {
+											$ll = OptTcms::find(4)->leave;					// outstation
+										} else {
+											$ll = OptTcms::find($v1->attendance_type_id)->leave;
+										}
+									}
+								} else {																						// outstation | working | leave | in | break | resume
+									if ($out) {																					// outstation | working | leave | in | break | resume | no out
+										if (is_null($v1->attendance_type_id)) {
+											$ll = OptTcms::find(4)->leave;					// outstation
+										} else {
+											$ll = OptTcms::find($v1->attendance_type_id)->leave;
+										}
+									} else {																					// outstation | working | leave | in | break | resume | out
+										if (is_null($v1->attendance_type_id)) {
+											$ll = OptTcms::find(4)->leave;					// outstation
+										} else {
+											$ll = OptTcms::find($v1->attendance_type_id)->leave;
+										}
+									}
+								}
+							}
+						}
+					} else {																									// outstation | working | no leave
+						if ($in) {																								// outstation | working | no leave | no in
+							if ($break) {																						// outstation | working | no leave | no in | no break
+								if ($resume) {																					// outstation | working | no leave | no in | no break | no resume
+									if ($out) {																					// outstation | working | no leave | no in | no break | no resume | no out
+										if (is_null($v1->attendance_type_id)) {
+											$ll = OptTcms::find(4)->leave;					// outstation
+										} else {
+											$ll = OptTcms::find($v1->attendance_type_id)->leave;
+										}
+									} else {																					// outstation | working | no leave | no in | no break | no resume | out
+										if (is_null($v1->attendance_type_id)) {
+											$ll = OptTcms::find(4)->leave;					// outstation
+										} else {
+											$ll = OptTcms::find($v1->attendance_type_id)->leave;
+										}
+									}
+								} else {																						// outstation | working | no leave | no in | no break | resume
+									if ($out) {																					// outstation | working | no leave | no in | no break | resume | no out
+										if (is_null($v1->attendance_type_id)) {
+											$ll = OptTcms::find(4)->leave;					// outstation
+										} else {
+											$ll = OptTcms::find($v1->attendance_type_id)->leave;
+										}
+									} else {																					// outstation | working | no leave | no in | no break | resume | out
+										if (is_null($v1->attendance_type_id)) {
+											$ll = OptTcms::find(4)->leave;					// outstation
+										} else {
+											$ll = OptTcms::find($v1->attendance_type_id)->leave;
+										}
+									}
+								}
+							} else {																							// outstation | working | no leave | no in | break
+								if ($resume) {																					// outstation | working | no leave | no in | break | no resume
+									if ($out) {																					// outstation | working | no leave | no in | break | no resume | no out
+										if (is_null($v1->attendance_type_id)) {
+											$ll = null;					// pls check
+										} else {
+											$ll = OptTcms::find($v1->attendance_type_id)->leave;
+										}
+									} else {																					// outstation | working | no leave | no in | break | no resume | out
+										if (is_null($v1->attendance_type_id)) {
+											$ll = null;					// pls check
+										} else {
+											$ll = OptTcms::find($v1->attendance_type_id)->leave;
+										}
+									}
+								} else {																						// outstation | working | no leave | no in | break | resume
+									if ($out) {																					// outstation | working | no leave | no in | break | resume | no out
+										if (is_null($v1->attendance_type_id)) {
+											$ll = null;					// pls check
+										} else {
+											$ll = OptTcms::find($v1->attendance_type_id)->leave;
+										}
+									} else {																					// outstation | working | no leave | no in | break | resume | out
+										if (is_null($v1->attendance_type_id)) {
+											if ($break == $resume) {															// check for break and resume is the same value
+												$ll = OptTcms::find(4)->leave;					// outstation
+											} else {
+												$ll = null;					// pls check
+											}
+										} else {
+											$ll = OptTcms::find($v1->attendance_type_id)->leave;
+										}
+									}
+								}
+							}
+						} else {																								// outstation | working | no leave | in
+							if ($break) {																						// outstation | working | no leave | in | no break
+								if ($resume) {																					// outstation | working | no leave | in | no break | no resume
+									if ($out) {																					// outstation | working | no leave | in | no break | no resume | no out
+										if (Carbon::parse(now())->gt($v1->attend_date)) {
+											if (is_null($v1->attendance_type_id)) {
+												$ll = OptTcms::find(4)->leave;					// outstation
+											} else {
+												$ll = OptTcms::find($v1->attendance_type_id)->leave;
+											}
+										} else {
+											if (is_null($v1->attendance_type_id)) {
+											$ll = OptTcms::find(4)->leave;					// outstation
+										} else {
+											$ll = OptTcms::find($v1->attendance_type_id)->leave;
+										}
+										}
+									} else {																					// outstation | working | no leave | in | no break | no resume | out
+										if (is_null($v1->attendance_type_id)) {
+											$ll = OptTcms::find(4)->leave;					// outstation
+										} else {
+											$ll = OptTcms::find($v1->attendance_type_id)->leave;
+										}
+									}
+								} else {																						// outstation | working | no leave | in | no break | resume
+									if ($out) {																					// outstation | working | no leave | in | no break | resume | no out
+										if (is_null($v1->attendance_type_id)) {
+											$ll = null;					// pls check
+										} else {
+											$ll = OptTcms::find($v1->attendance_type_id)->leave;
+										}
+									} else {																					// outstation | working | no leave | in | no break | resume | out
+										if (is_null($v1->attendance_type_id)) {
+											$ll = OptTcms::find(4)->leave;					// outstation
+										} else {
+											$ll = OptTcms::find($v1->attendance_type_id)->leave;
+										}
+									}
+								}
+							} else {																							// outstation | working | no leave | in | break
+								if ($resume) {																					// outstation | working | no leave | in | break | no resume
+									if ($out) {																					// outstation | working | no leave | in | break | no resume | no out
+										if (is_null($v1->attendance_type_id)) {
+											$ll = OptTcms::find(4)->leave;					// outstation
+										} else {
+											$ll = OptTcms::find($v1->attendance_type_id)->leave;
+										}
+									} else {																					// outstation | working | no leave | in | break | no resume | out
+										if (is_null($v1->attendance_type_id)) {
+											$ll = OptTcms::find(4)->leave;					// outstation
+										} else {
+											$ll = OptTcms::find($v1->attendance_type_id)->leave;
+										}
+									}
+								} else {																						// outstation | working | no leave | in | break | resume
+									if ($out) {																					// outstation | working | no leave | in | break | resume | no out
+										if (is_null($v1->attendance_type_id)) {
+											if ($break == $resume) {															// check for break and resume is the same value
+												$ll = OptTcms::find(4)->leave;					// outstation
+											} else {
+												$ll = null;					// pls check
+											}
+										} else {
+											$ll = OptTcms::find($v1->attendance_type_id)->leave;
+										}
+									} else {																					// outstation | working | no leave | in | break | resume | out
+										if (is_null($v1->attendance_type_id)) {
+											$ll = OptTcms::find(4)->leave;					// outstation
+										} else {
+											$ll = OptTcms::find($v1->attendance_type_id)->leave;
+										}
+									}
+								}
+							}
+						}
+					}
+				} else {																										// outstation | no working
+					if ($l) {																									// outstation | no working | leave
+						if ($in) {																								// outstation | no working | leave | no in
+							if ($break) {																						// outstation | no working | leave | no in | no break
+								if ($resume) {																					// outstation | no working | leave | no in | no break | no resume
+									if ($out) {																					// outstation | no working | leave | no in | no break | no resume | no out
+										if (is_null($v1->attendance_type_id)) {
+											$ll = OptTcms::find(4)->leave;					// outstation
+										} else {
+											$ll = OptTcms::find($v1->attendance_type_id)->leave;
+										}
+									} else {																					// outstation | no working | leave | no in | no break | no resume | out
+										if (is_null($v1->attendance_type_id)) {
+											$ll = OptTcms::find(4)->leave;					// outstation
+										} else {
+											$ll = OptTcms::find($v1->attendance_type_id)->leave;
+										}
+									}
+								} else {																						// outstation | no working | leave | no in | no break | resume
+									if ($out) {																					// outstation | no working | leave | no in | no break | resume | no out
+										if (is_null($v1->attendance_type_id)) {
+											$ll = OptTcms::find(4)->leave;					// outstation
+										} else {
+											$ll = OptTcms::find($v1->attendance_type_id)->leave;
+										}
+									} else {																					// outstation | no working | leave | no in | no break | resume | out
+										if (is_null($v1->attendance_type_id)) {
+											$ll = OptTcms::find(4)->leave;					// outstation
+										} else {
+											$ll = OptTcms::find($v1->attendance_type_id)->leave;
+										}
+									}
+								}
+							} else {																							// outstation | no working | leave | no in | break
+								if ($resume) {																					// outstation | no working | leave | no in | break | no resume
+									if ($out) {																					// outstation | no working | leave | no in | break | no resume | no out
+										if (is_null($v1->attendance_type_id)) {
+											$ll = OptTcms::find(4)->leave;					// outstation
+										} else {
+											$ll = OptTcms::find($v1->attendance_type_id)->leave;
+										}
+									} else {																					// outstation | no working | leave | no in | break | no resume | out
+										if (is_null($v1->attendance_type_id)) {
+											$ll = OptTcms::find(4)->leave;					// outstation
+										} else {
+											$ll = OptTcms::find($v1->attendance_type_id)->leave;
+										}
+									}
+								} else {																						// outstation | no working | leave | no in | break | resume
+									if ($out) {																					// outstation | no working | leave | no in | break | resume | no out
+										if (is_null($v1->attendance_type_id)) {
+											$ll = OptTcms::find(4)->leave;					// outstation
+										} else {
+											$ll = OptTcms::find($v1->attendance_type_id)->leave;
+										}
+									} else {																					// outstation | no working | leave | no in | break | resume | out
+										if (is_null($v1->attendance_type_id)) {
+											$ll = OptTcms::find(4)->leave;					// outstation
+										} else {
+											$ll = OptTcms::find($v1->attendance_type_id)->leave;
+										}
+									}
+								}
+							}
+						} else {																								// outstation | no working | leave | in
+							if ($break) {																						// outstation | no working | leave | in | no break
+								if ($resume) {																					// outstation | no working | leave | in | no break | no resume
+									if ($out) {																					// outstation | no working | leave | in | no break | no resume | no out
+										if (is_null($v1->attendance_type_id)) {
+											$ll = OptTcms::find(4)->leave;					// outstation
+										} else {
+											$ll = OptTcms::find($v1->attendance_type_id)->leave;
+										}
+									} else {																					// outstation | no working | leave | in | no break | no resume | out
+										if (is_null($v1->attendance_type_id)) {
+											$ll = OptTcms::find(4)->leave;					// outstation
+										} else {
+											$ll = OptTcms::find($v1->attendance_type_id)->leave;
+										}
+									}
+								} else {																						// outstation | no working | leave | in | no break | resume
+									if ($out) {																					// outstation | no working | leave | in | no break | resume | no out
+										if (is_null($v1->attendance_type_id)) {
+											$ll = OptTcms::find(4)->leave;					// outstation
+										} else {
+											$ll = OptTcms::find($v1->attendance_type_id)->leave;
+										}
+									} else {																					// outstation | no working | leave | in | no break | resume | out
+										if (is_null($v1->attendance_type_id)) {
+											$ll = OptTcms::find(4)->leave;					// outstation
+										} else {
+											$ll = OptTcms::find($v1->attendance_type_id)->leave;
+										}
+									}
+								}
+							} else {																							// outstation | no working | leave | in | break
+								if ($resume) {																					// outstation | no working | leave | in | break | no resume
+									if ($out) {																					// outstation | no working | leave | in | break | no resume | no out
+										if (is_null($v1->attendance_type_id)) {
+											$ll = OptTcms::find(4)->leave;					// outstation
+										} else {
+											$ll = OptTcms::find($v1->attendance_type_id)->leave;
+										}
+									} else {																					// outstation | no working | leave | in | break | no resume | out
+										if (is_null($v1->attendance_type_id)) {
+											$ll = OptTcms::find(4)->leave;					// outstation
+										} else {
+											$ll = OptTcms::find($v1->attendance_type_id)->leave;
+										}
+									}
+								} else {																						// outstation | no working | leave | in | break | resume
+									if ($out) {																					// outstation | no working | leave | in | break | resume | no out
+										if (is_null($v1->attendance_type_id)) {
+											$ll = OptTcms::find(4)->leave;					// outstation
+										} else {
+											$ll = OptTcms::find($v1->attendance_type_id)->leave;
+										}
+									} else {																					// outstation | no working | leave | in | break | resume | out
+										if (is_null($v1->attendance_type_id)) {
+											$ll = OptTcms::find(4)->leave;					// outstation
+										} else {
+											$ll = OptTcms::find($v1->attendance_type_id)->leave;
+										}
+									}
+								}
+							}
+						}
+					} else {																									// outstation | no working | no leave
+						if ($in) {																								// outstation | no working | no leave | no in
+							if ($break) {																						// outstation | no working | no leave | no in | no break
+								if ($resume) {																					// outstation | no working | no leave | no in | no break | no resume
+									if ($out) {																					// outstation | no working | no leave | no in | no break | no resume | no out
+										if (is_null($v1->attendance_type_id)) {
+											$ll = OptTcms::find(4)->leave;					// outstation
+										} else {
+											$ll = OptTcms::find($v1->attendance_type_id)->leave;
+										}
+									} else {																					// outstation | no working | no leave | no in | no break | no resume | out
+										if (is_null($v1->attendance_type_id)) {
+											$ll = OptTcms::find(4)->leave;					// outstation
+										} else {
+											$ll = OptTcms::find($v1->attendance_type_id)->leave;
+										}
+									}
+								} else {																						// outstation | no working | no leave | no in | no break | resume
+									if ($out) {																					// outstation | no working | no leave | no in | no break | resume | no out
+										if (is_null($v1->attendance_type_id)) {
+											$ll = OptTcms::find(4)->leave;					// outstation
+										} else {
+											$ll = OptTcms::find($v1->attendance_type_id)->leave;
+										}
+									} else {																					// outstation | no working | no leave | no in | no break | resume | out
+										if (is_null($v1->attendance_type_id)) {
+											$ll = OptTcms::find(4)->leave;					// outstation
+										} else {
+											$ll = OptTcms::find($v1->attendance_type_id)->leave;
+										}
+									}
+								}
+							} else {																							// outstation | no working | no leave | no in | break
+								if ($resume) {																					// outstation | no working | no leave | no in | break | no resume
+									if ($out) {																					// outstation | no working | no leave | no in | break | no resume | no out
+										if (is_null($v1->attendance_type_id)) {
+											$ll = OptTcms::find(4)->leave;					// outstation
+										} else {
+											$ll = OptTcms::find($v1->attendance_type_id)->leave;
+										}
+									} else {																					// outstation | no working | no leave | no in | break | no resume | out
+										if (is_null($v1->attendance_type_id)) {
+											$ll = OptTcms::find(4)->leave;					// outstation
+										} else {
+											$ll = OptTcms::find($v1->attendance_type_id)->leave;
+										}
+									}
+								} else {																						// outstation | no working | no leave | no in | break | resume
+									if ($out) {																					// outstation | no working | no leave | no in | break | resume | no out
+										if (is_null($v1->attendance_type_id)) {
+											$ll = OptTcms::find(4)->leave;					// outstation
+										} else {
+											$ll = OptTcms::find($v1->attendance_type_id)->leave;
+										}
+									} else {																					// outstation | no working | no leave | no in | break | resume | out
+										if (is_null($v1->attendance_type_id)) {
+											$ll = OptTcms::find(4)->leave;					// outstation
+										} else {
+											$ll = OptTcms::find($v1->attendance_type_id)->leave;
+										}
+									}
+								}
+							}
+						} else {																								// outstation | no working | no leave | in
+							if ($break) {																						// outstation | no working | no leave | in | no break
+								if ($resume) {																					// outstation | no working | no leave | in | no break | no resume
+									if ($out) {																					// outstation | no working | no leave | in | no break | no resume | no out
+										if (is_null($v1->attendance_type_id)) {
+											$ll = OptTcms::find(4)->leave;					// outstation
+										} else {
+											$ll = OptTcms::find($v1->attendance_type_id)->leave;
+										}
+									} else {																					// outstation | no working | no leave | in | no break | no resume | out
+										if (is_null($v1->attendance_type_id)) {
+											$ll = OptTcms::find(4)->leave;					// outstation
+										} else {
+											$ll = OptTcms::find($v1->attendance_type_id)->leave;
+										}
+									}
+								} else {																						// outstation | no working | no leave | in | no break | resume
+									if ($out) {																					// outstation | no working | no leave | in | no break | resume | no out
+										if (is_null($v1->attendance_type_id)) {
+											$ll = OptTcms::find(4)->leave;					// outstation
+										} else {
+											$ll = OptTcms::find($v1->attendance_type_id)->leave;
+										}
+									} else {																					// outstation | no working | no leave | in | no break | resume | out
+										if (is_null($v1->attendance_type_id)) {
+											$ll = OptTcms::find(4)->leave;					// outstation
+										} else {
+											$ll = OptTcms::find($v1->attendance_type_id)->leave;
+										}
+									}
+								}
+							} else {																							// outstation | no working | no leave | in | break
+								if ($resume) {																					// outstation | no working | no leave | in | break | no resume
+									if ($out) {																					// outstation | no working | no leave | in | break | no resume | no out
+										if (is_null($v1->attendance_type_id)) {
+											$ll = OptTcms::find(4)->leave;					// outstation
+										} else {
+											$ll = OptTcms::find($v1->attendance_type_id)->leave;
+										}
+									} else {																					// outstation | no working | no leave | in | break | no resume | out
+										if (is_null($v1->attendance_type_id)) {
+											$ll = OptTcms::find(4)->leave;					// outstation
+										} else {
+											$ll = OptTcms::find($v1->attendance_type_id)->leave;
+										}
+									}
+								} else {																						// outstation | no working | no leave | in | break | resume
+									if ($out) {																					// outstation | no working | no leave | in | break | resume | no out
+										if (is_null($v1->attendance_type_id)) {
+											$ll = OptTcms::find(4)->leave;					// outstation
+										} else {
+											$ll = OptTcms::find($v1->attendance_type_id)->leave;
+										}
+									} else {																					// outstation | no working | no leave | in | break | resume | out
+										if (is_null($v1->attendance_type_id)) {
+											$ll = OptTcms::find(4)->leave;					// outstation
+										} else {
+											$ll = OptTcms::find($v1->attendance_type_id)->leave;
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			} else {																											// no outstation
+				if ($dtype) {																									// no outstation | working
+					if ($l) {																									// no outstation | working | leave
+						if ($in) {																								// no outstation | working | leave | no in
+							if ($break) {																						// no outstation | working | leave | no in | no break
+								if ($resume) {																					// no outstation | working | leave | no in | no break | no resume
+									if ($out) {																					// no outstation | working | leave | no in | no break | no resume | no out
+										if (is_null($v1->attendance_type_id)) {
+											$ll = $l->belongstooptleavetype?->leave_type_code;
+										} else {
+											$ll = $v1->belongstoopttcms->leave;
+										}
+									} else {																					// no outstation | working | leave | no in | no break | no resume | out
+										if (is_null($v1->attendance_type_id)) {
+											$ll = $l->belongstooptleavetype?->leave_type_code;
+										} else {
+											$ll = $v1->belongstoopttcms->leave;
+										}
+									}
+								} else {																						// no outstation | working | leave | no in | no break | resume
+									if ($out) {																					// no outstation | working | leave | no in | no break | resume | no out
+										if (is_null($v1->attendance_type_id)) {
+											$ll = $l->belongstooptleavetype?->leave_type_code;
+										} else {
+											$ll = $v1->belongstoopttcms->leave;
+										}
+									} else {																					// no outstation | working | leave | no in | no break | resume | out
+										if (is_null($v1->attendance_type_id)) {
+											$ll = $l->belongstooptleavetype?->leave_type_code;
+										} else {
+											$ll = $v1->belongstoopttcms->leave;
+										}
+									}
+								}
+							} else {																							// no outstation | working | leave | no in | break
+								if ($resume) {																					// no outstation | working | leave | no in | break | no resume
+									if ($out) {																					// no outstation | working | leave | no in | break | no resume | no out
+										if (is_null($v1->attendance_type_id)) {
+											$ll = $l->belongstooptleavetype?->leave_type_code;
+										} else {
+											$ll = $v1->belongstoopttcms->leave;
+										}
+									} else {																					// no outstation | working | leave | no in | break | no resume | out
+										if (is_null($v1->attendance_type_id)) {
+											$ll = $l->belongstooptleavetype?->leave_type_code;
+										} else {
+											$ll = $v1->belongstoopttcms->leave;
+										}
+									}
+								} else {																						// no outstation | working | leave | no in | break | resume
+									if ($out) {																					// no outstation | working | leave | no in | break | resume | no out
+										if (is_null($v1->attendance_type_id)) {
+											$ll = $l->belongstooptleavetype?->leave_type_code;
+										} else {
+											$ll = $v1->belongstoopttcms->leave;
+										}
+									} else {																					// no outstation | working | leave | no in | break | resume | out
+										if (is_null($v1->attendance_type_id)) {
+											$ll = $l->belongstooptleavetype?->leave_type_code;
+										} else {
+											$ll = $v1->belongstoopttcms->leave;
+										}
+									}
+								}
+							}
+						} else {																								// no outstation | working | leave | in
+							if ($break) {																						// no outstation | working | leave | in | no break
+								if ($resume) {																					// no outstation | working | leave | in | no break | no resume
+									if ($out) {																					// working | leave | in | no break | no resume | no out
+										if (is_null($v1->attendance_type_id)) {
+											$ll = $l->belongstooptleavetype?->leave_type_code;
+										} else {
+											$ll = $v1->belongstoopttcms->leave;
+										}
+									} else {																					// no outstation | working | leave | in | no break | no resume | out
+										if (is_null($v1->attendance_type_id)) {
+											$ll = $l->belongstooptleavetype?->leave_type_code;
+										} else {
+											$ll = $v1->belongstoopttcms->leave;
+										}
+									}
+								} else {																						// no outstation | working | leave | in | no break | resume
+									if ($out) {																					// no outstation | working | leave | in | no break | resume | no out
+										if (is_null($v1->attendance_type_id)) {
+											$ll = $l->belongstooptleavetype?->leave_type_code;
+										} else {
+											$ll = $v1->belongstoopttcms->leave;
+										}
+									} else {																					// no outstation | working | leave | in | no break | resume | out
+										if (is_null($v1->attendance_type_id)) {
+											$ll = $l->belongstooptleavetype?->leave_type_code;
+										} else {
+											$ll = $v1->belongstoopttcms->leave;
+										}
+									}
+								}
+							} else {																							// no outstation | working | leave | in | break
+								if ($resume) {																					// no outstation | working | leave | in | break | no resume
+									if ($out) {																					// no outstation | working | leave | in | break | no resume | no out
+										if (is_null($v1->attendance_type_id)) {
+											$ll = $l->belongstooptleavetype?->leave_type_code;
+										} else {
+											$ll = $v1->belongstoopttcms->leave;
+										}
+									} else {																					// no outstation | working | leave | in | break | no resume | out
+										if (is_null($v1->attendance_type_id)) {
+											$ll = $l->belongstooptleavetype?->leave_type_code;
+										} else {
+											$ll = $v1->belongstoopttcms->leave;
+										}
+									}
+								} else {																						// no outstation | working | leave | in | break | resume
+									if ($out) {																					// no outstation | working | leave | in | break | resume | no out
+										if (is_null($v1->attendance_type_id)) {
+											$ll = $l->belongstooptleavetype?->leave_type_code;
+										} else {
+											$ll = $v1->belongstoopttcms->leave;
+										}
+									} else {																					// no outstation | working | leave | in | break | resume | out
+										if (is_null($v1->attendance_type_id)) {
+											$ll = $l->belongstooptleavetype?->leave_type_code;
+										} else {
+											$ll = $v1->belongstoopttcms->leave;
+										}
+									}
+								}
+							}
+						}
+					} else {																									// no outstation | working | no leave
+						if ($in) {																								// no outstation | working | no leave | no in
+							if ($break) {																						// no outstation | working | no leave | no in | no break
+								if ($resume) {																					// no outstation | working | no leave | no in | no break | no resume
+									if ($out) {																					// no outstation | working | no leave | no in | no break | no resume | no out
+										if (is_null($v1->attendance_type_id)) {
+											$ll = OptTcms::find(1)->leave;					// absent
+										} else {
+											$ll = OptTcms::find($v1->attendance_type_id)->leave;
+										}
+									} else {																					// no outstation | working | no leave | no in | no break | no resume | out
+										if (is_null($v1->attendance_type_id)) {
+											$ll = OptTcms::find(2)->leave;					// half absent
+										} else {
+											$ll = OptTcms::find($v1->attendance_type_id)->leave;
+										}
+									}
+								} else {																						// no outstation | working | no leave | no in | no break | resume
+									if ($out) {																					// no outstation | working | no leave | no in | no break | resume | no out
+										if (is_null($v1->attendance_type_id)) {
+											$ll = null;					//  pls check
+										} else {
+											$ll = OptTcms::find($v1->attendance_type_id)->leave;
+										}
+									} else {																					// no outstation | working | no leave | no in | no break | resume | out
+										if (is_null($v1->attendance_type_id)) {
+											$ll = OptTcms::find(2)->leave;					// half absent
+										} else {
+											$ll = OptTcms::find($v1->attendance_type_id)->leave;
+										}
+									}
+								}
+							} else {																							// no outstation | working | no leave | no in | break
+								if ($resume) {																					// no outstation | working | no leave | no in | break | no resume
+									if ($out) {																					// no outstation | working | no leave | no in | break | no resume | no out
+										if (is_null($v1->attendance_type_id)) {
+											$ll = null;					// pls check
+										} else {
+											$ll = OptTcms::find($v1->attendance_type_id)->leave;
+										}
+									} else {																					// no outstation |  outstation | working | no leave | no in | break | no resume | out
+										if (is_null($v1->attendance_type_id)) {
+											$ll = null;					// pls check
+										} else {
+											$ll = OptTcms::find($v1->attendance_type_id)->leave;
+										}
+									}
+								} else {																						// no outstation |  outstation | working | no leave | no in | break | resume
+									if ($out) {																					// no outstation |  outstation | working | no leave | no in | break | resume | no out
+										if (is_null($v1->attendance_type_id)) {
+											$ll = null;					// pls check
+										} else {
+											$ll = OptTcms::find($v1->attendance_type_id)->leave;
+										}
+									} else {																					// no outstation |  outstation | working | no leave | no in | break | resume | out
+										if (is_null($v1->attendance_type_id)) {
+											if ($break == $resume) {															// check for break and resume is the same value
+												$ll = OptTcms::find(2)->leave;					// half absent
+											} else {
+												$ll = null;					// pls check
+											}
+										} else {
+											$ll = OptTcms::find($v1->attendance_type_id)->leave;
+										}
+									}
+								}
+							}
+						} else {																								// no outstation |  outstation | working | no leave | in
+							if ($break) {																						// no outstation |  outstation | working | no leave | in | no break
+								if ($resume) {																					// no outstation |  outstation | working | no leave | in | no break | no resume
+									if ($out) {																					// no outstation |  outstation | working | no leave | in | no break | no resume | no out
+										if (Carbon::parse(now())->gt($v1->attend_date)) {
+											if (is_null($v1->attendance_type_id)) {
+												$ll = OptTcms::find(2)->leave;					// half absent
+											} else {
+												$ll = OptTcms::find($v1->attendance_type_id)->leave;
+											}
+										} else {
+											$ll = false;
+										}
+									} else {																					// no outstation |  outstation | working | no leave | in | no break | no resume | out
+										$ll = false;
+									}
+								} else {																						// no outstation |  outstation | working | no leave | in | no break | resume
+									if ($out) {																					// no outstation |  outstation | working | no leave | in | no break | resume | no out
+										if (is_null($v1->attendance_type_id)) {
+											$ll = null;					// pls check
+										} else {
+											$ll = OptTcms::find($v1->attendance_type_id)->leave;
+										}
+									} else {																					// no outstation |  outstation | working | no leave | in | no break | resume | out
+										$ll = false;
+									}
+								}
+							} else {																							// no outstation |  outstation | working | no leave | in | break
+								if ($resume) {																					// no outstation |  outstation | working | no leave | in | break | no resume
+									if ($out) {																					// no outstation |  outstation | working | no leave | in | break | no resume | no out
+										if (is_null($v1->attendance_type_id)) {
+											$ll = OptTcms::find(2)->leave;					// half absent
+										} else {
+											$ll = OptTcms::find($v1->attendance_type_id)->leave;
+										}
+									} else {																					// no outstation | working | no leave | in | break | no resume | out
+										$ll = false;
+									}
+								} else {																						// no outstation | working | no leave | in | break | resume
+									if ($out) {																					// no outstation | working | no leave | in | break | resume | no out
+										if (is_null($v1->attendance_type_id)) {
+											if ($break == $resume) {															// check for break and resume is the same value
+												$ll = OptTcms::find(2)->leave;					// half absent
+											} else {
+												$ll = null;					// pls check
+											}
+										} else {
+											$ll = OptTcms::find($v1->attendance_type_id)->leave;
+										}
+									} else {																					// no outstation | working | no leave | in | break | resume | out
+										$ll = false;
+									}
+								}
+							}
+						}
+					}
+				} else {																										// no outstation | no working
+					if ($l) {																									// no outstation | no working | leave
+						if ($in) {																								// no outstation | no working | leave | no in
+							if ($break) {																						// no outstation | no working | leave | no in | no break
+								if ($resume) {																					// no outstation | no working | leave | no in | no break | no resume
+									if ($out) {																					// no outstation | no working | leave | no in | no break | no resume | no out
+										$ll = false;
+									} else {																					// no outstation | no working | leave | no in | no break | no resume | out
+										$ll = false;
+									}
+								} else {																						// no outstation | no working | leave | no in | no break | resume
+									if ($out) {																					// no outstation | no working | leave | no in | no break | resume | no out
+										$ll = false;
+									} else {																					// no outstation | no working | leave | no in | no break | resume | out
+										$ll = false;
+									}
+								}
+							} else {																							// no outstation | no working | leave | no in | break
+								if ($resume) {																					// no outstation | no working | leave | no in | break | no resume
+									if ($out) {																					// no outstation | no working | leave | no in | break | no resume | no out
+										$ll = false;
+									} else {																					// no outstation | no working | leave | no in | break | no resume | out
+										$ll = false;
+									}
+								} else {																						// no outstation | no working | leave | no in | break | resume
+									if ($out) {																					// no outstation | no working | leave | no in | break | resume | no out
+										$ll = false;
+									} else {																					// no outstation | no working | leave | no in | break | resume | out
+										$ll = false;
+									}
+								}
+							}
+						} else {																								// no outstation | no working | leave | in
+							if ($break) {																						// no outstation | no working | leave | in | no break
+								if ($resume) {																					// no outstation | no working | leave | in | no break | no resume
+									if ($out) {																					// no outstation | no working | leave | in | no break | no resume | no out
+										$ll = false;
+									} else {																					// no outstation | no working | leave | in | no break | no resume | out
+										$ll = false;
+									}
+								} else {																						// no outstation | no working | leave | in | no break | resume
+									if ($out) {																					// no outstation | no working | leave | in | no break | resume | no out
+										$ll = false;
+									} else {																					// no outstation | no working | leave | in | no break | resume | out
+										$ll = false;
+									}
+								}
+							} else {																							// no outstation | no working | leave | in | break
+								if ($resume) {																					// no outstation | no working | leave | in | break | no resume
+									if ($out) {																					// no outstation | no working | leave | in | break | no resume | no out
+										$ll = false;
+									} else {																					// no outstation | no working | leave | in | break | no resume | out
+										$ll = false;
+									}
+								} else {																						// no outstation | no working | leave | in | break | resume
+									if ($out) {																					// no outstation | no working | leave | in | break | resume | no out
+										$ll = false;
+									} else {																					// no outstation | no working | leave | in | break | resume | out
+										$ll = false;
+									}
+								}
+							}
+						}
+					} else {																									// no outstation | no working | no leave
+						if ($in) {																								// no outstation | no working | no leave | no in
+							if ($break) {																						// no outstation | no working | no leave | no in | no break
+								if ($resume) {																					// no outstation | no working | no leave | no in | no break | no resume
+									if ($out) {																					// no outstation | no working | no leave | no in | no break | no resume | no out
+										$ll = false;
+									} else {																					// no outstation | no working | no leave | no in | no break | no resume | out
+										$ll = false;
+									}
+								} else {																						// no outstation | no working | no leave | no in | no break | resume
+									if ($out) {																					// no outstation | no working | no leave | no in | no break | resume | no out
+										$ll = false;
+									} else {																					// no outstation | no working | no leave | no in | no break | resume | out
+										$ll = false;
+									}
+								}
+							} else {																							// no outstation | no working | no leave | no in | break
+								if ($resume) {																					// no outstation | no working | no leave | no in | break | no resume
+									if ($out) {																					// no outstation | no working | no leave | no in | break | no resume | no out
+										$ll = false;
+									} else {																					// no outstation | no working | no leave | no in | break | no resume | out
+										$ll = false;
+									}
+								} else {																						// no outstation | no working | no leave | no in | break | resume
+									if ($out) {																					// no outstation | no working | no leave | no in | break | resume | no out
+										$ll = false;
+									} else {																					// no outstation | no working | no leave | no in | break | resume | out
+										$ll = false;
+									}
+								}
+							}
+						} else {																								// no outstation | no working | no leave | in
+							if ($break) {																						// no outstation | no working | no leave | in | no break
+								if ($resume) {																					// no outstation | no working | no leave | in | no break | no resume
+									if ($out) {																					// no outstation | no working | no leave | in | no break | no resume | no out
+										$ll = false;
+									} else {																					// no outstation | no working | no leave | in | no break | no resume | out
+										$ll = false;
+									}
+								} else {																						// no outstation | no working | no leave | in | no break | resume
+									if ($out) {																					// no outstation | no working | no leave | in | no break | resume | no out
+										$ll = false;
+									} else {																					// no outstation | no working | no leave | in | no break | resume | out
+										$ll = false;
+									}
+								}
+							} else {																							// no outstation | no working | no leave | in | break
+								if ($resume) {																					// no outstation | no working | no leave | in | break | no resume
+									if ($out) {																					// no outstation | no working | no leave | in | break | no resume | no out
+										$ll = false;
+									} else {																					// no outstation | no working | no leave | in | break | no resume | out
+										$ll = false;
+									}
+								} else {																						// no outstation | no working | no leave | in | break | resume
+									if ($out) {																					// no outstation | no working | no leave | in | break | resume | no out
+										$ll = false;
+									} else {																					// no outstation | no working | no leave | in | break | resume | out
+										$ll = false;
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+
+			if($l) {
+				$lea = 'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year;
+			} else {
+				$lea = NULL;
+			}
+			// $username = Login::where([['staff_id', $v->staff_id], ['active', 1]])->first()?->username;
+
+			$pdf->Row([
+				Login::where([['staff_id', $v->staff_id], ['active', 1]])->first()?->username,
+				Staff::find($v->staff_id)->name,
+				$dayt,
+				$ll,
+				$lea,
+				Carbon::parse($v1->attend_date)->format('j M Y'),
+				($in)?'':Carbon::parse($v1->in)->format('g:i a'),
+				($break)?'':Carbon::parse($v1->break)->format('g:i a'),
+				($resume)?'':Carbon::parse($v1->resume)->format('g:i a'),
+				($out)?'':Carbon::parse($v1->out)->format('g:i a'),
+				$v1->time_work_hour,
+				$o?->belongstoovertimerange?->where('active', 1)->first()?->total_time,
+				null,
+				$v1->remarks.''.$v1->hr_remarks,
+				$v1->exception,
+			]);
+		}
+
+
+		$pdf->Ln();
 	}
 }
-
-
-
-
-
-
-
-
-
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	$filename = 'Attendance Report.pdf';

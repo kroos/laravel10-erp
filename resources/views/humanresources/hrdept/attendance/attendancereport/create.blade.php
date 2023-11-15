@@ -1123,10 +1123,10 @@ if($l) {
 } else {
 	$lea = NULL;
 }
-$username = Login::where([['staff_id', $v->staff_id], ['active', 1]])->first()->username;
+// $username = Login::where([['staff_id', $v->staff_id], ['active', 1]])->first()->username;
 ?>
 						<tr class="{{ (Carbon::parse($v1->attend_date)->dayOfWeek == 0)?'table-secondary':NULL }}">
-							<td>{{ $username }}</td>
+							<td>{{ Login::where([['staff_id', $v->staff_id], ['active', 1]])->first()?->username }}</td>
 							<td>{{ Staff::find($v->staff_id)->name }}</td>
 							<td>{{ $dayt }}</td>
 							<td>{!! $ll !!}</td>
