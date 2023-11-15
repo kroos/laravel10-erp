@@ -24,6 +24,7 @@
 		<a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Overtime</a>
 		<ul class="dropdown-menu">
 			<li><a class="dropdown-item btn btn-sm btn-outline-secondary" href="{{ route('overtime.index') }}"><i class="fa-solid fa-cloud-moon fa-beat"></i> Overtime List</a></li>
+			<li><a class="dropdown-item btn btn-sm btn-outline-secondary" href="{{ route('overtimereport.index') }}"><i class="fa-solid fa-cloud-moon fa-beat"></i> Overtime Report</a></li>
 <!-- 		<li><a class="dropdown-item" href="#">Something else here</a></li>
 			<li><hr class="dropdown-divider"></li>
 			<li><a class="dropdown-item" href="#">Separated link</a></li> -->
