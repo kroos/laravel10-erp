@@ -22,7 +22,6 @@ use Illuminate\Support\Facades\DB;
 // load models
 use App\Models\HumanResources\HRAttendance;
 use App\Models\Staff;
-use App\Models\Login;
 
 // load paginator
 use Illuminate\Pagination\Paginator;
@@ -40,7 +39,7 @@ use \Carbon\CarbonInterval;
 
 use Session;
 
-class AttendanceReportController extends Controller
+class AttendanceReportPDFController extends Controller
 {
 	function __construct()
 	{
@@ -49,29 +48,22 @@ class AttendanceReportController extends Controller
 		$this->middleware('highMgmtAccess:1|5,14', ['only' => ['create', 'store', 'edit', 'update', 'destroy']]);
 	}
 
-	public function index(): View
-	{
-		return view('humanresources.hrdept.attendance.attendancereport.index');
-	}
-
-	public function create(Request $request): View
+	public function store(Request $request): View
 	{
 		// dd($request->all());
-		$sa1 = HRAttendance::select('staff_id')
-					->whereIn('staff_id', $request->staff_id)
+		$sa = HRAttendance::select('staff_id')
+					// ->whereIn('staff_id', $request->staff_id)
+					->whereIn('staff_id', [1, 2, 3, 4, 5, 6, 7, 8, 9, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 52, 53, 54, 55, 56, 57, 58, 59, 65, 67, 68, 69, 71])
 					->where(function (Builder $query) use ($request){
-						$query->whereDate('attend_date', '>=', $request->from)
-						->whereDate('attend_date', '<=', $request->to);
+						// $query->whereDate('attend_date', '>=', $request->from)
+						$query->whereDate('attend_date', '>=', '2023-11-01')
+						// ->whereDate('attend_date', '<=', $request->to);
+						->whereDate('attend_date', '<=', '2023-11-14');
 					})
 					->groupBy('hr_attendances.staff_id')
 					->get();
-		foreach ($sa1 as $k1) {
-			$r[] = $k1->staff_id;
-		}
-		$sa = Login::whereIn('staff_id', $r)->where('active', 1)->orderBy('username')->get();
-		// dd($r, $sa);
 
-		return view('humanresources.hrdept.attendance.attendancereport.create', ['sa' => $sa, 'request' => $request]);
+		return view('humanresources.hrdept.attendance.attendancereport.createpdf', ['sa' => $sa, 'request' => $request]);
 	}
 
 }

@@ -103,7 +103,7 @@ $setHalfDayMC = \App\Models\Setting::find(2)->active;
 
 $staff = $user;
 // dd([$staff, $user]);
-$login = $staff->hasmanylogin()->get()->first();
+$login = $staff->hasmanylogin()->where('active', 1)->get()->first();
 
 $count = 0;
 $supervisor_no = 0;
