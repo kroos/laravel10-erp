@@ -12,6 +12,7 @@ use Illuminate\View\View;
 
 // load models
 use App\Models\Staff;
+use App\Models\HumanResources\HRAttendance;
 use App\Models\HumanResources\HRLeave;
 use App\Models\HumanResources\HRLeaveAnnual;
 use App\Models\HumanResources\HRLeaveMC;
@@ -101,17 +102,20 @@ class LeaveController extends Controller
 		$r3 = $hrleave->belongstomanyleavematernity()->first();
 		$r4 = $hrleave->belongstomanyleavereplacement()->first();
 
+		// dd($r4, $request->all());
+
 		if( empty( $request->date_time_end ) ) {																		// in time off, there only date_time_start so...
 			$request->date_time_end = $request->date_time_start;
 		}
 
 		$ye = $daStart->copy()->format('y');																			// strip down to 2 digits
 
-		$hrleave->update(['leave_status_id' => 3, 'remarks' => 'Edit leave']);
+		// $hrleave->update(['leave_status_id' => 3, 'remarks' => 'Edit leave']);
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// if a user select more than 1 day and setting double date is on, we need to count the remaining day that is not overlapping
 		$blockdate = UnavailableDateTime::blockDate($user->id);
+		// dd($blockdate);
 
 		$period = \Carbon\CarbonPeriod::create($request->date_time_start, '1 days', $request->date_time_end);
 		$lea = [];
@@ -150,7 +154,8 @@ class LeaveController extends Controller
 			Session::flash('flash_danger', 'Edit leave has duration not equal to the previous leave and/or overlapped with other leave, public holiday and restday');
 			return redirect()->back()->withInput();
 		}
-		if ($hrleave->leave_type_id == 1 || $hrleave->leave_type_id == 5) {												// give back all to AL & EL-AL
+
+		if ($hrleave->leave_type_id == 1 || $hrleave->leave_type_id == 5) {						// give back all to AL & EL-AL
 			if (!$r1) {
 				Session::flash('flash_danger', 'Please inform IT Department with this message: "No link between leave and annual leave table (database). This is old leave created from old system."');
 				return redirect()->back()->withInput();
@@ -171,7 +176,7 @@ class LeaveController extends Controller
 
 		if ($hrleave->leave_type_id == 2) {																				// give back all to MC
 			if (!$r2) {
-				Session::flash('flash_danger', 'Please inform IT Department with this message: "No link between leave and annual leave table (database). This is old leave created from old system."');
+				Session::flash('flash_danger', 'Please inform IT Department with this message: "No link between leave and MC leave table (database). This is old leave created from old system."');
 				return redirect()->back()->withInput();
 			}
 			// $r2 = HRLeaveMC::where([['staff_id', $hrleave->staff_id],['year', $t]])->first();
@@ -190,7 +195,7 @@ class LeaveController extends Controller
 
 		if ($hrleave->leave_type_id == 7) {																				// give back all to ML
 			if (!$r3) {
-				Session::flash('flash_danger', 'Please inform IT Department with this message: "No link between leave and annual leave table (database). This is old leave created from old system."');
+				Session::flash('flash_danger', 'Please inform IT Department with this message: "No link between leave and maternity leave table (database). This is old leave created from old system."');
 				return redirect()->back()->withInput();
 			}
 			// $r3 = HRLeaveMaternity::where([['staff_id', $hrleave->staff_id],['year', $t]])->first();
@@ -209,7 +214,7 @@ class LeaveController extends Controller
 
 		if ($hrleave->leave_type_id == 4 || $hrleave->leave_type_id == 10) {											// give back all to NRL & EL-NRL
 			if (!$r4) {
-				Session::flash('flash_danger', 'Please inform IT Department with this message: "No link between leave and annual leave table (database). This is old leave created from old system."');
+				Session::flash('flash_danger', 'Please inform IT Department with this message: "No link between leave and replacement leave table (database). This is old leave created from old system."');
 				return redirect()->back()->withInput();
 			}
 			// $r4 = HRLeaveReplacement::where([['staff_id', $hrleave->staff_id],['year', $t]])->first();
@@ -225,6 +230,7 @@ class LeaveController extends Controller
 						]);
 			// $hrleave->update(['period_day' => 0, 'period_time' => '00:00:00']);
 		}
+
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// AL & EL-AL
@@ -250,6 +256,7 @@ class LeaveController extends Controller
 						$data += ['period_day' => 0.5];
 						$data += ['leave_no' => $hrleave->leave_no];
 						$data += ['leave_year' => $ye];
+						$data += ['leave_status_id' => $hrleave->leave_status_id];
 						if($request->file('document')){
 							$file = $request->file('document')->getClientOriginalName();
 							$currentDate = Carbon::now()->format('Y-m-d His');
@@ -265,12 +272,13 @@ class LeaveController extends Controller
 
 						$l = $user->hasmanyleave()->create($data);																					// insert data into HRLeave
 						$l->belongstomanyleaveannual()->attach($entitlement->id);				// it should be leave_replacement_id but im lazy to change it at view humanresources/create.blade.php
+						$hrleave->belongstomanyleaveannual()->detach($entitlement->id);
 						$user->hasmanyleaveannual()->where('year', $daStart->year)->update(['annual_leave_balance' => $entitle, 'annual_leave_utilize' => $utilize]);// update leave_balance by substarct
-						// $l->hasmanyleaveamend()->create([
-						// 									'amend_note' => Str::ucfirst(Str::lower($request->amend_note)),
-						// 									'staff_id' => \Auth::user()->belongstostaff->id,
-						// 									'date' => now()
-						// 								]);
+						$l->hasmanyleaveamend()->create([
+															'amend_note' => Str::ucfirst(Str::lower($request->amend_note)),
+															'staff_id' => \Auth::user()->belongstostaff->id,
+															'date' => now()
+														]);
 						// if($user->belongstoleaveapprovalflow->backup_approval == 1){																// alert backup
 						// 	if($request->staff_id) {																								// backup only valid for non EL leave
 						// 		$bid = $hrleave->hasmanyleaveapprovalbackup()->first()->id;
@@ -308,6 +316,7 @@ class LeaveController extends Controller
 						$data += ['period_day' => 1];
 						$data += ['leave_no' => $hrleave->leave_no];
 						$data += ['leave_year' => $ye];
+						$data += ['leave_status_id' => $hrleave->leave_status_id];
 						if($request->file('document')){
 							$file = $request->file('document')->getClientOriginalName();
 							$currentDate = Carbon::now()->format('Y-m-d His');
@@ -323,6 +332,7 @@ class LeaveController extends Controller
 
 						$l = $user->hasmanyleave()->create($data);																					// insert data into HRLeave
 						$l->belongstomanyleaveannual()->attach($entitlement->id);					// it should be leave_replacement_id but im lazy to change it at view humanresources/create.blade.php
+						$hrleave->belongstomanyleaveannual()->detach($entitlement->id);
 						$user->hasmanyleaveannual()->where('year', $daStart->year)->update(['annual_leave_balance' => $entitle, 'annual_leave_utilize' => $utilize]);// update leave_balance by substarct
 						//can make a shortcut like this also
 						// shortcut to update hr_leave_annual
@@ -331,11 +341,11 @@ class LeaveController extends Controller
 						// dd($c);
 						// $c->update(['annual_leave_balance' => $entitle, 'annual_leave_utilize' => $utilize]);
 
-						// $l->hasmanyleaveamend()->create([
-						// 									'amend_note' => Str::ucfirst(Str::lower($request->amend_note)),
-						// 									'staff_id' => \Auth::user()->belongstostaff->id,
-						// 									'date' => now()
-						// 								]);
+						$l->hasmanyleaveamend()->create([
+															'amend_note' => Str::ucfirst(Str::lower($request->amend_note)),
+															'staff_id' => \Auth::user()->belongstostaff->id,
+															'date' => now()
+														]);
 						// if($user->belongstoleaveapprovalflow->backup_approval == 1){																// alert backup
 						// 	if($request->staff_id) {																								// backup only valid for non EL leave
 						// 		$bid = $hrleave->hasmanyleaveapprovalbackup()->first()->id;
@@ -375,6 +385,7 @@ class LeaveController extends Controller
 						$data += ['period_day' => $totalday];
 						$data += ['leave_no' => $hrleave->leave_no];
 						$data += ['leave_year' => $ye];
+						$data += ['leave_status_id' => $hrleave->leave_status_id];
 						if($request->file('document')){
 							$file = $request->file('document')->getClientOriginalName();
 							$currentDate = Carbon::now()->format('Y-m-d His');
@@ -389,13 +400,14 @@ class LeaveController extends Controller
 						}
 
 						$l = $user->hasmanyleave()->create($data);																					// insert data into HRLeave
-						$l->belongstomanyleaveannual()->attach($entitlement->id);										// it should be leave_replacement_id but im lazy to change it at view humanresources/create.blade.php
+						$l->belongstomanyleaveannual()->attach($entitlement->id);									// it should be leave_replacement_id but im lazy to change it at view humanresources/create.blade.php
+						$hrleave->belongstomanyleaveannual()->detach($entitlement->id);
 						$user->hasmanyleaveannual()->where('year', $daStart->year)->update(['annual_leave_balance' => $entitle, 'annual_leave_utilize' => $utilize]);		// update leave_balance by substarct
-						// $l->hasmanyleaveamend()->create([
-						// 									'amend_note' => Str::ucfirst(Str::lower($request->amend_note)),
-						// 									'staff_id' => \Auth::user()->belongstostaff->id,
-						// 									'date' => now()
-						// 								]);
+						$l->hasmanyleaveamend()->create([
+															'amend_note' => Str::ucfirst(Str::lower($request->amend_note)),
+															'staff_id' => \Auth::user()->belongstostaff->id,
+															'date' => now()
+														]);
 						// if($user->belongstoleaveapprovalflow->backup_approval == 1){																// alert backup
 						// 	if($request->staff_id) {																								// backup only valid for non EL leave
 						// 		$bid = $hrleave->hasmanyleaveapprovalbackup()->first()->id;
@@ -447,6 +459,7 @@ class LeaveController extends Controller
 					$data += ['period_day' => 0.5];
 					$data += ['leave_no' => $hrleave->leave_no];
 					$data += ['leave_year' => $ye];
+					$data += ['leave_status_id' => $hrleave->leave_status_id];
 					if($request->file('document')){
 						$file = $request->file('document')->getClientOriginalName();
 						$currentDate = Carbon::now()->format('Y-m-d His');
@@ -461,11 +474,11 @@ class LeaveController extends Controller
 					}
 
 					$l = $user->hasmanyleave()->create($data);																					// insert data into HRLeave
-					// $l->hasmanyleaveamend()->create([
-					// 									'amend_note' => Str::ucfirst(Str::lower($request->amend_note)),
-					// 									'staff_id' => \Auth::user()->belongstostaff->id,
-					// 									'date' => now()
-					// 								]);
+					$l->hasmanyleaveamend()->create([
+														'amend_note' => Str::ucfirst(Str::lower($request->amend_note)),
+														'staff_id' => \Auth::user()->belongstostaff->id,
+														'date' => now()
+													]);
 
 					// if($user->belongstoleaveapprovalflow->backup_approval == 1){																// alert backup
 					// 	if($request->staff_id) {																								// backup only valid for non EL leave
@@ -496,6 +509,7 @@ class LeaveController extends Controller
 					$data += ['period_day' => 1];
 					$data += ['leave_no' => $hrleave->leave_no];
 					$data += ['leave_year' => $ye];
+					$data += ['leave_status_id' => $hrleave->leave_status_id];
 					if($request->file('document')){
 						$file = $request->file('document')->getClientOriginalName();
 						$currentDate = Carbon::now()->format('Y-m-d His');
@@ -511,11 +525,11 @@ class LeaveController extends Controller
 
 					$l = $user->hasmanyleave()->create($data);																					// insert data into HRLeave
 
-					// $l->hasmanyleaveamend()->create([
-					// 									'amend_note' => Str::ucfirst(Str::lower($request->amend_note)),
-					// 									'staff_id' => \Auth::user()->belongstostaff->id,
-					// 									'date' => now()
-					// 								]);
+					$l->hasmanyleaveamend()->create([
+														'amend_note' => Str::ucfirst(Str::lower($request->amend_note)),
+														'staff_id' => \Auth::user()->belongstostaff->id,
+														'date' => now()
+													]);
 					// if($user->belongstoleaveapprovalflow->backup_approval == 1){																// alert backup
 					// 	if($request->staff_id) {																								// backup only valid for non EL leave
 					// 		$bid = $hrleave->hasmanyleaveapprovalbackup()->first()->id;
@@ -547,6 +561,7 @@ class LeaveController extends Controller
 					$data += ['period_day' => $totalday];
 					$data += ['leave_no' => $hrleave->leave_no];
 					$data += ['leave_year' => $ye];
+					$data += ['leave_status_id' => $hrleave->leave_status_id];
 					if($request->file('document')){
 						$file = $request->file('document')->getClientOriginalName();
 						$currentDate = Carbon::now()->format('Y-m-d His');
@@ -562,11 +577,11 @@ class LeaveController extends Controller
 
 					$l = $user->hasmanyleave()->create($data);																					// insert data into HRLeave
 
-					// $l->hasmanyleaveamend()->create([
-					// 									'amend_note' => Str::ucfirst(Str::lower($request->amend_note)),
-					// 									'staff_id' => \Auth::user()->belongstostaff->id,
-					// 									'date' => now()
-					// 								]);
+					$l->hasmanyleaveamend()->create([
+														'amend_note' => Str::ucfirst(Str::lower($request->amend_note)),
+														'staff_id' => \Auth::user()->belongstostaff->id,
+														'date' => now()
+													]);
 					// if($user->belongstoleaveapprovalflow->backup_approval == 1){																// alert backup
 					// 	if($request->staff_id) {																								// backup only valid for non EL leave
 					// 		$bid = $hrleave->hasmanyleaveapprovalbackup()->first()->id;
@@ -619,6 +634,7 @@ class LeaveController extends Controller
 						$data += ['period_day' => 0.5];
 						$data += ['leave_no' => $hrleave->leave_no];
 						$data += ['leave_year' => $ye];
+						$data += ['leave_status_id' => $hrleave->leave_status_id];
 						if($request->file('document')){
 							$file = $request->file('document')->getClientOriginalName();
 							$currentDate = Carbon::now()->format('Y-m-d His');
@@ -634,13 +650,14 @@ class LeaveController extends Controller
 
 						$l = $user->hasmanyleave()->create($data);																			// insert data into HRLeave
 						$l->belongstomanyleavemc()->attach($entitlement->id);			// it should be leave_replacement_id but im lazy to change it at view humanresources/create.blade.php
+						$hrleave->belongstomanyleavemc()->detach($entitlement->id);
 						$user->hasmanyleavemc()->where('year', $daStart->year)->update(['mc_leave_balance' => $entitle, 'mc_leave_utilize' => $utilize]);		// update leave_balance by substarct
 
-						// $l->hasmanyleaveamend()->create([
-						// 									'amend_note' => Str::ucfirst(Str::lower($request->amend_note)),
-						// 									'staff_id' => \Auth::user()->belongstostaff->id,
-						// 									'date' => now()
-						// 								]);
+						$l->hasmanyleaveamend()->create([
+															'amend_note' => Str::ucfirst(Str::lower($request->amend_note)),
+															'staff_id' => \Auth::user()->belongstostaff->id,
+															'date' => now()
+														]);
 
 						// if($user->belongstoleaveapprovalflow->backup_approval == 1){																// alert backup
 						// 	if($request->staff_id) {																								// backup only valid for non EL leave
@@ -679,6 +696,7 @@ class LeaveController extends Controller
 						$data += ['period_day' => 1];
 						$data += ['leave_no' => $hrleave->leave_no];
 						$data += ['leave_year' => $ye];
+						$data += ['leave_status_id' => $hrleave->leave_status_id];
 						if($request->file('document')){
 							$file = $request->file('document')->getClientOriginalName();
 							$currentDate = Carbon::now()->format('Y-m-d His');
@@ -694,13 +712,14 @@ class LeaveController extends Controller
 
 						$l = $user->hasmanyleave()->create($data);								// insert data into HRLeave
 						$l->belongstomanyleavemc()->attach($entitlement->id);					// it should be leave_replacement_id but im lazy to change it at view humanresources/create.blade.php
+						$hrleave->belongstomanyleavemc()->detach($entitlement->id);
 						$user->hasmanyleavemc()->where('year', $daStart->year)->update(['mc_leave_balance' => $entitle, 'mc_leave_utilize' => $utilize]);		// update leave_balance by substarct
 
-						// $l->hasmanyleaveamend()->create([
-						// 									'amend_note' => Str::ucfirst(Str::lower($request->amend_note)),
-						// 									'staff_id' => \Auth::user()->belongstostaff->id,
-						// 									'date' => now()
-						// 								]);
+						$l->hasmanyleaveamend()->create([
+															'amend_note' => Str::ucfirst(Str::lower($request->amend_note)),
+															'staff_id' => \Auth::user()->belongstostaff->id,
+															'date' => now()
+														]);
 
 						// if($user->belongstoleaveapprovalflow->backup_approval == 1){																// alert backup
 						// 	if($request->staff_id) {																								// backup only valid for non EL leave
@@ -741,6 +760,7 @@ class LeaveController extends Controller
 						$data += ['period_day' => $totalday];
 						$data += ['leave_no' => $hrleave->leave_no];
 						$data += ['leave_year' => $ye];
+						$data += ['leave_status_id' => $hrleave->leave_status_id];
 						if($request->file('document')){
 							$file = $request->file('document')->getClientOriginalName();
 							$currentDate = Carbon::now()->format('Y-m-d His');
@@ -756,13 +776,14 @@ class LeaveController extends Controller
 
 						$l = $user->hasmanyleave()->create($data);																		// insert data into HRLeave
 						$l->belongstomanyleavemc()->attach($entitlement->id);					// it should be leave_replacement_id but im lazy to change it at view humanresources/create.blade.php
+						$hrleave->belongstomanyleavemc()->detach($entitlement->id);
 						$user->hasmanyleavemc()->where('year', $daStart->year)->update(['mc_leave_balance' => $entitle, 'mc_leave_utilize' => $utilize]);		// update leave_balance by substarct
 
-						// $l->hasmanyleaveamend()->create([
-						// 									'amend_note' => Str::ucfirst(Str::lower($request->amend_note)),
-						// 									'staff_id' => \Auth::user()->belongstostaff->id,
-						// 									'date' => now()
-						// 								]);
+						$l->hasmanyleaveamend()->create([
+															'amend_note' => Str::ucfirst(Str::lower($request->amend_note)),
+															'staff_id' => \Auth::user()->belongstostaff->id,
+															'date' => now()
+														]);
 
 						// if($user->belongstoleaveapprovalflow->backup_approval == 1){																// alert backup
 						// 	if($request->staff_id) {																								// backup only valid for non EL leave
@@ -801,7 +822,8 @@ class LeaveController extends Controller
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// NRL & EL-NRL
 		if($request->leave_type_id == 4 || $request->leave_type_id == 10) {
-			$entitlement = $user->hasmanyleavereplacement()->where('id', $request->id)->first();
+			// $entitlement = $user->hasmanyleavereplacement()->where('id', $request->id)->first();
+			$entitlement = $r4;
 			if ($request->has('leave_cat')) {																										// applied for 1 full day OR half day
 				if($request->leave_cat == 2){																										// half day
 					if($entitlement->leave_balance >= 0.5){																							// leave_balance > 0.5
@@ -819,6 +841,7 @@ class LeaveController extends Controller
 						$data += ['period_day' => 0.5];
 						$data += ['leave_no' => $hrleave->leave_no];
 						$data += ['leave_year' => $ye];
+						$data += ['leave_status_id' => $hrleave->leave_status_id];
 						if($request->file('document')){
 							$file = $request->file('document')->getClientOriginalName();
 							$currentDate = Carbon::now()->format('Y-m-d His');
@@ -832,15 +855,16 @@ class LeaveController extends Controller
 							$data += ['softcopy' => $fileName];
 						}
 
-						$l = $user->hasmanyleave()->create($data);																					// insert data into HRLeave
-						$l->belongstomanyleavereplacement()->attach($request->id);					// it should be leave_replacement_id but im lazy to change it at view humanresources/create.blade.php
-						$user->hasmanyleavereplacement()->where('id', $request->id)->update(['leave_balance' => $entitle, 'leave_utilize' => $utilize]);		// update leave_balance by substarct
+						$l = $user->hasmanyleave()->create($data);															// insert data into HRLeave
+						$l->belongstomanyleavereplacement()->attach($entitlement->id);					// it should be leave_replacement_id but im lazy to change it at view humanresources/create.blade.php
+						$hrleave->belongstomanyleavereplacement()->detach($entitlement->id);
+						$user->hasmanyleavereplacement()->where('id', $entitlement->id)->update(['leave_balance' => $entitle, 'leave_utilize' => $utilize]);		// update leave_balance by substarct
 
-						// $l->hasmanyleaveamend()->create([
-						// 									'amend_note' => Str::ucfirst(Str::lower($request->amend_note)),
-						// 									'staff_id' => \Auth::user()->belongstostaff->id,
-						// 									'date' => now()
-						// 								]);
+						$l->hasmanyleaveamend()->create([
+															'amend_note' => Str::ucfirst(Str::lower($request->amend_note)),
+															'staff_id' => \Auth::user()->belongstostaff->id,
+															'date' => now()
+														]);
 
 						// if($user->belongstoleaveapprovalflow->backup_approval == 1){																// alert backup
 						// 	if($request->staff_id) {																								// backup only valid for non EL leave
@@ -879,6 +903,7 @@ class LeaveController extends Controller
 						$data += ['period_day' => 1];
 						$data += ['leave_no' => $hrleave->leave_no];
 						$data += ['leave_year' => $ye];
+						$data += ['leave_status_id' => $hrleave->leave_status_id];
 						if($request->file('document')){
 							$file = $request->file('document')->getClientOriginalName();
 							$currentDate = Carbon::now()->format('Y-m-d His');
@@ -892,15 +917,16 @@ class LeaveController extends Controller
 							$data += ['softcopy' => $fileName];
 						}
 
-						$l = $user->hasmanyleave()->create($data);																					// insert data into HRLeave
-						$l->belongstomanyleavereplacement()->attach($request->id);										// it should be leave_replacement_id but im lazy to change it at view humanresources/create.blade.php
-						$user->hasmanyleavereplacement()->where('id', $request->id)->update(['leave_balance' => $entitle, 'leave_utilize' => $utilize]);		// update leave_balance by substarct
+						$l = $user->hasmanyleave()->create($data);											// insert data into HRLeave
+						$l->belongstomanyleavereplacement()->attach($entitlement->id);	// it should be leave_replacement_id but im lazy to change it at view humanresources/create.blade.php
+						$hrleave->belongstomanyleavereplacement()->detach($entitlement->id);
+						$user->hasmanyleavereplacement()->where('id', $entitlement->id)->update(['leave_balance' => $entitle, 'leave_utilize' => $utilize]);		// update leave_balance by substarct
 
-						// $l->hasmanyleaveamend()->create([
-						// 									'amend_note' => Str::ucfirst(Str::lower($request->amend_note)),
-						// 									'staff_id' => \Auth::user()->belongstostaff->id,
-						// 									'date' => now()
-						// 								]);
+						$l->hasmanyleaveamend()->create([
+															'amend_note' => Str::ucfirst(Str::lower($request->amend_note)),
+															'staff_id' => \Auth::user()->belongstostaff->id,
+															'date' => now()
+														]);
 
 						// if($user->belongstoleaveapprovalflow->backup_approval == 1){																// alert backup
 						// 	if($request->staff_id) {																								// backup only valid for non EL leave
@@ -941,6 +967,7 @@ class LeaveController extends Controller
 						$data += ['period_day' => $totalday];
 						$data += ['leave_no' => $hrleave->leave_no];
 						$data += ['leave_year' => $ye];
+						$data += ['leave_status_id' => $hrleave->leave_status_id];
 						if($request->file('document')){
 							$file = $request->file('document')->getClientOriginalName();
 							$currentDate = Carbon::now()->format('Y-m-d His');
@@ -955,14 +982,15 @@ class LeaveController extends Controller
 						}
 
 						$l = $user->hasmanyleave()->create($data);																					// insert data into HRLeave
-						$l->belongstomanyleavereplacement()->attach($request->id);			// it should be leave_replacement_id but im lazy to change it at view humanresources/create.blade.php
-						$user->hasmanyleavereplacement()->where('id', $request->id)->update(['leave_balance' => $entitle, 'leave_utilize' => $utilize]);		// update leave_balance by substarct
+						$l->belongstomanyleavereplacement()->attach($entitlement->leave_replacement_id);			// it should be leave_replacement_id but im lazy to change it at view humanresources/create.blade.php
+						$hrleave->belongstomanyleavereplacement()->detach($entitlement->id);
+						$user->hasmanyleavereplacement()->where('id', $entitlement->leave_replacement_id)->update(['leave_balance' => $entitle, 'leave_utilize' => $utilize]);		// update leave_balance by substarct
 
-						// $l->hasmanyleaveamend()->create([
-						// 									'amend_note' => Str::ucfirst(Str::lower($request->amend_note)),
-						// 									'staff_id' => \Auth::user()->belongstostaff->id,
-						// 									'date' => now()
-						// 								]);
+						$l->hasmanyleaveamend()->create([
+															'amend_note' => Str::ucfirst(Str::lower($request->amend_note)),
+															'staff_id' => \Auth::user()->belongstostaff->id,
+															'date' => now()
+														]);
 
 						// if($user->belongstoleaveapprovalflow->backup_approval == 1){																// alert backup
 						// 	if($request->staff_id) {																								// backup only valid for non EL leave
@@ -988,12 +1016,12 @@ class LeaveController extends Controller
 						// }
 					} else {																														// leave_balance < $totalday, then exit
 						Session::flash('flash_danger', 'Please make sure applied leave does not exceed available leave balance');
-						return redirect()->back();
+						return redirect()->back()->withInput();
 					}
 				} else {																	// false: date choose overlapping date with unavailable date
 					// since date_time_start and date_time_end overlapping with block date, need to iterate date by date
 					Session::flash('flash_danger', 'The date you choose overlapped with RESTDAY, PUBLIC HOLIDAY or other leaves.');
-					return redirect()->back();
+					return redirect()->back()->withInput();
 				}
 			}
 		}
@@ -1015,6 +1043,7 @@ class LeaveController extends Controller
 				$data += ['period_day' => $totalday];
 				$data += ['leave_no' => $hrleave->leave_no];
 				$data += ['leave_year' => $ye];
+				$data += ['leave_status_id' => $hrleave->leave_status_id];
 				if($request->file('document')){
 					$file = $request->file('document')->getClientOriginalName();
 					$currentDate = Carbon::now()->format('Y-m-d His');
@@ -1030,13 +1059,14 @@ class LeaveController extends Controller
 
 				$l = $user->hasmanyleave()->create($data);																					// insert data into HRLeave
 				$l->belongstomanyleavematernity()->attach($entitlement->id);			// it should be leave_replacement_id but im lazy to change it at view humanresources/create.blade.php
+				$hrleave->belongstomanyleavematernity()->detach($entitlement->id);
 				$user->hasmanyleavematernity()->where('year', $daStart->year)->update(['maternity_leave_balance' => $entitle, 'maternity_leave_utilize' => $utilize]);	// update leave_balance by substarct
 
-				// $l->hasmanyleaveamend()->create([
-				// 									'amend_note' => Str::ucfirst(Str::lower($request->amend_note)),
-				// 									'staff_id' => \Auth::user()->belongstostaff->id,
-				// 									'date' => now()
-				// 								]);
+				$l->hasmanyleaveamend()->create([
+													'amend_note' => Str::ucfirst(Str::lower($request->amend_note)),
+													'staff_id' => \Auth::user()->belongstostaff->id,
+													'date' => now()
+												]);
 
 				// if($user->belongstoleaveapprovalflow->backup_approval == 1){																// alert backup
 				// 	if($request->staff_id) {																								// backup only valid for non EL leave
@@ -1146,6 +1176,7 @@ class LeaveController extends Controller
 			$data += ['period_time' => $t];
 			$data += ['leave_no' => $hrleave->leave_no];
 			$data += ['leave_year' => $ye];
+			$data += ['leave_status_id' => $hrleave->leave_status_id];
 			if($request->file('document')){
 				$file = $request->file('document')->getClientOriginalName();
 				$currentDate = Carbon::now()->format('Y-m-d His');
@@ -1160,11 +1191,11 @@ class LeaveController extends Controller
 			}
 			$l = $user->hasmanyleave()->create($data);
 
-			// $l->hasmanyleaveamend()->create([
-			// 									'amend_note' => Str::ucfirst(Str::lower($request->amend_note)),
-			// 									'staff_id' => \Auth::user()->belongstostaff->id,
-			// 									'date' => now()
-			// 								]);
+			$l->hasmanyleaveamend()->create([
+												'amend_note' => Str::ucfirst(Str::lower($request->amend_note)),
+												'staff_id' => \Auth::user()->belongstostaff->id,
+												'date' => now()
+											]);
 
 			// if($user->belongstoleaveapprovalflow->backup_approval == 1){																// alert backup
 			// 	if($request->staff_id) {																								// backup only valid for non EL leave
@@ -1206,6 +1237,7 @@ class LeaveController extends Controller
 					$data += ['period_day' => 0.5];
 					$data += ['leave_no' => $hrleave->leave_no];
 					$data += ['leave_year' => $ye];
+					$data += ['leave_status_id' => $hrleave->leave_status_id];
 					if($request->file('document')){
 						$file = $request->file('document')->getClientOriginalName();
 						$currentDate = Carbon::now()->format('Y-m-d His');
@@ -1220,11 +1252,11 @@ class LeaveController extends Controller
 					}
 
 					$l = $user->hasmanyleave()->create($data);																					// insert data into HRLeave
-					// $l->hasmanyleaveamend()->create([
-					// 									'amend_note' => Str::ucfirst(Str::lower($request->amend_note)),
-					// 									'staff_id' => \Auth::user()->belongstostaff->id,
-					// 									'date' => now()
-					// 								]);
+					$l->hasmanyleaveamend()->create([
+														'amend_note' => Str::ucfirst(Str::lower($request->amend_note)),
+														'staff_id' => \Auth::user()->belongstostaff->id,
+														'date' => now()
+													]);
 
 					// if($user->belongstoleaveapprovalflow->backup_approval == 1){																// alert backup
 					// 	if($request->staff_id) {																								// backup only valid for non EL leave
@@ -1255,6 +1287,7 @@ class LeaveController extends Controller
 					$data += ['period_day' => 1];
 					$data += ['leave_no' => $hrleave->leave_no];
 					$data += ['leave_year' => $ye];
+					$data += ['leave_status_id' => $hrleave->leave_status_id];
 					if($request->file('document')){
 						$file = $request->file('document')->getClientOriginalName();
 						$currentDate = Carbon::now()->format('Y-m-d His');
@@ -1269,11 +1302,11 @@ class LeaveController extends Controller
 					}
 
 					$l = $user->hasmanyleave()->create($data);																					// insert data into HRLeave
-					// $l->hasmanyleaveamend()->create([
-					// 									'amend_note' => Str::ucfirst(Str::lower($request->amend_note)),
-					// 									'staff_id' => \Auth::user()->belongstostaff->id,
-					// 									'date' => now()
-					// 								]);
+					$l->hasmanyleaveamend()->create([
+														'amend_note' => Str::ucfirst(Str::lower($request->amend_note)),
+														'staff_id' => \Auth::user()->belongstostaff->id,
+														'date' => now()
+													]);
 
 					// if($user->belongstoleaveapprovalflow->backup_approval == 1){																// alert backup
 					// 	if($request->staff_id) {																								// backup only valid for non EL leave
@@ -1306,6 +1339,7 @@ class LeaveController extends Controller
 					$data += ['period_day' => $totalday];
 					$data += ['leave_no' => $hrleave->leave_no];
 					$data += ['leave_year' => $ye];
+					$data += ['leave_status_id' => $hrleave->leave_status_id];
 					if($request->file('document')){
 						$file = $request->file('document')->getClientOriginalName();
 						$currentDate = Carbon::now()->format('Y-m-d His');
@@ -1320,11 +1354,11 @@ class LeaveController extends Controller
 					}
 
 					$l = $user->hasmanyleave()->create($data);																					// insert data into HRLeave
-					// $l->hasmanyleaveamend()->create([
-					// 									'amend_note' => Str::ucfirst(Str::lower($request->amend_note)),
-					// 									'staff_id' => \Auth::user()->belongstostaff->id,
-					// 									'date' => now()
-					// 								]);
+					$l->hasmanyleaveamend()->create([
+														'amend_note' => Str::ucfirst(Str::lower($request->amend_note)),
+														'staff_id' => \Auth::user()->belongstostaff->id,
+														'date' => now()
+													]);
 
 					// if($user->belongstoleaveapprovalflow->backup_approval == 1){																// alert backup
 					// 	if($request->staff_id) {																								// backup only valid for non EL leave
@@ -1384,7 +1418,9 @@ class LeaveController extends Controller
 			HRLeaveApprovalHR::find($rid)->update(['leave_id' => $l->id]);
 		}
 		// finally, we delete the leave
-		$hrleave->delete();
+		// $hrleave->delete();
+		$hrleave->update(['leave_status_id' => 3, 'remarks' => 'Edit leave']);
+		HRAttendance::where('leave_id', $hrleave->id)->update(['leave_id' => $l->id]);
 		Session::flash('flash_message', 'Successfully edit leave');
 		return redirect()->route('hrleave.show', $l->id);
 	}

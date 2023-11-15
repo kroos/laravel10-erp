@@ -1,6 +1,10 @@
 @extends('layouts.app')
 
 @section('content')
+<?php
+// load sql builder
+use Illuminate\Database\Eloquent\Builder;
+?>
 <style>
 	.btn-sm-custom {
 		padding: 0px;
@@ -28,6 +32,7 @@
 					<th>Total</th>
 					<th>Utilize</th>
 					<th>Balance</th>
+					<th>Replacement Leave</th>
 					<th>Remarks</th>
 					<th>Edit</th>
 					<th>Cancel</th>
@@ -45,6 +50,15 @@
 					<td class="text-center">{{ $replacement->leave_total }}</td>
 					<td class="text-center">{{ $replacement->leave_utilize }}</td>
 					<td class="text-center">{{ $replacement->leave_balance }}</td>
+					<td class="text-center">
+						<?php
+						if ($replacement->belongstomanyleave()->count()) {
+							foreach ($replacement->belongstomanyleave()->get() as $val) {
+								echo '<a href="'.route('hrleave.show', $val->id).'">HR9-'.str_pad($val->leave_no, 5, "0", STR_PAD_LEFT ).'/'.$val->leave_year.'</a><br />';
+							}
+						}
+						?>
+					</td>
 					<td class="text-truncate" style="max-width: 100px;" data-toggle="tooltip" title="{{ $replacement->remarks }}">{{ Str::limit($replacement->remarks, 10, '>') }}</td>
 					<td class="text-center">
 						<a href="{{ route('rleave.edit', $replacement->id) }}" class="btn btn-sm btn-outline-secondary">
@@ -82,7 +96,7 @@ $('#replacement').DataTable({
 					{ type: 'time', 'targets': [3] },
 	],
 	"order": [ 2, 'desc' ], // sorting the 6th column descending
-	responsive: true
+	// responsive: true
 })
 .on( 'length.dt page.dt order.dt search.dt', function ( e, settings, len ) {
 	$(document).ready(function(){

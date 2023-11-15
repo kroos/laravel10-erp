@@ -19,6 +19,90 @@ use App\Models\HumanResources\HROvertime;
 use App\Models\HumanResources\HROutstation;
 
 ?>
+<style>
+	@media print {
+		body {
+			visibility: hidden;
+		}
+
+		#printPageButton, #back {
+			display: none;
+		}
+
+		.table-container {
+			visibility: visible;
+			position: absolute;
+			left: 0;
+			top: 0;
+		}
+	}
+
+	.table-container {
+		display: table;
+		width: 100%;
+		border-collapse: collapse;
+	}
+
+	.table {
+		display: table;
+		width: 100%;
+		border-collapse: collapse;
+		margin-top: 0;
+		padding-top: 0;
+		margin-bottom: 0;
+		padding-bottom: 0;
+	}
+
+	.table-row {
+		display: table-row;
+	}
+
+	.table-cell {
+		display: table-cell;
+		border: 1px solid #b3b3b3;
+		padding: 4px;
+		box-sizing: border-box;
+	}
+
+	.table-cell-top {
+		display: table-cell;
+		border: 1px solid #b3b3b3;
+		border-top: none;
+		padding: 4px;
+		box-sizing: border-box;
+	}
+
+	.table-cell-top-bottom {
+		display: table-cell;
+		border: 1px solid #b3b3b3;
+		border-top: none;
+		border-bottom: none;
+		padding: 0px;
+		box-sizing: border-box;
+	}
+
+	.table-cell-hidden {
+		display: table-cell;
+		border: none;
+	}
+
+	.header {
+		font-size: 22px;
+		text-align: center;
+	}
+
+	.theme {
+		background-color: #e6e6e6;
+	}
+
+	.table-cell-top1 {
+		display: table-cell;
+		border: 1px solid #b3b3b3;
+		border-top: none;
+		padding: 0px;
+		box-sizing: border-box;
+	}
+</style>
 <div class="container table-responsive row align-items-start justify-content-center">
 @include('humanresources.hrdept.navhr')
 	<div class="row g-3">
@@ -36,24 +120,29 @@ use App\Models\HumanResources\HROutstation;
 						})
 						->get();
 				?>
-				<h5>{{ Staff::where('id', $v->staff_id)->first()->name }} Attendance</h5>
-				<table id="attendancestaff_" class="table table-hover table-sm align-middle" style="font-size:12px">
+			<div class="d-print-table">
+				<h5>
+					{{ Login::where([['staff_id', $v->staff_id], ['active', 1]])->first()?->username }} {{ Staff::find($v->staff_id)->name }}<br />
+					{{ Staff::find($v->staff_id)->belongstomanydepartment()->wherePivot('main', 1)->first()->department }}<br />
+					{{ Staff::find($v->staff_id)->belongstorestdaygroup?->group }}
+				</h5>
+				<table id="attendancestaff_" class="table table-hover table-sm table-bordered align-middle" style="font-size:12px">
 					<thead>
 						<tr>
-							<th>ID</th>
-							<th>Name</th>
-							<th>Type</th>
-							<th>Cause</th>
-							<th>Leave</th>
-							<th>Date</th>
-							<th>In</th>
-							<th>Break</th>
-							<th>Resume</th>
-							<th>Out</th>
-							<th>Duration</th>
-							<th>Overtime</th>
-							<th>Remarks</th>
-							<th>Exception</th>
+							<th scope="col">ID</th>
+							<th scope="col">Name</th>
+							<th scope="col">Type</th>
+							<th scope="col">Cause</th>
+							<th scope="col">Leave</th>
+							<th scope="col">Date</th>
+							<th scope="col">In</th>
+							<th scope="col">Break</th>
+							<th scope="col">Resume</th>
+							<th scope="col">Out</th>
+							<th scope="col">Duration</th>
+							<th scope="col">Overtime</th>
+							<th scope="col">Remarks</th>
+							<th scope="col">Exception</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -1034,7 +1123,7 @@ if($l) {
 } else {
 	$lea = NULL;
 }
-$username = Login::where('staff_id', $v->staff_id)->first()->username;
+$username = Login::where([['staff_id', $v->staff_id], ['active', 1]])->first()->username;
 ?>
 						<tr class="{{ (Carbon::parse($v1->attend_date)->dayOfWeek == 0)?'table-secondary':NULL }}">
 							<td>{{ $username }}</td>
@@ -1099,7 +1188,7 @@ $username = Login::where('staff_id', $v->staff_id)->first()->username;
 									}
 								?>
 							</td>
-							<td>{{ $v1->remarks }} <br /><span class="text-danger">{{ $v1->hr_remarks }}</span> </td>
+							<td class="w-25">{{ $v1->remarks }} <br /><span class="text-danger">{{ $v1->hr_remarks }}</span> </td>
 							<td>{{ $v1->exception }}</td>
 						</tr>
 						<?php $n++; ?>
@@ -1112,6 +1201,7 @@ $username = Login::where('staff_id', $v->staff_id)->first()->username;
 						</tr>
 					</tbody>
 				</table>
+			</div>
 				<?php $i++; ?>
 			@endforeach
 		@else

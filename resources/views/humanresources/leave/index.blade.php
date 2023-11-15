@@ -1214,7 +1214,7 @@ foreach ($c as $v) {
 														<div class="form-group row {{ $errors->has('verify_code') ? 'has-error' : '' }}">
 															<label for="hodcode{{ $val['id'] }}" class="col-auto col-form-label col-form-label-sm">Verify Code :</label>
 															<div class="col-auto">
-																<input type="text" name="verify_code" value="{{ @$value }}" id="hodcode{{ $val['id'] }}" class="form-control form-control-sm" placeholder="Verify Code">
+																<input type="text" name="verify_code" value="{{ (\Auth::user()->belongstostaff->div_id == 1 && \Auth::user()->belongstostaff->belongstomanydepartment->first()->id == 14)?$leav->verify_code:@$value }}" id="hodcode{{ $val['id'] }}" class="form-control form-control-sm" placeholder="Verify Code">
 															</div>
 														</div>
 													</div>
@@ -1277,7 +1277,7 @@ foreach ($c as $v) {
 										} elseif($a->belongstostaffleave->half_type_id == 1) {
 											$dper = $a->belongstostaffleave->period_day.' Day';
 										}
-									}elseif ($a->belongstostaffleave->leave_type_id == 9) {
+									} elseif ($a->belongstostaffleave->leave_type_id == 9) {
 										$i = \Carbon\Carbon::parse($a->belongstostaffleave->period_time);
 										$dper = $i->hour.' hour, '.$i->minute.' minutes';
 									}
@@ -1332,7 +1332,7 @@ foreach ($c as $v) {
 														<div class="form-group row {{ $errors->has('verify_code') ? 'has-error' : '' }}">
 															<label for="hodcode{{ $val['id'] }}" class="col-auto col-form-label col-form-label-sm">Verify Code :</label>
 															<div class="col-auto">
-																<input type="text" name="verify_code" value="{{ @$value }}" id="hodcode{{ $val['id'] }}" class="form-control form-control-sm" placeholder="Verify Code">
+																<input type="text" name="verify_code" value="{{ $leav->verify_code }}" id="hodcode{{ $val['id'] }}" class="form-control form-control-sm" placeholder="Verify Code">
 															</div>
 														</div>
 													</div>
@@ -1377,6 +1377,7 @@ $('#leaves').DataTable({
 
 $('#bapprover, #sapprover, #hodapprover, #dirapprover, #hrapprover').DataTable({
 	"lengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "All"] ],
+	"columnDefs": [ { type: 'date', 'targets': [4] } ],
 	"order": [[4, "desc" ]],	// sorting the 4th column descending
 	responsive: true
 });
