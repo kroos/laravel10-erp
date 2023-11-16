@@ -191,28 +191,23 @@ $pdf->SetTitle('Attendance Report');
 
 // reset font
 $pdf->SetFont('Arial', NULL, 8);
-
+// dd($sa);
 if ($sa) {
-	$i = 0;
-	foreach ($sa as $v) {
+foreach ($sa as $me) {
+	$t[] = $me->staff_id;
+}
+
+$log = Login::whereIn('staff_id', $t)->orderBy('username')->get();
+$i = 0;
+$p = [];
+	foreach ($log as $v) {
 		$n = 0;
-		$ha = HRAttendance::// ->whereIn('staff_id', $request->staff_id)
-					whereIn('staff_id', [1, 2, 3, 4, 5, 6, 7, 8, 9, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 52, 53, 54, 55, 56, 57, 58, 59, 65, 67, 68, 69, 71])
-					->where(function (Builder $query) use ($request){
-						// $query->whereDate('attend_date', '>=', $request->from)
-						$query->whereDate('attend_date', '>=', '2023-11-01')
-						// ->whereDate('attend_date', '<=', $request->to);
-						->whereDate('attend_date', '<=', '2023-11-14');
-					})
-					->get();
-		// $ha = HRAttendance::where('staff_id', $v->staff_id)
-		// 		->where(function (Builder $query) use ($request){
-		// 			$query->whereDate('attend_date', '>=', $request->from)
-		// 			->whereDate('attend_date', '<=', $request->to);
-		// 		})
-		// 		->get();
-
-
+		$ha = HRAttendance::where('staff_id', $v->staff_id)
+				->where(function (Builder $query) use ($request){
+					$query->whereDate('attend_date', '>=', $request->from)
+					->whereDate('attend_date', '<=', $request->to);
+				})
+				->get();
 
 		$pdf->SetFont('Arial', 'B', 8);
 		$pdf->Cell(20, 5, Login::where([['staff_id', $v->staff_id], ['active', 1]])->first()?->username, 0, 0, 'L');
@@ -232,7 +227,7 @@ if ($sa) {
 		$pdf->Cell(34, 5, 'Name', 1, 0, 'C');
 		$pdf->Cell(20, 5, 'Type', 1, 0, 'C');
 		$pdf->Cell(13, 5, 'Cause', 1, 0, 'C');
-		$pdf->Cell(10, 5, 'Leave', 1, 0, 'C');
+		$pdf->Cell(17, 5, 'Leave', 1, 0, 'C');
 		$pdf->Cell(21, 5, 'Date', 1, 0, 'C');
 		$pdf->Cell(13, 5, 'In', 1, 0, 'C');
 		$pdf->Cell(13, 5, 'Break', 1, 0, 'C');
@@ -241,12 +236,12 @@ if ($sa) {
 		$pdf->Cell(16, 5, 'Duration', 1, 0, 'C');
 		$pdf->Cell(14, 5, 'Overtime', 1, 0, 'C');
 		$pdf->Cell(15, 5, 'Outstation', 1, 0, 'C');
-		$pdf->Cell(57, 5, 'Remarks', 1, 0, 'C');
+		$pdf->Cell(50, 5, 'Remarks', 1, 0, 'C');
 		$pdf->Cell(15, 5, 'Exception', 1, 1, 'C');
 
 		// starting PDF_MC_Table
 		// set width for each column (5 columns)
-		$pdf->SetWidths([10, 34, 20, 13, 10, 21, 13, 13, 13, 13, 16, 14, 15, 57, 15]);
+		$pdf->SetWidths([10, 34, 20, 13, 17, 21, 13, 13, 13, 13, 16, 14, 15, 50, 15]);
 
 		// set alignment
 		$pdf->SetAligns(['C', 'C', 'C', 'C', 'C', 'C', 'C', 'C', 'C', 'C', 'C', 'C', 'C', 'C', 'C']);
@@ -320,10 +315,6 @@ if ($sa) {
 					$dtype = true;
 				}
 			}
-
-
-
-
 
 			// detect all
 			if ($os->isNotEmpty()) {																							// outstation |
@@ -1237,7 +1228,48 @@ if ($sa) {
 			} else {
 				$lea = NULL;
 			}
-			// $username = Login::where([['staff_id', $v->staff_id], ['active', 1]])->first()?->username;
+
+			if ($in == '00:00:00') {
+				$in1 = null;
+			} else {
+				if (Carbon::parse($v1->in)->gt($wh?->time_start_am)) {
+					$in1 = Carbon::parse($v1->in)->format('g:i a');
+				} else {
+					$in1 = Carbon::parse($v1->in)->format('g:i a');
+				}
+			}
+			if ($break == '00:00:00') {
+				$break1 = null;
+			} else {
+				$break1 = Carbon::parse($v1->break)->format('g:i a');
+			}
+			if ($resume == '00:00:00') {
+				$resume1 = null;
+			} else {
+				$resume1 = Carbon::parse($v1->resume)->format('g:i a');
+			}
+			if ($out == '00:00:00') {
+				$out1 = null;
+			} else {
+				$out1 = Carbon::parse($v1->out)->format('g:i a');
+			}
+			if ($v1->time_work_hour == '00:00:00') {
+				$workhour = null;
+			} else {
+				$workhour = $v1->time_work_hour;
+			}
+			if (!is_null($os)) {
+				// $cust = $os?->belongstocustomer?->customer;
+			} else {
+				$cust = null;
+			}
+
+			$ort = $o?->belongstoovertimerange?->where('active', 1)->first()?->total_time;
+			if (!is_null($ort)) {
+				$p[$i][$n] = Carbon::parse($o?->belongstoovertimerange?->where('active', 1)->first()?->total_time)->format('H:i:s');
+			} else {
+				$p[$i][$n] = Carbon::parse('00:00:00')->format('H:i:s');
+			}
 
 			$pdf->Row([
 				Login::where([['staff_id', $v->staff_id], ['active', 1]])->first()?->username,
@@ -1246,25 +1278,28 @@ if ($sa) {
 				$ll,
 				$lea,
 				Carbon::parse($v1->attend_date)->format('j M Y'),
-				($in)?'':Carbon::parse($v1->in)->format('g:i a'),
-				($break)?'':Carbon::parse($v1->break)->format('g:i a'),
-				($resume)?'':Carbon::parse($v1->resume)->format('g:i a'),
-				($out)?'':Carbon::parse($v1->out)->format('g:i a'),
-				$v1->time_work_hour,
-				$o?->belongstoovertimerange?->where('active', 1)->first()?->total_time,
+				$in1,
+				$break1,
+				$resume1,
+				$out1,
+				$workhour,
+				$ort,
 				null,
-				$v1->remarks.''.$v1->hr_remarks,
+				$v1->remarks.'    '.$v1->hr_remarks,
 				$v1->exception,
 			]);
+			$n++;
 		}
-
-
+		$pdf->Cell(183, 5, 'Total Overtime :', 1, 0, 'R');
+		$pdf->Cell(14, 5, TimeCalculator::total_time($p[$i]), 1, 0, 'C');
+		$pdf->Cell(80, 5, null, 1, 1, 'C');
 		$pdf->Ln();
+		$i++;
 	}
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	$filename = 'Attendance Report.pdf';
+	$filename = 'Attendance Report '.Carbon::parse($request->from)->format('j M Y').' - '.Carbon::parse($request->to)->format('j M Y').'.pdf';
 	// use ob_get_clean() to make sure that the correct header is sent to the server
 	ob_get_clean();
 	$pdf->Output('I', $filename);											// <-- kalau nak bukak secara direct saja
