@@ -210,14 +210,14 @@ $p = [];
 				->get();
 
 		$pdf->SetFont('Arial', 'B', 8);
-		$pdf->Cell(20, 5, Login::where([['staff_id', $v->staff_id], ['active', 1]])->first()?->username, 0, 0, 'L');
-		$pdf->Cell(70, 5, Staff::find($v->staff_id)->name, 0, 1, 'L');
+		$pdf->Cell(20, 5, Login::where([['staff_id', $v->staff_id], ['active', 1]])->first()?->username, 0, 0, 'R');
+		$pdf->Cell(50, 5, Staff::find($v->staff_id)->name, 0, 0, 'L');
 		$pdf->SetFont('Arial', null, 8);
-		$pdf->Cell(20, 5, 'Department :', 0, 0, 'L');
-		$pdf->Cell(0, 5, Staff::find($v->staff_id)->belongstomanydepartment()->wherePivot('main', 1)->first()->department, 0, 1, 'L');
+		$pdf->Cell(20, 5, 'Department :', 0, 0, 'R');
+		$pdf->Cell(50, 5, Staff::find($v->staff_id)->belongstomanydepartment()->wherePivot('main', 1)->first()->department, 0, (!is_null(Staff::find($v->staff_id)->restday_group_id))?0:1, 'L');
 		if (!is_null(Staff::find($v->staff_id)->restday_group_id)) {
-			$pdf->Cell(20, 5, 'Group :', 0, 0, 'L');
-			$pdf->Cell(0, 5, Staff::find($v->staff_id)->belongstorestdaygroup?->group, 0, 1, 'L');
+			$pdf->Cell(20, 5, 'Group :', 0, 0, 'R');
+			$pdf->Cell(50, 5, Staff::find($v->staff_id)->belongstorestdaygroup?->group, 0, 1, 'L');
 		}
 
 		/////////////////////////////
