@@ -56,8 +56,9 @@ Route::get('/excelreport/create', [AttendanceExcelReportController::class, 'crea
 Route::post('/excelreport', [AttendanceExcelReportController::class, 'store'])->name('excelreport.store');
 
 Route::get('/attendancedailyreport', [AttendanceDailyReportController::class, 'index'])->name('attendancedailyreport.index');
-Route::get('/attendancereport', [AttendanceReportController::class, 'index'])->name('attendancereport.index');
-Route::post('/attendancereport', [AttendanceReportController::class, 'create'])->name('attendancereport.create');
+Route::get('/attendancereport/create', [AttendanceReportController::class, 'create'])->name('attendancereport.create');
+Route::get('/attendancereport/store', [AttendanceReportController::class, 'store'])->name('attendancereport.store');
+
 Route::get('/attendanceupload', [AttendanceUploadController::class, 'create'])->name('attendanceupload.create');
 Route::post('/attendanceupload', [AttendanceUploadController::class, 'store'])->name('attendanceupload.store');
 

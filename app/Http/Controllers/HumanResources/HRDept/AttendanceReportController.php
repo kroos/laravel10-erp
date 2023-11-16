@@ -45,16 +45,16 @@ class AttendanceReportController extends Controller
 	function __construct()
 	{
 		$this->middleware(['auth']);
-		$this->middleware('highMgmtAccess:1|2|5,NULL', ['only' => ['index', 'show']]);
+		// $this->middleware('highMgmtAccess:1|2|5,NULL', ['only' => ['create']]);
 		$this->middleware('highMgmtAccess:1|5,14', ['only' => ['create', 'store', 'edit', 'update', 'destroy']]);
 	}
 
-	public function index(): View
+	public function create(): View
 	{
-		return view('humanresources.hrdept.attendance.attendancereport.index');
+		return view('humanresources.hrdept.attendance.attendancereport.create');
 	}
 
-	public function create(Request $request): View
+	public function store(Request $request): View
 	{
 		// dd($request->all());
 		$sa1 = HRAttendance::select('staff_id')
@@ -70,8 +70,11 @@ class AttendanceReportController extends Controller
 		}
 		$sa = Login::whereIn('staff_id', $r)->where('active', 1)->orderBy('username')->get();
 		// dd($r, $sa);
+		// foreach ($sa as $sid) {
+		// 	$ui[] = $sid->staff_id;
+		// }
 
-		return view('humanresources.hrdept.attendance.attendancereport.create', ['sa' => $sa, 'request' => $request]);
+		return view('humanresources.hrdept.attendance.attendancereport.store', ['sa' => $sa, 'request' => $request]);
 	}
 
 }
