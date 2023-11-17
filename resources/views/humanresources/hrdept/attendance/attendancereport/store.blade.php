@@ -156,6 +156,7 @@ use App\Models\HumanResources\HROutstation;
 							<th scope="col">Out</th>
 							<th scope="col">Duration</th>
 							<th scope="col">Overtime</th>
+							<th scope="col">Outstation</th>
 							<th scope="col">Remarks</th>
 							<th scope="col">Exception</th>
 						</tr>
@@ -182,6 +183,7 @@ $l = HRLeave::where('staff_id', $v->staff_id)
 $o = HROvertime::where([['staff_id', $v->staff_id], ['ot_date', $v1->attend_date], ['active', 1]])->first();
 
 $os = HROutstation::where('staff_id', $v->staff_id)
+		->where('active', 1)
 		->where(function (Builder $query) use ($v1){
 			$query->whereDate('date_from', '<=', $v1->attend_date)
 			->whereDate('date_to', '>=', $v1->attend_date);
@@ -1203,6 +1205,7 @@ if($l) {
 									}
 								?>
 							</td>
+							<td>{{ ($os)?$os->first()?->belongstocustomer?->customer:null }}</td>
 							<td class="w-25">{{ $v1->remarks }} <br /><span class="text-danger">{{ $v1->hr_remarks }}</span> </td>
 							<td>{{ $v1->exception }}</td>
 						</tr>
