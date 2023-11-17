@@ -20,7 +20,7 @@ use Carbon\Carbon;
 use App\Models\HumanResources\OptBranch;
 use App\Models\HumanResources\HROvertime;
 
-$branch = OptBranch::pluck('location', 'id')->toArray();
+$location = OptBranch::pluck('location', 'id')->toArray();
 
 $no = 1;
 $total_col = 0;
@@ -46,7 +46,7 @@ if ($date_start != NULL && $date_end != NULL) {
       {{ Form::text('date_end', @$value, ['class' => 'form-control form-control-sm col-auto', 'id' => 'date_end', 'placeholder' => 'Date End', 'autocomplete' => 'off']) }}
     </div>
     <div class="col-auto">
-      {{ Form::select('branch', $branch, @$value, ['class' => 'form-control branch', 'id' => 'branch', 'placeholder' => '']) }}
+      {{ Form::select('branch', $location, @$value, ['class' => 'form-control branch', 'id' => 'branch', 'placeholder' => '']) }}
     </div>
     <div class="col-auto">
       {!! Form::submit('SUBMIT', ['class' => 'form-control form-control-sm btn btn-sm btn-outline-secondary']) !!}
@@ -149,6 +149,18 @@ if ($date_start != NULL && $date_end != NULL) {
         <td></td>
       </tr>
     </table>
+
+    {{ Form::open(['route' => ['overtimereport.print'], 'method' => 'GET',  'id' => 'form', 'class' => 'form-horizontal', 'autocomplete' => 'off', 'files' => true]) }}
+    <div class="row">
+      <div class="text-center">
+        <input type="hidden" name="date_start" id="date_start" value="{{ $date_start }}">
+        <input type="hidden" name="date_end" id="date_end" value="{{ $date_end }}">
+        <input type="hidden" name="branch" id="branch" value="{{ $branch }}">
+
+        <input type="submit" class="btn btn-sm btn-outline-secondary" value="PRINT" target="_blank">
+      </div>
+    </div>
+    {{ Form::close() }}
   </div>
   @endif
 
