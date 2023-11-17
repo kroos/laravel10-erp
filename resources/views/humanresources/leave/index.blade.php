@@ -258,7 +258,7 @@ foreach ($c as $v) {
 						<td>
 							@if(is_null($leav->leave_status_id))
 								Pending
-								@if($dt === false )
+								@if($dt === true )
 									<a href="{{ __('route') }}" class="btn btn-sm btn-outline-secondary cancel_btn" id="cancel_btn_{{ $leav->id }}" data-id="{{ $leav->id }}" alt="Cancel" title="Cancel"><i class="fas fa-ban"></i></a>
 								@endif
 							@else
@@ -385,6 +385,7 @@ foreach ($c as $v) {
 						@foreach(HRLeaveApprovalSupervisor::whereNull('leave_status_id')->get() as $a)
 							<?php
 							$ul = $a->belongstostaffleave?->belongstostaff?->belongstomanydepartment->first()?->branch_id;				//get user leave branch_id
+							$udept = $a->belongstostaffleave?->belongstostaff?->belongstomanydepartment->first()?->id;
 							// echo $us.' | '.$ul.'<br />';
 							// dd($a);
 							$leav = HRLeave::find($a->leave_id);
@@ -418,7 +419,7 @@ foreach ($c as $v) {
 									$u = NULL;
 								}
 							?>
-							@if($ul == $us)
+							@if($ul == $us && ($udept != 7))
 								<tr class="{{ $u }}" >
 									<td>
 										HR9-{{ str_pad( $leav->leave_no, 5, "0", STR_PAD_LEFT ) }}/{{ $leav->leave_year }}
@@ -608,7 +609,7 @@ foreach ($c as $v) {
 								@endif
 							@endif
 							@if($deptid == 6)				<!-- cs office -->
-								@if($stadept == 6 || ($stacate == 2 && $stadept == 7))
+								@if($stadept == 6 || ($stacate == 2 && $stadept == 7) && ($stacate == 2 && $stadept == 3))
 									<tr class="{{ $u }}" >
 										<td>
 											HR9-{{ str_pad( $leav->leave_no, 5, "0", STR_PAD_LEFT ) }}/{{ $leav->leave_year }}
