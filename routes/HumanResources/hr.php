@@ -68,3 +68,4 @@ Route::get('/attendancereportpdf/store', [AttendanceReportPDFController::class, 
 
 Route::get('/overtimereport', [OvertimeReportController::class, 'index'])->name('overtimereport.index');
 Route::post('/overtimereport', [OvertimeReportController::class, 'index'])->name('overtimereport.index');
+Route::get('/overtimereport/print', [OvertimeReportController::class, 'print'])->name('overtimereport.print');
