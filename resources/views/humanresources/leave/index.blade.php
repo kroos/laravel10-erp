@@ -258,7 +258,7 @@ foreach ($c as $v) {
 						<td>
 							@if(is_null($leav->leave_status_id))
 								Pending
-								@if($dt === true )
+								@if($dt === false )
 									<a href="{{ __('route') }}" class="btn btn-sm btn-outline-secondary cancel_btn" id="cancel_btn_{{ $leav->id }}" data-id="{{ $leav->id }}" alt="Cancel" title="Cancel"><i class="fas fa-ban"></i></a>
 								@endif
 							@else

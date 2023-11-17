@@ -12,6 +12,7 @@ use Carbon\CarbonPeriod;
 
 use App\Models\Staff;
 use App\Models\Login;
+use App\Models\Customer;
 use App\Models\HumanResources\HRAttendance;
 use App\Models\HumanResources\HRHolidayCalendar;
 use App\Models\HumanResources\HRLeave;
@@ -276,6 +277,7 @@ $p = [];
 						$query->whereDate('date_from', '<=', $v1->attend_date)
 						->whereDate('date_to', '>=', $v1->attend_date);
 					})
+					// ->where('active', 1)
 					->get();
 
 			$in = Carbon::parse($v1->in)->equalTo('00:00:00');
@@ -1284,7 +1286,7 @@ $p = [];
 				$out1,
 				$workhour,
 				$ort,
-				null,
+				($os)?$os->first()?->belongstocustomer?->customer:null,
 				$v1->remarks.'    '.$v1->hr_remarks,
 				$v1->exception,
 			]);

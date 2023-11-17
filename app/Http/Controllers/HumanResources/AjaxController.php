@@ -15,6 +15,7 @@ use Illuminate\View\View;
 use App\Models\Setting;
 
 use App\Models\Staff;
+use App\Models\HumanResources\HRAttendance;
 use App\Models\HumanResources\HRLeave;
 use App\Models\HumanResources\HRHolidayCalendar;
 use App\Models\HumanResources\HRLeaveApprovalBackup;
@@ -65,7 +66,7 @@ class AjaxController extends Controller
 	}
 
 	// cancel leave
-	public function leavecancel(Request $request, HRLeave $hrleave)
+	public function leavecancel(Request $request, HRLeave $hrleave): JsonResponse
 	{
 		if($request->cancel == 3)
 		{
@@ -80,9 +81,24 @@ class AjaxController extends Controller
 			$dts = \Carbon\Carbon::parse( $n->date_time_start );
 			$now = \Carbon\Carbon::now();
 
+			// find the pivot table
+			$p1 = $n->belongstomanyleaveannual()->first();
+			$p2 = $n->belongstomanyleavemc()->first();
+			$p3 = $n->belongstomanyleavematernity()->first();
+			$p4 = $n->belongstomanyleavereplacement()->first();
+
 			// leave deduct from AL or EL-AL
 			// make sure to cancel at the approver also #####################################################################
 			if ( $n->leave_type_id == 1 || $n->leave_type_id == 5 ) {
+				// check pivot table
+				if (!$p1) {
+					return response()->json([
+						'status' => 'error',
+						'message' => 'Please inform IT Department with this message: "No link between leave and annual leave table (database). This is old leave created from old system."',
+					]);
+				} else {
+					$n->belongstomanyleaveannual()->detach($p1->id);
+				}
 				// cari al dari staffleave dan tambah balik masuk dalam hasmanyleaveannual
 
 				// cari period cuti
@@ -106,6 +122,15 @@ class AjaxController extends Controller
 			}
 
 			if( $n->leave_type_id == 2 ) { // leave deduct from MC
+				// check pivot table
+				if (!$p2) {
+					return response()->json([
+						'status' => 'error',
+						'message' => 'Please inform IT Department with this message: "No link between leave and MC leave table (database). This is old leave created from old system."',
+					]);
+				} else {
+					$n->belongstomanyleavemc()->detach($p2->id);
+				}
 				// sama lebih kurang AL mcm kat atas. so....
 				$addl = $n->period_day + $n->belongstostaff->hasmanyleavemc()->where('year', $dts->format('Y'))->first()->mc_leave_balance;
 				$addu = $n->belongstostaff->hasmanyleavemc()->where('year', $dts->format('Y'))->first()->mc_leave_utilize - $n->period_day;
@@ -131,6 +156,14 @@ class AjaxController extends Controller
 			}
 
 			if( $n->leave_type_id == 4 || $n->leave_type_id == 10 ) { // leave deduct from NRL & EL-NRL
+				if (!$p4) {
+					return response()->json([
+						'status' => 'error',
+						'message' => 'Please inform IT Department with this message: "No link between leave and replacement leave table (database). This is old leave created from old system."',
+					]);
+				} else {
+					$n->belongstomanyleavereplacement()->detach($p4->id);
+				}
 				// echo 'leave deduct from NRL<br />';
 
 				// cari period cuti
@@ -160,6 +193,14 @@ class AjaxController extends Controller
 			}
 
 			if( $n->leave_type_id == 7 ) { // leave deduct from ML
+				if (!$p3) {
+					return response()->json([
+						'status' => 'error',
+						'message' => 'Please inform IT Department with this message: "No link between leave and maternity leave table (database). This is old leave created from old system."',
+					]);
+				} else {
+					$n->belongstomanyleavematernity()->detach($p3->id);
+				}
 				// echo 'leave deduct from ML<br />';
 
 				// lebih kurang sama dengan al atau mc, maka..... :) copy paste
@@ -232,6 +273,11 @@ class AjaxController extends Controller
 					'remarks' => 'Cancelled By '.\Auth::user()->belongstostaff->name
 				]);
 			}
+			// remove leave_id from attendance
+			$z = HRAttendance::where('leave_id', $request->id)->get();
+			foreach ($z as $s) {
+				HRAttendance::where('id', $s->id)->update(['leave_id' => null]);
+			}
 			//////////////////////////////////////////////////////////////////////////////////////////////
 			// done processing the data
 			return response()->json([
@@ -284,6 +330,13 @@ class AjaxController extends Controller
 		// dd($sauser);
 		$vc = $sal->verify_code;
 		// dd($sal);
+
+		// find the pivot table
+		$p1 = $sal->belongstomanyleaveannual()->first();
+		$p2 = $sal->belongstomanyleavemc()->first();
+		$p3 = $sal->belongstomanyleavematernity()->first();
+		$p4 = $sal->belongstomanyleavereplacement()->first();
+
 		if( $request->leave_status_id == 5 ) {									// leave approve
 			if($vc == $request->verify_code) {
 				$sa->update([
@@ -297,33 +350,53 @@ class AjaxController extends Controller
 		} elseif($request->leave_status_id == 4) {								// leave rejected
 			$saly = $sal->leave_type_id;										// need to find out leave type
 			if ($saly == 1 || $saly == 5) {										// annual leave: put period leave to annual leave entitlement
+				if (!$p1) {
+					Session::flash('flash_danger', 'Please inform IT Department with this message: "No link between leave and annual leave table (database). This is old leave created from old system."');
+					return redirect()->back()->withInput();
+				}
 				$pd = $sal->period_day;											// get period day
 				$sala = $sal->belongstomanyleaveannual->first();				// get annual leave
 				$albal = $sala->annual_leave_balance + $pd;						// annual leave balance
 				$aluti = $sala->annual_leave_utilize - $pd;						// annual leave utilize
 				$sala->update(['annual_leave_balance' => $albal, 'annual_leave_utilize' => $aluti]);
 				$sal->update(['period_day' => 0, 'leave_status_id' => $request->leave_status_id]);
+				$sal->belongstomanyleaveannual()->detach($p1->id);
 			} elseif($saly == 4 || $saly == 10) {								// replacement leave
+				if (!$p4) {
+					Session::flash('flash_danger', 'Please inform IT Department with this message: "No link between leave and replacement leave table (database). This is old leave created from old system."');
+					return redirect()->back()->withInput();
+				}
 				$pd = $sal->period_day;											// get period day
 				$sala = $sal->belongstomanyleavereplacement->first();			// get replacement leave
 				$albal = $sala->leave_balance + $pd;							// replacement leave balance
 				$aluti = $sala->leave_utilize - $pd;							// replacement leave utilize
 				$sala->update(['leave_balance' => $albal, 'leave_utilize' => $aluti]);
 				$sal->update(['period_day' => 0, 'leave_status_id' => $request->leave_status_id]);
+				$sal->belongstomanyleavereplacement()->detach($p4->id);
 			} elseif($saly == 2) {												// mc leave
+				if (!$p2) {
+					Session::flash('flash_danger', 'Please inform IT Department with this message: "No link between leave and MC leave table (database). This is old leave created from old system."');
+					return redirect()->back()->withInput();
+				}
 				$pd = $sal->period_day;											// get period day
 				$sala = $sal->belongstomanyleavemc->first();					// get mc leave
 				$albal = $sala->mc_leave_balance + $pd;							// mc leave balance
 				$aluti = $sala->mc_leave_utilize - $pd;							// mc leave utilize
 				$sala->update(['mc_leave_balance' => $albal, 'mc_leave_utilize' => $aluti]);
 				$sal->update(['period_day' => 0, 'leave_status_id' => $request->leave_status_id]);
+				$sal->belongstomanyleavemc()->detach($p2->id);
 			} elseif($saly == 7) {
+				if (!$p3) {
+					Session::flash('flash_danger', 'Please inform IT Department with this message: "No link between leave and maternity leave table (database). This is old leave created from old system."');
+					return redirect()->back()->withInput();
+				}
 				$pd = $sal->period_day;											// get period day
 				$sala = $sal->belongstomanyleavematernity->first();				// get maternity leave
 				$albal = $sala->maternity_leave_balance + $pd;					// maternity leave balance
 				$aluti = $sala->maternity_leave_utilize - $pd;					// maternity leave utilize
 				$sala->update(['maternity_leave_balance' => $albal, 'maternity_leave_utilize' => $aluti]);
 				$sal->update(['period_day' => 0, 'leave_status_id' => $request->leave_status_id]);
+				$sal->belongstomanyleavematernity()->detach($p3->id);
 			} elseif($saly == 3 || $saly == 6 || $saly == 11 || $saly == 12) {
 				$sal->update(['period_day' => 0, 'leave_status_id' => $request->leave_status_id]);
 			} elseif($saly == 9) {
@@ -344,6 +417,11 @@ class AjaxController extends Controller
 			}
 			if($sauser->belongstoleaveapprovalflow->hr_approval == 1){																	// update on hr
 				$sal->hasmanyleaveapprovalhr()->update([/*'staff_id' => \Auth::user()->belongstostaff->id,*/ 'leave_status_id' => $request->leave_status_id, 'remarks' => 'Rejected by Supervisor ('.\Auth::user()->belongstostaff->name.') on '.\Carbon\Carbon::now()->format('j M Y g:i a')]);
+			}
+			// remove leave_id from attendance
+			$z = HRAttendance::where('leave_id', $sal->id)->get();
+			foreach ($z as $s) {
+				HRAttendance::where('id', $s->id)->update(['leave_id' => null]);
 			}
 		}
 		Session::flash('flash_message', 'Successfully make an approval for user.');
@@ -375,6 +453,13 @@ class AjaxController extends Controller
 		// dd($sauser);
 		$vc = $sal->verify_code;
 		// dd($sal);
+
+		// find the pivot table
+		$p1 = $sal->belongstomanyleaveannual()->first();
+		$p2 = $sal->belongstomanyleavemc()->first();
+		$p3 = $sal->belongstomanyleavematernity()->first();
+		$p4 = $sal->belongstomanyleavereplacement()->first();
+
 		if( $request->leave_status_id == 5 ) {									// leave approve
 			if($vc == $request->verify_code) {
 				$sa->update([
@@ -388,33 +473,53 @@ class AjaxController extends Controller
 		} elseif($request->leave_status_id == 4) {								// leave rejected
 			$saly = $sal->leave_type_id;										// need to find out leave type
 			if ($saly == 1 || $saly == 5) {										// annual leave: put period leave to annual leave entitlement
+				if (!$p1) {
+					Session::flash('flash_danger', 'Please inform IT Department with this message: "No link between leave and annual leave table (database). This is old leave created from old system."');
+					return redirect()->back()->withInput();
+				}
 				$pd = $sal->period_day;											// get period day
 				$sala = $sal->belongstomanyleaveannual->first();				// get annual leave
 				$albal = $sala->annual_leave_balance + $pd;						// annual leave balance
 				$aluti = $sala->annual_leave_utilize - $pd;						// annual leave utilize
 				$sala->update(['annual_leave_balance' => $albal, 'annual_leave_utilize' => $aluti]);
 				$sal->update(['period_day' => 0, 'leave_status_id' => $request->leave_status_id]);
+				$sal->belongstomanyleaveannual()->detach($p1->id);
 			} elseif($saly == 4 || $saly == 10) {								// replacement leave
+				if (!$p4) {
+					Session::flash('flash_danger', 'Please inform IT Department with this message: "No link between leave and replacement leave table (database). This is old leave created from old system."');
+					return redirect()->back()->withInput();
+				}
 				$pd = $sal->period_day;											// get period day
 				$sala = $sal->belongstomanyleavereplacement->first();			// get replacement leave
 				$albal = $sala->leave_balance + $pd;							// replacement leave balance
 				$aluti = $sala->leave_utilize - $pd;							// replacement leave utilize
 				$sala->update(['leave_balance' => $albal, 'leave_utilize' => $aluti]);
 				$sal->update(['period_day' => 0, 'leave_status_id' => $request->leave_status_id]);
+				$sal->belongstomanyleavereplacement()->detach($p4->id);
 			} elseif($saly == 2) {												// mc leave
+				if (!$p2) {
+					Session::flash('flash_danger', 'Please inform IT Department with this message: "No link between leave and MC leave table (database). This is old leave created from old system."');
+					return redirect()->back()->withInput();
+				}
 				$pd = $sal->period_day;											// get period day
 				$sala = $sal->belongstomanyleavemc->first();					// get mc leave
 				$albal = $sala->mc_leave_balance + $pd;							// mc leave balance
 				$aluti = $sala->mc_leave_utilize - $pd;							// mc leave utilize
 				$sala->update(['mc_leave_balance' => $albal, 'mc_leave_utilize' => $aluti]);
 				$sal->update(['period_day' => 0, 'leave_status_id' => $request->leave_status_id]);
+				$sal->belongstomanyleavemc()->detach($p2->id);
 			} elseif($saly == 7) {
+				if (!$p3) {
+					Session::flash('flash_danger', 'Please inform IT Department with this message: "No link between leave and maternity leave table (database). This is old leave created from old system."');
+					return redirect()->back()->withInput();
+				}
 				$pd = $sal->period_day;											// get period day
 				$sala = $sal->belongstomanyleavematernity->first();				// get maternity leave
 				$albal = $sala->maternity_leave_balance + $pd;					// maternity leave balance
 				$aluti = $sala->maternity_leave_utilize - $pd;					// maternity leave utilize
 				$sala->update(['maternity_leave_balance' => $albal, 'maternity_leave_utilize' => $aluti]);
 				$sal->update(['period_day' => 0, 'leave_status_id' => $request->leave_status_id]);
+				$sal->belongstomanyleavematernity()->detach($p3->id);
 			} elseif($saly == 3 || $saly == 6 || $saly == 11 || $saly == 12) {
 				$sal->update(['period_day' => 0, 'leave_status_id' => $request->leave_status_id]);
 			} elseif($saly == 9) {
@@ -435,6 +540,11 @@ class AjaxController extends Controller
 			}
 			if($sauser->belongstoleaveapprovalflow->hr_approval == 1){																	// update on hr
 				$sal->hasmanyleaveapprovalhr()->update([/*'staff_id' => \Auth::user()->belongstostaff->id,*/ 'leave_status_id' => $request->leave_status_id, 'remarks' => 'Rejected by HOD ('.\Auth::user()->belongstostaff->name.') on '.\Carbon\Carbon::now()->format('j M Y g:i a')]);
+			}
+			// remove leave_id from attendance
+			$z = HRAttendance::where('leave_id', $sal->id)->get();
+			foreach ($z as $s) {
+				HRAttendance::where('id', $s->id)->update(['leave_id' => null]);
 			}
 		}
 		Session::flash('flash_message', 'Successfully make an approval for user.');
@@ -464,6 +574,13 @@ class AjaxController extends Controller
 		$sal = $sa->belongstostaffleave;													// this hod approval belongs to leave
 		$sauser = $sal->belongstostaff;												// leave belongs to user, not authuser anymore
 		// dd($sauser);
+
+		// find the pivot table
+		$p1 = $sal->belongstomanyleaveannual()->first();
+		$p2 = $sal->belongstomanyleavemc()->first();
+		$p3 = $sal->belongstomanyleavematernity()->first();
+		$p4 = $sal->belongstomanyleavereplacement()->first();
+
 		$vc = $sal->verify_code;
 		// dd($sal);
 		if( $request->leave_status_id == 5 ) {									// leave approve
@@ -479,33 +596,53 @@ class AjaxController extends Controller
 		} elseif($request->leave_status_id == 4) {								// leave rejected
 			$saly = $sal->leave_type_id;										// need to find out leave type
 			if ($saly == 1 || $saly == 5) {										// annual leave: put period leave to annual leave entitlement
+				if (!$p1) {
+					Session::flash('flash_danger', 'Please inform IT Department with this message: "No link between leave and annual leave table (database). This is old leave created from old system."');
+					return redirect()->back()->withInput();
+				}
 				$pd = $sal->period_day;											// get period day
 				$sala = $sal->belongstomanyleaveannual->first();				// get annual leave
 				$albal = $sala->annual_leave_balance + $pd;						// annual leave balance
 				$aluti = $sala->annual_leave_utilize - $pd;						// annual leave utilize
 				$sala->update(['annual_leave_balance' => $albal, 'annual_leave_utilize' => $aluti]);
 				$sal->update(['period_day' => 0, 'leave_status_id' => $request->leave_status_id]);
+				$sal->belongstomanyleaveannual()->detach($p1->id);
 			} elseif($saly == 4 || $saly == 10) {								// replacement leave
+				if (!$p4) {
+					Session::flash('flash_danger', 'Please inform IT Department with this message: "No link between leave and replacement leave table (database). This is old leave created from old system."');
+					return redirect()->back()->withInput();
+				}
 				$pd = $sal->period_day;											// get period day
 				$sala = $sal->belongstomanyleavereplacement->first();			// get replacement leave
 				$albal = $sala->leave_balance + $pd;							// replacement leave balance
 				$aluti = $sala->leave_utilize - $pd;							// replacement leave utilize
 				$sala->update(['leave_balance' => $albal, 'leave_utilize' => $aluti]);
 				$sal->update(['period_day' => 0, 'leave_status_id' => $request->leave_status_id]);
+				$sal->belongstomanyleavereplacement()->detach($p4->id);
 			} elseif($saly == 2) {												// mc leave
+				if (!$p2) {
+					Session::flash('flash_danger', 'Please inform IT Department with this message: "No link between leave and MC leave table (database). This is old leave created from old system."');
+					return redirect()->back()->withInput();
+				}
 				$pd = $sal->period_day;											// get period day
 				$sala = $sal->belongstomanyleavemc->first();					// get mc leave
 				$albal = $sala->mc_leave_balance + $pd;							// mc leave balance
 				$aluti = $sala->mc_leave_utilize - $pd;							// mc leave utilize
 				$sala->update(['mc_leave_balance' => $albal, 'mc_leave_utilize' => $aluti]);
 				$sal->update(['period_day' => 0, 'leave_status_id' => $request->leave_status_id]);
+				$sal->belongstomanyleavemc()->detach($p2->id);
 			} elseif($saly == 7) {
+				if (!$p3) {
+					Session::flash('flash_danger', 'Please inform IT Department with this message: "No link between leave and maternity leave table (database). This is old leave created from old system."');
+					return redirect()->back()->withInput();
+				}
 				$pd = $sal->period_day;											// get period day
 				$sala = $sal->belongstomanyleavematernity->first();				// get maternity leave
 				$albal = $sala->maternity_leave_balance + $pd;					// maternity leave balance
 				$aluti = $sala->maternity_leave_utilize - $pd;					// maternity leave utilize
 				$sala->update(['maternity_leave_balance' => $albal, 'maternity_leave_utilize' => $aluti]);
 				$sal->update(['period_day' => 0, 'leave_status_id' => $request->leave_status_id]);
+				$sal->belongstomanyleavematernity()->detach($p3->id);
 			} elseif($saly == 3 || $saly == 6 || $saly == 11 || $saly == 12) {
 				$sal->update(['period_day' => 0, 'leave_status_id' => $request->leave_status_id]);
 			} elseif($saly == 9) {
@@ -526,6 +663,11 @@ class AjaxController extends Controller
 			}
 			if($sauser->belongstoleaveapprovalflow->hr_approval == 1){																	// update on hr
 				$sal->hasmanyleaveapprovalhr()->update([/*'staff_id' => \Auth::user()->belongstostaff->id,*/ 'leave_status_id' => $request->leave_status_id, 'remarks' => 'Rejected by Director ('.\Auth::user()->belongstostaff->name.') on '.\Carbon\Carbon::now()->format('j M Y g:i a')]);
+			}
+			// remove leave_id from attendance
+			$z = HRAttendance::where('leave_id', $sal->id)->get();
+			foreach ($z as $s) {
+				HRAttendance::where('id', $s->id)->update(['leave_id' => null]);
 			}
 		} elseif($request->leave_status_id == 6) {								// leave waived, so need to put back all leave period.
 			$saly = $sal->leave_type_id;										// need to find out leave type
@@ -606,6 +748,13 @@ class AjaxController extends Controller
 		$sal = $sa->belongstostaffleave;											// this hr approval belongs to leave
 		$sauser = $sal->belongstostaff;												// leave belongs to user, not authuser anymore
 		// dd($sauser);
+
+		// find the pivot table
+		$p1 = $sal->belongstomanyleaveannual()->first();
+		$p2 = $sal->belongstomanyleavemc()->first();
+		$p3 = $sal->belongstomanyleavematernity()->first();
+		$p4 = $sal->belongstomanyleavereplacement()->first();
+
 		$vc = $sal->verify_code;
 		// dd($sal);
 		if( $request->leave_status_id == 5 ) {									// leave approve
@@ -621,27 +770,48 @@ class AjaxController extends Controller
 		} elseif($request->leave_status_id == 4) {								// leave rejected
 			$saly = $sal->leave_type_id;										// need to find out leave type
 			if ($saly == 1 || $saly == 5) {										// annual leave: put period leave to annual leave entitlement
+				if (!$p1) {
+					Session::flash('flash_danger', 'Please inform IT Department with this message: "No link between leave and annual leave table (database). This is old leave created from old system."');
+					return redirect()->back()->withInput();
+				}
 				$pd = $sal->period_day;											// get period day
 				$sala = $sal->belongstomanyleaveannual->first();				// get annual leave
 				$albal = $sala->annual_leave_balance + $pd;						// annual leave balance
 				$aluti = $sala->annual_leave_utilize - $pd;						// annual leave utilize
 				$sala->update(['annual_leave_balance' => $albal, 'annual_leave_utilize' => $aluti]);
 				$sal->update(['period_day' => 0, 'leave_status_id' => $request->leave_status_id]);
+				$sal->belongstomanyleaveannual()->detach($p1->id);
 			} elseif($saly == 4 || $saly == 10) {								// replacement leave
+				if (!$p4) {
+					Session::flash('flash_danger', 'Please inform IT Department with this message: "No link between leave and replacement leave table (database). This is old leave created from old system."');
+					return redirect()->back()->withInput();
+				}
 				$pd = $sal->period_day;											// get period day
 				$sala = $sal->belongstomanyleavereplacement->first();			// get replacement leave
 				$albal = $sala->leave_balance + $pd;							// replacement leave balance
 				$aluti = $sala->leave_utilize - $pd;							// replacement leave utilize
 				$sala->update(['leave_balance' => $albal, 'leave_utilize' => $aluti]);
 				$sal->update(['period_day' => 0, 'leave_status_id' => $request->leave_status_id]);
+				$sal->belongstomanyleavereplacement()->detach($p4->id);
 			} elseif($saly == 2) {												// mc leave
+				if (!$p2) {
+					Session::flash('flash_danger', 'Please inform IT Department with this message: "No link between leave and MC leave table (database). This is old leave created from old system."');
+					return redirect()->back()->withInput();
+				}
 				$pd = $sal->period_day;											// get period day
 				$sala = $sal->belongstomanyleavemc->first();					// get mc leave
 				$albal = $sala->mc_leave_balance + $pd;							// mc leave balance
 				$aluti = $sala->mc_leave_utilize - $pd;							// mc leave utilize
 				$sala->update(['mc_leave_balance' => $albal, 'mc_leave_utilize' => $aluti]);
 				$sal->update(['period_day' => 0, 'leave_status_id' => $request->leave_status_id]);
+				$sal->belongstomanyleavemc()->detach($p2->id);
 			} elseif($saly == 7) {
+				if (!$p3) {
+					Session::flash('flash_danger', 'Please inform IT Department with this message: "No link between leave and maternity leave table (database). This is old leave created from old system."');
+					return redirect()->back()->withInput();
+				} else {
+					$sal->belongstomanyleavematernity()->detach($p3->id);
+				}
 				$pd = $sal->period_day;											// get period day
 				$sala = $sal->belongstomanyleavematernity->first();				// get maternity leave
 				$albal = $sala->maternity_leave_balance + $pd;					// maternity leave balance
@@ -668,6 +838,11 @@ class AjaxController extends Controller
 			}
 			if($sauser->belongstoleaveapprovalflow->hr_approval == 1){																	// update on hr
 				$sal->hasmanyleaveapprovalhr()->update([/*'staff_id' => \Auth::user()->belongstostaff->id,*/ 'leave_status_id' => $request->leave_status_id, 'remarks' => 'Rejected by Director ('.\Auth::user()->belongstostaff->name.') on '.\Carbon\Carbon::now()->format('j M Y g:i a')]);
+			}
+			// remove leave_id from attendance
+			$z = HRAttendance::where('leave_id', $sal->id)->get();
+			foreach ($z as $s) {
+				HRAttendance::where('id', $s->id)->update(['leave_id' => null]);
 			}
 		} elseif($request->leave_status_id == 6) {								// leave waived, so need to put back all leave period.
 
