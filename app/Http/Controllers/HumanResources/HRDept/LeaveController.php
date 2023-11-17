@@ -274,33 +274,7 @@ class LeaveController extends Controller
 						$l->belongstomanyleaveannual()->attach($entitlement->id);				// it should be leave_replacement_id but im lazy to change it at view humanresources/create.blade.php
 						$hrleave->belongstomanyleaveannual()->detach($entitlement->id);
 						$user->hasmanyleaveannual()->where('year', $daStart->year)->update(['annual_leave_balance' => $entitle, 'annual_leave_utilize' => $utilize]);// update leave_balance by substarct
-						$l->hasmanyleaveamend()->create([
-															'amend_note' => Str::ucfirst(Str::lower($request->amend_note)),
-															'staff_id' => \Auth::user()->belongstostaff->id,
-															'date' => now()
-														]);
-						// if($user->belongstoleaveapprovalflow->backup_approval == 1){																// alert backup
-						// 	if($request->staff_id) {																								// backup only valid for non EL leave
-						// 		$bid = $hrleave->hasmanyleaveapprovalbackup()->first()->id;
-						// 		HRLeaveApprovalBackup::find($bid)->update(['leave_id' => $l->id]);
-						// 	}
-						// }
-						// if($user->belongstoleaveapprovalflow->supervisor_approval == 1){															// alert supervisor
-						// 	$sid = $hrleave->hasmanyleaveapprovalsupervisor()->first()->id;
-						// 	HRLeaveApprovalSupervisor::find($sid)->update(['leave_id' => $l->id]);
-						// }
-						// if($user->belongstoleaveapprovalflow->hod_approval == 1){																	// alert hod
-						// 	$hid = $hrleave->hasmanyleaveapprovalhod()->first()->id;
-						// 	HRLeaveApprovalHOD::find($hid)->update(['leave_id' => $l->id]);
-						// }
-						// if($user->belongstoleaveapprovalflow->director_approval == 1){																// alert director
-						// 	$did = $hrleave->hasmanyleaveapprovaldir()->first()->id;
-						// 	HRLeaveApprovalDirector::find($did)->update(['leave_id' => $l->id]);
-						// }
-						// if($user->belongstoleaveapprovalflow->hr_approval == 1){																	// alert hr
-						// 	$rid = $hrleave->hasmanyleaveapprovalhr()->first()->id;
-						// 	HRLeaveApprovalHR::find($rid)->update(['leave_id' => $l->id]);
-						// }
+
 					} else {
 						Session::flash('flash_danger', 'Please make sure applied leave does not exceed available leave balance');
 						return redirect()->back();
@@ -341,33 +315,6 @@ class LeaveController extends Controller
 						// dd($c);
 						// $c->update(['annual_leave_balance' => $entitle, 'annual_leave_utilize' => $utilize]);
 
-						$l->hasmanyleaveamend()->create([
-															'amend_note' => Str::ucfirst(Str::lower($request->amend_note)),
-															'staff_id' => \Auth::user()->belongstostaff->id,
-															'date' => now()
-														]);
-						// if($user->belongstoleaveapprovalflow->backup_approval == 1){																// alert backup
-						// 	if($request->staff_id) {																								// backup only valid for non EL leave
-						// 		$bid = $hrleave->hasmanyleaveapprovalbackup()->first()->id;
-						// 		HRLeaveApprovalBackup::find($bid)->update(['leave_id' => $l->id]);
-						// 	}
-						// }
-						// if($user->belongstoleaveapprovalflow->supervisor_approval == 1){															// alert supervisor
-						// 	$sid = $hrleave->hasmanyleaveapprovalsupervisor()->first()->id;
-						// 	HRLeaveApprovalSupervisor::find($sid)->update(['leave_id' => $l->id]);
-						// }
-						// if($user->belongstoleaveapprovalflow->hod_approval == 1){																	// alert hod
-						// 	$hid = $hrleave->hasmanyleaveapprovalhod()->first()->id;
-						// 	HRLeaveApprovalHOD::find($hid)->update(['leave_id' => $l->id]);
-						// }
-						// if($user->belongstoleaveapprovalflow->director_approval == 1){																// alert director
-						// 	$did = $hrleave->hasmanyleaveapprovaldir()->first()->id;
-						// 	HRLeaveApprovalDirector::find($did)->update(['leave_id' => $l->id]);
-						// }
-						// if($user->belongstoleaveapprovalflow->hr_approval == 1){																	// alert hr
-						// 	$rid = $hrleave->hasmanyleaveapprovalhr()->first()->id;
-						// 	HRLeaveApprovalHR::find($rid)->update(['leave_id' => $l->id]);
-						// }
 					} else {
 						Session::flash('flash_danger', 'Please make sure applied leave does not exceed available leave balance');
 						return redirect()->back();
@@ -403,33 +350,7 @@ class LeaveController extends Controller
 						$l->belongstomanyleaveannual()->attach($entitlement->id);									// it should be leave_replacement_id but im lazy to change it at view humanresources/create.blade.php
 						$hrleave->belongstomanyleaveannual()->detach($entitlement->id);
 						$user->hasmanyleaveannual()->where('year', $daStart->year)->update(['annual_leave_balance' => $entitle, 'annual_leave_utilize' => $utilize]);		// update leave_balance by substarct
-						$l->hasmanyleaveamend()->create([
-															'amend_note' => Str::ucfirst(Str::lower($request->amend_note)),
-															'staff_id' => \Auth::user()->belongstostaff->id,
-															'date' => now()
-														]);
-						// if($user->belongstoleaveapprovalflow->backup_approval == 1){																// alert backup
-						// 	if($request->staff_id) {																								// backup only valid for non EL leave
-						// 		$bid = $hrleave->hasmanyleaveapprovalbackup()->first()->id;
-						// 		HRLeaveApprovalBackup::find($bid)->update(['leave_id' => $l->id]);
-						// 	}
-						// }
-						// if($user->belongstoleaveapprovalflow->supervisor_approval == 1){															// alert supervisor
-						// 	$sid = $hrleave->hasmanyleaveapprovalsupervisor()->first()->id;
-						// 	HRLeaveApprovalSupervisor::find($sid)->update(['leave_id' => $l->id]);
-						// }
-						// if($user->belongstoleaveapprovalflow->hod_approval == 1){																	// alert hod
-						// 	$hid = $hrleave->hasmanyleaveapprovalhod()->first()->id;
-						// 	HRLeaveApprovalHOD::find($hid)->update(['leave_id' => $l->id]);
-						// }
-						// if($user->belongstoleaveapprovalflow->director_approval == 1){																// alert director
-						// 	$did = $hrleave->hasmanyleaveapprovaldir()->first()->id;
-						// 	HRLeaveApprovalDirector::find($did)->update(['leave_id' => $l->id]);
-						// }
-						// if($user->belongstoleaveapprovalflow->hr_approval == 1){																	// alert hr
-						// 	$rid = $hrleave->hasmanyleaveapprovalhr()->first()->id;
-						// 	HRLeaveApprovalHR::find($rid)->update(['leave_id' => $l->id]);
-						// }
+
 					} else {																														// annual_leave_balance < $totalday, then exit
 						Session::flash('flash_danger', 'Please make sure applied leave does not exceed available leave balance');
 						return redirect()->back();
@@ -474,34 +395,7 @@ class LeaveController extends Controller
 					}
 
 					$l = $user->hasmanyleave()->create($data);																					// insert data into HRLeave
-					$l->hasmanyleaveamend()->create([
-														'amend_note' => Str::ucfirst(Str::lower($request->amend_note)),
-														'staff_id' => \Auth::user()->belongstostaff->id,
-														'date' => now()
-													]);
 
-					// if($user->belongstoleaveapprovalflow->backup_approval == 1){																// alert backup
-					// 	if($request->staff_id) {																								// backup only valid for non EL leave
-					// 		$bid = $hrleave->hasmanyleaveapprovalbackup()->first()->id;
-					// 		HRLeaveApprovalBackup::find($bid)->update(['leave_id' => $l->id]);
-					// 	}
-					// }
-					// if($user->belongstoleaveapprovalflow->supervisor_approval == 1){															// alert supervisor
-					// 	$sid = $hrleave->hasmanyleaveapprovalsupervisor()->first()->id;
-					// 	HRLeaveApprovalSupervisor::find($sid)->update(['leave_id' => $l->id]);
-					// }
-					// if($user->belongstoleaveapprovalflow->hod_approval == 1){																	// alert hod
-					// 	$hid = $hrleave->hasmanyleaveapprovalhod()->first()->id;
-					// 	HRLeaveApprovalHOD::find($hid)->update(['leave_id' => $l->id]);
-					// }
-					// if($user->belongstoleaveapprovalflow->director_approval == 1){																// alert director
-					// 	$did = $hrleave->hasmanyleaveapprovaldir()->first()->id;
-					// 	HRLeaveApprovalDirector::find($did)->update(['leave_id' => $l->id]);
-					// }
-					// if($user->belongstoleaveapprovalflow->hr_approval == 1){																	// alert hr
-					// 	$rid = $hrleave->hasmanyleaveapprovalhr()->first()->id;
-					// 	HRLeaveApprovalHR::find($rid)->update(['leave_id' => $l->id]);
-					// }
 				} elseif ($request->leave_cat == 1) {																								// apply leace 1 whole day
 					$data = $request->only(['leave_type_id', 'leave_cat', 'date_time_start', 'date_time_end', 'half_type_id']);
 					$data += ['reason' => Str::ucfirst(Str::lower($request->reason))];
@@ -525,33 +419,6 @@ class LeaveController extends Controller
 
 					$l = $user->hasmanyleave()->create($data);																					// insert data into HRLeave
 
-					$l->hasmanyleaveamend()->create([
-														'amend_note' => Str::ucfirst(Str::lower($request->amend_note)),
-														'staff_id' => \Auth::user()->belongstostaff->id,
-														'date' => now()
-													]);
-					// if($user->belongstoleaveapprovalflow->backup_approval == 1){																// alert backup
-					// 	if($request->staff_id) {																								// backup only valid for non EL leave
-					// 		$bid = $hrleave->hasmanyleaveapprovalbackup()->first()->id;
-					// 		HRLeaveApprovalBackup::find($bid)->update(['leave_id' => $l->id]);
-					// 	}
-					// }
-					// if($user->belongstoleaveapprovalflow->supervisor_approval == 1){															// alert supervisor
-					// 	$sid = $hrleave->hasmanyleaveapprovalsupervisor()->first()->id;
-					// 	HRLeaveApprovalSupervisor::find($sid)->update(['leave_id' => $l->id]);
-					// }
-					// if($user->belongstoleaveapprovalflow->hod_approval == 1){																	// alert hod
-					// 	$hid = $hrleave->hasmanyleaveapprovalhod()->first()->id;
-					// 	HRLeaveApprovalHOD::find($hid)->update(['leave_id' => $l->id]);
-					// }
-					// if($user->belongstoleaveapprovalflow->director_approval == 1){																// alert director
-					// 	$did = $hrleave->hasmanyleaveapprovaldir()->first()->id;
-					// 	HRLeaveApprovalDirector::find($did)->update(['leave_id' => $l->id]);
-					// }
-					// if($user->belongstoleaveapprovalflow->hr_approval == 1){																	// alert hr
-					// 	$rid = $hrleave->hasmanyleaveapprovalhr()->first()->id;
-					// 	HRLeaveApprovalHR::find($rid)->update(['leave_id' => $l->id]);
-					// }
 				}
 			} else {																														// apply leave for 2 OR more days
 				if ($noOverlap) {																										// true: date choose not overlapping date with unavailable date
@@ -577,33 +444,6 @@ class LeaveController extends Controller
 
 					$l = $user->hasmanyleave()->create($data);																					// insert data into HRLeave
 
-					$l->hasmanyleaveamend()->create([
-														'amend_note' => Str::ucfirst(Str::lower($request->amend_note)),
-														'staff_id' => \Auth::user()->belongstostaff->id,
-														'date' => now()
-													]);
-					// if($user->belongstoleaveapprovalflow->backup_approval == 1){																// alert backup
-					// 	if($request->staff_id) {																								// backup only valid for non EL leave
-					// 		$bid = $hrleave->hasmanyleaveapprovalbackup()->first()->id;
-					// 		HRLeaveApprovalBackup::find($bid)->update(['leave_id' => $l->id]);
-					// 	}
-					// }
-					// if($user->belongstoleaveapprovalflow->supervisor_approval == 1){															// alert supervisor
-					// 	$sid = $hrleave->hasmanyleaveapprovalsupervisor()->first()->id;
-					// 	HRLeaveApprovalSupervisor::find($sid)->update(['leave_id' => $l->id]);
-					// }
-					// if($user->belongstoleaveapprovalflow->hod_approval == 1){																	// alert hod
-					// 	$hid = $hrleave->hasmanyleaveapprovalhod()->first()->id;
-					// 	HRLeaveApprovalHOD::find($hid)->update(['leave_id' => $l->id]);
-					// }
-					// if($user->belongstoleaveapprovalflow->director_approval == 1){																// alert director
-					// 	$did = $hrleave->hasmanyleaveapprovaldir()->first()->id;
-					// 	HRLeaveApprovalDirector::find($did)->update(['leave_id' => $l->id]);
-					// }
-					// if($user->belongstoleaveapprovalflow->hr_approval == 1){																	// alert hr
-					// 	$rid = $hrleave->hasmanyleaveapprovalhr()->first()->id;
-					// 	HRLeaveApprovalHR::find($rid)->update(['leave_id' => $l->id]);
-					// }
 				} else {					// false: date choose overlapping date with unavailable date
 					// since date_time_start and date_time_end overlapping with block date, need to iterate date by date
 					Session::flash('flash_danger', 'The date you choose overlapped with RESTDAY, PUBLIC HOLIDAY or other leaves.');
@@ -653,34 +493,6 @@ class LeaveController extends Controller
 						$hrleave->belongstomanyleavemc()->detach($entitlement->id);
 						$user->hasmanyleavemc()->where('year', $daStart->year)->update(['mc_leave_balance' => $entitle, 'mc_leave_utilize' => $utilize]);		// update leave_balance by substarct
 
-						$l->hasmanyleaveamend()->create([
-															'amend_note' => Str::ucfirst(Str::lower($request->amend_note)),
-															'staff_id' => \Auth::user()->belongstostaff->id,
-															'date' => now()
-														]);
-
-						// if($user->belongstoleaveapprovalflow->backup_approval == 1){																// alert backup
-						// 	if($request->staff_id) {																								// backup only valid for non EL leave
-						// 		$bid = $hrleave->hasmanyleaveapprovalbackup()->first()->id;
-						// 		HRLeaveApprovalBackup::find($bid)->update(['leave_id' => $l->id]);
-						// 	}
-						// }
-						// if($user->belongstoleaveapprovalflow->supervisor_approval == 1){															// alert supervisor
-						// 	$sid = $hrleave->hasmanyleaveapprovalsupervisor()->first()->id;
-						// 	HRLeaveApprovalSupervisor::find($sid)->update(['leave_id' => $l->id]);
-						// }
-						// if($user->belongstoleaveapprovalflow->hod_approval == 1){																	// alert hod
-						// 	$hid = $hrleave->hasmanyleaveapprovalhod()->first()->id;
-						// 	HRLeaveApprovalHOD::find($hid)->update(['leave_id' => $l->id]);
-						// }
-						// if($user->belongstoleaveapprovalflow->director_approval == 1){																// alert director
-						// 	$did = $hrleave->hasmanyleaveapprovaldir()->first()->id;
-						// 	HRLeaveApprovalDirector::find($did)->update(['leave_id' => $l->id]);
-						// }
-						// if($user->belongstoleaveapprovalflow->hr_approval == 1){																	// alert hr
-						// 	$rid = $hrleave->hasmanyleaveapprovalhr()->first()->id;
-						// 	HRLeaveApprovalHR::find($rid)->update(['leave_id' => $l->id]);
-						// }
 					} else {
 						Session::flash('flash_danger', 'Please make sure applied leave does not exceed available leave balance');
 						return redirect()->back();
@@ -715,34 +527,6 @@ class LeaveController extends Controller
 						$hrleave->belongstomanyleavemc()->detach($entitlement->id);
 						$user->hasmanyleavemc()->where('year', $daStart->year)->update(['mc_leave_balance' => $entitle, 'mc_leave_utilize' => $utilize]);		// update leave_balance by substarct
 
-						$l->hasmanyleaveamend()->create([
-															'amend_note' => Str::ucfirst(Str::lower($request->amend_note)),
-															'staff_id' => \Auth::user()->belongstostaff->id,
-															'date' => now()
-														]);
-
-						// if($user->belongstoleaveapprovalflow->backup_approval == 1){																// alert backup
-						// 	if($request->staff_id) {																								// backup only valid for non EL leave
-						// 		$bid = $hrleave->hasmanyleaveapprovalbackup()->first()->id;
-						// 		HRLeaveApprovalBackup::find($bid)->update(['leave_id' => $l->id]);
-						// 	}
-						// }
-						// if($user->belongstoleaveapprovalflow->supervisor_approval == 1){															// alert supervisor
-						// 	$sid = $hrleave->hasmanyleaveapprovalsupervisor()->first()->id;
-						// 	HRLeaveApprovalSupervisor::find($sid)->update(['leave_id' => $l->id]);
-						// }
-						// if($user->belongstoleaveapprovalflow->hod_approval == 1){																	// alert hod
-						// 	$hid = $hrleave->hasmanyleaveapprovalhod()->first()->id;
-						// 	HRLeaveApprovalHOD::find($hid)->update(['leave_id' => $l->id]);
-						// }
-						// if($user->belongstoleaveapprovalflow->director_approval == 1){																// alert director
-						// 	$did = $hrleave->hasmanyleaveapprovaldir()->first()->id;
-						// 	HRLeaveApprovalDirector::find($did)->update(['leave_id' => $l->id]);
-						// }
-						// if($user->belongstoleaveapprovalflow->hr_approval == 1){																	// alert hr
-						// 	$rid = $hrleave->hasmanyleaveapprovalhr()->first()->id;
-						// 	HRLeaveApprovalHR::find($rid)->update(['leave_id' => $l->id]);
-						// }
 					} else {
 						Session::flash('flash_danger', 'Please make sure applied leave does not exceed available leave balance');
 						return redirect()->back();
@@ -779,34 +563,6 @@ class LeaveController extends Controller
 						$hrleave->belongstomanyleavemc()->detach($entitlement->id);
 						$user->hasmanyleavemc()->where('year', $daStart->year)->update(['mc_leave_balance' => $entitle, 'mc_leave_utilize' => $utilize]);		// update leave_balance by substarct
 
-						$l->hasmanyleaveamend()->create([
-															'amend_note' => Str::ucfirst(Str::lower($request->amend_note)),
-															'staff_id' => \Auth::user()->belongstostaff->id,
-															'date' => now()
-														]);
-
-						// if($user->belongstoleaveapprovalflow->backup_approval == 1){																// alert backup
-						// 	if($request->staff_id) {																								// backup only valid for non EL leave
-						// 		$bid = $hrleave->hasmanyleaveapprovalbackup()->first()->id;
-						// 		HRLeaveApprovalBackup::find($bid)->update(['leave_id' => $l->id]);
-						// 	}
-						// }
-						// if($user->belongstoleaveapprovalflow->supervisor_approval == 1){															// alert supervisor
-						// 	$sid = $hrleave->hasmanyleaveapprovalsupervisor()->first()->id;
-						// 	HRLeaveApprovalSupervisor::find($sid)->update(['leave_id' => $l->id]);
-						// }
-						// if($user->belongstoleaveapprovalflow->hod_approval == 1){																	// alert hod
-						// 	$hid = $hrleave->hasmanyleaveapprovalhod()->first()->id;
-						// 	HRLeaveApprovalHOD::find($hid)->update(['leave_id' => $l->id]);
-						// }
-						// if($user->belongstoleaveapprovalflow->director_approval == 1){																// alert director
-						// 	$did = $hrleave->hasmanyleaveapprovaldir()->first()->id;
-						// 	HRLeaveApprovalDirector::find($did)->update(['leave_id' => $l->id]);
-						// }
-						// if($user->belongstoleaveapprovalflow->hr_approval == 1){																	// alert hr
-						// 	$rid = $hrleave->hasmanyleaveapprovalhr()->first()->id;
-						// 	HRLeaveApprovalHR::find($rid)->update(['leave_id' => $l->id]);
-						// }
 					} else {																														// mc_leave_balance < $totalday, then exit
 						Session::flash('flash_danger', 'Please make sure applied leave does not exceed available leave balance');
 						return redirect()->back();
@@ -860,34 +616,6 @@ class LeaveController extends Controller
 						$hrleave->belongstomanyleavereplacement()->detach($entitlement->id);
 						$user->hasmanyleavereplacement()->where('id', $entitlement->id)->update(['leave_balance' => $entitle, 'leave_utilize' => $utilize]);		// update leave_balance by substarct
 
-						$l->hasmanyleaveamend()->create([
-															'amend_note' => Str::ucfirst(Str::lower($request->amend_note)),
-															'staff_id' => \Auth::user()->belongstostaff->id,
-															'date' => now()
-														]);
-
-						// if($user->belongstoleaveapprovalflow->backup_approval == 1){																// alert backup
-						// 	if($request->staff_id) {																								// backup only valid for non EL leave
-						// 		$bid = $hrleave->hasmanyleaveapprovalbackup()->first()->id;
-						// 		HRLeaveApprovalBackup::find($bid)->update(['leave_id' => $l->id]);
-						// 	}
-						// }
-						// if($user->belongstoleaveapprovalflow->supervisor_approval == 1){															// alert supervisor
-						// 	$sid = $hrleave->hasmanyleaveapprovalsupervisor()->first()->id;
-						// 	HRLeaveApprovalSupervisor::find($sid)->update(['leave_id' => $l->id]);
-						// }
-						// if($user->belongstoleaveapprovalflow->hod_approval == 1){																	// alert hod
-						// 	$hid = $hrleave->hasmanyleaveapprovalhod()->first()->id;
-						// 	HRLeaveApprovalHOD::find($hid)->update(['leave_id' => $l->id]);
-						// }
-						// if($user->belongstoleaveapprovalflow->director_approval == 1){																// alert director
-						// 	$did = $hrleave->hasmanyleaveapprovaldir()->first()->id;
-						// 	HRLeaveApprovalDirector::find($did)->update(['leave_id' => $l->id]);
-						// }
-						// if($user->belongstoleaveapprovalflow->hr_approval == 1){																	// alert hr
-						// 	$rid = $hrleave->hasmanyleaveapprovalhr()->first()->id;
-						// 	HRLeaveApprovalHR::find($rid)->update(['leave_id' => $l->id]);
-						// }
 					} else {
 						Session::flash('flash_danger', 'Please ensure applied leave does not exceed available leave balance');
 						return redirect()->back();
@@ -922,34 +650,6 @@ class LeaveController extends Controller
 						$hrleave->belongstomanyleavereplacement()->detach($entitlement->id);
 						$user->hasmanyleavereplacement()->where('id', $entitlement->id)->update(['leave_balance' => $entitle, 'leave_utilize' => $utilize]);		// update leave_balance by substarct
 
-						$l->hasmanyleaveamend()->create([
-															'amend_note' => Str::ucfirst(Str::lower($request->amend_note)),
-															'staff_id' => \Auth::user()->belongstostaff->id,
-															'date' => now()
-														]);
-
-						// if($user->belongstoleaveapprovalflow->backup_approval == 1){																// alert backup
-						// 	if($request->staff_id) {																								// backup only valid for non EL leave
-						// 		$bid = $hrleave->hasmanyleaveapprovalbackup()->first()->id;
-						// 		HRLeaveApprovalBackup::find($bid)->update(['leave_id' => $l->id]);
-						// 	}
-						// }
-						// if($user->belongstoleaveapprovalflow->supervisor_approval == 1){															// alert supervisor
-						// 	$sid = $hrleave->hasmanyleaveapprovalsupervisor()->first()->id;
-						// 	HRLeaveApprovalSupervisor::find($sid)->update(['leave_id' => $l->id]);
-						// }
-						// if($user->belongstoleaveapprovalflow->hod_approval == 1){																	// alert hod
-						// 	$hid = $hrleave->hasmanyleaveapprovalhod()->first()->id;
-						// 	HRLeaveApprovalHOD::find($hid)->update(['leave_id' => $l->id]);
-						// }
-						// if($user->belongstoleaveapprovalflow->director_approval == 1){																// alert director
-						// 	$did = $hrleave->hasmanyleaveapprovaldir()->first()->id;
-						// 	HRLeaveApprovalDirector::find($did)->update(['leave_id' => $l->id]);
-						// }
-						// if($user->belongstoleaveapprovalflow->hr_approval == 1){																	// alert hr
-						// 	$rid = $hrleave->hasmanyleaveapprovalhr()->first()->id;
-						// 	HRLeaveApprovalHR::find($rid)->update(['leave_id' => $l->id]);
-						// }
 					} else {
 						Session::flash('flash_danger', 'Please make sure applied leave does not exceed available leave balance');
 						return redirect()->back();
@@ -986,34 +686,6 @@ class LeaveController extends Controller
 						$hrleave->belongstomanyleavereplacement()->detach($entitlement->id);
 						$user->hasmanyleavereplacement()->where('id', $entitlement->leave_replacement_id)->update(['leave_balance' => $entitle, 'leave_utilize' => $utilize]);		// update leave_balance by substarct
 
-						$l->hasmanyleaveamend()->create([
-															'amend_note' => Str::ucfirst(Str::lower($request->amend_note)),
-															'staff_id' => \Auth::user()->belongstostaff->id,
-															'date' => now()
-														]);
-
-						// if($user->belongstoleaveapprovalflow->backup_approval == 1){																// alert backup
-						// 	if($request->staff_id) {																								// backup only valid for non EL leave
-						// 		$bid = $hrleave->hasmanyleaveapprovalbackup()->first()->id;
-						// 		HRLeaveApprovalBackup::find($bid)->update(['leave_id' => $l->id]);
-						// 	}
-						// }
-						// if($user->belongstoleaveapprovalflow->supervisor_approval == 1){															// alert supervisor
-						// 	$sid = $hrleave->hasmanyleaveapprovalsupervisor()->first()->id;
-						// 	HRLeaveApprovalSupervisor::find($sid)->update(['leave_id' => $l->id]);
-						// }
-						// if($user->belongstoleaveapprovalflow->hod_approval == 1){																	// alert hod
-						// 	$hid = $hrleave->hasmanyleaveapprovalhod()->first()->id;
-						// 	HRLeaveApprovalHOD::find($hid)->update(['leave_id' => $l->id]);
-						// }
-						// if($user->belongstoleaveapprovalflow->director_approval == 1){																// alert director
-						// 	$did = $hrleave->hasmanyleaveapprovaldir()->first()->id;
-						// 	HRLeaveApprovalDirector::find($did)->update(['leave_id' => $l->id]);
-						// }
-						// if($user->belongstoleaveapprovalflow->hr_approval == 1){																	// alert hr
-						// 	$rid = $hrleave->hasmanyleaveapprovalhr()->first()->id;
-						// 	HRLeaveApprovalHR::find($rid)->update(['leave_id' => $l->id]);
-						// }
 					} else {																														// leave_balance < $totalday, then exit
 						Session::flash('flash_danger', 'Please make sure applied leave does not exceed available leave balance');
 						return redirect()->back()->withInput();
@@ -1062,34 +734,6 @@ class LeaveController extends Controller
 				$hrleave->belongstomanyleavematernity()->detach($entitlement->id);
 				$user->hasmanyleavematernity()->where('year', $daStart->year)->update(['maternity_leave_balance' => $entitle, 'maternity_leave_utilize' => $utilize]);	// update leave_balance by substarct
 
-				$l->hasmanyleaveamend()->create([
-													'amend_note' => Str::ucfirst(Str::lower($request->amend_note)),
-													'staff_id' => \Auth::user()->belongstostaff->id,
-													'date' => now()
-												]);
-
-				// if($user->belongstoleaveapprovalflow->backup_approval == 1){																// alert backup
-				// 	if($request->staff_id) {																								// backup only valid for non EL leave
-				// 		$bid = $hrleave->hasmanyleaveapprovalbackup()->first()->id;
-				// 		HRLeaveApprovalBackup::find($bid)->update(['leave_id' => $l->id]);
-				// 	}
-				// }
-				// if($user->belongstoleaveapprovalflow->supervisor_approval == 1){															// alert supervisor
-				// 	$sid = $hrleave->hasmanyleaveapprovalsupervisor()->first()->id;
-				// 	HRLeaveApprovalSupervisor::find($sid)->update(['leave_id' => $l->id]);
-				// }
-				// if($user->belongstoleaveapprovalflow->hod_approval == 1){																	// alert hod
-				// 	$hid = $hrleave->hasmanyleaveapprovalhod()->first()->id;
-				// 	HRLeaveApprovalHOD::find($hid)->update(['leave_id' => $l->id]);
-				// }
-				// if($user->belongstoleaveapprovalflow->director_approval == 1){																// alert director
-				// 	$did = $hrleave->hasmanyleaveapprovaldir()->first()->id;
-				// 	HRLeaveApprovalDirector::find($did)->update(['leave_id' => $l->id]);
-				// }
-				// if($user->belongstoleaveapprovalflow->hr_approval == 1){																	// alert hr
-				// 	$rid = $hrleave->hasmanyleaveapprovalhr()->first()->id;
-				// 	HRLeaveApprovalHR::find($rid)->update(['leave_id' => $l->id]);
-				// }
 			} else {
 				Session::flash('flash_danger', 'No more maternity leave available.');
 				return redirect()->back()->withInput();
@@ -1191,34 +835,6 @@ class LeaveController extends Controller
 			}
 			$l = $user->hasmanyleave()->create($data);
 
-			$l->hasmanyleaveamend()->create([
-												'amend_note' => Str::ucfirst(Str::lower($request->amend_note)),
-												'staff_id' => \Auth::user()->belongstostaff->id,
-												'date' => now()
-											]);
-
-			// if($user->belongstoleaveapprovalflow->backup_approval == 1){																// alert backup
-			// 	if($request->staff_id) {																								// backup only valid for non EL leave
-			// 		$bid = $hrleave->hasmanyleaveapprovalbackup()->first()->id;
-			// 		HRLeaveApprovalBackup::find($bid)->update(['leave_id' => $l->id]);
-			// 	}
-			// }
-			// if($user->belongstoleaveapprovalflow->supervisor_approval == 1){															// alert supervisor
-			// 	$sid = $hrleave->hasmanyleaveapprovalsupervisor()->first()->id;
-			// 	HRLeaveApprovalSupervisor::find($sid)->update(['leave_id' => $l->id]);
-			// }
-			// if($user->belongstoleaveapprovalflow->hod_approval == 1){																	// alert hod
-			// 	$hid = $hrleave->hasmanyleaveapprovalhod()->first()->id;
-			// 	HRLeaveApprovalHOD::find($hid)->update(['leave_id' => $l->id]);
-			// }
-			// if($user->belongstoleaveapprovalflow->director_approval == 1){																// alert director
-			// 	$did = $hrleave->hasmanyleaveapprovaldir()->first()->id;
-			// 	HRLeaveApprovalDirector::find($did)->update(['leave_id' => $l->id]);
-			// }
-			// if($user->belongstoleaveapprovalflow->hr_approval == 1){																	// alert hr
-			// 	$rid = $hrleave->hasmanyleaveapprovalhr()->first()->id;
-			// 	HRLeaveApprovalHR::find($rid)->update(['leave_id' => $l->id]);
-			// }
 		}
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1252,34 +868,7 @@ class LeaveController extends Controller
 					}
 
 					$l = $user->hasmanyleave()->create($data);																					// insert data into HRLeave
-					$l->hasmanyleaveamend()->create([
-														'amend_note' => Str::ucfirst(Str::lower($request->amend_note)),
-														'staff_id' => \Auth::user()->belongstostaff->id,
-														'date' => now()
-													]);
 
-					// if($user->belongstoleaveapprovalflow->backup_approval == 1){																// alert backup
-					// 	if($request->staff_id) {																								// backup only valid for non EL leave
-					// 		$bid = $hrleave->hasmanyleaveapprovalbackup()->first()->id;
-					// 		HRLeaveApprovalBackup::find($bid)->update(['leave_id' => $l->id]);
-					// 	}
-					// }
-					// if($user->belongstoleaveapprovalflow->supervisor_approval == 1){															// alert supervisor
-					// 	$sid = $hrleave->hasmanyleaveapprovalsupervisor()->first()->id;
-					// 	HRLeaveApprovalSupervisor::find($sid)->update(['leave_id' => $l->id]);
-					// }
-					// if($user->belongstoleaveapprovalflow->hod_approval == 1){																	// alert hod
-					// 	$hid = $hrleave->hasmanyleaveapprovalhod()->first()->id;
-					// 	HRLeaveApprovalHOD::find($hid)->update(['leave_id' => $l->id]);
-					// }
-					// if($user->belongstoleaveapprovalflow->director_approval == 1){																// alert director
-					// 	$did = $hrleave->hasmanyleaveapprovaldir()->first()->id;
-					// 	HRLeaveApprovalDirector::find($did)->update(['leave_id' => $l->id]);
-					// }
-					// if($user->belongstoleaveapprovalflow->hr_approval == 1){																	// alert hr
-					// 	$rid = $hrleave->hasmanyleaveapprovalhr()->first()->id;
-					// 	HRLeaveApprovalHR::find($rid)->update(['leave_id' => $l->id]);
-					// }
 				} elseif($request->leave_cat == 1) {																								// apply leace 1 whole day
 					$data = $request->only(['leave_type_id', 'leave_cat', 'date_time_start', 'date_time_end', 'half_type_id']);
 					$data += ['reason' => Str::ucfirst(Str::lower($request->reason))];
@@ -1302,34 +891,6 @@ class LeaveController extends Controller
 					}
 
 					$l = $user->hasmanyleave()->create($data);																					// insert data into HRLeave
-					$l->hasmanyleaveamend()->create([
-														'amend_note' => Str::ucfirst(Str::lower($request->amend_note)),
-														'staff_id' => \Auth::user()->belongstostaff->id,
-														'date' => now()
-													]);
-
-					// if($user->belongstoleaveapprovalflow->backup_approval == 1){																// alert backup
-					// 	if($request->staff_id) {																								// backup only valid for non EL leave
-					// 		$bid = $hrleave->hasmanyleaveapprovalbackup()->first()->id;
-					// 		HRLeaveApprovalBackup::find($bid)->update(['leave_id' => $l->id]);
-					// 	}
-					// }
-					// if($user->belongstoleaveapprovalflow->supervisor_approval == 1){															// alert supervisor
-					// 	$sid = $hrleave->hasmanyleaveapprovalsupervisor()->first()->id;
-					// 	HRLeaveApprovalSupervisor::find($sid)->update(['leave_id' => $l->id]);
-					// }
-					// if($user->belongstoleaveapprovalflow->hod_approval == 1){																	// alert hod
-					// 	$hid = $hrleave->hasmanyleaveapprovalhod()->first()->id;
-					// 	HRLeaveApprovalHOD::find($hid)->update(['leave_id' => $l->id]);
-					// }
-					// if($user->belongstoleaveapprovalflow->director_approval == 1){																// alert director
-					// 	$did = $hrleave->hasmanyleaveapprovaldir()->first()->id;
-					// 	HRLeaveApprovalDirector::find($did)->update(['leave_id' => $l->id]);
-					// }
-					// if($user->belongstoleaveapprovalflow->hr_approval == 1){																	// alert hr
-					// 	$rid = $hrleave->hasmanyleaveapprovalhr()->first()->id;
-					// 	HRLeaveApprovalHR::find($rid)->update(['leave_id' => $l->id]);
-					// }
 				}
 			} else {																															// apply leave for 2 OR more days
 				if ($noOverlap) {												// true: date choose not overlapping date with unavailable date
@@ -1354,34 +915,7 @@ class LeaveController extends Controller
 					}
 
 					$l = $user->hasmanyleave()->create($data);																					// insert data into HRLeave
-					$l->hasmanyleaveamend()->create([
-														'amend_note' => Str::ucfirst(Str::lower($request->amend_note)),
-														'staff_id' => \Auth::user()->belongstostaff->id,
-														'date' => now()
-													]);
 
-					// if($user->belongstoleaveapprovalflow->backup_approval == 1){																// alert backup
-					// 	if($request->staff_id) {																								// backup only valid for non EL leave
-					// 		$bid = $hrleave->hasmanyleaveapprovalbackup()->first()->id;
-					// 		HRLeaveApprovalBackup::find($bid)->update(['leave_id' => $l->id]);
-					// 	}
-					// }
-					// if($user->belongstoleaveapprovalflow->supervisor_approval == 1){															// alert supervisor
-					// 	$sid = $hrleave->hasmanyleaveapprovalsupervisor()->first()->id;
-					// 	HRLeaveApprovalSupervisor::find($sid)->update(['leave_id' => $l->id]);
-					// }
-					// if($user->belongstoleaveapprovalflow->hod_approval == 1){																	// alert hod
-					// 	$hid = $hrleave->hasmanyleaveapprovalhod()->first()->id;
-					// 	HRLeaveApprovalHOD::find($hid)->update(['leave_id' => $l->id]);
-					// }
-					// if($user->belongstoleaveapprovalflow->director_approval == 1){																// alert director
-					// 	$did = $hrleave->hasmanyleaveapprovaldir()->first()->id;
-					// 	HRLeaveApprovalDirector::find($did)->update(['leave_id' => $l->id]);
-					// }
-					// if($user->belongstoleaveapprovalflow->hr_approval == 1){																	// alert hr
-					// 	$rid = $hrleave->hasmanyleaveapprovalhr()->first()->id;
-					// 	HRLeaveApprovalHR::find($rid)->update(['leave_id' => $l->id]);
-					// }
 				} else {											// false: date choose overlapping date with unavailable date
 					// since date_time_start and date_time_end overlapping with block date, need to iterate date by date
 					Session::flash('flash_danger', 'The date you choose overlapped with RESTDAY, PUBLIC HOLIDAY or other leaves.');
@@ -1420,8 +954,11 @@ class LeaveController extends Controller
 		// finally, we delete the leave
 		// $hrleave->delete();
 		$hrleave->update(['leave_status_id' => 3, 'remarks' => 'Edit leave']);
-		HRAttendance::where('leave_id', $hrleave->id)->update(['leave_id' => $l->id]);
-		Session::flash('flash_message', 'Successfully edit leave');
+		$b = HRAttendance::where('leave_id', $hrleave->id)->get();
+		foreach ($b as $c) {
+			HRAttendance::where('id', $c->id)->update(['leave_id' => null]);
+		}
+		Session::flash('flash_message', 'Successfully edit leave. Please check the date of leave at the attendance section for a verification');
 		return redirect()->route('hrleave.show', $l->id);
 	}
 

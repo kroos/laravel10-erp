@@ -210,7 +210,7 @@ class StaffController extends Controller
 					'username' => $request->username,
 					'password' => $staff->hasmanylogin()->where('active', 0)->first()->password,
 				]);
-				$staff->update(['status_id' => $request->status_id]);
+				$staff->update(['status_id' => $request->status_id, 'confirmed' => now()]);
 			} else {
 				$staff->hasmanylogin()->update($login);
 				$staff->update(['status_id' => $request->status_id]);

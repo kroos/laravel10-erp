@@ -41,21 +41,28 @@ class OvertimeController extends Controller
 	public function index(): View
 	{
 		Paginator::useBootstrapFive();
-		$sa = HROvertime::SelectRaw('COUNT(staff_id) as totalstaff, ot_date')
-						->where('active', 1)
-						// ->groupByRaw('YEAR(ot_date)')
-						->groupByRaw('MONTH(ot_date)')
-						->orderBy('ot_date', 'DESC')
-						// ->get();
-						// ->ddRawSql();
-						->cursorPaginate(1);
-		// dd($sa);
-		$overtime = HROvertime::select('*')
-						->whereYear('ot_date', $sa->first()?->ot_date)
-						->orderBy('ot_date', 'DESC')
-						->cursorPaginate($sa->first()?->totalstaff);
+		// $sa = HROvertime::SelectRaw('COUNT(staff_id) as totalstaff, ot_date')
+		// 				->where('active', 1)
+		// 				// ->groupByRaw('YEAR(ot_date)')
+		// 				->groupByRaw('MONTH(ot_date)')
+		// 				->orderBy('ot_date', 'DESC')
+		// 				// ->get();
+		// 				// ->ddRawSql();
+		// 				->cursorPaginate(1);
+		// // dd($sa);
+		// $overtime = HROvertime::select('*')
+		// 				// ->whereYear('ot_date', $sa->first()?->ot_date)
+		// 				->where('active', 1)
+		// 				->orderBy('ot_date', 'DESC')
+		// 				->cursorPaginate($sa->first()?->totalstaff);
 
-		return view('humanresources.hrdept.overtime.index', ['overtime' => $overtime, 'sa' => $sa]);
+		$overtime = HROvertime::select('*')
+						// ->whereYear('ot_date', $sa->first()?->ot_date)
+						->where('active', 1)
+						->orderBy('ot_date', 'DESC')
+						->get();
+
+		return view('humanresources.hrdept.overtime.index', ['overtime' => $overtime/*, 'sa' => $sa*/]);
 	}
 
 	/**
