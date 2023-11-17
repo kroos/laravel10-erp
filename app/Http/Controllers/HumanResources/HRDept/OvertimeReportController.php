@@ -31,6 +31,9 @@ use \Carbon\Carbon;
 use \Carbon\CarbonPeriod;
 use \Carbon\CarbonInterval;
 
+// load pdf
+use Barryvdh\DomPDF\Facade\Pdf;
+
 use Session;
 
 class OvertimeReportController extends Controller
@@ -43,11 +46,61 @@ class OvertimeReportController extends Controller
   }
 
   /**
+   * Print PDF.
+   */
+  public function print(Request $request)
+  {
+    $current_datetime = Carbon::now();
+
+    $overtimes = HROvertime::join('staffs', 'staffs.id', '=', 'hr_overtimes.staff_id')
+      ->join('hr_overtime_ranges', 'hr_overtime_ranges.id', '=', 'hr_overtimes.overtime_range_id')
+      ->join('logins', 'hr_overtimes.staff_id', '=', 'logins.staff_id')
+      ->join('pivot_staff_pivotdepts', 'staffs.id', '=', 'pivot_staff_pivotdepts.staff_id')
+      ->join('pivot_dept_cate_branches', 'pivot_staff_pivotdepts.pivot_dept_id', '=',  'pivot_dept_cate_branches.id')
+      ->whereBetween('hr_overtimes.ot_date', [$request->date_start, $request->date_end])
+      ->where('hr_overtimes.active', 1)
+      ->where('logins.active', 1)
+      ->where('pivot_staff_pivotdepts.main', 1)
+      ->where('pivot_dept_cate_branches.branch_id', $request->branch)
+      ->select('logins.username', 'staffs.name', 'pivot_dept_cate_branches.department', 'hr_overtimes.staff_id')
+      ->groupBy('hr_overtimes.staff_id')
+      ->orderBy('logins.username', 'ASC')
+      ->get();
+
+    $branch = $request->branch;
+    $date_start = $request->date_start;
+    $date_end = $request->date_end;
+
+    $pdf = PDF::loadView('humanresources.hrdept.overtime.overtimereport.printpdf', ['overtimes' => $overtimes, 'branch' => $branch, 'date_start' => $date_start, 'date_end' => $date_end]);
+    return $pdf->download('overtime_report ' . $current_datetime . '.pdf');
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  /**
    * Display a listing of the resource.
    */
   public function index(Request $request): View
   {
     $overtimes = NULL;
+    $branch = NULL;
     $date_start = NULL;
     $date_end = NULL;
 
@@ -67,11 +120,12 @@ class OvertimeReportController extends Controller
         ->orderBy('logins.username', 'ASC')
         ->get();
 
+      $branch = $request->branch;
       $date_start = $request->date_start;
       $date_end = $request->date_end;
     }
 
-    return view('humanresources.hrdept.overtime.overtimereport.index', ['overtimes' => $overtimes, 'date_start' => $date_start, 'date_end' => $date_end]);
+    return view('humanresources.hrdept.overtime.overtimereport.index', ['overtimes' => $overtimes, 'branch' => $branch, 'date_start' => $date_start, 'date_end' => $date_end]);
   }
 
   /**
