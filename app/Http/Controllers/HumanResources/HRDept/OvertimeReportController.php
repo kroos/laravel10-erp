@@ -75,25 +75,6 @@ class OvertimeReportController extends Controller
     return $pdf->download('overtime_report ' . $current_datetime . '.pdf');
   }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   /**
    * Display a listing of the resource.
    */

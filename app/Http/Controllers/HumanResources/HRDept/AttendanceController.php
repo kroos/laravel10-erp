@@ -127,8 +127,8 @@ class AttendanceController extends Controller
 			'resume' => $request->resume,
 			'out' => $request->out,
 			'time_work_hour' => $request->time_work_hour,
-			'remarks' => $request->remarks,
-			'hr_remarks' => $request->hr_remarks,
+			'remarks' => ucwords(Str::of($request->remarks)->lower()),
+			'hr_remarks' => ucwords(Str::of($request->hr_remarks)->lower()),
 			'exception' => $exception,
 		]);
 

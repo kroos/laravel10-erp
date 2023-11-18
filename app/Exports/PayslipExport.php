@@ -95,6 +95,8 @@ class PayslipExport implements FromCollection
 			$ot[$k1] = [];
 			$tf[$k1] = [];
 
+
+
 			// loop attendance foreach staff to find leave, absent, OT, lateness and early out
 			$i = 0;
 			foreach ($sattendances as $sattendance) {
