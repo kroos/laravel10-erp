@@ -609,7 +609,7 @@ foreach ($c as $v) {
 								@endif
 							@endif
 							@if($deptid == 6)				<!-- cs office -->
-								@if($stadept == 6 || ($stacate == 2 && $stadept == 7) && ($stacate == 2 && $stadept == 3))
+								@if($stadept == 6 || $stadept == 7 || $stadept == 3)
 									<tr class="{{ $u }}" >
 										<td>
 											HR9-{{ str_pad( $leav->leave_no, 5, "0", STR_PAD_LEFT ) }}/{{ $leav->leave_year }}
@@ -665,7 +665,7 @@ foreach ($c as $v) {
 								@endif
 							@endif
 							@if($deptid == 23)				<!-- purchasing -->
-								@if($stadept == 23 || $stadept == 17 || ($stacate == 2 && ($stadept == 11 || $stadept == 16)))
+								@if($stadept == 23 || $stadept == 17 || $stadept == 11 || $stadept == 16)
 									<tr class="{{ $u }}" >
 										<td>
 											HR9-{{ str_pad( $leav->leave_no, 5, "0", STR_PAD_LEFT ) }}/{{ $leav->leave_year }}
