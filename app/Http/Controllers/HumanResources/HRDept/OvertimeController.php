@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 // load models
 use App\Models\HumanResources\HROvertime;
+use App\Models\HumanResources\HRAttendance;
 
 // for controller output
 use Illuminate\Http\RedirectResponse;
@@ -126,7 +127,12 @@ class OvertimeController extends Controller
 	 */
 	public function destroy(HROvertime $overtime): JsonResponse
 	{
-		$overtime->delete();
+		// remove from attendance
+		$r = HRAttendance::where('overtime_id', $overtime->id)->get();
+		foreach ($r as $c) {
+			HRAttendance::where('id', $c->id)->update(['overtime_id' => null]);
+		}
+		$overtime->update(['active' => NULL]);
 		return response()->json([
 			'message' => 'Data deleted',
 			'status' => 'success'
