@@ -142,7 +142,7 @@ class HRLeaveController extends Controller
 						$time = explode( '/', $request->half_type_id );
 
 						$data = $request->only(['leave_type_id', 'leave_cat']);
-						$data += ['reason' => Str::ucfirst(Str::lower($request->reason))];
+						$data += ['reason' => ucwords(Str::lower($request->reason))];
 						$data += ['verify_code' => $code];
 						$data += ['half_type_id' => $time[0]];
 						$data += ['date_time_start' => $request->date_time_start.' '.$time[1]];
@@ -193,7 +193,7 @@ class HRLeaveController extends Controller
 						$utilize = $entitlement->annual_leave_utilize + 1;
 
 						$data = $request->only(['leave_type_id', 'leave_cat', 'date_time_start', 'date_time_end', 'half_type_id']);
-						$data += ['reason' => Str::ucfirst(Str::lower($request->reason))];
+						$data += ['reason' => ucwords(Str::lower($request->reason))];
 						$data += ['verify_code' => $code];
 						$data += ['period_day' => 1];
 						$data += ['leave_no' => $row];
@@ -251,7 +251,7 @@ class HRLeaveController extends Controller
 						$utilize = $entitlement->annual_leave_utilize + $totalday;
 
 						$data = $request->only(['leave_type_id', 'leave_cat', 'date_time_start', 'date_time_end']);
-						$data += ['reason' => Str::ucfirst(Str::lower($request->reason))];
+						$data += ['reason' => ucwords(Str::lower($request->reason))];
 						$data += ['verify_code' => $code];
 						$data += ['period_day' => $totalday];
 						$data += ['leave_no' => $row];
@@ -318,7 +318,7 @@ class HRLeaveController extends Controller
 									'leave_year' => $ye,
 									'leave_cat' => $request->leave_cat,
 									'leave_type_id' => $request->leave_type_id,
-									'reason' => Str::ucfirst(Str::lower($request->reason)),
+									'reason' => ucwords(Str::lower($request->reason)),
 									'softcopy' => $fileName
 								];
 							} else {
@@ -331,7 +331,7 @@ class HRLeaveController extends Controller
 									'leave_year' => $ye,
 									'leave_cat' => $request->leave_cat,
 									'leave_type_id' => $request->leave_type_id,
-									'reason' => Str::ucfirst(Str::lower($request->reason))
+									'reason' => ucwords(Str::lower($request->reason))
 								];
 							}
 
@@ -373,7 +373,7 @@ class HRLeaveController extends Controller
 						$time = explode( '/', $request->half_type_id );
 
 						$data = $request->only(['leave_type_id', 'leave_cat']);
-						$data += ['reason' => Str::ucfirst(Str::lower($request->reason))];
+						$data += ['reason' => ucwords(Str::lower($request->reason))];
 						$data += ['half_type_id' => $time[0]];
 						$data += ['verify_code' => $code];
 						$data += ['date_time_start' => $request->date_time_start.' '.$time[1]];
@@ -422,7 +422,7 @@ class HRLeaveController extends Controller
 						// $entitle = $entitlement->mc_balance - 1;
 
 						$data = $request->only(['leave_type_id', 'leave_cat', 'date_time_start', 'date_time_end', 'half_type_id']);
-						$data += ['reason' => Str::ucfirst(Str::lower($request->reason))];
+						$data += ['reason' => ucwords(Str::lower($request->reason))];
 						$data += ['verify_code' => $code];
 						$data += ['period_day' => 1];
 						$data += ['leave_no' => $row];
@@ -470,7 +470,7 @@ class HRLeaveController extends Controller
 						// $entitle = $entitlement->mc_balance - $totalday;
 
 						$data = $request->only(['leave_type_id', 'leave_cat', 'date_time_start', 'date_time_end']);
-						$data += ['reason' => Str::ucfirst(Str::lower($request->reason))];
+						$data += ['reason' => ucwords(Str::lower($request->reason))];
 						$data += ['verify_code' => $code];
 						$data += ['period_day' => $totalday];
 						$data += ['leave_no' => $row];
@@ -536,7 +536,7 @@ class HRLeaveController extends Controller
 									'leave_year' => $ye,
 									'leave_cat' => $request->leave_cat,
 									'leave_type_id' => $request->leave_type_id,
-									'reason' => Str::ucfirst(Str::lower($request->reason)),
+									'reason' => ucwords(Str::lower($request->reason)),
 									'softcopy' => $fileName
 								];
 							} else {
@@ -549,7 +549,7 @@ class HRLeaveController extends Controller
 									'leave_year' => $ye,
 									'leave_cat' => $request->leave_cat,
 									'leave_type_id' => $request->leave_type_id,
-									'reason' => Str::ucfirst(Str::lower($request->reason))
+									'reason' => ucwords(Str::lower($request->reason))
 								];
 							}
 
@@ -600,7 +600,7 @@ class HRLeaveController extends Controller
 						$time = explode( '/', $request->half_type_id );
 
 						$data = $request->only(['leave_type_id', 'leave_cat']);
-						$data += ['reason' => Str::ucfirst(Str::lower($request->reason))];
+						$data += ['reason' => ucwords(Str::lower($request->reason))];
 						$data += ['half_type_id' => $time[0]];
 						$data += ['verify_code' => $code];
 						$data += ['date_time_start' => $request->date_time_start.' '.$time[1]];
@@ -651,7 +651,7 @@ class HRLeaveController extends Controller
 						$utilize = $entitlement->mc_leave_utilize + 1;
 
 						$data = $request->only(['leave_type_id', 'leave_cat', 'date_time_start', 'date_time_end', 'half_type_id']);
-						$data += ['reason' => Str::ucfirst(Str::lower($request->reason))];
+						$data += ['reason' => ucwords(Str::lower($request->reason))];
 						$data += ['verify_code' => $code];
 						$data += ['period_day' => 1];
 						$data += ['leave_no' => $row];
@@ -701,7 +701,7 @@ class HRLeaveController extends Controller
 						$utilize = $entitlement->mc_leave_utilize + $totalday;
 
 						$data = $request->only(['leave_type_id', 'leave_cat', 'date_time_start', 'date_time_end']);
-						$data += ['reason' => Str::ucfirst(Str::lower($request->reason))];
+						$data += ['reason' => ucwords(Str::lower($request->reason))];
 						$data += ['verify_code' => $code];
 						$data += ['period_day' => $totalday];
 						$data += ['leave_no' => $row];
@@ -769,7 +769,7 @@ class HRLeaveController extends Controller
 									'leave_year' => $ye,
 									'leave_cat' => $request->leave_cat,
 									'leave_type_id' => $request->leave_type_id,
-									'reason' => Str::ucfirst(Str::lower($request->reason)),
+									'reason' => ucwords(Str::lower($request->reason)),
 									'softcopy' => $fileName
 								];
 							} else {
@@ -782,7 +782,7 @@ class HRLeaveController extends Controller
 									'leave_year' => $ye,
 									'leave_cat' => $request->leave_cat,
 									'leave_type_id' => $request->leave_type_id,
-									'reason' => Str::ucfirst(Str::lower($request->reason))
+									'reason' => ucwords(Str::lower($request->reason))
 								];
 							}
 
@@ -836,7 +836,7 @@ class HRLeaveController extends Controller
 						$time = explode( '/', $request->half_type_id );
 
 						$data = $request->only(['leave_type_id', 'leave_cat']);
-						$data += ['reason' => Str::ucfirst(Str::lower($request->reason))];
+						$data += ['reason' => ucwords(Str::lower($request->reason))];
 						$data += ['verify_code' => $code];
 						$data += ['half_type_id' => $time[0]];
 						$data += ['date_time_start' => $request->date_time_start.' '.$time[1]];
@@ -887,7 +887,7 @@ class HRLeaveController extends Controller
 						$utilize = $entitlement->leave_utilize + 1;
 
 						$data = $request->only(['leave_type_id', 'leave_cat', 'date_time_start', 'date_time_end']);
-						$data += ['reason' => Str::ucfirst(Str::lower($request->reason))];
+						$data += ['reason' => ucwords(Str::lower($request->reason))];
 						$data += ['verify_code' => $code];
 						$data += ['period_day' => 1];
 						$data += ['leave_no' => $row];
@@ -937,7 +937,7 @@ class HRLeaveController extends Controller
 						$utilize = $entitlement->leave_utilize + $totalday;
 
 						$data = $request->only(['leave_type_id', 'leave_cat', 'date_time_start', 'date_time_end']);
-						$data += ['reason' => Str::ucfirst(Str::lower($request->reason))];
+						$data += ['reason' => ucwords(Str::lower($request->reason))];
 						$data += ['verify_code' => $code];
 						$data += ['period_day' => $totalday];
 						$data += ['leave_no' => $row];
@@ -1005,7 +1005,7 @@ class HRLeaveController extends Controller
 									'leave_year' => $ye,
 									'leave_cat' => $request->leave_cat,
 									'leave_type_id' => $request->leave_type_id,
-									'reason' => Str::ucfirst(Str::lower($request->reason)),
+									'reason' => ucwords(Str::lower($request->reason)),
 									'softcopy' => $fileName
 								];
 							} else {
@@ -1018,7 +1018,7 @@ class HRLeaveController extends Controller
 									'leave_year' => $ye,
 									'leave_cat' => $request->leave_cat,
 									'leave_type_id' => $request->leave_type_id,
-									'reason' => Str::ucfirst(Str::lower($request->reason))
+									'reason' => ucwords(Str::lower($request->reason))
 								];
 							}
 
@@ -1064,7 +1064,7 @@ class HRLeaveController extends Controller
 				$entitle = $entitlement->maternity_leave_balance - $totalday;
 				$utilize = $entitlement->maternity_leave_utilize + $totalday;
 				$data = $request->only(['leave_type_id', 'date_time_start', 'date_time_end']);
-				$data += ['reason' => Str::ucfirst(Str::lower($request->reason))];
+				$data += ['reason' => ucwords(Str::lower($request->reason))];
 				$data += ['verify_code' => $code];
 				$data += ['period_day' => $totalday];
 				$data += ['leave_no' => $row];
@@ -1184,7 +1184,7 @@ class HRLeaveController extends Controller
 			// echo $t;
 
 			$data = $request->only(['leave_type_id']);
-			$data += ['reason' => Str::ucfirst(Str::lower($request->reason))];
+			$data += ['reason' => ucwords(Str::lower($request->reason))];
 			$data += ['verify_code' => $code];
 			$data += ['date_time_start' => $ts];
 			$data += ['date_time_end' => $te];
@@ -1241,7 +1241,7 @@ class HRLeaveController extends Controller
 						$time = explode( '/', $request->half_type_id );
 
 						$data = $request->only(['leave_type_id', 'leave_cat']);
-						$data += ['reason' => Str::ucfirst(Str::lower($request->reason))];
+						$data += ['reason' => ucwords(Str::lower($request->reason))];
 						$data += ['half_type_id' => $time[0]];
 						$data += ['verify_code' => $code];
 						$data += ['date_time_start' => $request->date_time_start.' '.$time[1]];
@@ -1290,7 +1290,7 @@ class HRLeaveController extends Controller
 						// $entitle = $entitlement->mc_balance - 1;
 
 						$data = $request->only(['leave_type_id', 'leave_cat', 'date_time_start', 'date_time_end', 'half_type_id']);
-						$data += ['reason' => Str::ucfirst(Str::lower($request->reason))];
+						$data += ['reason' => ucwords(Str::lower($request->reason))];
 						$data += ['verify_code' => $code];
 						$data += ['period_day' => 1];
 						$data += ['leave_no' => $row];
@@ -1338,7 +1338,7 @@ class HRLeaveController extends Controller
 						// $entitle = $entitlement->mc_balance - $totalday;
 
 						$data = $request->only(['leave_type_id', 'leave_cat', 'date_time_start', 'date_time_end']);
-						$data += ['reason' => Str::ucfirst(Str::lower($request->reason))];
+						$data += ['reason' => ucwords(Str::lower($request->reason))];
 						$data += ['verify_code' => $code];
 						$data += ['period_day' => $totalday];
 						$data += ['leave_no' => $row];
@@ -1404,7 +1404,7 @@ class HRLeaveController extends Controller
 									'leave_year' => $ye,
 									'leave_cat' => $request->leave_cat,
 									'leave_type_id' => $request->leave_type_id,
-									'reason' => Str::ucfirst(Str::lower($request->reason)),
+									'reason' => ucwords(Str::lower($request->reason)),
 									'softcopy' => $fileName
 								];
 							} else {
@@ -1417,7 +1417,7 @@ class HRLeaveController extends Controller
 									'leave_year' => $ye,
 									'leave_cat' => $request->leave_cat,
 									'leave_type_id' => $request->leave_type_id,
-									'reason' => Str::ucfirst(Str::lower($request->reason))
+									'reason' => ucwords(Str::lower($request->reason))
 								];
 							}
 

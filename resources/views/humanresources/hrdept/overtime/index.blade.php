@@ -121,7 +121,7 @@ $(document).ready(function(){
 $.fn.dataTable.moment( 'D MMM YYYY' );
 $.fn.dataTable.moment( 'D MMM YYYY h:mm a' );
 $('#overtime').DataTable({
-	// "lengthMenu": [ [10,25,50,100,150,200,-1], [10,25,50,100,150,200,"All"] ],
+	"lengthMenu": [ [10,25,50,100,150,200,-1], [10,25,50,100,150,200,"All"] ],
 	"lengthMenu": [ [-1], ["All"] ],
 	"columnDefs": [
 					{ type: 'date', 'targets': [2] },
