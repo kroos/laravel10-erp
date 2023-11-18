@@ -20,10 +20,7 @@ use Illuminate\Support\Str;
 			@foreach(HROutstation::where('active', 1)->groupByRaw('YEAR(date_from)')->selectRaw('YEAR(date_from) as year')->orderBy('date_from', 'DESC')->get() as $tp)
 				<thead>
 					<tr>
-						<th class="text-center" colspan="6">&nbsp;</th>
-					</tr>
-					<tr>
-						<th class="text-center" colspan="6">Outstaion Year ({{ $tp->year }})</th>
+						<th class="text-center" colspan="8">Outstaion Year ({{ $tp->year }})</th>
 					</tr>
 					<tr>
 						<th>ID</th>
