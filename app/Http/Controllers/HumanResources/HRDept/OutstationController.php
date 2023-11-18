@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 
 // load models
 use App\Models\HumanResources\HROutstation;
+use App\Models\HumanResources\HRAttendance;
 
 // for controller output
 use Illuminate\Http\RedirectResponse;
@@ -103,6 +104,11 @@ class OutstationController extends Controller
 	 */
 	public function destroy(HROutstation $outstation): JsonResponse
 	{
+		// remove from attendance
+		$r = HRAttendance::where('outstation_id', $overtime->id)->get();
+		foreach ($r as $c) {
+			HRAttendance::where('id', $c->id)->update(['outstation_id' => null]);
+		}
 		$outstation->update(['active' => NULL]);
 		return response()->json([
 			'message' => 'Data deleted',
