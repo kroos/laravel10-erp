@@ -248,7 +248,7 @@ class LeaveController extends Controller
 						$time = explode( '/', $request->half_type_id );
 
 						$data = $request->only(['leave_type_id', 'leave_cat']);
-						$data += ['reason' => Str::ucfirst(Str::lower($request->reason))];
+						$data += ['reason' => ucwords(Str::lower($request->reason))];
 						$data += ['verify_code' => $hrleave->verify_code];
 						$data += ['half_type_id' => $time[0]];
 						$data += ['date_time_start' => $request->date_time_start.' '.$time[1]];
@@ -285,7 +285,7 @@ class LeaveController extends Controller
 						$utilize = $entitlement->annual_leave_utilize + 1;
 
 						$data = $request->only(['leave_type_id', 'leave_cat', 'date_time_start', 'date_time_end', 'half_type_id']);
-						$data += ['reason' => Str::ucfirst(Str::lower($request->reason))];
+						$data += ['reason' => ucwords(Str::lower($request->reason))];
 						$data += ['verify_code' => $hrleave->verify_code];
 						$data += ['period_day' => 1];
 						$data += ['leave_no' => $hrleave->leave_no];
@@ -327,7 +327,7 @@ class LeaveController extends Controller
 						$utilize = $entitlement->annual_leave_utilize + $totalday;
 
 						$data = $request->only(['leave_type_id', 'leave_cat', 'date_time_start', 'date_time_end']);
-						$data += ['reason' => Str::ucfirst(Str::lower($request->reason))];
+						$data += ['reason' => ucwords(Str::lower($request->reason))];
 						$data += ['verify_code' => $hrleave->leave_verify_code];
 						$data += ['period_day' => $totalday];
 						$data += ['leave_no' => $hrleave->leave_no];
@@ -372,7 +372,7 @@ class LeaveController extends Controller
 					$time = explode( '/', $request->half_type_id );
 
 					$data = $request->only(['leave_type_id', 'leave_cat']);
-					$data += ['reason' => Str::ucfirst(Str::lower($request->reason))];
+					$data += ['reason' => ucwords(Str::lower($request->reason))];
 					$data += ['half_type_id' => $time[0]];
 					$data += ['verify_code' => $hrleave->verify_code];
 					$data += ['date_time_start' => $request->date_time_start.' '.$time[1]];
@@ -398,7 +398,7 @@ class LeaveController extends Controller
 
 				} elseif ($request->leave_cat == 1) {																								// apply leace 1 whole day
 					$data = $request->only(['leave_type_id', 'leave_cat', 'date_time_start', 'date_time_end', 'half_type_id']);
-					$data += ['reason' => Str::ucfirst(Str::lower($request->reason))];
+					$data += ['reason' => ucwords(Str::lower($request->reason))];
 					$data += ['verify_code' => $hrleave->verify_code];
 					$data += ['period_day' => 1];
 					$data += ['leave_no' => $hrleave->leave_no];
@@ -423,7 +423,7 @@ class LeaveController extends Controller
 			} else {																														// apply leave for 2 OR more days
 				if ($noOverlap) {																										// true: date choose not overlapping date with unavailable date
 					$data = $request->only(['leave_type_id', 'leave_cat', 'date_time_start', 'date_time_end']);
-					$data += ['reason' => Str::ucfirst(Str::lower($request->reason))];
+					$data += ['reason' => ucwords(Str::lower($request->reason))];
 					$data += ['verify_code' => $hrleave->verify_code];
 					$data += ['period_day' => $totalday];
 					$data += ['leave_no' => $hrleave->leave_no];
@@ -466,7 +466,7 @@ class LeaveController extends Controller
 						$time = explode( '/', $request->half_type_id );
 
 						$data = $request->only(['leave_type_id', 'leave_cat']);
-						$data += ['reason' => Str::ucfirst(Str::lower($request->reason))];
+						$data += ['reason' => ucwords(Str::lower($request->reason))];
 						$data += ['half_type_id' => $time[0]];
 						$data += ['verify_code' => $hrleave->verify_code];
 						$data += ['date_time_start' => $request->date_time_start.' '.$time[1]];
@@ -503,7 +503,7 @@ class LeaveController extends Controller
 						$utilize = $entitlement->mc_leave_utilize + 1;
 
 						$data = $request->only(['leave_type_id', 'leave_cat', 'date_time_start', 'date_time_end', 'half_type_id']);
-						$data += ['reason' => Str::ucfirst(Str::lower($request->reason))];
+						$data += ['reason' => ucwords(Str::lower($request->reason))];
 						$data += ['verify_code' => $hrleave->verify_code];
 						$data += ['period_day' => 1];
 						$data += ['leave_no' => $hrleave->leave_no];
@@ -539,7 +539,7 @@ class LeaveController extends Controller
 						$utilize = $entitlement->mc_leave_utilize + $totalday;
 
 						$data = $request->only(['leave_type_id', 'leave_cat', 'date_time_start', 'date_time_end']);
-						$data += ['reason' => Str::ucfirst(Str::lower($request->reason))];
+						$data += ['reason' => ucwords(Str::lower($request->reason))];
 						$data += ['verify_code' => $hrleave->verify_code];
 						$data += ['period_day' => $totalday];
 						$data += ['leave_no' => $hrleave->leave_no];
@@ -589,7 +589,7 @@ class LeaveController extends Controller
 						$time = explode( '/', $request->half_type_id );
 
 						$data = $request->only(['leave_type_id', 'leave_cat']);
-						$data += ['reason' => Str::ucfirst(Str::lower($request->reason))];
+						$data += ['reason' => ucwords(Str::lower($request->reason))];
 						$data += ['verify_code' => $hrleave->verify_code];
 						$data += ['half_type_id' => $time[0]];
 						$data += ['date_time_start' => $request->date_time_start.' '.$time[1]];
@@ -626,7 +626,7 @@ class LeaveController extends Controller
 						$utilize = $entitlement->leave_utilize + 1;
 
 						$data = $request->only(['leave_type_id', 'leave_cat', 'date_time_start', 'date_time_end']);
-						$data += ['reason' => Str::ucfirst(Str::lower($request->reason))];
+						$data += ['reason' => ucwords(Str::lower($request->reason))];
 						$data += ['verify_code' => $hrleave->verify_code];
 						$data += ['period_day' => 1];
 						$data += ['leave_no' => $hrleave->leave_no];
@@ -662,7 +662,7 @@ class LeaveController extends Controller
 						$utilize = $entitlement->leave_utilize + $totalday;
 
 						$data = $request->only(['leave_type_id', 'leave_cat', 'date_time_start', 'date_time_end']);
-						$data += ['reason' => Str::ucfirst(Str::lower($request->reason))];
+						$data += ['reason' => ucwords(Str::lower($request->reason))];
 						$data += ['verify_code' => $hrleave->verify_code];
 						$data += ['period_day' => $totalday];
 						$data += ['leave_no' => $hrleave->leave_no];
@@ -710,7 +710,7 @@ class LeaveController extends Controller
 				$entitle = $entitlement->maternity_leave_balance - $totalday;
 				$utilize = $entitlement->maternity_leave_utilize + $totalday;
 				$data = $request->only(['leave_type_id', 'date_time_start', 'date_time_end']);
-				$data += ['reason' => Str::ucfirst(Str::lower($request->reason))];
+				$data += ['reason' => ucwords(Str::lower($request->reason))];
 				$data += ['verify_code' => $hrleave->verify_code];
 				$data += ['period_day' => $totalday];
 				$data += ['leave_no' => $hrleave->leave_no];
@@ -813,7 +813,7 @@ class LeaveController extends Controller
 			// echo $t;
 
 			$data = $request->only(['leave_type_id']);
-			$data += ['reason' => Str::ucfirst(Str::lower($request->reason))];
+			$data += ['reason' => ucwords(Str::lower($request->reason))];
 			$data += ['verify_code' => $hrleave->verify_code];
 			$data += ['date_time_start' => $ts];
 			$data += ['date_time_end' => $te];
@@ -845,7 +845,7 @@ class LeaveController extends Controller
 					$time = explode( '/', $request->half_type_id );
 
 					$data = $request->only(['leave_type_id', 'leave_cat']);
-					$data += ['reason' => Str::ucfirst(Str::lower($request->reason))];
+					$data += ['reason' => ucwords(Str::lower($request->reason))];
 					$data += ['half_type_id' => $time[0]];
 					$data += ['verify_code' => $hrleave->verify_code];
 					$data += ['date_time_start' => $request->date_time_start.' '.$time[1]];
@@ -871,7 +871,7 @@ class LeaveController extends Controller
 
 				} elseif($request->leave_cat == 1) {																								// apply leace 1 whole day
 					$data = $request->only(['leave_type_id', 'leave_cat', 'date_time_start', 'date_time_end', 'half_type_id']);
-					$data += ['reason' => Str::ucfirst(Str::lower($request->reason))];
+					$data += ['reason' => ucwords(Str::lower($request->reason))];
 					$data += ['verify_code' => $hrleave->verify_code];
 					$data += ['period_day' => 1];
 					$data += ['leave_no' => $hrleave->leave_no];
@@ -895,7 +895,7 @@ class LeaveController extends Controller
 			} else {																															// apply leave for 2 OR more days
 				if ($noOverlap) {												// true: date choose not overlapping date with unavailable date
 					$data = $request->only(['leave_type_id', 'leave_cat', 'date_time_start', 'date_time_end']);
-					$data += ['reason' => Str::ucfirst(Str::lower($request->reason))];
+					$data += ['reason' => ucwords(Str::lower($request->reason))];
 					$data += ['verify_code' => $hrleave->verify_code];
 					$data += ['period_day' => $totalday];
 					$data += ['leave_no' => $hrleave->leave_no];
@@ -925,7 +925,7 @@ class LeaveController extends Controller
 		}
 
 		$l->hasmanyleaveamend()->create([
-											'amend_note' => Str::ucfirst(Str::lower($request->amend_note)),
+											'amend_note' => ucwords(Str::lower($request->amend_note)),
 											'staff_id' => \Auth::user()->belongstostaff->id,
 											'date' => now()
 										]);
@@ -951,9 +951,8 @@ class LeaveController extends Controller
 			$rid = $hrleave->hasmanyleaveapprovalhr()->first()->id;
 			HRLeaveApprovalHR::find($rid)->update(['leave_id' => $l->id]);
 		}
-		// finally, we delete the leave
-		// $hrleave->delete();
-		$hrleave->update(['leave_status_id' => 3, 'remarks' => 'Edit leave']);
+		// finally, we cancelled the leave
+		$hrleave->update(['leave_status_id' => 3, 'remarks' => 'Edit leave. period_day = '.$hrleave->period_day.' | period_time = '.$hrleave->period_time, 'period_day' => 0, 'period_time' => '00:00:00']);
 		$b = HRAttendance::where('leave_id', $hrleave->id)->get();
 		foreach ($b as $c) {
 			HRAttendance::where('id', $c->id)->update(['leave_id' => null]);

@@ -23,6 +23,10 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 
+// load array helper
+use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
+
 use Session;
 use Carbon\Carbon;
 
@@ -74,7 +78,7 @@ class ReplacementLeaveController extends Controller
 				'date_start' => $request->date_start,
 				'date_end' => $request->date_end,
 				'customer_id' => $request->customer_id,
-				'reason' => $request->reason,
+				'reason' => ucwords(Str::of($request->reason)->lower()),
 				'leave_total' => $leave_total,
 				'leave_utilize' => '',
 				'leave_balance' => $leave_total,
@@ -106,8 +110,7 @@ class ReplacementLeaveController extends Controller
 	 */
 	public function update(ReplacementRequestUpdate $request, HRLeaveReplacement $rleave): RedirectResponse
 	{
-		$rleave->update($request->only(['date_start', 'date_end', 'customer_id', 'reason', 'leave_total', 'leave_utilize', 'leave_balance']));
-
+		$rleave->update( Arr::add( $request->only(['date_start', 'date_end', 'customer_id', 'leave_total', 'leave_utilize', 'leave_balance']), 'reason', $request->reason ));
 		Session::flash('flash_message', 'Data successfully updated!');
 		return Redirect::route('rleave.index', $rleave);
 	}

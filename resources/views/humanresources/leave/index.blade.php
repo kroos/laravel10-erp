@@ -1374,14 +1374,24 @@ $('#leaves').DataTable({
 	"columnDefs": [ { type: 'date', 'targets': [4] } ],
 	"order": [[4, "desc" ]],	// sorting the 6th column descending
 	responsive: true
-});
+})
+.on( 'length.dt page.dt order.dt search.dt', function ( e, settings, len ) {
+	$(document).ready(function(){
+		$('[data-bs-toggle="tooltip"]').tooltip();
+	});}
+);
 
 $('#bapprover, #sapprover, #hodapprover, #dirapprover, #hrapprover').DataTable({
 	"lengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "All"] ],
 	"columnDefs": [ { type: 'date', 'targets': [4] } ],
 	"order": [[4, "desc" ]],	// sorting the 4th column descending
 	responsive: true
-});
+})
+.on( 'length.dt page.dt order.dt search.dt', function ( e, settings, len ) {
+	$(document).ready(function(){
+		$('[data-bs-toggle="tooltip"]').tooltip();
+	});}
+);
 
 /////////////////////////////////////////////////////////////////////////////////////////
 // cancel leave

@@ -26,6 +26,7 @@
 					<th>Outstation</th>
 					<th>Remarks</th>
 					<th>Exception</th>
+					<th>Edit</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -189,6 +190,25 @@ if ($os->isNotEmpty()) {																							// outstation |
 							} else {
 								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
 							}
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									$s->update(['leave_id' => $l->id]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
+							}
 						} else {																					// outstation | working | leave | no in | no break | no resume | out
 							if (is_null($s->attendance_type_id)) {
 								$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
@@ -199,6 +219,25 @@ if ($os->isNotEmpty()) {																							// outstation |
 								$s->update(['outstation_id' => $os->first()->id, 'attendance_type_id' => 4]);
 							} else {
 								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
+							}
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									$s->update(['leave_id' => $l->id]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
 							}
 						}
 					} else {																						// outstation | working | leave | no in | no break | resume
@@ -213,6 +252,25 @@ if ($os->isNotEmpty()) {																							// outstation |
 							} else {
 								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
 							}
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									$s->update(['leave_id' => $l->id]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
+							}
 						} else {																					// outstation | working | leave | no in | no break | resume | out
 							if (is_null($s->attendance_type_id)) {
 								$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
@@ -223,6 +281,25 @@ if ($os->isNotEmpty()) {																							// outstation |
 								$s->update(['outstation_id' => $os->first()->id, 'attendance_type_id' => 4]);
 							} else {
 								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
+							}
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									$s->update(['leave_id' => $l->id]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
 							}
 						}
 					}
@@ -239,6 +316,25 @@ if ($os->isNotEmpty()) {																							// outstation |
 							} else {
 								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
 							}
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									$s->update(['leave_id' => $l->id]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
+							}
 						} else {																					// outstation | working | leave | no in | break | no resume | out
 							if (is_null($s->attendance_type_id)) {
 								$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
@@ -249,6 +345,25 @@ if ($os->isNotEmpty()) {																							// outstation |
 								$s->update(['outstation_id' => $os->first()->id, 'attendance_type_id' => 4]);
 							} else {
 								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
+							}
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									$s->update(['leave_id' => $l->id]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
 							}
 						}
 					} else {																						// outstation | working | leave | no in | break | resume
@@ -263,6 +378,25 @@ if ($os->isNotEmpty()) {																							// outstation |
 							} else {
 								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
 							}
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									$s->update(['leave_id' => $l->id]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
+							}
 						} else {																					// outstation | working | leave | no in | break | resume | out
 							if (is_null($s->attendance_type_id)) {
 								$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
@@ -273,6 +407,25 @@ if ($os->isNotEmpty()) {																							// outstation |
 								$s->update(['outstation_id' => $os->first()->id, 'attendance_type_id' => 4]);
 							} else {
 								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
+							}
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									$s->update(['leave_id' => $l->id]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
 							}
 						}
 					}
@@ -291,6 +444,25 @@ if ($os->isNotEmpty()) {																							// outstation |
 							} else {
 								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
 							}
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									$s->update(['leave_id' => $l->id]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
+							}
 						} else {																					// outstation | working | leave | in | no break | no resume | out
 							if (is_null($s->attendance_type_id)) {
 								$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
@@ -301,6 +473,25 @@ if ($os->isNotEmpty()) {																							// outstation |
 								$s->update(['outstation_id' => $os->first()->id, 'attendance_type_id' => 4]);
 							} else {
 								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
+							}
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									$s->update(['leave_id' => $l->id]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
 							}
 						}
 					} else {																						// outstation | working | leave | in | no break | resume
@@ -315,6 +506,25 @@ if ($os->isNotEmpty()) {																							// outstation |
 							} else {
 								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
 							}
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									$s->update(['leave_id' => $l->id]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
+							}
 						} else {																					// outstation | working | leave | in | no break | resume | out
 							if (is_null($s->attendance_type_id)) {
 								$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
@@ -325,6 +535,25 @@ if ($os->isNotEmpty()) {																							// outstation |
 								$s->update(['outstation_id' => $os->first()->id, 'attendance_type_id' => 4]);
 							} else {
 								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
+							}
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									$s->update(['leave_id' => $l->id]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
 							}
 						}
 					}
@@ -341,6 +570,25 @@ if ($os->isNotEmpty()) {																							// outstation |
 							} else {
 								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
 							}
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									$s->update(['leave_id' => $l->id]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
+							}
 						} else {																					// outstation | working | leave | in | break | no resume | out
 							if (is_null($s->attendance_type_id)) {
 								$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
@@ -351,6 +599,25 @@ if ($os->isNotEmpty()) {																							// outstation |
 								$s->update(['outstation_id' => $os->first()->id, 'attendance_type_id' => 4]);
 							} else {
 								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
+							}
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									$s->update(['leave_id' => $l->id]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
 							}
 						}
 					} else {																						// outstation | working | leave | in | break | resume
@@ -365,6 +632,25 @@ if ($os->isNotEmpty()) {																							// outstation |
 							} else {
 								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
 							}
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									$s->update(['leave_id' => $l->id]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
+							}
 						} else {																					// outstation | working | leave | in | break | resume | out
 							if (is_null($s->attendance_type_id)) {
 								$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
@@ -375,6 +661,25 @@ if ($os->isNotEmpty()) {																							// outstation |
 								$s->update(['outstation_id' => $os->first()->id, 'attendance_type_id' => 4]);
 							} else {
 								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
+							}
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									$s->update(['leave_id' => $l->id]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
 							}
 						}
 					}
@@ -395,6 +700,25 @@ if ($os->isNotEmpty()) {																							// outstation |
 							} else {
 								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
 							}
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									$s->update(['leave_id' => $l->id]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
+							}
 						} else {																					// outstation | working | no leave | no in | no break | no resume | out
 							if (is_null($s->attendance_type_id)) {
 								$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
@@ -405,6 +729,25 @@ if ($os->isNotEmpty()) {																							// outstation |
 								$s->update(['outstation_id' => $os->first()->id, 'attendance_type_id' => 4]);
 							} else {
 								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
+							}
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									$s->update(['leave_id' => $l->id]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
 							}
 						}
 					} else {																						// outstation | working | no leave | no in | no break | resume
@@ -419,6 +762,25 @@ if ($os->isNotEmpty()) {																							// outstation |
 							} else {
 								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
 							}
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									$s->update(['leave_id' => $l->id]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
+							}
 						} else {																					// outstation | working | no leave | no in | no break | resume | out
 							if (is_null($s->attendance_type_id)) {
 								$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
@@ -429,6 +791,25 @@ if ($os->isNotEmpty()) {																							// outstation |
 								$s->update(['outstation_id' => $os->first()->id, 'attendance_type_id' => 4]);
 							} else {
 								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
+							}
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									$s->update(['leave_id' => $l->id]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
 							}
 						}
 					}
@@ -445,6 +826,25 @@ if ($os->isNotEmpty()) {																							// outstation |
 							} else {
 								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
 							}
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									$s->update(['leave_id' => $l->id]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
+							}
 						} else {																					// outstation | working | no leave | no in | break | no resume | out
 							if (is_null($s->attendance_type_id)) {
 								$ll = '<a href="'.route('attendance.edit', $s->id).'">Check</a>';					// pls check
@@ -455,6 +855,25 @@ if ($os->isNotEmpty()) {																							// outstation |
 								$s->update(['outstation_id' => $os->first()->id, 'attendance_type_id' => 4]);
 							} else {
 								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
+							}
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									$s->update(['leave_id' => $l->id]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
 							}
 						}
 					} else {																						// outstation | working | no leave | no in | break | resume
@@ -468,6 +887,25 @@ if ($os->isNotEmpty()) {																							// outstation |
 								$s->update(['outstation_id' => $os->first()->id, 'attendance_type_id' => 4]);
 							} else {
 								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
+							}
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									$s->update(['leave_id' => $l->id]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
 							}
 						} else {																					// outstation | working | no leave | no in | break | resume | out
 							if (is_null($s->attendance_type_id)) {
@@ -483,6 +921,25 @@ if ($os->isNotEmpty()) {																							// outstation |
 								$s->update(['outstation_id' => $os->first()->id, 'attendance_type_id' => 4]);
 							} else {
 								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
+							}
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									$s->update(['leave_id' => $l->id]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
 							}
 						}
 					}
@@ -509,6 +966,25 @@ if ($os->isNotEmpty()) {																							// outstation |
 							} else {
 								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
 							}
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									$s->update(['leave_id' => $l->id]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
+							}
 						} else {																					// outstation | working | no leave | in | no break | no resume | out
 							if (is_null($s->attendance_type_id)) {
 								$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
@@ -519,6 +995,25 @@ if ($os->isNotEmpty()) {																							// outstation |
 								$s->update(['outstation_id' => $os->first()->id, 'attendance_type_id' => 4]);
 							} else {
 								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
+							}
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									$s->update(['leave_id' => $l->id]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
 							}
 						}
 					} else {																						// outstation | working | no leave | in | no break | resume
@@ -533,6 +1028,25 @@ if ($os->isNotEmpty()) {																							// outstation |
 							} else {
 								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
 							}
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									$s->update(['leave_id' => $l->id]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
+							}
 						} else {																					// outstation | working | no leave | in | no break | resume | out
 							if (is_null($s->attendance_type_id)) {
 								$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
@@ -543,6 +1057,25 @@ if ($os->isNotEmpty()) {																							// outstation |
 								$s->update(['outstation_id' => $os->first()->id, 'attendance_type_id' => 4]);
 							} else {
 								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
+							}
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									$s->update(['leave_id' => $l->id]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
 							}
 						}
 					}
@@ -559,6 +1092,25 @@ if ($os->isNotEmpty()) {																							// outstation |
 							} else {
 								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
 							}
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									$s->update(['leave_id' => $l->id]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
+							}
 						} else {																					// outstation | working | no leave | in | break | no resume | out
 							if (is_null($s->attendance_type_id)) {
 								$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
@@ -569,6 +1121,25 @@ if ($os->isNotEmpty()) {																							// outstation |
 								$s->update(['outstation_id' => $os->first()->id, 'attendance_type_id' => 4]);
 							} else {
 								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
+							}
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									$s->update(['leave_id' => $l->id]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
 							}
 						}
 					} else {																						// outstation | working | no leave | in | break | resume
@@ -587,6 +1158,25 @@ if ($os->isNotEmpty()) {																							// outstation |
 							} else {
 								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
 							}
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									$s->update(['leave_id' => $l->id]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
+							}
 						} else {																					// outstation | working | no leave | in | break | resume | out
 							if (is_null($s->attendance_type_id)) {
 								$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
@@ -597,6 +1187,25 @@ if ($os->isNotEmpty()) {																							// outstation |
 								$s->update(['outstation_id' => $os->first()->id, 'attendance_type_id' => 4]);
 							} else {
 								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
+							}
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									$s->update(['leave_id' => $l->id]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
 							}
 						}
 					}
@@ -619,6 +1228,26 @@ if ($os->isNotEmpty()) {																							// outstation |
 							} else {
 								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
 							}
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									// $s->update(['leave_id' => $l->id]);
+									$s->update(['leave_id' => NULL]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
+							}
 						} else {																					// outstation | no working | leave | no in | no break | no resume | out
 							if (is_null($s->attendance_type_id)) {
 								$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
@@ -629,6 +1258,26 @@ if ($os->isNotEmpty()) {																							// outstation |
 								$s->update(['outstation_id' => $os->first()->id, 'attendance_type_id' => 4]);
 							} else {
 								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
+							}
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									// $s->update(['leave_id' => $l->id]);
+									$s->update(['leave_id' => NULL]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
 							}
 						}
 					} else {																						// outstation | no working | leave | no in | no break | resume
@@ -643,6 +1292,26 @@ if ($os->isNotEmpty()) {																							// outstation |
 							} else {
 								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
 							}
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									// $s->update(['leave_id' => $l->id]);
+									$s->update(['leave_id' => NULL]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
+							}
 						} else {																					// outstation | no working | leave | no in | no break | resume | out
 							if (is_null($s->attendance_type_id)) {
 								$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
@@ -653,6 +1322,26 @@ if ($os->isNotEmpty()) {																							// outstation |
 								$s->update(['outstation_id' => $os->first()->id, 'attendance_type_id' => 4]);
 							} else {
 								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
+							}
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									// $s->update(['leave_id' => $l->id]);
+									$s->update(['leave_id' => NULL]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
 							}
 						}
 					}
@@ -669,6 +1358,26 @@ if ($os->isNotEmpty()) {																							// outstation |
 							} else {
 								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
 							}
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									// $s->update(['leave_id' => $l->id]);
+									$s->update(['leave_id' => NULL]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
+							}
 						} else {																					// outstation | no working | leave | no in | break | no resume | out
 							if (is_null($s->attendance_type_id)) {
 								$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
@@ -679,6 +1388,26 @@ if ($os->isNotEmpty()) {																							// outstation |
 								$s->update(['outstation_id' => $os->first()->id, 'attendance_type_id' => 4]);
 							} else {
 								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
+							}
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									// $s->update(['leave_id' => $l->id]);
+									$s->update(['leave_id' => NULL]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
 							}
 						}
 					} else {																						// outstation | no working | leave | no in | break | resume
@@ -693,6 +1422,26 @@ if ($os->isNotEmpty()) {																							// outstation |
 							} else {
 								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
 							}
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									// $s->update(['leave_id' => $l->id]);
+									$s->update(['leave_id' => NULL]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
+							}
 						} else {																					// outstation | no working | leave | no in | break | resume | out
 							if (is_null($s->attendance_type_id)) {
 								$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
@@ -703,6 +1452,26 @@ if ($os->isNotEmpty()) {																							// outstation |
 								$s->update(['outstation_id' => $os->first()->id, 'attendance_type_id' => 4]);
 							} else {
 								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
+							}
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									// $s->update(['leave_id' => $l->id]);
+									$s->update(['leave_id' => NULL]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
 							}
 						}
 					}
@@ -721,6 +1490,26 @@ if ($os->isNotEmpty()) {																							// outstation |
 							} else {
 								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
 							}
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									// $s->update(['leave_id' => $l->id]);
+									$s->update(['leave_id' => NULL]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
+							}
 						} else {																					// outstation | no working | leave | in | no break | no resume | out
 							if (is_null($s->attendance_type_id)) {
 								$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
@@ -731,6 +1520,26 @@ if ($os->isNotEmpty()) {																							// outstation |
 								$s->update(['outstation_id' => $os->first()->id, 'attendance_type_id' => 4]);
 							} else {
 								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
+							}
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									// $s->update(['leave_id' => $l->id]);
+									$s->update(['leave_id' => NULL]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
 							}
 						}
 					} else {																						// outstation | no working | leave | in | no break | resume
@@ -745,6 +1554,26 @@ if ($os->isNotEmpty()) {																							// outstation |
 							} else {
 								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
 							}
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									// $s->update(['leave_id' => $l->id]);
+									$s->update(['leave_id' => NULL]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
+							}
 						} else {																					// outstation | no working | leave | in | no break | resume | out
 							if (is_null($s->attendance_type_id)) {
 								$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
@@ -755,6 +1584,26 @@ if ($os->isNotEmpty()) {																							// outstation |
 								$s->update(['outstation_id' => $os->first()->id, 'attendance_type_id' => 4]);
 							} else {
 								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
+							}
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									// $s->update(['leave_id' => $l->id]);
+									$s->update(['leave_id' => NULL]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
 							}
 						}
 					}
@@ -771,6 +1620,26 @@ if ($os->isNotEmpty()) {																							// outstation |
 							} else {
 								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
 							}
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									// $s->update(['leave_id' => $l->id]);
+									$s->update(['leave_id' => NULL]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
+							}
 						} else {																					// outstation | no working | leave | in | break | no resume | out
 							if (is_null($s->attendance_type_id)) {
 								$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
@@ -781,6 +1650,26 @@ if ($os->isNotEmpty()) {																							// outstation |
 								$s->update(['outstation_id' => $os->first()->id, 'attendance_type_id' => 4]);
 							} else {
 								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
+							}
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									// $s->update(['leave_id' => $l->id]);
+									$s->update(['leave_id' => NULL]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
 							}
 						}
 					} else {																						// outstation | no working | leave | in | break | resume
@@ -795,6 +1684,26 @@ if ($os->isNotEmpty()) {																							// outstation |
 							} else {
 								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
 							}
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									// $s->update(['leave_id' => $l->id]);
+									$s->update(['leave_id' => NULL]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
+							}
 						} else {																					// outstation | no working | leave | in | break | resume | out
 							if (is_null($s->attendance_type_id)) {
 								$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
@@ -805,6 +1714,26 @@ if ($os->isNotEmpty()) {																							// outstation |
 								$s->update(['outstation_id' => $os->first()->id, 'attendance_type_id' => 4]);
 							} else {
 								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
+							}
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									// $s->update(['leave_id' => $l->id]);
+									$s->update(['leave_id' => NULL]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
 							}
 						}
 					}
@@ -825,6 +1754,26 @@ if ($os->isNotEmpty()) {																							// outstation |
 							} else {
 								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
 							}
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									// $s->update(['leave_id' => $l->id]);
+									$s->update(['leave_id' => NULL]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
+							}
 						} else {																					// outstation | no working | no leave | no in | no break | no resume | out
 							if (is_null($s->attendance_type_id)) {
 								$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
@@ -835,6 +1784,26 @@ if ($os->isNotEmpty()) {																							// outstation |
 								$s->update(['outstation_id' => $os->first()->id, 'attendance_type_id' => 4]);
 							} else {
 								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
+							}
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									// $s->update(['leave_id' => $l->id]);
+									$s->update(['leave_id' => NULL]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
 							}
 						}
 					} else {																						// outstation | no working | no leave | no in | no break | resume
@@ -849,6 +1818,26 @@ if ($os->isNotEmpty()) {																							// outstation |
 							} else {
 								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
 							}
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									// $s->update(['leave_id' => $l->id]);
+									$s->update(['leave_id' => NULL]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
+							}
 						} else {																					// outstation | no working | no leave | no in | no break | resume | out
 							if (is_null($s->attendance_type_id)) {
 								$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
@@ -859,6 +1848,26 @@ if ($os->isNotEmpty()) {																							// outstation |
 								$s->update(['outstation_id' => $os->first()->id, 'attendance_type_id' => 4]);
 							} else {
 								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
+							}
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									// $s->update(['leave_id' => $l->id]);
+									$s->update(['leave_id' => NULL]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
 							}
 						}
 					}
@@ -875,6 +1884,26 @@ if ($os->isNotEmpty()) {																							// outstation |
 							} else {
 								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
 							}
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									// $s->update(['leave_id' => $l->id]);
+									$s->update(['leave_id' => NULL]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
+							}
 						} else {																					// outstation | no working | no leave | no in | break | no resume | out
 							if (is_null($s->attendance_type_id)) {
 								$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
@@ -885,6 +1914,26 @@ if ($os->isNotEmpty()) {																							// outstation |
 								$s->update(['outstation_id' => $os->first()->id, 'attendance_type_id' => 4]);
 							} else {
 								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
+							}
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									// $s->update(['leave_id' => $l->id]);
+									$s->update(['leave_id' => NULL]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
 							}
 						}
 					} else {																						// outstation | no working | no leave | no in | break | resume
@@ -899,6 +1948,26 @@ if ($os->isNotEmpty()) {																							// outstation |
 							} else {
 								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
 							}
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									// $s->update(['leave_id' => $l->id]);
+									$s->update(['leave_id' => NULL]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
+							}
 						} else {																					// outstation | no working | no leave | no in | break | resume | out
 							if (is_null($s->attendance_type_id)) {
 								$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
@@ -909,6 +1978,26 @@ if ($os->isNotEmpty()) {																							// outstation |
 								$s->update(['outstation_id' => $os->first()->id, 'attendance_type_id' => 4]);
 							} else {
 								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
+							}
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									// $s->update(['leave_id' => $l->id]);
+									$s->update(['leave_id' => NULL]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
 							}
 						}
 					}
@@ -927,6 +2016,26 @@ if ($os->isNotEmpty()) {																							// outstation |
 							} else {
 								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
 							}
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									// $s->update(['leave_id' => $l->id]);
+									$s->update(['leave_id' => NULL]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
+							}
 						} else {																					// outstation | no working | no leave | in | no break | no resume | out
 							if (is_null($s->attendance_type_id)) {
 								$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
@@ -937,6 +2046,26 @@ if ($os->isNotEmpty()) {																							// outstation |
 								$s->update(['outstation_id' => $os->first()->id, 'attendance_type_id' => 4]);
 							} else {
 								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
+							}
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									// $s->update(['leave_id' => $l->id]);
+									$s->update(['leave_id' => NULL]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
 							}
 						}
 					} else {																						// outstation | no working | no leave | in | no break | resume
@@ -951,6 +2080,26 @@ if ($os->isNotEmpty()) {																							// outstation |
 							} else {
 								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
 							}
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									// $s->update(['leave_id' => $l->id]);
+									$s->update(['leave_id' => NULL]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
+							}
 						} else {																					// outstation | no working | no leave | in | no break | resume | out
 							if (is_null($s->attendance_type_id)) {
 								$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
@@ -961,6 +2110,26 @@ if ($os->isNotEmpty()) {																							// outstation |
 								$s->update(['outstation_id' => $os->first()->id, 'attendance_type_id' => 4]);
 							} else {
 								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
+							}
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									// $s->update(['leave_id' => $l->id]);
+									$s->update(['leave_id' => NULL]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
 							}
 						}
 					}
@@ -977,6 +2146,26 @@ if ($os->isNotEmpty()) {																							// outstation |
 							} else {
 								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
 							}
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									// $s->update(['leave_id' => $l->id]);
+									$s->update(['leave_id' => NULL]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
+							}
 						} else {																					// outstation | no working | no leave | in | break | no resume | out
 							if (is_null($s->attendance_type_id)) {
 								$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
@@ -987,6 +2176,26 @@ if ($os->isNotEmpty()) {																							// outstation |
 								$s->update(['outstation_id' => $os->first()->id, 'attendance_type_id' => 4]);
 							} else {
 								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
+							}
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									// $s->update(['leave_id' => $l->id]);
+									$s->update(['leave_id' => NULL]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
 							}
 						}
 					} else {																						// outstation | no working | no leave | in | break | resume
@@ -1001,6 +2210,26 @@ if ($os->isNotEmpty()) {																							// outstation |
 							} else {
 								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
 							}
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									// $s->update(['leave_id' => $l->id]);
+									$s->update(['leave_id' => NULL]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
+							}
 						} else {																					// outstation | no working | no leave | in | break | resume | out
 							if (is_null($s->attendance_type_id)) {
 								$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
@@ -1011,6 +2240,26 @@ if ($os->isNotEmpty()) {																							// outstation |
 								$s->update(['outstation_id' => $os->first()->id, 'attendance_type_id' => 4]);
 							} else {
 								$s->update(['outstation_id' => NULL, 'attendance_type_id' => NULL]);
+							}
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									// $s->update(['leave_id' => $l->id]);
+									$s->update(['leave_id' => NULL]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
 							}
 						}
 					}
@@ -1030,11 +2279,51 @@ if ($os->isNotEmpty()) {																							// outstation |
 							} else {
 								$ll = $s->belongstoopttcms->leave;
 							}
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									$s->update(['leave_id' => $l->id]);
+									// $s->update(['leave_id' => NULL]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
+							}
 						} else {																					// no outstation | working | leave | no in | no break | no resume | out
 							if (is_null($s->attendance_type_id)) {
 								$ll = $l->belongstooptleavetype?->leave_type_code;
 							} else {
 								$ll = $s->belongstoopttcms->leave;
+							}
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									$s->update(['leave_id' => $l->id]);
+									// $s->update(['leave_id' => NULL]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
 							}
 						}
 					} else {																						// no outstation | working | leave | no in | no break | resume
@@ -1044,11 +2333,51 @@ if ($os->isNotEmpty()) {																							// outstation |
 							} else {
 								$ll = $s->belongstoopttcms->leave;
 							}
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									$s->update(['leave_id' => $l->id]);
+									// $s->update(['leave_id' => NULL]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
+							}
 						} else {																					// no outstation | working | leave | no in | no break | resume | out
 							if (is_null($s->attendance_type_id)) {
 								$ll = $l->belongstooptleavetype?->leave_type_code;
 							} else {
 								$ll = $s->belongstoopttcms->leave;
+							}
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									$s->update(['leave_id' => $l->id]);
+									// $s->update(['leave_id' => NULL]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
 							}
 						}
 					}
@@ -1060,11 +2389,51 @@ if ($os->isNotEmpty()) {																							// outstation |
 							} else {
 								$ll = $s->belongstoopttcms->leave;
 							}
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									$s->update(['leave_id' => $l->id]);
+									// $s->update(['leave_id' => NULL]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
+							}
 						} else {																					// no outstation | working | leave | no in | break | no resume | out
 							if (is_null($s->attendance_type_id)) {
 								$ll = $l->belongstooptleavetype->leave_type_code;
 							} else {
 								$ll = $s->belongstoopttcms->leave;
+							}
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									$s->update(['leave_id' => $l->id]);
+									// $s->update(['leave_id' => NULL]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
 							}
 						}
 					} else {																						// no outstation | working | leave | no in | break | resume
@@ -1074,11 +2443,51 @@ if ($os->isNotEmpty()) {																							// outstation |
 							} else {
 								$ll = $s->belongstoopttcms->leave;
 							}
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									$s->update(['leave_id' => $l->id]);
+									// $s->update(['leave_id' => NULL]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
+							}
 						} else {																					// no outstation | working | leave | no in | break | resume | out
 							if (is_null($s->attendance_type_id)) {
 								$ll = $l->belongstooptleavetype->leave_type_code;
 							} else {
 								$ll = $s->belongstoopttcms->leave;
+							}
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									$s->update(['leave_id' => $l->id]);
+									// $s->update(['leave_id' => NULL]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
 							}
 						}
 					}
@@ -1092,11 +2501,51 @@ if ($os->isNotEmpty()) {																							// outstation |
 							} else {
 								$ll = $s->belongstoopttcms->leave;
 							}
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									$s->update(['leave_id' => $l->id]);
+									// $s->update(['leave_id' => NULL]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
+							}
 						} else {																					// no outstation | working | leave | in | no break | no resume | out
 							if (is_null($s->attendance_type_id)) {
 								$ll = $l->belongstooptleavetype->leave_type_code;
 							} else {
 								$ll = $s->belongstoopttcms->leave;
+							}
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									$s->update(['leave_id' => $l->id]);
+									// $s->update(['leave_id' => NULL]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
 							}
 						}
 					} else {																						// no outstation | working | leave | in | no break | resume
@@ -1106,11 +2555,51 @@ if ($os->isNotEmpty()) {																							// outstation |
 							} else {
 								$ll = $s->belongstoopttcms->leave;
 							}
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									$s->update(['leave_id' => $l->id]);
+									// $s->update(['leave_id' => NULL]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
+							}
 						} else {																					// no outstation | working | leave | in | no break | resume | out
 							if (is_null($s->attendance_type_id)) {
 								$ll = $l->belongstooptleavetype->leave_type_code;
 							} else {
 								$ll = $s->belongstoopttcms->leave;
+							}
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									$s->update(['leave_id' => $l->id]);
+									// $s->update(['leave_id' => NULL]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
 							}
 						}
 					}
@@ -1122,11 +2611,51 @@ if ($os->isNotEmpty()) {																							// outstation |
 							} else {
 								$ll = $s->belongstoopttcms->leave;
 							}
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									$s->update(['leave_id' => $l->id]);
+									// $s->update(['leave_id' => NULL]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
+							}
 						} else {																					// no outstation | working | leave | in | break | no resume | out
 							if (is_null($s->attendance_type_id)) {
 								$ll = $l->belongstooptleavetype->leave_type_code;
 							} else {
 								$ll = $s->belongstoopttcms->leave;
+							}
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									$s->update(['leave_id' => $l->id]);
+									// $s->update(['leave_id' => NULL]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
 							}
 						}
 					} else {																						// no outstation | working | leave | in | break | resume
@@ -1136,11 +2665,51 @@ if ($os->isNotEmpty()) {																							// outstation |
 							} else {
 								$ll = $s->belongstoopttcms->leave;
 							}
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									$s->update(['leave_id' => $l->id]);
+									// $s->update(['leave_id' => NULL]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
+							}
 						} else {																					// no outstation | working | leave | in | break | resume | out
 							if (is_null($s->attendance_type_id)) {
 								$ll = $l->belongstooptleavetype->leave_type_code;
 							} else {
 								$ll = $s->belongstoopttcms->leave;
+							}
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									$s->update(['leave_id' => $l->id]);
+									// $s->update(['leave_id' => NULL]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
 							}
 						}
 					}
@@ -1156,11 +2725,51 @@ if ($os->isNotEmpty()) {																							// outstation |
 							} else {
 								$ll = $s->belongstoopttcms->leave;
 							}
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									$s->update(['leave_id' => $l->id]);
+									// $s->update(['leave_id' => NULL]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
+							}
 						} else {																					// no outstation | working | no leave | no in | no break | no resume | out
 							if (is_null($s->attendance_type_id)) {
 								$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(2)->leave.'</a>';					// half absent
 							} else {
 								$ll = $s->belongstoopttcms->leave;
+							}
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									$s->update(['leave_id' => $l->id]);
+									// $s->update(['leave_id' => NULL]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
 							}
 						}
 					} else {																						// no outstation | working | no leave | no in | no break | resume
@@ -1170,11 +2779,51 @@ if ($os->isNotEmpty()) {																							// outstation |
 							} else {
 								$ll = $s->belongstoopttcms->leave;
 							}
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									$s->update(['leave_id' => $l->id]);
+									// $s->update(['leave_id' => NULL]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
+							}
 						} else {																					// no outstation | working | no leave | no in | no break | resume | out
 							if (is_null($s->attendance_type_id)) {
 								$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(2)->leave.'</a>';					// half absent
 							} else {
 								$ll = $s->belongstoopttcms->leave;
+							}
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									$s->update(['leave_id' => $l->id]);
+									// $s->update(['leave_id' => NULL]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
 							}
 						}
 					}
@@ -1186,11 +2835,51 @@ if ($os->isNotEmpty()) {																							// outstation |
 							} else {
 								$ll = $s->belongstoopttcms->leave;
 							}
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									$s->update(['leave_id' => $l->id]);
+									// $s->update(['leave_id' => NULL]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
+							}
 						} else {																					// no outstation |  outstation | working | no leave | no in | break | no resume | out
 							if (is_null($s->attendance_type_id)) {
 								$ll = '<a href="'.route('attendance.edit', $s->id).'">Check</a>';					// pls check
 							} else {
 								$ll = $s->belongstoopttcms->leave;
+							}
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									$s->update(['leave_id' => $l->id]);
+									// $s->update(['leave_id' => NULL]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
 							}
 						}
 					} else {																						// no outstation |  outstation | working | no leave | no in | break | resume
@@ -1199,6 +2888,26 @@ if ($os->isNotEmpty()) {																							// outstation |
 								$ll = '<a href="'.route('attendance.edit', $s->id).'">Check</a>';					// pls check
 							} else {
 								$ll = $s->belongstoopttcms->leave;
+							}
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									$s->update(['leave_id' => $l->id]);
+									// $s->update(['leave_id' => NULL]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
 							}
 						} else {																					// no outstation |  outstation | working | no leave | no in | break | resume | out
 							if (is_null($s->attendance_type_id)) {
@@ -1209,6 +2918,26 @@ if ($os->isNotEmpty()) {																							// outstation |
 								}
 							} else {
 								$ll = $s->belongstoopttcms->leave;
+							}
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									$s->update(['leave_id' => $l->id]);
+									// $s->update(['leave_id' => NULL]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
 							}
 						}
 					}
@@ -1226,8 +2955,48 @@ if ($os->isNotEmpty()) {																							// outstation |
 							} else {
 								$ll = false;
 							}
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									$s->update(['leave_id' => $l->id]);
+									// $s->update(['leave_id' => NULL]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
+							}
 						} else {																					// no outstation |  outstation | working | no leave | in | no break | no resume | out
 							$ll = false;
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									$s->update(['leave_id' => $l->id]);
+									// $s->update(['leave_id' => NULL]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
+							}
 						}
 					} else {																						// no outstation |  outstation | working | no leave | in | no break | resume
 						if ($out) {																					// no outstation |  outstation | working | no leave | in | no break | resume | no out
@@ -1236,8 +3005,48 @@ if ($os->isNotEmpty()) {																							// outstation |
 							} else {
 								$ll = $s->belongstoopttcms->leave;
 							}
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									$s->update(['leave_id' => $l->id]);
+									// $s->update(['leave_id' => NULL]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
+							}
 						} else {																					// no outstation |  outstation | working | no leave | in | no break | resume | out
 							$ll = false;
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									$s->update(['leave_id' => $l->id]);
+									// $s->update(['leave_id' => NULL]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
+							}
 						}
 					}
 				} else {																							// no outstation |  outstation | working | no leave | in | break
@@ -1248,8 +3057,48 @@ if ($os->isNotEmpty()) {																							// outstation |
 							} else {
 								$ll = $s->belongstoopttcms->leave;
 							}
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									$s->update(['leave_id' => $l->id]);
+									// $s->update(['leave_id' => NULL]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
+							}
 						} else {																					// no outstation | working | no leave | in | break | no resume | out
 							$ll = false;
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									$s->update(['leave_id' => $l->id]);
+									// $s->update(['leave_id' => NULL]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
+							}
 						}
 					} else {																						// no outstation | working | no leave | in | break | resume
 						if ($out) {																					// no outstation | working | no leave | in | break | resume | no out
@@ -1262,8 +3111,48 @@ if ($os->isNotEmpty()) {																							// outstation |
 							} else {
 								$ll = $s->belongstoopttcms->leave;
 							}
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									$s->update(['leave_id' => $l->id]);
+									// $s->update(['leave_id' => NULL]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
+							}
 						} else {																					// no outstation | working | no leave | in | break | resume | out
 							$ll = false;
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									$s->update(['leave_id' => $l->id]);
+									// $s->update(['leave_id' => NULL]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
+							}
 						}
 					}
 				}
@@ -1276,28 +3165,188 @@ if ($os->isNotEmpty()) {																							// outstation |
 					if ($resume) {																					// no outstation | no working | leave | no in | no break | no resume
 						if ($out) {																					// no outstation | no working | leave | no in | no break | no resume | no out
 							$ll = false;
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									// $s->update(['leave_id' => $l->id]);
+									$s->update(['leave_id' => NULL]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
+							}
 						} else {																					// no outstation | no working | leave | no in | no break | no resume | out
 							$ll = false;
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									// $s->update(['leave_id' => $l->id]);
+									$s->update(['leave_id' => NULL]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
+							}
 						}
 					} else {																						// no outstation | no working | leave | no in | no break | resume
 						if ($out) {																					// no outstation | no working | leave | no in | no break | resume | no out
 							$ll = false;
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									// $s->update(['leave_id' => $l->id]);
+									$s->update(['leave_id' => NULL]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
+							}
 						} else {																					// no outstation | no working | leave | no in | no break | resume | out
 							$ll = false;
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									// $s->update(['leave_id' => $l->id]);
+									$s->update(['leave_id' => NULL]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
+							}
 						}
 					}
 				} else {																							// no outstation | no working | leave | no in | break
 					if ($resume) {																					// no outstation | no working | leave | no in | break | no resume
 						if ($out) {																					// no outstation | no working | leave | no in | break | no resume | no out
 							$ll = false;
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									// $s->update(['leave_id' => $l->id]);
+									$s->update(['leave_id' => NULL]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
+							}
 						} else {																					// no outstation | no working | leave | no in | break | no resume | out
 							$ll = false;
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									// $s->update(['leave_id' => $l->id]);
+									$s->update(['leave_id' => NULL]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
+							}
 						}
 					} else {																						// no outstation | no working | leave | no in | break | resume
 						if ($out) {																					// no outstation | no working | leave | no in | break | resume | no out
 							$ll = false;
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									// $s->update(['leave_id' => $l->id]);
+									$s->update(['leave_id' => NULL]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
+							}
 						} else {																					// no outstation | no working | leave | no in | break | resume | out
 							$ll = false;
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									// $s->update(['leave_id' => $l->id]);
+									$s->update(['leave_id' => NULL]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
+							}
 						}
 					}
 				}
@@ -1306,28 +3355,188 @@ if ($os->isNotEmpty()) {																							// outstation |
 					if ($resume) {																					// no outstation | no working | leave | in | no break | no resume
 						if ($out) {																					// no outstation | no working | leave | in | no break | no resume | no out
 							$ll = false;
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									// $s->update(['leave_id' => $l->id]);
+									$s->update(['leave_id' => NULL]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
+							}
 						} else {																					// no outstation | no working | leave | in | no break | no resume | out
 							$ll = false;
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									// $s->update(['leave_id' => $l->id]);
+									$s->update(['leave_id' => NULL]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
+							}
 						}
 					} else {																						// no outstation | no working | leave | in | no break | resume
 						if ($out) {																					// no outstation | no working | leave | in | no break | resume | no out
 							$ll = false;
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									// $s->update(['leave_id' => $l->id]);
+									$s->update(['leave_id' => NULL]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
+							}
 						} else {																					// no outstation | no working | leave | in | no break | resume | out
 							$ll = false;
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									// $s->update(['leave_id' => $l->id]);
+									$s->update(['leave_id' => NULL]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
+							}
 						}
 					}
 				} else {																							// no outstation | no working | leave | in | break
 					if ($resume) {																					// no outstation | no working | leave | in | break | no resume
 						if ($out) {																					// no outstation | no working | leave | in | break | no resume | no out
 							$ll = false;
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									// $s->update(['leave_id' => $l->id]);
+									$s->update(['leave_id' => NULL]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
+							}
 						} else {																					// no outstation | no working | leave | in | break | no resume | out
 							$ll = false;
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									// $s->update(['leave_id' => $l->id]);
+									$s->update(['leave_id' => NULL]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
+							}
 						}
 					} else {																						// no outstation | no working | leave | in | break | resume
 						if ($out) {																					// no outstation | no working | leave | in | break | resume | no out
 							$ll = false;
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									// $s->update(['leave_id' => $l->id]);
+									$s->update(['leave_id' => NULL]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
+							}
 						} else {																					// no outstation | no working | leave | in | break | resume | out
 							$ll = false;
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									// $s->update(['leave_id' => $l->id]);
+									$s->update(['leave_id' => NULL]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
+							}
 						}
 					}
 				}
@@ -1338,28 +3547,188 @@ if ($os->isNotEmpty()) {																							// outstation |
 					if ($resume) {																					// no outstation | no working | no leave | no in | no break | no resume
 						if ($out) {																					// no outstation | no working | no leave | no in | no break | no resume | no out
 							$ll = false;
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									// $s->update(['leave_id' => $l->id]);
+									$s->update(['leave_id' => NULL]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
+							}
 						} else {																					// no outstation | no working | no leave | no in | no break | no resume | out
 							$ll = false;
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									// $s->update(['leave_id' => $l->id]);
+									$s->update(['leave_id' => NULL]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
+							}
 						}
 					} else {																						// no outstation | no working | no leave | no in | no break | resume
 						if ($out) {																					// no outstation | no working | no leave | no in | no break | resume | no out
 							$ll = false;
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									// $s->update(['leave_id' => $l->id]);
+									$s->update(['leave_id' => NULL]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
+							}
 						} else {																					// no outstation | no working | no leave | no in | no break | resume | out
 							$ll = false;
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									// $s->update(['leave_id' => $l->id]);
+									$s->update(['leave_id' => NULL]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
+							}
 						}
 					}
 				} else {																							// no outstation | no working | no leave | no in | break
 					if ($resume) {																					// no outstation | no working | no leave | no in | break | no resume
 						if ($out) {																					// no outstation | no working | no leave | no in | break | no resume | no out
 							$ll = false;
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									// $s->update(['leave_id' => $l->id]);
+									$s->update(['leave_id' => NULL]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
+							}
 						} else {																					// no outstation | no working | no leave | no in | break | no resume | out
 							$ll = false;
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									// $s->update(['leave_id' => $l->id]);
+									$s->update(['leave_id' => NULL]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
+							}
 						}
 					} else {																						// no outstation | no working | no leave | no in | break | resume
 						if ($out) {																					// no outstation | no working | no leave | no in | break | resume | no out
 							$ll = false;
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									// $s->update(['leave_id' => $l->id]);
+									$s->update(['leave_id' => NULL]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
+							}
 						} else {																					// no outstation | no working | no leave | no in | break | resume | out
 							$ll = false;
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									// $s->update(['leave_id' => $l->id]);
+									$s->update(['leave_id' => NULL]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
+							}
 						}
 					}
 				}
@@ -1368,28 +3737,188 @@ if ($os->isNotEmpty()) {																							// outstation |
 					if ($resume) {																					// no outstation | no working | no leave | in | no break | no resume
 						if ($out) {																					// no outstation | no working | no leave | in | no break | no resume | no out
 							$ll = false;
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									// $s->update(['leave_id' => $l->id]);
+									$s->update(['leave_id' => NULL]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
+							}
 						} else {																					// no outstation | no working | no leave | in | no break | no resume | out
 							$ll = false;
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									// $s->update(['leave_id' => $l->id]);
+									$s->update(['leave_id' => NULL]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
+							}
 						}
 					} else {																						// no outstation | no working | no leave | in | no break | resume
 						if ($out) {																					// no outstation | no working | no leave | in | no break | resume | no out
 							$ll = false;
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									// $s->update(['leave_id' => $l->id]);
+									$s->update(['leave_id' => NULL]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
+							}
 						} else {																					// no outstation | no working | no leave | in | no break | resume | out
 							$ll = false;
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									// $s->update(['leave_id' => $l->id]);
+									$s->update(['leave_id' => NULL]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
+							}
 						}
 					}
 				} else {																							// no outstation | no working | no leave | in | break
 					if ($resume) {																					// no outstation | no working | no leave | in | break | no resume
 						if ($out) {																					// no outstation | no working | no leave | in | break | no resume | no out
 							$ll = false;
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									// $s->update(['leave_id' => $l->id]);
+									$s->update(['leave_id' => NULL]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
+							}
 						} else {																					// no outstation | no working | no leave | in | break | no resume | out
 							$ll = false;
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									// $s->update(['leave_id' => $l->id]);
+									$s->update(['leave_id' => NULL]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
+							}
 						}
 					} else {																						// no outstation | no working | no leave | in | break | resume
 						if ($out) {																					// no outstation | no working | no leave | in | break | resume | no out
 							$ll = false;
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									// $s->update(['leave_id' => $l->id]);
+									$s->update(['leave_id' => NULL]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
+							}
 						} else {																					// no outstation | no working | no leave | in | break | resume | out
 							$ll = false;
+							if ($o) {																									// overtime
+								if (is_null($s->overtime_id)) {										// update this row if overtime_id is null with overtime id
+									$s->update(['overtime_id' => $o->id]);
+								} else {
+									$s->update(['overtime_id' => null]);
+								}
+							}
+							if($l) {																									// leave
+								if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+									$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+									// $s->update(['leave_id' => $l->id]);
+									$s->update(['leave_id' => NULL]);
+								} else {															// otherwise just show the leave
+									// $lea = $s->belongstoleave->id;
+									$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+								}
+							} else {
+								$lea = NULL;
+								$s->update(['leave_id' => NULL]);
+							}
 						}
 					}
 				}
@@ -1398,18 +3927,18 @@ if ($os->isNotEmpty()) {																							// outstation |
 	}
 }
 
-if($l) {
-	if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-		$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
-		$s->update(['leave_id' => $l->id]);
-	} else {															// otherwise just show the leave
-		// $lea = $s->belongstoleave->id;
-		$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
-	}
-} else {
-	$lea = NULL;
-	$s->update(['leave_id' => NULL]);
-}
+// if($l) {
+// 	if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
+// 		$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+// 		$s->update(['leave_id' => $l->id]);
+// 	} else {															// otherwise just show the leave
+// 		// $lea = $s->belongstoleave->id;
+// 		$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+// 	}
+// } else {
+// 	$lea = NULL;
+// 	$s->update(['leave_id' => NULL]);
+// }
 ?>
 				<tr>
 					<td>
@@ -1468,6 +3997,11 @@ if($l) {
 					</td>
 					<td data-bs-toggle="tooltip" data-bs-custom-class="custom-tooltip" data-bs-html="true" data-bs-title="{{ ($s->remarks)??' ' }} | {{ ($s->hr_remarks)??' ' }}">{{ Str::limit($s->remarks, 8, ' >') }}<br /><span class="text-danger">{{ Str::limit($s->hr_remarks, 8, ' >') }}</td>
 					<td>{{ $s->exception }}</td>
+					<td>
+						<a href="{{ route('attendance.edit', $s->id) }}" class="btn btn-sm btn-outline-secondary">
+							<i class="bi bi-pencil-square" style="font-size: 15px;"></i>
+						</a>
+					</td>
 				</tr>
 			@endif
 			@endforeach

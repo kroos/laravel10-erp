@@ -62,7 +62,7 @@ class OutstationController extends Controller
 				'customer_id' => $request->customer_id,
 				'date_from' => $request->date_from,
 				'date_to' => $request->date_to,
-				'remarks' => $request->remarks,
+				'remarks' => ucwords(Str::of($request->remarks)->lower()),
 				'active' => 1,
 			]);
 		}
@@ -92,7 +92,8 @@ class OutstationController extends Controller
 	public function update(Request $request, HROutstation $outstation): RedirectResponse
 	{
 		// dd($request->all());
-		$outstation->update($request->only(['customer_id', 'date_from', 'date_to', 'remarks']));
+		// $outstation->update($request->only(['customer_id', 'date_from', 'date_to', 'remarks']));
+		$outstation->update( Arr::add( $request->only(['customer_id', 'date_from', 'date_to']), 'remarks', ucwords(Str::of($request->remarks)->lower())) );
 		Session::flash('flash_message', 'Successfully edit staff for outstation');
 		return redirect()->route('outstation.index');
 	}
