@@ -37,9 +37,9 @@ foreach ($c as $v) {
 // print_r ($ls);
 // exit;
 ?>
-<div class="col-sm-12">
-	<div class="col-auto table-responsive">
-		<table class="table table-hover table-sm col-auto">
+<div class="col-sm-auto col-12 row rounded d-flex flex-column align-items-center justify-content-center border border-primary">
+	<div class="col-sm-auto col-10 border border-primary">
+		<table class="table table-hover table-sm">
 			<tr>
 				<th>Attention</th>
 				<td colspan="2">
@@ -138,7 +138,8 @@ foreach ($c as $v) {
 		</table>
 	</div>
 
-	<div class="col-auto table-responsive">
+
+	<div class="col-sm-auto col-10 table-responsive">
 		<h4>Leave</h4>
 	<!-- list of leaves -->
 	<?php
@@ -289,7 +290,7 @@ foreach ($c as $v) {
 
 	<p>&nbsp;</p>
 	@if($x->isNotEmpty())
-	<div class="col-auto table-responsive">
+	<div class="col-sm-auto col-10 table-responsive">
 		<h4>Backup Approval</h4>
 		<table class="table table-hover table-sm" id="bapprover" style="font-size:12px">
 			<thead>
@@ -360,7 +361,7 @@ foreach ($c as $v) {
 
 	@if($s1)
 		@if(HRLeaveApprovalSupervisor::whereNull('leave_status_id')->get()->count())
-			<div class="col-auto table-responsive">
+			<div class="col-sm-auto col-10 table-responsive">
 				<h4>Supervisor Approval</h4>
 				<table class="table table-hover table-sm" id="sapprover" style="font-size:12px">
 					<thead>
@@ -485,7 +486,7 @@ foreach ($c as $v) {
 	<p>&nbsp;</p>
 	@if($h1)
 		@if(HRLeaveApprovalHOD::whereNull('leave_status_id')->get()->count())
-			<div class="col-auto table-responsive">
+			<div class="col-sm-auto col-10 table-responsive">
 				<h4>Head Of Department Approval</h4>
 				<table class="table table-hover table-sm" id="sapprover" style="font-size:12px">
 					<thead>
@@ -1122,7 +1123,7 @@ foreach ($c as $v) {
 	<p>&nbsp;</p>
 	@if($d1)
 		@if(HRLeaveApprovalDirector::whereNull('leave_status_id')->get()->count())
-			<div class="col-auto table-responsive">
+			<div class="col-sm-auto col-10 table-responsive">
 				<h4>Director Approval</h4>
 				<table class="table table-hover table-sm" id="sapprover" style="font-size:12px">
 					<thead>
@@ -1240,7 +1241,7 @@ foreach ($c as $v) {
 	<p>&nbsp;</p>
 	@if($r1)
 		@if(HRLeaveApprovalHR::whereNull('leave_status_id')->get()->count())
-			<div class="col-auto table-responsive">
+			<div class="col-sm-auto col-10 table-responsive">
 				<h4>Human Resource Approval</h4>
 				<table class="table table-hover table-sm" id="sapprover" style="font-size:12px">
 					<thead>
