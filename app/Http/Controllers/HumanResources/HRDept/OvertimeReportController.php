@@ -72,7 +72,8 @@ class OvertimeReportController extends Controller
     $date_end = $request->date_end;
 
     $pdf = PDF::loadView('humanresources.hrdept.overtime.overtimereport.printpdf', ['overtimes' => $overtimes, 'branch' => $branch, 'date_start' => $date_start, 'date_end' => $date_end]);
-    return $pdf->download('overtime_report ' . $current_datetime . '.pdf');
+    // return $pdf->download('overtime_report ' . $current_datetime . '.pdf');
+    return $pdf->stream();
   }
 
   /**

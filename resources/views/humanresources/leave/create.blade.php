@@ -1,18 +1,31 @@
 @extends('layouts.app')
 @section('content')
+<style>
+div, table, tr, td {
+	border: 1px solid black;
+}
+</style>	
 <div class="col-sm-12">
 	<div class="table-responsive col-auto">
 		<table class="table table-hover table-sm">
 			<tbody>
 				<tr>
-					<td rowspan="3" class="text-danger col-sm-2">Attention :</td>
-					<td>Leave application must be at least <span class="font-weight-bold">THREE (3)</span> days in advance for <strong>"Annual Leave"</strong> and <strong>"Unpaid Leave"</strong>. Otherwise it will be considered as <strong>"Emergency Annual Leave"</strong> or <strong>"Emergency Unpaid Leave"</strong></td>
+					<td rowspan="3" class="text-danger col-sm-1">
+            Attention :
+          </td>
+					<td>
+            Leave application must be at least <span class="font-weight-bold">THREE (3)</span> days in advance for <strong>"Annual Leave"</strong> and <strong>"Unpaid Leave"</strong>. Otherwise it will be considered as <strong>"Emergency Annual Leave"</strong> or <strong>"Emergency Unpaid Leave"</strong>
+          </td>
 				</tr>
 				<tr>
-					<td><strong>"Time-Off"</strong> will consider as a <strong>"Leave"</strong>, if leave period exceed <strong>more than 2 hours</strong>.</td>
+					<td>
+            <strong>"Time-Off"</strong> will consider as a <strong>"Leave"</strong>, if leave period exceed <strong>more than 2 hours</strong>.
+          </td>
 				</tr>
 				<tr>
-					<td>Application for <strong>"Sick Leave/Medical Certificate (MC)"</strong> or <strong>"Unpaid Medical Certificate (MC-UPL)"</strong> will only be <strong>considered VALID and ELIGIBLE</strong> if a sick/medical certificate is <strong>issued by a REGISTERED government hospital/clinic or panel clinic only.</td>
+					<td>
+            Application for <strong>"Sick Leave/Medical Certificate (MC)"</strong> or <strong>"Unpaid Medical Certificate (MC-UPL)"</strong> will only be <strong>considered VALID and ELIGIBLE</strong> if a sick/medical certificate is <strong>issued by a REGISTERED government hospital/clinic or panel clinic only.
+          </td>
 				</tr>
 			</tbody>
 		</table>
@@ -20,13 +33,13 @@
 
 	<!-- herecomes the hardest part, leave application -->
 
-	<div class="d-flex justify-content-center align-items-start">
+	<div class="container col-auto justify-content-center align-items-start">
 		{{ Form::open(['route' => ['leave.store'], 'id' => 'form', 'autocomplete' => 'off', 'files' => true,  'data-toggle' => 'validator']) }}
 		<h5>Leave Application</h5>
 
 		<div class="form-group row {{ $errors->has('leave_id') ? 'has-error' : '' }}">
 			{{ Form::label( 'leave_type_id', 'Leave Type : ', ['class' => 'col-sm-2 col-form-label'] ) }}
-			<div class="col-auto">
+			<div class="col-sm-5">
 				<select name="leave_type_id" id="leave_id" class="form-control col-auto"></select>
 			</div>
 		</div>
@@ -34,7 +47,7 @@
 		<div class="form-group row mb-3 {{ $errors->has('reason') ? 'has-error' : '' }}">
 			{{ Form::label( 'reason', 'Reason : ', ['class' => 'col-sm-2 col-form-label'] ) }}
 			<div class="col-auto">
-				{{ Form::textarea('reason', @$value, ['class' => 'form-control col-auto', 'id' => 'reason', 'placeholder' => 'Reason', 'autocomplete' => 'off']) }}
+				{{ Form::textarea('reason', @$value, ['class' => 'form-control col-auto', 'id' => 'reason', 'placeholder' => 'Reason', 'cols' => '110', 'rows' => '5', 'autocomplete' => 'off']) }}
 			</div>
 		</div>
 
@@ -42,8 +55,8 @@
 
 		<div class="form-group row mb-3 {{ $errors->has('akuan') ? 'has-error' : '' }}">
 			<div class="offset-sm-2 col-auto">
-				{{ Form::checkbox('akuan', 1, @$value, ['class' => 'form-check-input ', 'id' => 'akuan1']) }}
-					<label for="akuan1" class="form-check-label p-1 bg-warning text-danger rounded"><p>I hereby confirmed that all details and information filled in are <strong>CORRECT</strong> and <strong>CHECKED</strong> before sending.</p></label>
+				{{ Form::checkbox('akuan', 1, @$value, ['class' => 'form-check-input', 'id' => 'akuan1']) }}
+					<label for="akuan1" class="form-check-label"><p class="p-1 bg-warning text-danger rounded">I hereby confirmed that all details and information filled in are <strong>CORRECT</strong> and <strong>CHECKED</strong> before sending.</p></label>
 			</div>
 		</div>
 
