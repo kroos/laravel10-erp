@@ -3,12 +3,21 @@
   .table tr,
   .table td {
     border: 1px solid black;
-    font-size: 14px;
+    font-size: 10px;
     border-collapse: collapse;
+    width: 100%;
+  }
+
+  .table td {
+    height: 18px;
   }
 
   .top-row td {
     background-color: #cccccc;
+  }
+
+  @page {
+    margin: 0.30cm;
   }
 </style>
 <?php
@@ -27,22 +36,22 @@ if ($date_start != NULL && $date_end != NULL) {
 }
 ?>
 
-<table class="table table-hover table-sm align-middle">
+<table class="table">
   <tr class="top-row">
-    <td class="text-center" style="width: 30px;">
+    <td align="center" style="width: 17px;">
       NO
     </td>
-    <td class="text-center" style="width: 55px;">
+    <td align="center" style="width: 40px;">
       ID
     </td>
-    <td class="text-center" style="max-width: 150px;">
+    <td align="center" style="max-width: 100px;">
       NAME
     </td>
-    <td class="text-center">
-      DEPARTMENT
+    <td align="center" style="max-width: 50px;">
+      DEPT
     </td>
     @for ($date = $startDate; $date->lte($endDate); $date->addDay())
-    <td class="text-center" style="max-width: 48px;">
+    <td style="width: 24px;">
       <?php
       $total_col++;
       $rows[] = $date->format('Y-m-d');
@@ -50,10 +59,10 @@ if ($date_start != NULL && $date_end != NULL) {
       ?>
     </td>
     @endfor
-    <td class="text-center" style="max-width: 60px;">
+    <td align="center" style="width: 40px;">
       TOTAL<br />HOURS
     </td>
-    <td class="text-center" style="max-width: 70px;">
+    <td align="center" style="width: 60px;">
       SIGNATURE
     </td>
   </tr>
@@ -61,20 +70,20 @@ if ($date_start != NULL && $date_end != NULL) {
   @foreach ($overtimes as $overtime)
   <?php $total_hour_per_person = '0'; ?>
   <tr>
-    <td class="text-truncate text-center" style="width: 30px;">
+    <td align="center">
       {{ $no++ }}
     </td>
-    <td class="text-truncate text-center" style="width: 55px;" title="{{ $overtime->username }}">
+    <td align="center">
       {{ $overtime->username }}
     </td>
-    <td class="text-truncate" style="max-width: 150px;" title="{{ $overtime->name }}">
-      {{ $overtime->name }}
+    <td style="max-width: 100px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">
+      &nbsp;{{ $overtime->name }}
     </td>
-    <td class="text-truncate" style="max-width: 1px;" title="{{ $overtime->department }}">
-      {{ $overtime->department }}
+    <td style="max-width: 50px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">
+      &nbsp;{{ $overtime->department }}
     </td>
     @foreach ($rows as $row)
-    <td class="text-truncate text-center" style="max-width: 48px;">
+    <td style="width: 24px;">
       <?php
       $ot = HROvertime::join('hr_overtime_ranges', 'hr_overtime_ranges.id', '=', 'hr_overtimes.overtime_range_id')
         ->where('hr_overtimes.ot_date', '=', $row)
@@ -96,25 +105,27 @@ if ($date_start != NULL && $date_end != NULL) {
       ?>
     </td>
     @endforeach
-    <td class="text-center" style="max-width: 60px;">
+    <td align="right">
       <?php
       $total_hour = $total_hour + $total_hour_per_person;
 
       echo (sprintf('%02d', intdiv($total_hour_per_person, 60)) . ':' . sprintf('%02d', ($total_hour_per_person % 60)));
       ?>
+      &nbsp;
     </td>
-    <td style="max-width: 70px;"></td>
+    <td></td>
   </tr>
   @endforeach
 
   <tr>
     <td align="right" colspan="{{ $total_col+4 }}">
-      TOTAL HOURS
+      TOTAL HOURS&nbsp;&nbsp;
     </td>
-    <td class="text-center">
+    <td align="right">
       <?php
       echo (sprintf('%02d', intdiv($total_hour, 60)) . ':' . sprintf('%02d', ($total_hour % 60)));
       ?>
+      &nbsp;
     </td>
     <td></td>
   </tr>
