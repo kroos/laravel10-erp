@@ -44,12 +44,12 @@ foreach ($c as $v) {
 				<th>Attention</th>
 				<td colspan="2">
 					<p>
-						Please complete your profile before applying your leave. Once completed, please proceed with leave application.<br />
 						@if(is_null($email) && is_null($emer) && $emer->count() == 0)
-							<a href="{{ route('profile.edit',  $us->id ) }}" class="btn btn-sm btn-outline-secondary"><i class="fa fa-regular fa-user"></i>Profile</a>
+							<a href="{{ route('profile.edit',  $us->id ) }}" class="btn btn-sm btn-primary"><i class="fa fa-regular fa-user"></i>Profile</a>
 						@else
-							<a href="{{ route('leave.create' ) }}" class="btn btn-sm btn-outline-secondary">Leave Application</a>
+							<a href="{{ route('leave.create' ) }}" class="btn btn-sm btn-primary">Leave Application</a>
 						@endif
+						<br />Please complete your profile before applying your leave. Once completed, please proceed with leave application.
 					</p>
 				</td>
 			</tr>

@@ -1,24 +1,31 @@
 @extends('layouts.app')
 @section('content')
-<div class="container row rounded align-items-start justify-content-center border border-primary">
+<div class="container row rounded align-items-start justify-content-center">
 	<div class="table-responsive col-sm-12 m-5">
 		<table class="table table-hover table-sm">
 			<tbody>
 				<tr class="">
 					<td rowspan="3" class="text-danger w-25">Attention :</td>
-					<td>Leave application must be at least <span class="font-weight-bold">THREE (3)</span> days in advance for <strong>"Annual Leave"</strong> and <strong>"Unpaid Leave"</strong>. Otherwise it will be considered as <strong>"Emergency Annual Leave"</strong> or <strong>"Emergency Unpaid Leave"</strong></td>
+					<td>
+            Leave application must be at least <span class="font-weight-bold">THREE (3)</span> days in advance for <strong>"Annual Leave"</strong> and <strong>"Unpaid Leave"</strong>. Otherwise it will be considered as <strong>"Emergency Annual Leave"</strong> or <strong>"Emergency Unpaid Leave"</strong>
+          </td>
 				</tr>
 				<tr>
-					<td><strong>"Time-Off"</strong> will consider as a <strong>"Leave"</strong>, if leave period exceed <strong>more than 2 hours</strong>.</td>
+					<td>
+            <strong>"Time-Off"</strong> will consider as a <strong>"Leave"</strong>, if leave period exceed <strong>more than 2 hours</strong>.
+          </td>
 				</tr>
 				<tr>
-					<td>Application for <strong>"Sick Leave/Medical Certificate (MC)"</strong> or <strong>"Unpaid Medical Certificate (MC-UPL)"</strong> will only be <strong>considered VALID and ELIGIBLE</strong> if a sick/medical certificate is <strong>issued by a REGISTERED government hospital/clinic or panel clinic only.</td>
+					<td>
+            Application for <strong>"Sick Leave/Medical Certificate (MC)"</strong> or <strong>"Unpaid Medical Certificate (MC-UPL)"</strong> will only be <strong>considered VALID and ELIGIBLE</strong> if a sick/medical certificate is <strong>issued by a REGISTERED government hospital/clinic or panel clinic only.
+          </td>
 				</tr>
 			</tbody>
 		</table>
 	</div>
 
 	<!-- herecomes the hardest part, leave application -->
+
 
 	<div class="container row">
 		{{ Form::open(['route' => ['leave.store'], 'id' => 'form', 'autocomplete' => 'off', 'files' => true,  'data-toggle' => 'validator']) }}
@@ -50,7 +57,7 @@
 
 		<div class="form-group row mb-3">
 			<div class="col-sm-8 offset-sm-4">
-				{!! Form::button('Submit Application', ['class' => 'btn btn-sm btn-outline-secondary', 'type' => 'submit']) !!}
+				{!! Form::button('Submit Application', ['class' => 'btn btn-sm btn-primary', 'type' => 'submit']) !!}
 			</div>
 		</div>
 		{{ Form::close() }}
@@ -216,7 +223,7 @@ $('#leave_id').on('change', function() {
 		if($selection.val() == '3') {
 			$('#wrapper').append(
 				'<div id="remove">' +
-					<!-- annual leave -->
+					<!-- UNPAID LEAVE | UPL -->
 
 					'<div class="form-group row m-2 {{ $errors->has('date_time_start') ? 'has-error' : '' }}">' +
 						'{{ Form::label('from', 'From : ', ['class' => 'col-sm-4 col-form-label']) }}' +
@@ -265,8 +272,7 @@ $('#leave_id').on('change', function() {
 		} else {
 			$('#wrapper').append(
 				'<div id="remove">' +
-					<!-- annual leave -->
-
+					<!-- ANNUAL LEAVE | AL -->
 					'<div class="form-group row m-2 {{ $errors->has('date_time_start') ? 'has-error' : '' }}">' +
 						'{{ Form::label('from', 'From : ', ['class' => 'col-sm-4 col-form-label']) }}' +
 						'<div class="col-sm-8 datetime" style="position: relative">' +
@@ -669,14 +675,14 @@ if(obj.time_start_pm == itime_start) {
 				'<div class="form-group row mb-3 {{ $errors->has('date_time_start') ? 'has-error' : '' }}">' +
 					'{{ Form::label('from', 'From : ', ['class' => 'col-sm-2 col-form-label']) }}' +
 					'<div class="col-auto datetime" style="position: relative">' +
-						'{{ Form::text('date_time_start', @$value, ['class' => 'form-control', 'id' => 'from', 'placeholder' => 'From : ', 'autocomplete' => 'off']) }}' +
+						'{{ Form::text('date_time_start', @$value, ['class' => 'form-control', 'id' => 'from', 'placeholder' => 'From', 'autocomplete' => 'off']) }}' +
 					'</div>' +
 				'</div>' +
 
 				'<div class="form-group row mb-3 {{ $errors->has('date_time_end') ? 'has-error' : '' }}">' +
 					'{{ Form::label('to', 'To : ', ['class' => 'col-sm-2 col-form-label']) }}' +
 					'<div class="col-auto datetime" style="position: relative">' +
-						'{{ Form::text('date_time_end', @$value, ['class' => 'form-control', 'id' => 'to', 'placeholder' => 'To : ', 'autocomplete' => 'off']) }}' +
+						'{{ Form::text('date_time_end', @$value, ['class' => 'form-control', 'id' => 'to', 'placeholder' => 'To', 'autocomplete' => 'off']) }}' +
 					'</div>' +
 				'</div>' +
 
@@ -690,9 +696,9 @@ if(obj.time_start_pm == itime_start) {
 				@if( $userneedbackup == 1 )
 				'<div id="backupwrapper">' +
 					'<div class="form-group row mb-3 {{ $errors->has('staff_id') ? 'has-error' : '' }}" id="backupremove">' +
-						'{{ Form::label('backupperson', 'Replacement : ', ['class' => 'col-sm-2 col-form-label']) }}' +
-						'<div class="col-auto backup">' +
-							'<select name="staff_id" id="backupperson" class="form-control form-select form-select-sm " placeholder="Please choose" autocomplete="off"></select>' +
+						'{{ Form::label('backupperson', 'Backup : ', ['class' => 'col-sm-2 col-form-label']) }}' +
+						'<div class="col-sm-6 backup">' +
+							'<select name="staff_id" id="backupperson" class="form-control form-select form-select-sm col-auto" placeholder="Please choose" autocomplete="off"></select>' +
 						'</div>' +
 					'</div>' +
 				'</div>' +
@@ -700,15 +706,15 @@ if(obj.time_start_pm == itime_start) {
 
 				'<div class="form-group row mb-3 {{ $errors->has('document') ? 'has-error' : '' }}">' +
 					'{{ Form::label( 'doc', 'Upload Supporting Document : ', ['class' => 'col-sm-2 col-form-label'] ) }}' +
-					'<div class="col-auto supportdoc">' +
+					'<div class="col-sm-10 supportdoc">' +
 						'{{ Form::file( 'document', ['class' => 'form-control form-control-file', 'id' => 'doc', 'placeholder' => 'Supporting Document']) }}' +
 					'</div>' +
 				'</div>' +
 
 				'<div class="form-group row mb-3 {{ $errors->has('documentsupport') ? 'has-error' : '' }}">' +
-					'<div class="offset-sm-2 col-auto form-check suppdoc">' +
-						'{{ Form::checkbox('documentsupport', 1, @$value, ['class' => 'form-check-input ', 'id' => 'suppdoc']) }}' +
-						'<label for="suppdoc" class="form-check-label p-1 bg-warning text-danger rounded">Please ensure you will submit <strong>Supporting Documents</strong> within <strong>3 Days</strong> after date leave.</label>' +
+					'<div class="offset-sm-2 col-auto suppdoc">' +
+						'{{ Form::checkbox('documentsupport', 1, @$value, ['class' => 'form-check-input', 'id' => 'suppdoc', 'style' => 'width:25px; height:25px;']) }}' +
+						' <label for="suppdoc" class="form-check-label"><p class="p-1 bg-warning text-danger rounded">Please ensure you will submit <strong>Supporting Documents</strong> within <strong>3 Days</strong> after date leave.</p></label>' +
 					'</div>' +
 				'</div>' +
 
@@ -1121,7 +1127,7 @@ $oi = \Auth::user()->belongstostaff->hasmanyleavereplacement()->where('leave_bal
 			'<div id="remove">' +
 				'<div class="form-group row mb-3 {{ $errors->has('leave_id') ? 'has-error' : '' }}">' +
 					'{{ Form::label('nrla', 'Please Choose Your Replacement Leave : ', ['class' => 'col-sm-2 col-form-label']) }}' +
-					'<div class="col-auto nrl">' +
+					'<div class="col-sm-6 nrl">' +
 						'<p>Total Replacement Leave = {{ $oi->sum('leave_balance') }} days</p>' +
 						'<select name="id" id="nrla" class="form-control">' +
 							'<option value="">Please select</option>' +
@@ -1135,13 +1141,13 @@ $oi = \Auth::user()->belongstostaff->hasmanyleavereplacement()->where('leave_bal
 				'<div class="form-group row mb-3 {{ $errors->has('date_time_start') ? 'has-error' : '' }}">' +
 					'{{ Form::label('from', 'From : ', ['class' => 'col-sm-2 col-form-label']) }}' +
 					'<div class="col-auto datetime" style="position: relative">' +
-						'{{ Form::text('date_time_start', @$value, ['class' => 'form-control', 'id' => 'from', 'placeholder' => 'From : ', 'autocomplete' => 'off']) }}' +
+						'{{ Form::text('date_time_start', @$value, ['class' => 'form-control', 'id' => 'from', 'placeholder' => 'From', 'autocomplete' => 'off']) }}' +
 					'</div>' +
 				'</div>' +
 				'<div class="form-group row mb-3 {{ $errors->has('date_time_end') ? 'has-error' : '' }}">' +
 					'{{ Form::label('to', 'To : ', ['class' => 'col-sm-2 col-form-label']) }}' +
 					'<div class="col-auto datetime" style="position: relative">' +
-						'{{ Form::text('date_time_end', @$value, ['class' => 'form-control', 'id' => 'to', 'placeholder' => 'To : ', 'autocomplete' => 'off']) }}' +
+						'{{ Form::text('date_time_end', @$value, ['class' => 'form-control', 'id' => 'to', 'placeholder' => 'To', 'autocomplete' => 'off']) }}' +
 					'</div>' +
 				'</div>' +
 
@@ -1153,9 +1159,9 @@ $oi = \Auth::user()->belongstostaff->hasmanyleavereplacement()->where('leave_bal
 				@if( $userneedbackup == 1 )
 				'<div id="backupwrapper">' +
 					'<div class="form-group row mb-3 {{ $errors->has('staff_id') ? 'has-error' : '' }}" id="backupremove">' +
-						'{{ Form::label('backupperson', 'Replacement : ', ['class' => 'col-sm-2 col-form-label']) }}' +
-						'<div class="col-auto backup">' +
-							'<select name="staff_id" id="backupperson" class="form-control form-select form-select-sm " placeholder="Please choose" autocomplete="off"></select>' +
+						'{{ Form::label('backupperson', 'Backup : ', ['class' => 'col-sm-2 col-form-label']) }}' +
+						'<div class="col-sm-6 backup">' +
+							'<select name="staff_id" id="backupperson" class="form-control form-select form-select-sm col-auto" placeholder="Please choose" autocomplete="off"></select>' +
 						'</div>' +
 					'</div>' +
 				'</div>' +
@@ -1250,6 +1256,7 @@ $.each(objtime, function() {
 if(d === true) {
 					$('#wrapperday').append(
 							'{{ Form::label('leave_cat', 'Leave Category : ', ['class' => 'col-sm-2 col-form-label removehalfleave']) }}' +
+
 							'<div class="col-auto mb-3 removehalfleave " id="halfleave">' +
 								'<div class="form-check form-check-inline removehalfleave" id="removeleavehalf">' +
 									'<input type="radio" name="leave_cat" value="1" id="radio1" class="removehalfleave" disabled="disabled">' +
@@ -1635,21 +1642,21 @@ if(obj.time_start_pm == itime_start) {
 				'<div class="form-group row mb-3 {{ $errors->has('date_time_start') ? 'has-error' : '' }}">' +
 					'{{ Form::label('from', 'From : ', ['class' => 'col-sm-2 col-form-label']) }}' +
 					'<div class="col-auto datetime" style="position: relative">' +
-						'{{ Form::text('date_time_start', @$value, ['class' => 'form-control', 'id' => 'from', 'placeholder' => 'From : ', 'autocomplete' => 'off']) }}' +
+						'{{ Form::text('date_time_start', @$value, ['class' => 'form-control', 'id' => 'from', 'placeholder' => 'From', 'autocomplete' => 'off']) }}' +
 					'</div>' +
 				'</div>' +
 
 				'<div class="form-group row mb-3 {{ $errors->has('date_time_end') ? 'has-error' : '' }}">' +
 					'{{ Form::label('to', 'To : ', ['class' => 'col-sm-2 col-form-label']) }}' +
 					'<div class="col-auto datetime" style="position: relative">' +
-						'{{ Form::text('date_time_end', @$value, ['class' => 'form-control', 'id' => 'to', 'placeholder' => 'To : ', 'autocomplete' => 'off']) }}' +
+						'{{ Form::text('date_time_end', @$value, ['class' => 'form-control', 'id' => 'to', 'placeholder' => 'To', 'autocomplete' => 'off']) }}' +
 					'</div>' +
 				'</div>' +
 			@if( $userneedbackup == 1 )
 				'<div class="form-group row mb-3 {{ $errors->has('staff_id') ? 'has-error' : '' }}">' +
-					'{{ Form::label('backupperson', 'Replacement : ', ['class' => 'col-sm-2 col-form-label']) }}' +
-					'<div class="col-auto backup">' +
-						'<select name="staff_id" id="backupperson" class="form-control form-select form-select-sm" placeholder="Please choose" autocomplete="off"></select>' +
+					'{{ Form::label('backupperson', 'Backup : ', ['class' => 'col-sm-2 col-form-label']) }}' +
+					'<div class="col-sm-6 backup">' +
+						'<select name="staff_id" id="backupperson" class="form-control form-select form-select-sm col-auto" placeholder="Please choose" autocomplete="off"></select>' +
 					'</div>' +
 				'</div>' +
 			@endif
@@ -1759,21 +1766,18 @@ if(obj.time_start_pm == itime_start) {
 				'<div class="form-group row mb-3 {{ $errors->has('date_time_start') ? 'has-error' : '' }}">' +
 					'{{ Form::label('from', 'From : ', ['class' => 'col-sm-2 col-form-label']) }}' +
 					'<div class="col-auto datetime" style="position: relative">' +
-						'{{ Form::text('date_time_start', @$value, ['class' => 'form-control', 'id' => 'from', 'placeholder' => 'From : ', 'autocomplete' => 'off']) }}' +
+						'{{ Form::text('date_time_start', @$value, ['class' => 'form-control', 'id' => 'from', 'placeholder' => 'From', 'autocomplete' => 'off']) }}' +
 					'</div>' +
 				'</div>' +
 
 				'<div class="form-group row mb-3 {{ $errors->has('date_time_end') ? 'has-error' : '' }}">' +
 					'{{ Form::label('to', 'To : ', ['class' => 'col-sm-2 col-form-label']) }}' +
 					'<div class="col-auto datetime" style="position: relative">' +
-						'{{ Form::text('date_time_end', @$value, ['class' => 'form-control', 'id' => 'to', 'placeholder' => 'To : ', 'autocomplete' => 'off']) }}' +
+						'{{ Form::text('date_time_end', @$value, ['class' => 'form-control', 'id' => 'to', 'placeholder' => 'To', 'autocomplete' => 'off']) }}' +
 					'</div>' +
 				'</div>' +
 
 				'<div class="form-group row mb-3 col-auto {{ $errors->has('leave_cat') ? 'has-error' : '' }}" id="wrapperday">' +
-					'{{ Form::label('leave_cat', 'Leave Category : ', ['class' => 'col-sm-2 col-form-label removehalfleave']) }}' +
-					'<div class="col-auto removehalfleave" id="halfleave">' +
-					'</div>' +
 					'<div class="form-group col-auto offset-sm-2 {{ $errors->has('half_type_id') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
 					'</div>' +
 				'</div>' +
@@ -1782,8 +1786,8 @@ if(obj.time_start_pm == itime_start) {
 				'<div id="backupwrapper">' +
 					'<div class="form-group row mb-3 {{ $errors->has('staff_id') ? 'has-error' : '' }}" id="backupremove">' +
 						'{{ Form::label('backupperson', 'Backup Person : ', ['class' => 'col-sm-2 col-form-label']) }}' +
-						'<div class="col-auto backup">' +
-							'<select name="staff_id" id="backupperson" class="form-control form-select form-select-sm " placeholder="Please choose" autocomplete="off"></select>' +
+						'<div class="col-sm-6 backup">' +
+							'<select name="staff_id" id="backupperson" class="form-control form-select form-select-sm col-auto" placeholder="Please choose" autocomplete="off"></select>' +
 						'</div>' +
 					'</div>' +
 				'</div>' +
@@ -1791,16 +1795,16 @@ if(obj.time_start_pm == itime_start) {
 
 				'<div class="form-group row {{ $errors->has('document') ? 'has-error' : '' }}">' +
 					'{{ Form::label( 'doc', 'Upload Supporting Document : ', ['class' => 'col-sm-2 col-form-label'] ) }}' +
-					'<div class="col-auto supportdoc">' +
+					'<div class="col-sm-10 supportdoc">' +
 						'{{ Form::file( 'document', ['class' => 'form-control form-control-file', 'id' => 'doc', 'placeholder' => 'Supporting Document']) }}' +
 					'</div>' +
 				'</div>' +
 
-				'<div class="form-group row {{ $errors->has('akuan') ? 'has-error' : '' }}">' +
+				'<div class="form-group row mb-3 {{ $errors->has('akuan') ? 'has-error' : '' }}">' +
 					'{{ Form::label('suppdoc', 'Supporting Document : ', ['class' => 'col-sm-2 col-form-label']) }}' +
-					'<div class="col-auto form-check suppdoc">' +
-						'{{ Form::checkbox('documentsupport', 1, @$value, ['class' => 'form-check-input rounded', 'id' => 'suppdoc']) }}' +
-						'<label for="suppdoc" class="form-check-label p-1 bg-warning text-danger rounded">Please ensure you will submit <strong>Supporting Document</strong> within a period of  <strong>3 Days</strong> upon return.</label>' +
+					'<div class="col-auto suppdoc">' +
+						'{{ Form::checkbox('documentsupport', 1, @$value, ['class' => 'form-check-input', 'id' => 'suppdoc', 'style' => 'width:25px; height:25px;']) }}' +
+						' <label for="suppdoc" class="form-check-label"><p class="p-1 bg-warning text-danger rounded">Please ensure you will submit <strong>Supporting Document</strong> within a period of  <strong>3 Days</strong> upon return.</p></label>' +
 					'</div>' +
 				'</div>' +
 			'</div>'
@@ -2000,9 +2004,9 @@ if(obj.time_start_pm == itime_start) {
 				if( $('#backupwrapper').children().length == 0 ) {
 					$('#backupwrapper').append(
 						'<div class="form-group row {{ $errors->has('staff_id') ? 'has-error' : '' }}">' +
-							'{{ Form::label('backupperson', 'Replacement : ', ['class' => 'col-sm-2 col-form-label']) }}' +
-							'<div class="col-auto backup">' +
-								'<select name="staff_id" id="backupperson" class="form-control form-select form-select-sm" placeholder="Please choose" autocomplete="off"></select>' +
+							'{{ Form::label('backupperson', 'Backup : ', ['class' => 'col-sm-2 col-form-label']) }}' +
+							'<div class="col-sm-6 backup">' +
+								'<select name="staff_id" id="backupperson" class="form-control form-select form-select-sm col-auto" placeholder="Please choose" autocomplete="off"></select>' +
 							'</div>' +
 						'</div>'
 					);
@@ -2077,6 +2081,7 @@ $.each(objtime, function() {
 if(d === true) {
 					$('#wrapperday').append(
 							'{{ Form::label('leave_cat', 'Leave Category : ', ['class' => 'col-sm-2 col-form-label removehalfleave']) }}' +
+
 							'<div class="col-auto mb-3 removehalfleave " id="halfleave">' +
 								'<div class="form-check form-check-inline removehalfleave" id="removeleavehalf">' +
 									'<input type="radio" name="leave_cat" value="1" id="radio1" class="removehalfleave" disabled="disabled">' +
@@ -2247,7 +2252,7 @@ if(obj.time_start_pm == itime_start) {
 				'<div class="form-group row mb-3 {{ $errors->has('date_time_start') ? 'has-error' : '' }}">' +
 					'{{ Form::label('from', 'Date : ', ['class' => 'col-sm-2 col-form-label']) }}' +
 					'<div class="col-auto datetime" style="position: relative">' +
-						'{{ Form::text('date_time_start', @$value, ['class' => 'form-control', 'id' => 'from', 'placeholder' => 'Date : ', 'autocomplete' => 'off']) }}' +
+						'{{ Form::text('date_time_start', @$value, ['class' => 'form-control', 'id' => 'from', 'placeholder' => 'Date', 'autocomplete' => 'off']) }}' +
 					'</div>' +
 				'</div>' +
 
@@ -2256,10 +2261,10 @@ if(obj.time_start_pm == itime_start) {
 					'<div class="col-auto">' +
 							'<div class="form-row time">' +
 								'<div class="col-auto mb-3" style="position: relative">' +
-									'{{ Form::text('time_start', @$value, ['class' => 'form-control', 'id' => 'start', 'placeholder' => 'From : ', 'autocomplete' => 'off']) }}' +
+									'{{ Form::text('time_start', @$value, ['class' => 'form-control', 'id' => 'start', 'placeholder' => 'From', 'autocomplete' => 'off']) }}' +
 								'</div>' +
 								'<div class="col-auto mb-3" style="position: relative">' +
-									'{{ Form::text('time_end', @$value, ['class' => 'form-control', 'id' => 'end', 'placeholder' => 'To : ', 'autocomplete' => 'off']) }}' +
+									'{{ Form::text('time_end', @$value, ['class' => 'form-control', 'id' => 'end', 'placeholder' => 'To', 'autocomplete' => 'off']) }}' +
 								'</div>' +
 							'</div>' +
 					'</div>' +
@@ -2268,24 +2273,24 @@ if(obj.time_start_pm == itime_start) {
 				'<div id="backupwrapper">' +
 					'<div class="form-group row mb-3 {{ $errors->has('staff_id') ? 'has-error' : '' }}" id="backupremove">' +
 						'{{ Form::label('backupperson', 'Backup Person : ', ['class' => 'col-sm-2 col-form-label']) }}' +
-						'<div class="col-auto backup">' +
-							'<select name="staff_id" id="backupperson" class="form-control form-select form-select-sm " placeholder="Please choose" autocomplete="off"></select>' +
+						'<div class="col-sm-6 backup">' +
+							'<select name="staff_id" id="backupperson" class="form-control form-select form-select-sm col-auto" placeholder="Please choose" autocomplete="off"></select>' +
 						'</div>' +
 					'</div>' +
 				'</div>' +
 				@endif
 				'<div class="form-group row mb-3 {{ $errors->has('document') ? 'has-error' : '' }}">' +
 					'{{ Form::label( 'doc', 'Upload Supporting Document : ', ['class' => 'col-sm-2 col-form-label'] ) }}' +
-					'<div class="col-auto supportdoc">' +
+					'<div class="col-sm-10 supportdoc">' +
 						'{{ Form::file( 'document', ['class' => 'form-control form-control-file', 'id' => 'doc', 'placeholder' => 'Supporting Document']) }}' +
 					'</div>' +
 				'</div>' +
 
 				'<div class="form-group row mb-3 {{ $errors->has('akuan') ? 'has-error' : '' }}">' +
-					'{{ Form::label('suppdoc', 'Supporting Documents : ', ['class' => 'col-sm-2 col-form-label']) }}' +
-					'<div class="col-auto form-check suppdoc">' +
-						'{{ Form::checkbox('documentsupport', 1, @$value, ['class' => 'form-check-input rounded', 'id' => 'suppdoc']) }}' +
-						'<label for="suppdoc" class="form-check-label p-1 bg-warning text-danger rounded">Please ensure you will submit <strong>Supporting Document</strong> within a period of  <strong>3 Days</strong> upon return.</label>' +
+					'{{ Form::label('suppdoc', 'Supporting Document : ', ['class' => 'col-sm-2 col-form-label']) }}' +
+					'<div class="col-auto suppdoc">' +
+						'{{ Form::checkbox('documentsupport', 1, @$value, ['class' => 'form-check-input', 'id' => 'suppdoc', 'style' => 'width:25px; height:25px;']) }}' +
+						' <label for="suppdoc" class="form-check-label"><p class="p-1 bg-warning text-danger rounded">Please ensure you will submit <strong>Supporting Document</strong> within a period of  <strong>3 Days</strong> upon return.</p></label>' +
 					'</div>' +
 				'</div>' +
 
@@ -2359,9 +2364,9 @@ if(obj.time_start_pm == itime_start) {
 				if( $('#backupwrapper').children().length == 0 ) {
 					$('#backupwrapper').append(
 						'<div class="form-group row {{ $errors->has('staff_id') ? 'has-error' : '' }}">' +
-							'{{ Form::label('backupperson', 'Replacement : ', ['class' => 'col-sm-2 col-form-label']) }}' +
-							'<div class="col-auto backup">' +
-								'<select name="staff_id" id="backupperson" class="form-control form-select form-select-sm" placeholder="Please choose" autocomplete="off"></select>' +
+							'{{ Form::label('backupperson', 'Backup : ', ['class' => 'col-sm-2 col-form-label']) }}' +
+							'<div class="col-sm-6 backup">' +
+								'<select name="staff_id" id="backupperson" class="form-control form-select form-select-sm col-auto" placeholder="Please choose" autocomplete="off"></select>' +
 							'</div>' +
 						'</div>'
 					);
@@ -2455,14 +2460,14 @@ if(obj.time_start_pm == itime_start) {
 				'<div class="form-group row mb-3 {{ $errors->has('date_time_start') ? 'has-error' : '' }}">' +
 					'{{ Form::label('from', 'From : ', ['class' => 'col-sm-2 col-form-label']) }}' +
 					'<div class="col-auto datetime" style="position: relative">' +
-						'{{ Form::text('date_time_start', @$value, ['class' => 'form-control', 'id' => 'from', 'placeholder' => 'From : ', 'autocomplete' => 'off']) }}' +
+						'{{ Form::text('date_time_start', @$value, ['class' => 'form-control', 'id' => 'from', 'placeholder' => 'From', 'autocomplete' => 'off']) }}' +
 					'</div>' +
 				'</div>' +
 
 				'<div class="form-group row mb-3 {{ $errors->has('date_time_end') ? 'has-error' : '' }}">' +
 					'{{ Form::label('to', 'To : ', ['class' => 'col-sm-2 col-form-label']) }}' +
 					'<div class="col-auto datetime" style="position: relative">' +
-						'{{ Form::text('date_time_end', @$value, ['class' => 'form-control', 'id' => 'to', 'placeholder' => 'To : ', 'autocomplete' => 'off']) }}' +
+						'{{ Form::text('date_time_end', @$value, ['class' => 'form-control', 'id' => 'to', 'placeholder' => 'To', 'autocomplete' => 'off']) }}' +
 					'</div>' +
 				'</div>' +
 
@@ -2477,8 +2482,8 @@ if(obj.time_start_pm == itime_start) {
 				'<div id="backupwrapper">' +
 					'<div class="form-group row mb-3 {{ $errors->has('staff_id') ? 'has-error' : '' }}" id="backupremove">' +
 						'{{ Form::label('backupperson', 'Backup Person : ', ['class' => 'col-sm-2 col-form-label']) }}' +
-						'<div class="col-auto backup">' +
-							'<select name="staff_id" id="backupperson" class="form-control form-select form-select-sm " placeholder="Please choose" autocomplete="off"></select>' +
+						'<div class="col-sm-6 backup">' +
+							'<select name="staff_id" id="backupperson" class="form-control form-select form-select-sm col-auto" placeholder="Please choose" autocomplete="off"></select>' +
 						'</div>' +
 					'</div>' +
 				'</div>' +
@@ -2486,16 +2491,16 @@ if(obj.time_start_pm == itime_start) {
 
 				'<div class="form-group row mb-3 {{ $errors->has('document') ? 'has-error' : '' }}">' +
 					'{{ Form::label( 'doc', 'Upload Supporting Document : ', ['class' => 'col-sm-2 col-form-label'] ) }}' +
-					'<div class="col-auto supportdoc">' +
+					'<div class="col-sm-10 supportdoc">' +
 						'{{ Form::file( 'document', ['class' => 'form-control form-control-file', 'id' => 'doc', 'placeholder' => 'Supporting Document']) }}' +
 					'</div>' +
 				'</div>' +
 
 				'<div class="form-group row mb-3 {{ $errors->has('akuan') ? 'has-error' : '' }}">' +
 					'{{ Form::label('suppdoc', 'Supporting Document : ', ['class' => 'col-sm-2 col-form-label']) }}' +
-					'<div class="col-auto form-check suppdoc">' +
-						'{{ Form::checkbox('documentsupport', 1, @$value, ['class' => 'form-check-input rounded', 'id' => 'suppdoc']) }}' +
-						'<label for="suppdoc" class="form-check-label p-1 bg-warning text-danger rounded">Please ensure you will submit <strong>Supporting Document</strong> within a period of  <strong>3 Days</strong> upon return.</label>' +
+					'<div class="col-auto suppdoc">' +
+						'{{ Form::checkbox('documentsupport', 1, @$value, ['class' => 'form-check-input', 'id' => 'suppdoc', 'style' => 'width:25px; height:25px;']) }}' +
+						' <label for="suppdoc" class="form-check-label"><p class="p-1 bg-warning text-danger rounded">Please ensure you will submit <strong>Supporting Document</strong> within a period of  <strong>3 Days</strong> upon return.</p></label>' +
 					'</div>' +
 				'</div>' +
 
@@ -2672,9 +2677,9 @@ if(obj.time_start_pm == itime_start) {
 				if( $('#backupwrapper').children().length == 0 ) {
 					$('#backupwrapper').append(
 						'<div class="form-group row {{ $errors->has('staff_id') ? 'has-error' : '' }}">' +
-							'{{ Form::label('backupperson', 'Replacement : ', ['class' => 'col-sm-2 col-form-label']) }}' +
-							'<div class="col-auto backup">' +
-								'<select name="staff_id" id="backupperson" class="form-control form-select form-select-sm" placeholder="Please choose" autocomplete="off"></select>' +
+							'{{ Form::label('backupperson', 'Backup : ', ['class' => 'col-sm-2 col-form-label']) }}' +
+							'<div class="col-sm-6 backup">' +
+								'<select name="staff_id" id="backupperson" class="form-control form-select form-select-sm col-auto" placeholder="Please choose" autocomplete="off"></select>' +
 							'</div>' +
 						'</div>'
 					);
@@ -2951,7 +2956,7 @@ $oi = \Auth::user()->belongstostaff->hasmanyleavereplacement()->where('leave_bal
 			'<div id="remove">' +
 				'<div class="form-group row mb-3 {{ $errors->has('leave_id') ? 'has-error' : '' }}">' +
 					'{{ Form::label('nrla', 'Please Choose Your Replacement Leave : ', ['class' => 'col-sm-2 col-form-label']) }}' +
-					'<div class="col-auto nrl">' +
+					'<div class="col-sm-6 nrl">' +
 						'<p>Total Replacement Leave = {{ $oi->sum('leave_balance') }} days</p>' +
 						'<select name="id" id="nrla" class="form-control">' +
 							'<option value="">Please select</option>' +
@@ -2965,13 +2970,13 @@ $oi = \Auth::user()->belongstostaff->hasmanyleavereplacement()->where('leave_bal
 				'<div class="form-group row mb-3 {{ $errors->has('date_time_start') ? 'has-error' : '' }}">' +
 					'{{ Form::label('from', 'From : ', ['class' => 'col-sm-2 col-form-label']) }}' +
 					'<div class="col-auto datetime" style="position: relative">' +
-						'{{ Form::text('date_time_start', @$value, ['class' => 'form-control', 'id' => 'from', 'placeholder' => 'From : ', 'autocomplete' => 'off']) }}' +
+						'{{ Form::text('date_time_start', @$value, ['class' => 'form-control', 'id' => 'from', 'placeholder' => 'From', 'autocomplete' => 'off']) }}' +
 					'</div>' +
 				'</div>' +
 				'<div class="form-group row mb-3 {{ $errors->has('date_time_end') ? 'has-error' : '' }}">' +
 					'{{ Form::label('to', 'To : ', ['class' => 'col-sm-2 col-form-label']) }}' +
 					'<div class="col-auto datetime" style="position: relative">' +
-						'{{ Form::text('date_time_end', @$value, ['class' => 'form-control', 'id' => 'to', 'placeholder' => 'To : ', 'autocomplete' => 'off']) }}' +
+						'{{ Form::text('date_time_end', @$value, ['class' => 'form-control', 'id' => 'to', 'placeholder' => 'To', 'autocomplete' => 'off']) }}' +
 					'</div>' +
 				'</div>' +
 
@@ -2983,8 +2988,8 @@ $oi = \Auth::user()->belongstostaff->hasmanyleavereplacement()->where('leave_bal
 				'<div id="backupwrapper">' +
 					'<div class="form-group row mb-3 {{ $errors->has('staff_id') ? 'has-error' : '' }}" id="backupremove">' +
 						'{{ Form::label('backupperson', 'Backup Person : ', ['class' => 'col-sm-2 col-form-label']) }}' +
-						'<div class="col-auto backup">' +
-							'<select name="staff_id" id="backupperson" class="form-control form-select form-select-sm " placeholder="Please choose" autocomplete="off"></select>' +
+						'<div class="col-sm-6 backup">' +
+							'<select name="staff_id" id="backupperson" class="form-control form-select form-select-sm col-auto" placeholder="Please choose" autocomplete="off"></select>' +
 						'</div>' +
 					'</div>' +
 				'</div>' +
@@ -2992,16 +2997,16 @@ $oi = \Auth::user()->belongstostaff->hasmanyleavereplacement()->where('leave_bal
 
 				'<div class="form-group row {{ $errors->has('document') ? 'has-error' : '' }}">' +
 					'{{ Form::label( 'doc', 'Upload Supporting Document : ', ['class' => 'col-sm-2 col-form-label'] ) }}' +
-					'<div class="col-auto supportdoc">' +
+					'<div class="col-sm-10 supportdoc">' +
 						'{{ Form::file( 'document', ['class' => 'form-control form-control-file', 'id' => 'doc', 'placeholder' => 'Supporting Document']) }}' +
 					'</div>' +
 				'</div>' +
 
-				'<div class="form-group row {{ $errors->has('akuan') ? 'has-error' : '' }}">' +
+				'<div class="form-group row mb-3 {{ $errors->has('akuan') ? 'has-error' : '' }}">' +
 					'{{ Form::label('suppdoc', 'Supporting Document : ', ['class' => 'col-sm-2 col-form-label']) }}' +
-					'<div class="col-auto form-check suppdoc">' +
-						'{{ Form::checkbox('documentsupport', 1, @$value, ['class' => 'form-check-input rounded', 'id' => 'suppdoc']) }}' +
-						'<label for="suppdoc" class="form-check-label p-1 bg-warning text-danger rounded">Please ensure you will submit <strong>Supporting Document</strong> within a period of  <strong>3 Days</strong> upon return.</label>' +
+					'<div class="col-auto suppdoc">' +
+						'{{ Form::checkbox('documentsupport', 1, @$value, ['class' => 'form-check-input', 'id' => 'suppdoc', 'style' => 'width:25px; height:25px;']) }}' +
+						' <label for="suppdoc" class="form-check-label"><p class="p-1 bg-warning text-danger rounded">Please ensure you will submit <strong>Supporting Document</strong> within a period of  <strong>3 Days</strong> upon return.</p></label>' +
 					'</div>' +
 				'</div>' +
 			'</div>'
@@ -3208,8 +3213,8 @@ if(obj.time_start_pm == itime_start) {
 					$('#backupwrapper').append(
 						'<div class="form-group row {{ $errors->has('staff_id') ? 'has-error' : '' }}">' +
 							'{{ Form::label('backupperson', 'Backup Person : ', ['class' => 'col-sm-2 col-form-label']) }}' +
-							'<div class="col-auto backup">' +
-								'<select name="staff_id" id="backupperson" class="form-control form-select form-select-sm" placeholder="Please choose" autocomplete="off"></select>' +
+							'<div class="col-sm-6 backup">' +
+								'<select name="staff_id" id="backupperson" class="form-control form-select form-select-sm col-auto" placeholder="Please choose" autocomplete="off"></select>' +
 							'</div>' +
 						'</div>'
 					);
@@ -3526,14 +3531,14 @@ if(obj.time_start_pm == itime_start) {
 				'<div class="form-group row mb-3 {{ $errors->has('date_time_start') ? 'has-error' : '' }}">' +
 					'{{ Form::label('from', 'From : ', ['class' => 'col-sm-2 col-form-label']) }}' +
 					'<div class="col-auto datetime" style="position: relative">' +
-						'{{ Form::text('date_time_start', @$value, ['class' => 'form-control col-auto', 'id' => 'from', 'placeholder' => 'From : ', 'autocomplete' => 'off']) }}' +
+						'{{ Form::text('date_time_start', @$value, ['class' => 'form-control col-auto', 'id' => 'from', 'placeholder' => 'From', 'autocomplete' => 'off']) }}' +
 					'</div>' +
 				'</div>' +
 
 				'<div class="form-group row mb-3 {{ $errors->has('date_time_end') ? 'has-error' : '' }}">' +
 					'{{ Form::label('to', 'To : ', ['class' => 'col-sm-2 col-form-label']) }}' +
 					'<div class="col-auto datetime" style="position: relative">' +
-						'{{ Form::text('date_time_end', @$value, ['class' => 'form-control col-auto', 'id' => 'to', 'placeholder' => 'To : ', 'autocomplete' => 'off']) }}' +
+						'{{ Form::text('date_time_end', @$value, ['class' => 'form-control col-auto', 'id' => 'to', 'placeholder' => 'To', 'autocomplete' => 'off']) }}' +
 					'</div>' +
 				'</div>' +
 
@@ -3546,8 +3551,8 @@ if(obj.time_start_pm == itime_start) {
 				'<div id="backupwrapper">' +
 					'<div class="form-group row mb-3 {{ $errors->has('staff_id') ? 'has-error' : '' }}">' +
 						'{{ Form::label('backupperson', 'Backup Person : ', ['class' => 'col-sm-2 col-form-label']) }}' +
-						'<div class="col-auto backup">' +
-							'<select name="staff_id" id="backupperson" class="form-control form-select form-select-sm " placeholder="Please choose" autocomplete="off"></select>' +
+						'<div class="col-sm-6 backup">' +
+							'<select name="staff_id" id="backupperson" class="form-control form-select form-select-sm col-auto" placeholder="Please choose" autocomplete="off"></select>' +
 						'</div>' +
 					'</div>' +
 				'</div>' +
@@ -3555,16 +3560,16 @@ if(obj.time_start_pm == itime_start) {
 
 				'<div class="form-group row {{ $errors->has('document') ? 'has-error' : '' }}">' +
 					'{{ Form::label( 'doc', 'Upload Supporting Document : ', ['class' => 'col-sm-2 col-form-label'] ) }}' +
-					'<div class="col-auto supportdoc">' +
+					'<div class="col-sm-10 supportdoc">' +
 						'{{ Form::file( 'document', ['class' => 'form-control form-control-file', 'id' => 'doc', 'placeholder' => 'Supporting Document']) }}' +
 					'</div>' +
 				'</div>' +
 
-				'<div class="form-group row {{ $errors->has('akuan') ? 'has-error' : '' }}">' +
+				'<div class="form-group row mb-3 {{ $errors->has('akuan') ? 'has-error' : '' }}">' +
 					'{{ Form::label('suppdoc', 'Supporting Document : ', ['class' => 'col-sm-2 col-form-label']) }}' +
-					'<div class="col-auto form-check suppdoc">' +
-						'{{ Form::checkbox('documentsupport', 1, @$value, ['class' => 'form-check-input rounded', 'id' => 'suppdoc']) }}' +
-						'<label for="suppdoc" class="form-check-label p-1 bg-warning text-danger rounded">Please ensure you will submit <strong>Supporting Document</strong> within a period of  <strong>3 Days</strong> upon return.</label>' +
+					'<div class="col-auto suppdoc">' +
+						'{{ Form::checkbox('documentsupport', 1, @$value, ['class' => 'form-check-input', 'id' => 'suppdoc', 'style' => 'width:25px; height:25px;']) }}' +
+						' <label for="suppdoc" class="form-check-label"><p class="p-1 bg-warning text-danger rounded">Please ensure you will submit <strong>Supporting Document</strong> within a period of  <strong>3 Days</strong> upon return.</p></label>' +
 					'</div>' +
 				'</div>' +
 
@@ -3766,8 +3771,8 @@ if(obj.time_start_pm == itime_start) {
 					$('#backupwrapper').append(
 						'<div class="form-group row {{ $errors->has('staff_id') ? 'has-error' : '' }}">' +
 							'{{ Form::label('backupperson', 'Backup Person : ', ['class' => 'col-sm-2 col-form-label']) }}' +
-							'<div class="col-auto backup">' +
-								'<select name="staff_id" id="backupperson" class="form-control form-select form-select-sm" placeholder="Please choose" autocomplete="off"></select>' +
+							'<div class="col-sm-6 backup">' +
+								'<select name="staff_id" id="backupperson" class="form-control form-select form-select-sm col-auto" placeholder="Please choose" autocomplete="off"></select>' +
 							'</div>' +
 						'</div>'
 					);
