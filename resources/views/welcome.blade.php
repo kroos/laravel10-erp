@@ -1,38 +1,10 @@
 @extends('layouts.app')
 
 @section('content')
-
-
-
-<div class="container-fluid d-flex flex-column align-items-center text-center p-3 py-5">
+<div class="col-sm-auto col-12 d-flex flex-column align-items-center text-center border border-primary">
 	<h1>How To Apply Leave</h1>
-	<iframe width="560" height="315" src="https://www.youtube.com/embed/j6PtxOLRo48?si=6Q3GVP7yHmHY6I48" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+	<iframe class="col-12 col-sm-auto" src="https://www.youtube.com/embed/j6PtxOLRo48?si=6Q3GVP7yHmHY6I48" title="YouTube video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
 </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 @endsection
 
 @section('js')

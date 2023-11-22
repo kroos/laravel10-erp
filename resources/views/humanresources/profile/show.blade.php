@@ -10,7 +10,7 @@ $childrens = $profile->hasmanychildren()->get();
 
 <div class="container rounded bg-white mt-2 mb-2">
 	<div class="row">
-		<div class="col-md-2 border-right">
+		<div class="col-sm-2 border-right">
 			<div class="d-flex flex-column align-items-center text-center p-3 py-5">
 				<img class="rounded-5 mt-3" width="180px" src="{{ asset('storage/user_profile/' . $profile->image) }}">
 				<span class="font-weight-bold">ID: {{ $profile->hasmanylogin()->where('active', 1)->first()->username }}</span>
@@ -18,114 +18,114 @@ $childrens = $profile->hasmanychildren()->get();
 				<span> </span>
 			</div>
 		</div>
-		<div class="col-md-10 border-right">
+		<div class="col-sm-10 border-right">
 			<div class="p-1 py-3">
 				<div class="row">
-					<div class="d-flex justify-content-between align-items-center col-md-2">
+					<div class="d-flex justify-content-between align-items-center col-sm-2">
 						<h4 class="text-right">Staff Profile</h4>
 					</div>
-					<div class="col-md-10">
+					<div class="col-sm-10">
 						<a href="{{ route('profile.edit', $profile->id) }}">
 							<button class="btn btn-sm btn-outline-secondary">EDIT</button>
 						</a>
 					</div>
 				</div>
 				<div class="row mb-5">
-					<div class="col-md-6 border-right">
+					<div class="col-sm-6 border-right">
 						<div class="px-3">
 							<div class="row mt-3">
-								<div class="col-md-12">
+								<div class="col-sm-12">
 									<label class="labels">Name</label>
 									<input type="text" class="form-control" value="{{ $profile->name }}" readonly>
 								</div>
 							</div>
 
 							<div class="row mt-3">
-								<div class="col-md-6">
+								<div class="col-sm-6">
 									<label class="labels">IC</label>
 									<input type="text" class="form-control" value="{{ $profile->ic }}" readonly>
 								</div>
-								<div class="col-md-6">
+								<div class="col-sm-6">
 									<label class="labels">PHONE NUMBER</label>
 									<input type="text" class="form-control" value="{{ $profile->mobile }}" readonly>
 								</div>
 							</div>
 
 							<div class="row mt-3">
-								<div class="col-md-12">
+								<div class="col-sm-12">
 									<label class="labels">EMAIL</label>
 									<input type="text" class="form-control" value="{{ $profile->email }}" readonly>
 								</div>
 							</div>
 
 							<div class="row mt-3">
-								<div class="col-md-12">
+								<div class="col-sm-12">
 									<label class="labels">ADDRESS</label>
 									<input type="text" class="form-control" value="{{ $profile->address }}" readonly>
 								</div>
 							</div>
 
 							<div class="row mt-3">
-								<div class="col-md-12">
+								<div class="col-sm-12">
 									<label class="labels">DEPARTMENT</label>
 									<input type="text" class="form-control" value="{{ $profile->belongstomanydepartment()->first()->department }}" readonly>
 								</div>
 							</div>
 						</div>
 					</div>
-					<div class="col-md-6 border-right">
+					<div class="col-sm-6 border-right">
 						<div class="px-3">
 							<div class="row mt-3">
-								<div class="col-md-6">
+								<div class="col-sm-6">
 									<label class="labels">CATEGORY</label>
 									<input type="text" class="form-control" value="{{ $profile->belongstomanydepartment?->first()?->belongstocategory->category }}" readonly>
 								</div>
-								<div class="col-md-6">
+								<div class="col-sm-6">
 									<label class="labels">SATURDAY GROUPING</label>
 									<input type="text" class="form-control" value="Group {{ $profile->restday_group_id }}" readonly>
 								</div>
 							</div>
 
 							<div class="row mt-3">
-								<div class="col-md-6">
+								<div class="col-sm-6">
 									<label class="labels">DATE OF BIRTH</label>
 									<input type="text" class="form-control" value="{{ \Carbon\Carbon::parse($profile->dob)->format('d F Y') }}" readonly>
 
 								</div>
-								<div class="col-md-6">
+								<div class="col-sm-6">
 									<label class="labels">GENDER</label>
 									<input type="text" class="form-control" value="{{ $profile->belongstogender->gender }}" readonly>
 								</div>
 							</div>
 
 							<div class="row mt-3">
-								<div class="col-md-6">
+								<div class="col-sm-6">
 									<label class="labels">NATIONALITY</label>
 									<input type="text" class="form-control" value="{{ $profile->belongstonationality?->country }}" readonly>
 								</div>
-								<div class="col-md-6">
+								<div class="col-sm-6">
 									<label class="labels">RACE</label>
 									<input type="text" class="form-control" value="{{ $profile->belongstorace?->race }}" readonly>
 								</div>
 							</div>
 
 							<div class="row mt-3">
-								<div class="col-md-6">
+								<div class="col-sm-6">
 									<label class="labels">RELIGION</label>
 									<input type="text" class="form-control" value="{{ $profile->belongstoreligion?->religion }}" readonly>
 								</div>
-								<div class="col-md-6">
+								<div class="col-sm-6">
 									<label class="labels">MARITAL STATUS</label>
 									<input type="text" class="form-control" value="{{ $profile->belongstomaritalstatus?->marital_status }}" readonly>
 								</div>
 							</div>
 
 							<div class="row mt-3">
-								<div class="col-md-6">
+								<div class="col-sm-6">
 									<label class="labels">JOIN DATE</label>
 									<input type="text" class="form-control" value="{{ \Carbon\Carbon::parse($profile->join)->format('d F Y') }}" readonly>
 								</div>
-								<div class="col-md-6">
+								<div class="col-sm-6">
 									<label class="labels">CONFIRM DATE</label>
 									<input type="text" class="form-control" value="{{ \Carbon\Carbon::parse($profile->confirmed)->format('d F Y') }}" readonly>
 								</div>
@@ -141,7 +141,7 @@ $childrens = $profile->hasmanychildren()->get();
 					</div>
 				</div>
 				<div class="row mb-5">
-					<div class="col-md-6 border-right">
+					<div class="col-sm-6 border-right">
 						<div class="px-3">
 
 							@foreach ($emergencies as $emergency)
@@ -149,25 +149,25 @@ $childrens = $profile->hasmanychildren()->get();
 
 							<div>
 								<div class="row mt-3">
-									<div class="col-md-12">
+									<div class="col-sm-12">
 										<label class="labels">NAME</label>
 										<input type="text" class="form-control" value="{{ $emergency->contact_person }}" readonly>
 									</div>
 								</div>
 
 								<div class="row mt-3">
-									<div class="col-md-6">
+									<div class="col-sm-6">
 										<label class="labels">RELATIONSHIP</label>
 										<input type="text" class="form-control" value="{{ $emergency->belongstorelationship?->relationship}}" readonly>
 									</div>
-									<div class="col-md-6">
+									<div class="col-sm-6">
 										<label class="labels">PHONE NUMBER</label>
 										<input type="text" class="form-control" value="{{ $emergency->phone }}" readonly>
 									</div>
 								</div>
 
 								<div class="row mt-3">
-									<div class="col-md-12">
+									<div class="col-sm-12">
 										<label class="labels">ADDRESS</label>
 										<input type="text" class="form-control" value="{{ $emergency->address }}" readonly>
 									</div>
@@ -179,7 +179,7 @@ $childrens = $profile->hasmanychildren()->get();
 
 						</div>
 					</div>
-					<div class="col-md-6 border-right">
+					<div class="col-sm-6 border-right">
 						<div class="px-3">
 
 							@foreach ($emergencies as $emergency)
@@ -187,25 +187,25 @@ $childrens = $profile->hasmanychildren()->get();
 
 							<div>
 								<div class="row mt-3">
-									<div class="col-md-12">
+									<div class="col-sm-12">
 										<label class="labels">NAME</label>
 										<input type="text" class="form-control" value="{{ $emergency->contact_person }}" readonly>
 									</div>
 								</div>
 
 								<div class="row mt-3">
-									<div class="col-md-6">
+									<div class="col-sm-6">
 										<label class="labels">RELATIONSHIP</label>
 										<input type="text" class="form-control" value="{{ $emergency->belongstorelationship?->relationship }}" readonly>
 									</div>
-									<div class="col-md-6">
+									<div class="col-sm-6">
 										<label class="labels">PHONE NUMBER</label>
 										<input type="text" class="form-control" value="{{ $emergency->phone }}" readonly>
 									</div>
 								</div>
 
 								<div class="row mt-3">
-									<div class="col-md-12">
+									<div class="col-sm-12">
 										<label class="labels">ADDRESS</label>
 										<input type="text" class="form-control" value="{{ $emergency->address }}" readonly>
 									</div>
@@ -228,7 +228,7 @@ $childrens = $profile->hasmanychildren()->get();
 					</div>
 				</div>
 				<div class="row">
-					<div class="col-md-6 border-right">
+					<div class="col-sm-6 border-right">
 						<div class="px-3">
 
 							@foreach ($spouses as $spouse)
@@ -236,29 +236,29 @@ $childrens = $profile->hasmanychildren()->get();
 
 							<div class="mb-5">
 								<div class="row mt-3">
-									<div class="col-md-12">
+									<div class="col-sm-12">
 										<label class="labels">NAME</label>
 										<input type="text" class="form-control" value="{{ $spouse->spouse }}" readonly>
 									</div>
 								</div>
 
 								<div class="row mt-3">
-									<div class="col-md-6">
+									<div class="col-sm-6">
 										<label class="labels">IC</label>
 										<input type="text" class="form-control" value="{{ $spouse->id_card_passport }}" readonly>
 									</div>
-									<div class="col-md-6">
+									<div class="col-sm-6">
 										<label class="labels">PHONE NUMBER</label>
 										<input type="text" class="form-control" value="{{ $spouse->phone }}" readonly>
 									</div>
 								</div>
 
 								<div class="row mt-3">
-									<div class="col-md-6">
+									<div class="col-sm-6">
 										<label class="labels">Date Of Birth</label>
 										<input type="text" class="form-control" value="{{ $spouse->dob }}" readonly>
 									</div>
-									<div class="col-md-6">
+									<div class="col-sm-6">
 										<label class="labels">Profession</label>
 										<input type="text" class="form-control" value="{{ $spouse->profession }}" readonly>
 									</div>
@@ -270,7 +270,7 @@ $childrens = $profile->hasmanychildren()->get();
 
 						</div>
 					</div>
-					<div class="col-md-6 border-right">
+					<div class="col-sm-6 border-right">
 						<div class="px-3">
 
 							@foreach ($spouses as $spouse)
@@ -278,29 +278,29 @@ $childrens = $profile->hasmanychildren()->get();
 
 							<div class="mb-5">
 								<div class="row mt-3">
-									<div class="col-md-12">
+									<div class="col-sm-12">
 										<label class="labels">NAME</label>
 										<input type="text" class="form-control" value="{{ $spouse->spouse }}" readonly>
 									</div>
 								</div>
 
 								<div class="row mt-3">
-									<div class="col-md-6">
+									<div class="col-sm-6">
 										<label class="labels">IC</label>
 										<input type="text" class="form-control" value="{{ $spouse->id_card_passport }}" readonly>
 									</div>
-									<div class="col-md-6">
+									<div class="col-sm-6">
 										<label class="labels">PHONE NUMBER</label>
 										<input type="text" class="form-control" value="{{ $spouse->phone }}" readonly>
 									</div>
 								</div>
 
 								<div class="row mt-3">
-									<div class="col-md-6">
+									<div class="col-sm-6">
 										<label class="labels">Date Of Birth</label>
 										<input type="text" class="form-control" value="{{ $spouse->dob }}" readonly>
 									</div>
-									<div class="col-md-6">
+									<div class="col-sm-6">
 										<label class="labels">Profession</label>
 										<input type="text" class="form-control" value="{{ $spouse->profession }}" readonly>
 									</div>
@@ -323,7 +323,7 @@ $childrens = $profile->hasmanychildren()->get();
 					</div>
 				</div>
 				<div class="row">
-					<div class="col-md-6 border-right">
+					<div class="col-sm-6 border-right">
 						<div class="px-3">
 
 							@foreach ($childrens as $children)
@@ -331,32 +331,32 @@ $childrens = $profile->hasmanychildren()->get();
 
 							<div class="mb-5">
 								<div class="row mt-3">
-									<div class="col-md-12">
+									<div class="col-sm-12">
 										<label class="labels">NAME</label>
 										<input type="text" class="form-control" value="{{ $children->children }}" readonly>
 									</div>
 								</div>
 
 								<div class="row mt-3">
-									<div class="col-md-6">
+									<div class="col-sm-6">
 										<label class="labels">Date Of Birth</label>
 										<input type="text" class="form-control" value="{{ $children->dob }}" readonly>
 									</div>
-									<div class="col-md-6">
+									<div class="col-sm-6">
 										<label class="labels">Gender</label>
 										<input type="text" class="form-control" value="{{ $children->belongstogender?->gender }}" readonly>
 									</div>
 								</div>
 
 								<div class="row mt-3">
-									<div class="col-md-12">
+									<div class="col-sm-12">
 										<label class="labels">Health Condition</label>
 										<input type="text" class="form-control" value="{{ $children->belongstohealthstatus?->health_status }}" readonly>
 									</div>
 								</div>
 
 								<div class="row mt-3">
-									<div class="col-md-12">
+									<div class="col-sm-12">
 										<label class="labels">Education Level</label>
 										<input type="text" class="form-control" value="{{ $children->belongstoeducationlevel?->education_level }}" readonly>
 									</div>
@@ -368,7 +368,7 @@ $childrens = $profile->hasmanychildren()->get();
 
 						</div>
 					</div>
-					<div class="col-md-6 border-right">
+					<div class="col-sm-6 border-right">
 						<div class="px-3">
 
 							@foreach ($childrens as $children)
@@ -376,32 +376,32 @@ $childrens = $profile->hasmanychildren()->get();
 
 							<div class="mb-5">
 								<div class="row mt-3">
-									<div class="col-md-12">
+									<div class="col-sm-12">
 										<label class="labels">NAME</label>
 										<input type="text" class="form-control" value="{{ $children->children }}" readonly>
 									</div>
 								</div>
 
 								<div class="row mt-3">
-									<div class="col-md-6">
+									<div class="col-sm-6">
 										<label class="labels">Date Of Birth</label>
 										<input type="text" class="form-control" value="{{ $children->dob }}" readonly>
 									</div>
-									<div class="col-md-6">
+									<div class="col-sm-6">
 										<label class="labels">Gender</label>
 										<input type="text" class="form-control" value="{{ $children->belongstogender?->gender }}" readonly>
 									</div>
 								</div>
 
 								<div class="row mt-3">
-									<div class="col-md-12">
+									<div class="col-sm-12">
 										<label class="labels">Health Condition</label>
 										<input type="text" class="form-control" value="{{ $children->belongstohealthstatus?->health_status }}" readonly>
 									</div>
 								</div>
 
 								<div class="row mt-3">
-									<div class="col-md-12">
+									<div class="col-sm-12">
 										<label class="labels">Education Level</label>
 										<input type="text" class="form-control" value="{{ $children->belongstoeducationlevel?->education_level }}" readonly>
 									</div>
@@ -419,7 +419,7 @@ $childrens = $profile->hasmanychildren()->get();
 			</div>
 		</div>
 	</div>
-	<div class="col-md-12 table-responsive">
+	<div class="col-sm-12 table-responsive">
 		<table id="attendance" class="table table-sm table-hover">
 			<thead>
 				<tr>
