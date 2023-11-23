@@ -55,17 +55,16 @@ Route::get('/excelreport', [AttendanceExcelReportController::class, 'index'])->n
 Route::get('/excelreport/create', [AttendanceExcelReportController::class, 'create'])->name('excelreport.create');
 Route::post('/excelreport', [AttendanceExcelReportController::class, 'store'])->name('excelreport.store');
 
-Route::get('/attendancedailyreport', [AttendanceDailyReportController::class, 'index'])->name('attendancedailyreport.index');
 Route::get('/attendancereport/create', [AttendanceReportController::class, 'create'])->name('attendancereport.create');
 Route::get('/attendancereport/store', [AttendanceReportController::class, 'store'])->name('attendancereport.store');
+Route::get('/attendancereportpdf/store', [AttendanceReportPDFController::class, 'store'])->name('attendancereportpdf.store');
 
 Route::get('/attendanceupload', [AttendanceUploadController::class, 'create'])->name('attendanceupload.create');
 Route::post('/attendanceupload', [AttendanceUploadController::class, 'store'])->name('attendanceupload.store');
 
-
-Route::get('/attendancereportpdf/store', [AttendanceReportPDFController::class, 'store'])->name('attendancereportpdf.store');
-
-
 Route::get('/overtimereport', [OvertimeReportController::class, 'index'])->name('overtimereport.index');
 Route::post('/overtimereport', [OvertimeReportController::class, 'index'])->name('overtimereport.index');
 Route::get('/overtimereport/print', [OvertimeReportController::class, 'print'])->name('overtimereport.print');
+
+Route::get('/attendancedailyreport', [AttendanceDailyReportController::class, 'index'])->name('attendancedailyreport.index');
+Route::post('/attendancedailyreport', [AttendanceDailyReportController::class, 'index'])->name('attendancedailyreport.index');
