@@ -16,6 +16,7 @@ use App\Models\Setting;
 
 use App\Models\Staff;
 use App\Models\HumanResources\HRAttendance;
+use App\Models\HumanResources\HRLeaveAmend;
 use App\Models\HumanResources\HRLeave;
 use App\Models\HumanResources\HRHolidayCalendar;
 use App\Models\HumanResources\HRLeaveApprovalBackup;
@@ -1001,7 +1002,17 @@ class AjaxController extends Controller
 			// $data += ['softcopy' => $fileName];
 		}
 		$t = $hrleave->update(['softcopy' => $fileName]);
-		$hrleave->hasmanyleaveamend()->create( Arr::add(Arr::add($request->only(['amend_note']), 'staff_id', \Auth::user()->belongstostaff->id), 'date', now()) );
+		if (!$hrleave->hasmanyleaveamend()->count()) {
+			$hrleave->hasmanyleaveamend()->create( Arr::add(Arr::add($request->only(['amend_note']), 'staff_id', \Auth::user()->belongstostaff->id), 'date', now()) );
+		} else {
+			foreach (HRLeaveAmend::where('leave_id', $hrleave->id)->get() as $v) {
+				HRLeaveAmend::find($v->id)->update([
+					'amend_note' => ucwords(Str::lower($v->amend_note)).'<br />'.ucwords(Str::lower($request->amend_note)),
+					'staff_id' => \Auth::user()->belongstostaff->id,
+					'date' => now()
+				]);
+			}
+		}
 		return redirect()->back();
 	}
 }
