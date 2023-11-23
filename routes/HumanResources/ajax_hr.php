@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 
 // Ajax Controller : to CRUD data on the DB
 Route::patch('/leavecancel/{hrleave}', [AjaxController::class, 'leavecancel'])->name('leavecancel.leavecancel');
+Route::patch('/uploaddoc/{hrleave}', [AjaxController::class, 'uploaddoc'])->name('uploaddoc');
 Route::patch('/leaverapprove/{hrleaveapprovalbackup}', [AjaxController::class, 'leaverapprove'])->name('leaverapprove.leaverapprove');
 Route::patch('/supervisorstatus', [AjaxController::class, 'supervisorstatus'])->name('leavestatus.supervisorstatus');
 Route::patch('/hodstatus', [AjaxController::class, 'hodstatus'])->name('leavestatus.hodstatus');

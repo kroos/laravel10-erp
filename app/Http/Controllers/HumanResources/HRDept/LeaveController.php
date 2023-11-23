@@ -257,6 +257,7 @@ class LeaveController extends Controller
 						$data += ['leave_no' => $hrleave->leave_no];
 						$data += ['leave_year' => $ye];
 						$data += ['leave_status_id' => $hrleave->leave_status_id];
+						$data += ['created_at' => $hrleave->created_at];
 						if($request->file('document')){
 							$file = $request->file('document')->getClientOriginalName();
 							$currentDate = Carbon::now()->format('Y-m-d His');
@@ -291,6 +292,7 @@ class LeaveController extends Controller
 						$data += ['leave_no' => $hrleave->leave_no];
 						$data += ['leave_year' => $ye];
 						$data += ['leave_status_id' => $hrleave->leave_status_id];
+						$data += ['created_at' => $hrleave->created_at];
 						if($request->file('document')){
 							$file = $request->file('document')->getClientOriginalName();
 							$currentDate = Carbon::now()->format('Y-m-d His');
@@ -333,6 +335,7 @@ class LeaveController extends Controller
 						$data += ['leave_no' => $hrleave->leave_no];
 						$data += ['leave_year' => $ye];
 						$data += ['leave_status_id' => $hrleave->leave_status_id];
+						$data += ['created_at' => $hrleave->created_at];
 						if($request->file('document')){
 							$file = $request->file('document')->getClientOriginalName();
 							$currentDate = Carbon::now()->format('Y-m-d His');
@@ -381,6 +384,7 @@ class LeaveController extends Controller
 					$data += ['leave_no' => $hrleave->leave_no];
 					$data += ['leave_year' => $ye];
 					$data += ['leave_status_id' => $hrleave->leave_status_id];
+					$data += ['created_at' => $hrleave->created_at];
 					if($request->file('document')){
 						$file = $request->file('document')->getClientOriginalName();
 						$currentDate = Carbon::now()->format('Y-m-d His');
@@ -404,6 +408,7 @@ class LeaveController extends Controller
 					$data += ['leave_no' => $hrleave->leave_no];
 					$data += ['leave_year' => $ye];
 					$data += ['leave_status_id' => $hrleave->leave_status_id];
+					$data += ['created_at' => $hrleave->created_at];
 					if($request->file('document')){
 						$file = $request->file('document')->getClientOriginalName();
 						$currentDate = Carbon::now()->format('Y-m-d His');
@@ -429,6 +434,7 @@ class LeaveController extends Controller
 					$data += ['leave_no' => $hrleave->leave_no];
 					$data += ['leave_year' => $ye];
 					$data += ['leave_status_id' => $hrleave->leave_status_id];
+					$data += ['created_at' => $hrleave->created_at];
 					if($request->file('document')){
 						$file = $request->file('document')->getClientOriginalName();
 						$currentDate = Carbon::now()->format('Y-m-d His');
@@ -475,6 +481,7 @@ class LeaveController extends Controller
 						$data += ['leave_no' => $hrleave->leave_no];
 						$data += ['leave_year' => $ye];
 						$data += ['leave_status_id' => $hrleave->leave_status_id];
+						$data += ['created_at' => $hrleave->created_at];
 						if($request->file('document')){
 							$file = $request->file('document')->getClientOriginalName();
 							$currentDate = Carbon::now()->format('Y-m-d His');
@@ -509,6 +516,7 @@ class LeaveController extends Controller
 						$data += ['leave_no' => $hrleave->leave_no];
 						$data += ['leave_year' => $ye];
 						$data += ['leave_status_id' => $hrleave->leave_status_id];
+						$data += ['created_at' => $hrleave->created_at];
 						if($request->file('document')){
 							$file = $request->file('document')->getClientOriginalName();
 							$currentDate = Carbon::now()->format('Y-m-d His');
@@ -545,6 +553,7 @@ class LeaveController extends Controller
 						$data += ['leave_no' => $hrleave->leave_no];
 						$data += ['leave_year' => $ye];
 						$data += ['leave_status_id' => $hrleave->leave_status_id];
+						$data += ['created_at' => $hrleave->created_at];
 						if($request->file('document')){
 							$file = $request->file('document')->getClientOriginalName();
 							$currentDate = Carbon::now()->format('Y-m-d His');
@@ -598,6 +607,7 @@ class LeaveController extends Controller
 						$data += ['leave_no' => $hrleave->leave_no];
 						$data += ['leave_year' => $ye];
 						$data += ['leave_status_id' => $hrleave->leave_status_id];
+						$data += ['created_at' => $hrleave->created_at];
 						if($request->file('document')){
 							$file = $request->file('document')->getClientOriginalName();
 							$currentDate = Carbon::now()->format('Y-m-d His');
@@ -632,6 +642,7 @@ class LeaveController extends Controller
 						$data += ['leave_no' => $hrleave->leave_no];
 						$data += ['leave_year' => $ye];
 						$data += ['leave_status_id' => $hrleave->leave_status_id];
+						$data += ['created_at' => $hrleave->created_at];
 						if($request->file('document')){
 							$file = $request->file('document')->getClientOriginalName();
 							$currentDate = Carbon::now()->format('Y-m-d His');
@@ -668,6 +679,7 @@ class LeaveController extends Controller
 						$data += ['leave_no' => $hrleave->leave_no];
 						$data += ['leave_year' => $ye];
 						$data += ['leave_status_id' => $hrleave->leave_status_id];
+						$data += ['created_at' => $hrleave->created_at];
 						if($request->file('document')){
 							$file = $request->file('document')->getClientOriginalName();
 							$currentDate = Carbon::now()->format('Y-m-d His');
@@ -716,6 +728,7 @@ class LeaveController extends Controller
 				$data += ['leave_no' => $hrleave->leave_no];
 				$data += ['leave_year' => $ye];
 				$data += ['leave_status_id' => $hrleave->leave_status_id];
+				$data += ['created_at' => $hrleave->created_at];
 				if($request->file('document')){
 					$file = $request->file('document')->getClientOriginalName();
 					$currentDate = Carbon::now()->format('Y-m-d His');
@@ -821,6 +834,7 @@ class LeaveController extends Controller
 			$data += ['leave_no' => $hrleave->leave_no];
 			$data += ['leave_year' => $ye];
 			$data += ['leave_status_id' => $hrleave->leave_status_id];
+			$data += ['created_at' => $hrleave->created_at];
 			if($request->file('document')){
 				$file = $request->file('document')->getClientOriginalName();
 				$currentDate = Carbon::now()->format('Y-m-d His');
@@ -854,6 +868,7 @@ class LeaveController extends Controller
 					$data += ['leave_no' => $hrleave->leave_no];
 					$data += ['leave_year' => $ye];
 					$data += ['leave_status_id' => $hrleave->leave_status_id];
+					$data += ['created_at' => $hrleave->created_at];
 					if($request->file('document')){
 						$file = $request->file('document')->getClientOriginalName();
 						$currentDate = Carbon::now()->format('Y-m-d His');
@@ -877,6 +892,7 @@ class LeaveController extends Controller
 					$data += ['leave_no' => $hrleave->leave_no];
 					$data += ['leave_year' => $ye];
 					$data += ['leave_status_id' => $hrleave->leave_status_id];
+					$data += ['created_at' => $hrleave->created_at];
 					if($request->file('document')){
 						$file = $request->file('document')->getClientOriginalName();
 						$currentDate = Carbon::now()->format('Y-m-d His');
@@ -901,6 +917,7 @@ class LeaveController extends Controller
 					$data += ['leave_no' => $hrleave->leave_no];
 					$data += ['leave_year' => $ye];
 					$data += ['leave_status_id' => $hrleave->leave_status_id];
+					$data += ['created_at' => $hrleave->created_at];
 					if($request->file('document')){
 						$file = $request->file('document')->getClientOriginalName();
 						$currentDate = Carbon::now()->format('Y-m-d His');

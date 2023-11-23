@@ -11,6 +11,7 @@ use \App\Models\HumanResources\HRLeaveApprovalDirector;
 use \App\Models\HumanResources\HRLeaveApprovalHR;
 use App\Models\HumanResources\OptLeaveStatus;
 // 1st sekali check profile. checking utk email & emergency person. lock kat sini smpi user isi baru buleh apply cuti.
+use Carbon\Carbon;
 
 // check emergency person
 $us = \Auth::user()->belongstostaff;
@@ -37,8 +38,8 @@ foreach ($c as $v) {
 // print_r ($ls);
 // exit;
 ?>
-<div class="col-sm-auto col-12 row rounded d-flex flex-column align-items-center justify-content-center border border-primary">
-	<div class="col-sm-auto col-10 border border-primary">
+<div class="col-sm-12 row rounded d-flex flex-column align-items-center justify-content-center">
+	<div class="col-sm-10">
 		<table class="table table-hover table-sm">
 			<tr>
 				<th>Attention</th>
@@ -139,7 +140,7 @@ foreach ($c as $v) {
 	</div>
 
 
-	<div class="col-sm-auto col-10 table-responsive">
+	<div class="col-sm-12 table-responsive">
 		<h4>Leave</h4>
 	<!-- list of leaves -->
 	<?php
@@ -172,7 +173,6 @@ foreach ($c as $v) {
 	<?php
 	$dts = \Carbon\Carbon::parse($leav->date_time_start)->format('Y');
 	$dte = \Carbon\Carbon::parse($leav->date_time_end)->format('j M Y g:i a');
-	$arr = str_split( $dts, 2 );
 	// only available if only now is before date_time_start and active is 1
 	$dtsl = \Carbon\Carbon::parse( $leav->date_time_start );
 	$dt = \Carbon\Carbon::now()->lte( $dtsl );
@@ -180,7 +180,7 @@ foreach ($c as $v) {
 					<tr>
 						<td>
 							<a href="{{ route('leave.show', $leav->id) }}" class="btn btn-sm btn-outline-secondary" alt="Print PDF" title="Print PDF" target="_blank"><i class="far fa-file-pdf"></i></a>
-							HR9-{{ str_pad( $leav->leave_no, 5, "0", STR_PAD_LEFT ) }}/{{ $arr[1] }}
+							HR9-{{ str_pad( $leav->leave_no, 5, "0", STR_PAD_LEFT ) }}/{{ $leav->leave_year }}
 						</td>
 	<?php
 	if ( ($leav->leave_type_id == 9) || ($leav->leave_type_id != 9 && $leav->half_type_id == 2) || ($leav->leave_type_id != 9 && $leav->half_type_id == 1) ) {
@@ -290,7 +290,7 @@ foreach ($c as $v) {
 
 	<p>&nbsp;</p>
 	@if($x->isNotEmpty())
-	<div class="col-sm-auto col-10 table-responsive">
+	<div class="col-sm-12 table-responsive">
 		<h4>Backup Approval</h4>
 		<table class="table table-hover table-sm" id="bapprover" style="font-size:12px">
 			<thead>
@@ -298,6 +298,7 @@ foreach ($c as $v) {
 					<th rowspan="2">Name</th>
 					<th rowspan="2">Leave</th>
 					<th rowspan="2">Reason</th>
+					<th rowspan="2">Date Applied</th>
 					<th colspan="2">Date/Time Leave</th>
 					<th rowspan="2">Period</th>
 					<th rowspan="2">Leave Status</th>
@@ -341,9 +342,13 @@ foreach ($c as $v) {
 				}
 				?>
 				<tr class="{{ $u }}" >
-					<td>{{ $a->belongstostaffleave->belongstostaff->name }}</td>
+					<td>
+						<a href="{{ route('leave.show', $a->leave_id) }}" class="btn btn-sm btn-outline-secondary" alt="Print PDF" title="Print PDF" target="_blank"><i class="far fa-file-pdf"></i></a>&nbsp;
+						{{ $a->belongstostaffleave->belongstostaff->name }}
+					</td>
 					<td>{{ $a->belongstostaffleave->belongstooptleavetype->leave_type_code }}</td>
 					<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="{{ $a->belongstostaffleave->reason }}">{{ str($a->belongstostaffleave->reason)->words(3, ' >') }}</td>
+					<td>{{ Carbon::parse($a->created_at)->format('j M Y') }}</td>
 					<td>{{ $dts }}</td>
 					<td>{{ $dte }}</td>
 					<td>{{ $dper }}</td>
@@ -361,7 +366,7 @@ foreach ($c as $v) {
 
 	@if($s1)
 		@if(HRLeaveApprovalSupervisor::whereNull('leave_status_id')->get()->count())
-			<div class="col-sm-auto col-10 table-responsive">
+			<div class="col-sm-12 table-responsive">
 				<h4>Supervisor Approval</h4>
 				<table class="table table-hover table-sm" id="sapprover" style="font-size:12px">
 					<thead>
@@ -370,6 +375,7 @@ foreach ($c as $v) {
 							<th rowspan="2">Name</th>
 							<th rowspan="2">Leave</th>
 							<th rowspan="2">Reason</th>
+							<th rowspan="2">Date Applied</th>
 							<th colspan="2">Date/Time Leave</th>
 							<th rowspan="2">Period</th>
 							<th rowspan="2">Leave Status</th>
@@ -423,11 +429,15 @@ foreach ($c as $v) {
 							@if($ul == $us && ($udept != 7))
 								<tr class="{{ $u }}" >
 									<td>
+										<a href="{{ route('leave.show', $a->leave_id) }}" class="btn btn-sm btn-outline-secondary" alt="Print PDF" title="Print PDF" target="_blank"><i class="far fa-file-pdf"></i></a>&nbsp;
 										HR9-{{ str_pad( $leav->leave_no, 5, "0", STR_PAD_LEFT ) }}/{{ $leav->leave_year }}
 									</td>
 									<td>{{ $a->belongstostaffleave->belongstostaff?->name }}</td>
 									<td>{{ $a->belongstostaffleave->belongstooptleavetype?->leave_type_code }}</td>
-									<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="{{ $a->belongstostaffleave->reason }}">{{ str($a->belongstostaffleave->reason)->words(3, ' >') }}</td>
+									<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="{{ $a->belongstostaffleave->reason }}">
+										{{ str($a->belongstostaffleave->reason)->words(3, ' >') }}
+									</td>
+									<td>{{ Carbon::parse($a->created_at)->format('j M Y') }}</td>
 									<td>{{ $dts }}</td>
 									<td>{{ $dte }}</td>
 									<td>{{ $dper }}</td>
@@ -486,7 +496,7 @@ foreach ($c as $v) {
 	<p>&nbsp;</p>
 	@if($h1)
 		@if(HRLeaveApprovalHOD::whereNull('leave_status_id')->get()->count())
-			<div class="col-sm-auto col-10 table-responsive">
+			<div class="col-sm-12 table-responsive">
 				<h4>Head Of Department Approval</h4>
 				<table class="table table-hover table-sm" id="sapprover" style="font-size:12px">
 					<thead>
@@ -495,6 +505,7 @@ foreach ($c as $v) {
 							<th rowspan="2">Name</th>
 							<th rowspan="2">Leave</th>
 							<th rowspan="2">Reason</th>
+							<th rowspan="2">Date Applied</th>
 							<th colspan="2">Date/Time Leave</th>
 							<th rowspan="2">Period</th>
 							<th rowspan="2">Leave Status</th>
@@ -557,11 +568,15 @@ foreach ($c as $v) {
 								@if($stadept == 2 || $stadept == 3 || $stadept == 4 || $stadept == 8 || $stadept == 18 || $stadept == 19 || $stadept == 20 || $stadept == 25 || $stadept == 27 || $stadept == 30 || $staff->div_id == 4 || $stadept == 21 || $stadept == 28)
 									<tr class="{{ $u }}" >
 										<td>
+											<a href="{{ route('leave.show', $a->leave_id) }}" class="btn btn-sm btn-outline-secondary" alt="Print PDF" title="Print PDF" target="_blank"><i class="far fa-file-pdf"></i></a>&nbsp;
 											HR9-{{ str_pad( $leav->leave_no, 5, "0", STR_PAD_LEFT ) }}/{{ $leav->leave_year }}
 										</td>
 										<td>{{ $a->belongstostaffleave->belongstostaff?->name }}</td>
 										<td>{{ $a->belongstostaffleave->belongstooptleavetype?->leave_type_code }}</td>
-										<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="{{ $a->belongstostaffleave->reason }}">{{ str($a->belongstostaffleave->reason)->words(3, ' >') }}</td>
+										<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="{{ $a->belongstostaffleave->reason }}">
+											{{ str($a->belongstostaffleave->reason)->words(3, ' >') }}
+										</td>
+										<td>{{ Carbon::parse($a->created_at)->format('j M Y') }}</td>
 										<td>{{ $dts }}</td>
 										<td>{{ $dte }}</td>
 										<td>{{ $dper }}</td>
@@ -613,11 +628,15 @@ foreach ($c as $v) {
 								@if($stadept == 6 || $stadept == 7 || $stadept == 3)
 									<tr class="{{ $u }}" >
 										<td>
+											<a href="{{ route('leave.show', $a->leave_id) }}" class="btn btn-sm btn-outline-secondary" alt="Print PDF" title="Print PDF" target="_blank"><i class="far fa-file-pdf"></i></a>&nbsp;
 											HR9-{{ str_pad( $leav->leave_no, 5, "0", STR_PAD_LEFT ) }}/{{ $leav->leave_year }}
 										</td>
 										<td>{{ $a->belongstostaffleave->belongstostaff?->name }}</td>
 										<td>{{ $a->belongstostaffleave->belongstooptleavetype?->leave_type_code }}</td>
-										<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="{{ $a->belongstostaffleave->reason }}">{{ str($a->belongstostaffleave->reason)->words(3, ' >') }}</td>
+										<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="{{ $a->belongstostaffleave->reason }}">
+											{{ str($a->belongstostaffleave->reason)->words(3, ' >') }}
+										</td>
+										<td>{{ Carbon::parse($a->created_at)->format('j M Y') }}</td>
 										<td>{{ $dts }}</td>
 										<td>{{ $dte }}</td>
 										<td>{{ $dper }}</td>
@@ -669,11 +688,15 @@ foreach ($c as $v) {
 								@if($stadept == 23 || $stadept == 17 || $stadept == 11 || $stadept == 16)
 									<tr class="{{ $u }}" >
 										<td>
+											<a href="{{ route('leave.show', $a->leave_id) }}" class="btn btn-sm btn-outline-secondary" alt="Print PDF" title="Print PDF" target="_blank"><i class="far fa-file-pdf"></i></a>&nbsp;
 											HR9-{{ str_pad( $leav->leave_no, 5, "0", STR_PAD_LEFT ) }}/{{ $leav->leave_year }}
 										</td>
 										<td>{{ $a->belongstostaffleave->belongstostaff?->name }}</td>
 										<td>{{ $a->belongstostaffleave->belongstooptleavetype?->leave_type_code }}</td>
-										<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="{{ $a->belongstostaffleave->reason }}">{{ str($a->belongstostaffleave->reason)->words(3, ' >') }}</td>
+										<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="{{ $a->belongstostaffleave->reason }}">
+											{{ str($a->belongstostaffleave->reason)->words(3, ' >') }}
+										</td>
+										<td>{{ Carbon::parse($a->created_at)->format('j M Y') }}</td>
 										<td>{{ $dts }}</td>
 										<td>{{ $dte }}</td>
 										<td>{{ $dper }}</td>
@@ -725,11 +748,15 @@ foreach ($c as $v) {
 								@if($stadept == 1)
 									<tr class="{{ $u }}" >
 										<td>
+											<a href="{{ route('leave.show', $a->leave_id) }}" class="btn btn-sm btn-outline-secondary" alt="Print PDF" title="Print PDF" target="_blank"><i class="far fa-file-pdf"></i></a>&nbsp;
 											HR9-{{ str_pad( $leav->leave_no, 5, "0", STR_PAD_LEFT ) }}/{{ $leav->leave_year }}
 										</td>
 										<td>{{ $a->belongstostaffleave->belongstostaff?->name }}</td>
 										<td>{{ $a->belongstostaffleave->belongstooptleavetype?->leave_type_code }}</td>
-										<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="{{ $a->belongstostaffleave->reason }}">{{ str($a->belongstostaffleave->reason)->words(3, ' >') }}</td>
+										<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="{{ $a->belongstostaffleave->reason }}">
+											{{ str($a->belongstostaffleave->reason)->words(3, ' >') }}
+										</td>
+										<td>{{ Carbon::parse($a->created_at)->format('j M Y') }}</td>
 										<td>{{ $dts }}</td>
 										<td>{{ $dte }}</td>
 										<td>{{ $dper }}</td>
@@ -781,11 +808,15 @@ foreach ($c as $v) {
 								@if($stadept == 5)
 									<tr class="{{ $u }}" >
 										<td>
+											<a href="{{ route('leave.show', $a->leave_id) }}" class="btn btn-sm btn-outline-secondary" alt="Print PDF" title="Print PDF" target="_blank"><i class="far fa-file-pdf"></i></a>&nbsp;
 											HR9-{{ str_pad( $leav->leave_no, 5, "0", STR_PAD_LEFT ) }}/{{ $leav->leave_year }}
 										</td>
 										<td>{{ $a->belongstostaffleave->belongstostaff?->name }}</td>
 										<td>{{ $a->belongstostaffleave->belongstooptleavetype?->leave_type_code }}</td>
-										<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="{{ $a->belongstostaffleave->reason }}">{{ str($a->belongstostaffleave->reason)->words(3, ' >') }}</td>
+										<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="{{ $a->belongstostaffleave->reason }}">
+											{{ str($a->belongstostaffleave->reason)->words(3, ' >') }}
+										</td>
+										<td>{{ Carbon::parse($a->created_at)->format('j M Y') }}</td>
 										<td>{{ $dts }}</td>
 										<td>{{ $dte }}</td>
 										<td>{{ $dper }}</td>
@@ -837,11 +868,15 @@ foreach ($c as $v) {
 								@if($stadept == 12)
 									<tr class="{{ $u }}" >
 										<td>
+											<a href="{{ route('leave.show', $a->leave_id) }}" class="btn btn-sm btn-outline-secondary" alt="Print PDF" title="Print PDF" target="_blank"><i class="far fa-file-pdf"></i></a>&nbsp;
 											HR9-{{ str_pad( $leav->leave_no, 5, "0", STR_PAD_LEFT ) }}/{{ $leav->leave_year }}
 										</td>
 										<td>{{ $a->belongstostaffleave->belongstostaff?->name }}</td>
 										<td>{{ $a->belongstostaffleave->belongstooptleavetype?->leave_type_code }}</td>
-										<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="{{ $a->belongstostaffleave->reason }}">{{ str($a->belongstostaffleave->reason)->words(3, ' >') }}</td>
+										<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="{{ $a->belongstostaffleave->reason }}">
+											{{ str($a->belongstostaffleave->reason)->words(3, ' >') }}
+										</td>
+										<td>{{ Carbon::parse($a->created_at)->format('j M Y') }}</td>
 										<td>{{ $dts }}</td>
 										<td>{{ $dte }}</td>
 										<td>{{ $dper }}</td>
@@ -893,11 +928,15 @@ foreach ($c as $v) {
 								@if($stadept == 14)
 									<tr class="{{ $u }}" >
 										<td>
+											<a href="{{ route('leave.show', $a->leave_id) }}" class="btn btn-sm btn-outline-secondary" alt="Print PDF" title="Print PDF" target="_blank"><i class="far fa-file-pdf"></i></a>&nbsp;
 											HR9-{{ str_pad( $leav->leave_no, 5, "0", STR_PAD_LEFT ) }}/{{ $leav->leave_year }}
 										</td>
 										<td>{{ $a->belongstostaffleave->belongstostaff?->name }}</td>
 										<td>{{ $a->belongstostaffleave->belongstooptleavetype?->leave_type_code }}</td>
-										<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="{{ $a->belongstostaffleave->reason }}">{{ str($a->belongstostaffleave->reason)->words(3, ' >') }}</td>
+										<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="{{ $a->belongstostaffleave->reason }}">
+											{{ str($a->belongstostaffleave->reason)->words(3, ' >') }}
+										</td>
+										<td>{{ Carbon::parse($a->created_at)->format('j M Y') }}</td>
 										<td>{{ $dts }}</td>
 										<td>{{ $dte }}</td>
 										<td>{{ $dper }}</td>
@@ -949,11 +988,15 @@ foreach ($c as $v) {
 								@if($stadept == 15)
 									<tr class="{{ $u }}" >
 										<td>
+											<a href="{{ route('leave.show', $a->leave_id) }}" class="btn btn-sm btn-outline-secondary" alt="Print PDF" title="Print PDF" target="_blank"><i class="far fa-file-pdf"></i></a>&nbsp;
 											HR9-{{ str_pad( $leav->leave_no, 5, "0", STR_PAD_LEFT ) }}/{{ $leav->leave_year }}
 										</td>
 										<td>{{ $a->belongstostaffleave->belongstostaff?->name }}</td>
 										<td>{{ $a->belongstostaffleave->belongstooptleavetype?->leave_type_code }}</td>
-										<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="{{ $a->belongstostaffleave->reason }}">{{ str($a->belongstostaffleave->reason)->words(3, ' >') }}</td>
+										<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="{{ $a->belongstostaffleave->reason }}">
+											{{ str($a->belongstostaffleave->reason)->words(3, ' >') }}
+										</td>
+										<td>{{ Carbon::parse($a->created_at)->format('j M Y') }}</td>
 										<td>{{ $dts }}</td>
 										<td>{{ $dte }}</td>
 										<td>{{ $dper }}</td>
@@ -1005,11 +1048,15 @@ foreach ($c as $v) {
 								@if($stadept == 22)
 									<tr class="{{ $u }}" >
 										<td>
+											<a href="{{ route('leave.show', $a->leave_id) }}" class="btn btn-sm btn-outline-secondary" alt="Print PDF" title="Print PDF" target="_blank"><i class="far fa-file-pdf"></i></a>&nbsp;
 											HR9-{{ str_pad( $leav->leave_no, 5, "0", STR_PAD_LEFT ) }}/{{ $leav->leave_year }}
 										</td>
 										<td>{{ $a->belongstostaffleave->belongstostaff?->name }}</td>
 										<td>{{ $a->belongstostaffleave->belongstooptleavetype?->leave_type_code }}</td>
-										<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="{{ $a->belongstostaffleave->reason }}">{{ str($a->belongstostaffleave->reason)->words(3, ' >') }}</td>
+										<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="{{ $a->belongstostaffleave->reason }}">
+											{{ str($a->belongstostaffleave->reason)->words(3, ' >') }}
+										</td>
+										<td>{{ Carbon::parse($a->created_at)->format('j M Y') }}</td>
 										<td>{{ $dts }}</td>
 										<td>{{ $dte }}</td>
 										<td>{{ $dper }}</td>
@@ -1061,11 +1108,15 @@ foreach ($c as $v) {
 								@if($stadept == 24)
 									<tr class="{{ $u }}" >
 										<td>
+											<a href="{{ route('leave.show', $a->leave_id) }}" class="btn btn-sm btn-outline-secondary" alt="Print PDF" title="Print PDF" target="_blank"><i class="far fa-file-pdf"></i></a>&nbsp;
 											HR9-{{ str_pad( $leav->leave_no, 5, "0", STR_PAD_LEFT ) }}/{{ $leav->leave_year }}
 										</td>
 										<td>{{ $a->belongstostaffleave->belongstostaff?->name }}</td>
 										<td>{{ $a->belongstostaffleave->belongstooptleavetype?->leave_type_code }}</td>
-										<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="{{ $a->belongstostaffleave->reason }}">{{ str($a->belongstostaffleave->reason)->words(3, ' >') }}</td>
+										<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="{{ $a->belongstostaffleave->reason }}">
+											{{ str($a->belongstostaffleave->reason)->words(3, ' >') }}
+										</td>
+										<td>{{ Carbon::parse($a->created_at)->format('j M Y') }}</td>
 										<td>{{ $dts }}</td>
 										<td>{{ $dte }}</td>
 										<td>{{ $dper }}</td>
@@ -1123,7 +1174,7 @@ foreach ($c as $v) {
 	<p>&nbsp;</p>
 	@if($d1)
 		@if(HRLeaveApprovalDirector::whereNull('leave_status_id')->get()->count())
-			<div class="col-sm-auto col-10 table-responsive">
+			<div class="col-sm-12 table-responsive">
 				<h4>Director Approval</h4>
 				<table class="table table-hover table-sm" id="sapprover" style="font-size:12px">
 					<thead>
@@ -1132,6 +1183,7 @@ foreach ($c as $v) {
 							<th rowspan="2">Name</th>
 							<th rowspan="2">Leave</th>
 							<th rowspan="2">Reason</th>
+							<th rowspan="2">Date Applied</th>
 							<th colspan="2">Date/Time Leave</th>
 							<th rowspan="2">Period</th>
 							<th rowspan="2">Leave Status</th>
@@ -1182,11 +1234,15 @@ foreach ($c as $v) {
 							?>
 							<tr class="{{ $u }}" >
 								<td>
+									<a href="{{ route('leave.show', $a->leave_id) }}" class="btn btn-sm btn-outline-secondary" alt="Print PDF" title="Print PDF" target="_blank"><i class="far fa-file-pdf"></i></a>&nbsp;
 									HR9-{{ str_pad( $leav->leave_no, 5, "0", STR_PAD_LEFT ) }}/{{ $leav->leave_year }}
 								</td>
 								<td>{{ $a->belongstostaffleave->belongstostaff?->name }}</td>
 								<td>{{ $a->belongstostaffleave->belongstooptleavetype?->leave_type_code }}</td>
-								<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="{{ $a->belongstostaffleave->reason }}">{{ str($a->belongstostaffleave->reason)->words(3, ' >') }}</td>
+								<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="{{ $a->belongstostaffleave->reason }}">
+									{{ str($a->belongstostaffleave->reason)->words(3, ' >') }}
+								</td>
+								<td>{{ Carbon::parse($a->created_at)->format('j M Y') }}</td>
 								<td>{{ $dts }}</td>
 								<td>{{ $dte }}</td>
 								<td>{{ $dper }}</td>
@@ -1241,7 +1297,7 @@ foreach ($c as $v) {
 	<p>&nbsp;</p>
 	@if($r1)
 		@if(HRLeaveApprovalHR::whereNull('leave_status_id')->get()->count())
-			<div class="col-sm-auto col-10 table-responsive">
+			<div class="col-sm-12 table-responsive">
 				<h4>Human Resource Approval</h4>
 				<table class="table table-hover table-sm" id="sapprover" style="font-size:12px">
 					<thead>
@@ -1250,6 +1306,7 @@ foreach ($c as $v) {
 							<th rowspan="2">Name</th>
 							<th rowspan="2">Leave</th>
 							<th rowspan="2">Reason</th>
+							<th rowspan="2">Date Applied</th>
 							<th colspan="2">Date/Time Leave</th>
 							<th rowspan="2">Period</th>
 							<th rowspan="2">Leave Status</th>
@@ -1300,11 +1357,15 @@ foreach ($c as $v) {
 							?>
 							<tr class="{{ $u }}" >
 								<td>
+									<a href="{{ route('leave.show', $a->leave_id) }}" class="btn btn-sm btn-outline-secondary" alt="Print PDF" title="Print PDF" target="_blank"><i class="far fa-file-pdf"></i></a>&nbsp;
 									HR9-{{ str_pad( $leav->leave_no, 5, "0", STR_PAD_LEFT ) }}/{{ $leav->leave_year }}
 								</td>
 								<td>{{ $a->belongstostaffleave->belongstostaff?->name }}</td>
 								<td>{{ $a->belongstostaffleave->belongstooptleavetype?->leave_type_code }}</td>
-								<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="{{ $a->belongstostaffleave->reason }}">{{ str($a->belongstostaffleave->reason)->words(3, ' >') }}</td>
+								<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="{{ $a->belongstostaffleave->reason }}">
+									{{ str($a->belongstostaffleave->reason)->words(3, ' >') }}
+								</td>
+								<td>{{ Carbon::parse($a->created_at)->format('j M Y') }}</td>
 								<td>{{ $dts }}</td>
 								<td>{{ $dte }}</td>
 								<td>{{ $dper }}</td>
@@ -1372,8 +1433,8 @@ $.fn.dataTable.moment( 'D MMM YYYY' );
 $.fn.dataTable.moment( 'D MMM YYYY h:mm a' );
 $('#leaves').DataTable({
 	"lengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "All"] ],
-	"columnDefs": [ { type: 'date', 'targets': [4] } ],
-	"order": [[4, "desc" ]],	// sorting the 6th column descending
+	"columnDefs": [ { type: 'date', 'targets': [5] } ],
+	"order": [[5, "desc" ]],	// sorting the 6th column descending
 	responsive: true
 })
 .on( 'length.dt page.dt order.dt search.dt', function ( e, settings, len ) {
@@ -1384,8 +1445,8 @@ $('#leaves').DataTable({
 
 $('#bapprover, #sapprover, #hodapprover, #dirapprover, #hrapprover').DataTable({
 	"lengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "All"] ],
-	"columnDefs": [ { type: 'date', 'targets': [4] } ],
-	"order": [[4, "desc" ]],	// sorting the 4th column descending
+	"columnDefs": [ { type: 'date', 'targets': [5] } ],
+	"order": [[5, "desc" ]],	// sorting the 4th column descending
 	responsive: true
 })
 .on( 'length.dt page.dt order.dt search.dt', function ( e, settings, len ) {
