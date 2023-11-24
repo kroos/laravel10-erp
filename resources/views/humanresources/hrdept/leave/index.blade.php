@@ -123,14 +123,12 @@ if ( ($ul->leave_type_id == 9) || ($ul->leave_type_id != 9 && $ul->half_type_id 
 }
 
 if ($me1) {																				// hod
-	if ($deptid == 21) {																// hod | dept prod A
-		$ha = Staff::find($ul->staff_id)?->belongstomanydepartment()?->wherePivot('main', 1)->first()?->id == $deptid || Staff::find($ul->staff_id)?->belongstomanydepartment()?->wherePivot('main', 1)->first()?->category_id == 2;
-	} elseif($deptid == 28) {															// hod | not dept prod A | dept prod B
+	if ($deptid == 21 || $deptid == 28) {																// hod | dept prod A | dept prod B
 		$ha = Staff::find($ul->staff_id)?->belongstomanydepartment()?->wherePivot('main', 1)->first()?->id == $deptid || Staff::find($ul->staff_id)?->belongstomanydepartment()?->wherePivot('main', 1)->first()?->category_id == 2;
 	} elseif($deptid == 14) {															// hod | not dept prod A | not dept prod B | HR
 		$ha = true;
 	} elseif($deptid == 6) {															// hod | not dept prod A | not dept prod B | not HR | cust serv
-		$ha = Staff::find($ul->staff_id)?->belongstomanydepartment()?->wherePivot('main', 1)->first()?->id == $deptid || Staff::find($ul->staff_id)?->belongstomanydepartment()?->wherePivot('main', 1)->first()?->id == 7;
+		$ha = Staff::find($ul->staff_id)?->belongstomanydepartment()?->wherePivot('main', 1)->first()?->id == $deptid || Staff::find($ul->staff_id)?->belongstomanydepartment()?->wherePivot('main', 1)->first()?->id == 7 || Staff::find($ul->staff_id)?->belongstomanydepartment()?->wherePivot('main', 1)->first()?->id == 3;
 	} elseif ($deptid == 23) {															// hod | not dept prod A | not dept prod B | not HR | not cust serv | puchasing
 		$ha = Staff::find($ul->staff_id)?->belongstomanydepartment()?->wherePivot('main', 1)->first()?->id == $deptid || Staff::find($ul->staff_id)?->belongstomanydepartment()?->wherePivot('main', 1)->first()?->id == 16 || Staff::find($ul->staff_id)?->belongstomanydepartment()?->wherePivot('main', 1)->first()?->id == 17;
 	} else {																			// hod | not dept prod A | not dept prod B | not HR | not cust serv | not puchasing | other dept
@@ -140,7 +138,7 @@ if ($me1) {																				// hod
 	if($deptid == 14) {																	// not hod | not dept prod A | not dept prod B | HR
 		$ha = true;
 	} elseif($deptid == 6) {															// not hod | not dept prod A | not dept prod B | not HR | cust serv
-		$ha = Staff::find($ul->staff_id)?->belongstomanydepartment()?->wherePivot('main', 1)->first()?->id == $deptid || Staff::find($ul->staff_id)?->belongstomanydepartment()?->wherePivot('main', 1)->first()?->id == 7;
+		$ha = Staff::find($ul->staff_id)?->belongstomanydepartment()?->wherePivot('main', 1)->first()?->id == $deptid || Staff::find($ul->staff_id)?->belongstomanydepartment()?->wherePivot('main', 1)->first()?->id == 7 || Staff::find($ul->staff_id)?->belongstomanydepartment()?->wherePivot('main', 1)->first()?->id == 3;
 	}
 } elseif($me3) {																		// not hod | not asst hod | supervisor
 	if($branch == 1) {																	// not hod | not asst hod | supervisor | branch A
@@ -197,6 +195,46 @@ if ($me1) {																				// hod
 												<div class="modal-footer">
 													<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Close</button>
 												</div>
+											</div>
+										</div>
+									</div>
+								@else
+									<!-- Button trigger modal -->
+									<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#uploaddoc_{{ $ul->id }}">
+										<i class="fa-solid fa-upload"></i>
+									</button>
+
+									<!-- Modal -->
+									<div class="modal fade" id="uploaddoc_{{ $ul->id }}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="uploaddocLabel_{{ $ul->id }}" aria-hidden="true">
+										<div class="modal-dialog">
+											<div class="modal-content">
+												{{ Form::open(['route' => ['uploaddoc', $ul->id], 'method' => 'patch', 'id' => 'form', 'autocomplete' => 'off', 'files' => true,  'data-toggle' => 'validator']) }}
+												<div class="modal-header">
+													<h1 class="modal-title fs-5" id="uploaddocLabel_{{ $ul->id }}">Upload Supporting Document</h1>
+													<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+												</div>
+												<div class="modal-body text-center">
+
+													<div class="form-group row m-2 {{ $errors->has('document') ? 'has-error' : '' }}">
+														{{ Form::label( 'doc', 'Upload Supporting Document : ', ['class' => 'col-sm-4 col-form-label'] ) }}
+														<div class="col-sm-8">
+															{{ Form::file( 'document', ['class' => 'form-control form-control-sm form-control-file', 'id' => 'doc', 'placeholder' => 'Supporting Document']) }}
+														</div>
+													</div>
+
+													<div class="form-group row m-2 {{ $errors->has('amend_note') ? 'has-error' : '' }}">
+														{{ Form::label( 'rem', 'Remarks : ', ['class' => 'col-sm-4 col-form-label'] ) }}
+														<div class="col-sm-8">
+															{{ Form::textarea( 'amend_note', @$value, ['class' => 'form-control form-control-sm', 'id' => 'rem', 'placeholder' => 'Remarks']) }}
+														</div>
+													</div>
+
+												</div>
+												<div class="modal-footer">
+														<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+														{{ Form::submit('Submit', ['class' => 'btn btn-sm btn-outline-secondary']) }}
+												</div>
+												{{ Form::close() }}
 											</div>
 										</div>
 									</div>
@@ -266,7 +304,7 @@ if ($me1) {																				// hod
 	} elseif($deptid == 14) {															// hod | not dept prod A | not dept prod B | HR
 		$ha = true;
 	} elseif($deptid == 6) {															// hod | not dept prod A | not dept prod B | not HR | cust serv
-		$ha = Staff::find($ul->staff_id)?->belongstomanydepartment()?->wherePivot('main', 1)->first()?->id == $deptid || Staff::find($ul->staff_id)?->belongstomanydepartment()?->wherePivot('main', 1)->first()?->id == 7;
+		$ha = Staff::find($ul->staff_id)?->belongstomanydepartment()?->wherePivot('main', 1)->first()?->id == $deptid || Staff::find($ul->staff_id)?->belongstomanydepartment()?->wherePivot('main', 1)->first()?->id == 7 || Staff::find($ul->staff_id)?->belongstomanydepartment()?->wherePivot('main', 1)->first()?->id == 3;
 	} elseif ($deptid == 23) {															// hod | not dept prod A | not dept prod B | not HR | not cust serv | puchasing
 		$ha = Staff::find($ul->staff_id)?->belongstomanydepartment()?->wherePivot('main', 1)->first()?->id == $deptid || Staff::find($ul->staff_id)?->belongstomanydepartment()?->wherePivot('main', 1)->first()?->id == 16 || Staff::find($ul->staff_id)?->belongstomanydepartment()?->wherePivot('main', 1)->first()?->id == 17;
 	} else {																			// hod | not dept prod A | not dept prod B | not HR | not cust serv | not puchasing | other dept
@@ -336,6 +374,46 @@ if ($me1) {																				// hod
 											</div>
 										</div>
 									</div>
+								@else
+									<!-- Button trigger modal -->
+									<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#uploaddoc_{{ $ul->id }}">
+										<i class="fa-solid fa-upload"></i>
+									</button>
+
+									<!-- Modal -->
+									<div class="modal fade" id="uploaddoc_{{ $ul->id }}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="uploaddocLabel_{{ $ul->id }}" aria-hidden="true">
+										<div class="modal-dialog">
+											<div class="modal-content">
+												{{ Form::open(['route' => ['uploaddoc', $ul->id], 'method' => 'patch', 'id' => 'form', 'autocomplete' => 'off', 'files' => true,  'data-toggle' => 'validator']) }}
+												<div class="modal-header">
+													<h1 class="modal-title fs-5" id="uploaddocLabel_{{ $ul->id }}">Upload Supporting Document</h1>
+													<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+												</div>
+												<div class="modal-body text-center">
+
+													<div class="form-group row m-2 {{ $errors->has('document') ? 'has-error' : '' }}">
+														{{ Form::label( 'doc', 'Upload Supporting Document : ', ['class' => 'col-sm-4 col-form-label'] ) }}
+														<div class="col-sm-8">
+															{{ Form::file( 'document', ['class' => 'form-control form-control-sm form-control-file', 'id' => 'doc', 'placeholder' => 'Supporting Document']) }}
+														</div>
+													</div>
+
+													<div class="form-group row m-2 {{ $errors->has('amend_note') ? 'has-error' : '' }}">
+														{{ Form::label( 'rem', 'Remarks : ', ['class' => 'col-sm-4 col-form-label'] ) }}
+														<div class="col-sm-8">
+															{{ Form::textarea( 'amend_note', @$value, ['class' => 'form-control form-control-sm', 'id' => 'rem', 'placeholder' => 'Remarks']) }}
+														</div>
+													</div>
+
+												</div>
+												<div class="modal-footer">
+														<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+														{{ Form::submit('Submit', ['class' => 'btn btn-sm btn-outline-secondary']) }}
+												</div>
+												{{ Form::close() }}
+											</div>
+										</div>
+									</div>
 								@endif
 							</td>
 							<td data-bs-toggle="tooltip" data-bs-custom-class="custom-tooltip" data-bs-html="true" data-bs-title="{{ ($ul->remarks)??' ' }}">{{ Str::limit($ul->remarks, 10, ' >') }}</td>
@@ -402,9 +480,9 @@ if ($me1) {																				// hod
 	} elseif($deptid == 14) {															// hod | not dept prod A | not dept prod B | HR
 		$ha = true;
 	} elseif($deptid == 6) {															// hod | not dept prod A | not dept prod B | not HR | cust serv
-		$ha = Staff::find($ul->staff_id)?->belongstomanydepartment()?->wherePivot('main', 1)->first()?->id == $deptid || Staff::find($ul->staff_id)?->belongstomanydepartment()?->wherePivot('main', 1)->first()?->id == 7;
+		$ha = Staff::find($ul->staff_id)?->belongstomanydepartment()?->wherePivot('main', 1)->first()?->id == $deptid || Staff::find($ul->staff_id)?->belongstomanydepartment()?->wherePivot('main', 1)->first()?->id == 7 || Staff::find($ul->staff_id)?->belongstomanydepartment()?->wherePivot('main', 1)->first()?->id == 3;
 	} elseif ($deptid == 23) {															// hod | not dept prod A | not dept prod B | not HR | not cust serv | puchasing
-		$ha = Staff::find($ul->staff_id)?->belongstomanydepartment()?->wherePivot('main', 1)->first()?->id == $deptid || Staff::find($ul->staff_id)?->belongstomanydepartment()?->wherePivot('main', 1)->first()?->id == 16 || Staff::find($ul->staff_id)?->belongstomanydepartment()?->wherePivot('main', 1)->first()?->id == 17;
+		$ha = Staff::find($ul->staff_id)?->belongstomanydepartment()?->wherePivot('main', 1)->first()?->id == $deptid || Staff::find($ul->staff_id)?->belongstomanydepartment()?->wherePivot('main', 1)->first()?->id == 16 || Staff::find($ul->staff_id)?->belongstomanydepartment()?->wherePivot('main', 1)->first()?->id == 11 || Staff::find($ul->staff_id)?->belongstomanydepartment()?->wherePivot('main', 1)->first()?->id == 17;
 	} else {																			// hod | not dept prod A | not dept prod B | not HR | not cust serv | not puchasing | other dept
 		$ha = Staff::find($ul->staff_id)?->belongstomanydepartment()?->wherePivot('main', 1)->first()?->id == $deptid;
 	}
@@ -412,7 +490,7 @@ if ($me1) {																				// hod
 	if($deptid == 14) {																	// not hod | not dept prod A | not dept prod B | HR
 		$ha = true;
 	} elseif($deptid == 6) {															// not hod | not dept prod A | not dept prod B | not HR | cust serv
-		$ha = Staff::find($ul->staff_id)?->belongstomanydepartment()?->wherePivot('main', 1)->first()?->id == $deptid || Staff::find($ul->staff_id)?->belongstomanydepartment()?->wherePivot('main', 1)->first()?->id == 7;
+		$ha = Staff::find($ul->staff_id)?->belongstomanydepartment()?->wherePivot('main', 1)->first()?->id == $deptid || Staff::find($ul->staff_id)?->belongstomanydepartment()?->wherePivot('main', 1)->first()?->id == 7 || Staff::find($ul->staff_id)?->belongstomanydepartment()?->wherePivot('main', 1)->first()?->id == 3;
 	}
 } elseif($me3) {																		// not hod | not asst hod | supervisor
 	if($branch == 1) {																	// not hod | not asst hod | supervisor | branch A
@@ -469,6 +547,46 @@ if ($me1) {																				// hod
 												<div class="modal-footer">
 													<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Close</button>
 												</div>
+											</div>
+										</div>
+									</div>
+								@else
+									<!-- Button trigger modal -->
+									<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#uploaddoc_{{ $ul->id }}">
+										<i class="fa-solid fa-upload"></i>
+									</button>
+
+									<!-- Modal -->
+									<div class="modal fade" id="uploaddoc_{{ $ul->id }}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="uploaddocLabel_{{ $ul->id }}" aria-hidden="true">
+										<div class="modal-dialog">
+											<div class="modal-content">
+												{{ Form::open(['route' => ['uploaddoc', $ul->id], 'method' => 'patch', 'id' => 'form', 'autocomplete' => 'off', 'files' => true,  'data-toggle' => 'validator']) }}
+												<div class="modal-header">
+													<h1 class="modal-title fs-5" id="uploaddocLabel_{{ $ul->id }}">Upload Supporting Document</h1>
+													<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+												</div>
+												<div class="modal-body text-center">
+
+													<div class="form-group row m-2 {{ $errors->has('document') ? 'has-error' : '' }}">
+														{{ Form::label( 'doc', 'Upload Supporting Document : ', ['class' => 'col-sm-4 col-form-label'] ) }}
+														<div class="col-sm-8">
+															{{ Form::file( 'document', ['class' => 'form-control form-control-sm form-control-file', 'id' => 'doc', 'placeholder' => 'Supporting Document']) }}
+														</div>
+													</div>
+
+													<div class="form-group row m-2 {{ $errors->has('amend_note') ? 'has-error' : '' }}">
+														{{ Form::label( 'rem', 'Remarks : ', ['class' => 'col-sm-4 col-form-label'] ) }}
+														<div class="col-sm-8">
+															{{ Form::textarea( 'amend_note', @$value, ['class' => 'form-control form-control-sm', 'id' => 'rem', 'placeholder' => 'Remarks']) }}
+														</div>
+													</div>
+
+												</div>
+												<div class="modal-footer">
+														<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+														{{ Form::submit('Submit', ['class' => 'btn btn-sm btn-outline-secondary']) }}
+												</div>
+												{{ Form::close() }}
 											</div>
 										</div>
 									</div>

@@ -13,6 +13,7 @@ use Illuminate\View\View;
 // load models
 use App\Models\Staff;
 use App\Models\HumanResources\HRAttendance;
+use App\Models\HumanResources\HRLeaveAmend;
 use App\Models\HumanResources\HRLeave;
 use App\Models\HumanResources\HRLeaveAnnual;
 use App\Models\HumanResources\HRLeaveMC;
@@ -257,7 +258,10 @@ class LeaveController extends Controller
 						$data += ['leave_no' => $hrleave->leave_no];
 						$data += ['leave_year' => $ye];
 						$data += ['leave_status_id' => $hrleave->leave_status_id];
-						if($request->file('document')){
+						$data += ['created_at' => $hrleave->created_at];
+						if ($hrleave->softcopy) {
+							$data += ['softcopy' => $hrleave->softcopy];
+						} elseif ($request->file('document')) {
 							$file = $request->file('document')->getClientOriginalName();
 							$currentDate = Carbon::now()->format('Y-m-d His');
 							$fileName = $currentDate . '_' . $file;
@@ -291,7 +295,10 @@ class LeaveController extends Controller
 						$data += ['leave_no' => $hrleave->leave_no];
 						$data += ['leave_year' => $ye];
 						$data += ['leave_status_id' => $hrleave->leave_status_id];
-						if($request->file('document')){
+						$data += ['created_at' => $hrleave->created_at];
+						if ($hrleave->softcopy) {
+							$data += ['softcopy' => $hrleave->softcopy];
+						} elseif ($request->file('document')) {
 							$file = $request->file('document')->getClientOriginalName();
 							$currentDate = Carbon::now()->format('Y-m-d His');
 							$fileName = $currentDate . '_' . $file;
@@ -333,7 +340,10 @@ class LeaveController extends Controller
 						$data += ['leave_no' => $hrleave->leave_no];
 						$data += ['leave_year' => $ye];
 						$data += ['leave_status_id' => $hrleave->leave_status_id];
-						if($request->file('document')){
+						$data += ['created_at' => $hrleave->created_at];
+						if ($hrleave->softcopy) {
+							$data += ['softcopy' => $hrleave->softcopy];
+						} elseif ($request->file('document')) {
 							$file = $request->file('document')->getClientOriginalName();
 							$currentDate = Carbon::now()->format('Y-m-d His');
 							$fileName = $currentDate . '_' . $file;
@@ -381,7 +391,10 @@ class LeaveController extends Controller
 					$data += ['leave_no' => $hrleave->leave_no];
 					$data += ['leave_year' => $ye];
 					$data += ['leave_status_id' => $hrleave->leave_status_id];
-					if($request->file('document')){
+					$data += ['created_at' => $hrleave->created_at];
+					if ($hrleave->softcopy) {
+						$data += ['softcopy' => $hrleave->softcopy];
+					} elseif ($request->file('document')) {
 						$file = $request->file('document')->getClientOriginalName();
 						$currentDate = Carbon::now()->format('Y-m-d His');
 						$fileName = $currentDate . '_' . $file;
@@ -393,7 +406,6 @@ class LeaveController extends Controller
 						// public/uploads/file.png
 						$data += ['softcopy' => $fileName];
 					}
-
 					$l = $user->hasmanyleave()->create($data);																					// insert data into HRLeave
 
 				} elseif ($request->leave_cat == 1) {																								// apply leace 1 whole day
@@ -404,7 +416,10 @@ class LeaveController extends Controller
 					$data += ['leave_no' => $hrleave->leave_no];
 					$data += ['leave_year' => $ye];
 					$data += ['leave_status_id' => $hrleave->leave_status_id];
-					if($request->file('document')){
+					$data += ['created_at' => $hrleave->created_at];
+					if ($hrleave->softcopy) {
+						$data += ['softcopy' => $hrleave->softcopy];
+					} elseif ($request->file('document')) {
 						$file = $request->file('document')->getClientOriginalName();
 						$currentDate = Carbon::now()->format('Y-m-d His');
 						$fileName = $currentDate . '_' . $file;
@@ -429,7 +444,10 @@ class LeaveController extends Controller
 					$data += ['leave_no' => $hrleave->leave_no];
 					$data += ['leave_year' => $ye];
 					$data += ['leave_status_id' => $hrleave->leave_status_id];
-					if($request->file('document')){
+					$data += ['created_at' => $hrleave->created_at];
+					if ($hrleave->softcopy) {
+						$data += ['softcopy' => $hrleave->softcopy];
+					} elseif ($request->file('document')) {
 						$file = $request->file('document')->getClientOriginalName();
 						$currentDate = Carbon::now()->format('Y-m-d His');
 						$fileName = $currentDate . '_' . $file;
@@ -475,7 +493,10 @@ class LeaveController extends Controller
 						$data += ['leave_no' => $hrleave->leave_no];
 						$data += ['leave_year' => $ye];
 						$data += ['leave_status_id' => $hrleave->leave_status_id];
-						if($request->file('document')){
+						$data += ['created_at' => $hrleave->created_at];
+						if ($hrleave->softcopy) {
+							$data += ['softcopy' => $hrleave->softcopy];
+						} elseif ($request->file('document')) {
 							$file = $request->file('document')->getClientOriginalName();
 							$currentDate = Carbon::now()->format('Y-m-d His');
 							$fileName = $currentDate . '_' . $file;
@@ -509,7 +530,10 @@ class LeaveController extends Controller
 						$data += ['leave_no' => $hrleave->leave_no];
 						$data += ['leave_year' => $ye];
 						$data += ['leave_status_id' => $hrleave->leave_status_id];
-						if($request->file('document')){
+						$data += ['created_at' => $hrleave->created_at];
+						if ($hrleave->softcopy) {
+							$data += ['softcopy' => $hrleave->softcopy];
+						} elseif ($request->file('document')) {
 							$file = $request->file('document')->getClientOriginalName();
 							$currentDate = Carbon::now()->format('Y-m-d His');
 							$fileName = $currentDate . '_' . $file;
@@ -545,7 +569,10 @@ class LeaveController extends Controller
 						$data += ['leave_no' => $hrleave->leave_no];
 						$data += ['leave_year' => $ye];
 						$data += ['leave_status_id' => $hrleave->leave_status_id];
-						if($request->file('document')){
+						$data += ['created_at' => $hrleave->created_at];
+						if ($hrleave->softcopy) {
+							$data += ['softcopy' => $hrleave->softcopy];
+						} elseif ($request->file('document')) {
 							$file = $request->file('document')->getClientOriginalName();
 							$currentDate = Carbon::now()->format('Y-m-d His');
 							$fileName = $currentDate . '_' . $file;
@@ -598,7 +625,10 @@ class LeaveController extends Controller
 						$data += ['leave_no' => $hrleave->leave_no];
 						$data += ['leave_year' => $ye];
 						$data += ['leave_status_id' => $hrleave->leave_status_id];
-						if($request->file('document')){
+						$data += ['created_at' => $hrleave->created_at];
+						if ($hrleave->softcopy) {
+							$data += ['softcopy' => $hrleave->softcopy];
+						} elseif ($request->file('document')) {
 							$file = $request->file('document')->getClientOriginalName();
 							$currentDate = Carbon::now()->format('Y-m-d His');
 							$fileName = $currentDate . '_' . $file;
@@ -632,7 +662,10 @@ class LeaveController extends Controller
 						$data += ['leave_no' => $hrleave->leave_no];
 						$data += ['leave_year' => $ye];
 						$data += ['leave_status_id' => $hrleave->leave_status_id];
-						if($request->file('document')){
+						$data += ['created_at' => $hrleave->created_at];
+						if ($hrleave->softcopy) {
+							$data += ['softcopy' => $hrleave->softcopy];
+						} elseif ($request->file('document')) {
 							$file = $request->file('document')->getClientOriginalName();
 							$currentDate = Carbon::now()->format('Y-m-d His');
 							$fileName = $currentDate . '_' . $file;
@@ -668,7 +701,10 @@ class LeaveController extends Controller
 						$data += ['leave_no' => $hrleave->leave_no];
 						$data += ['leave_year' => $ye];
 						$data += ['leave_status_id' => $hrleave->leave_status_id];
-						if($request->file('document')){
+						$data += ['created_at' => $hrleave->created_at];
+						if ($hrleave->softcopy) {
+							$data += ['softcopy' => $hrleave->softcopy];
+						} elseif ($request->file('document')) {
 							$file = $request->file('document')->getClientOriginalName();
 							$currentDate = Carbon::now()->format('Y-m-d His');
 							$fileName = $currentDate . '_' . $file;
@@ -716,7 +752,10 @@ class LeaveController extends Controller
 				$data += ['leave_no' => $hrleave->leave_no];
 				$data += ['leave_year' => $ye];
 				$data += ['leave_status_id' => $hrleave->leave_status_id];
-				if($request->file('document')){
+				$data += ['created_at' => $hrleave->created_at];
+				if ($hrleave->softcopy) {
+					$data += ['softcopy' => $hrleave->softcopy];
+				} elseif ($request->file('document')) {
 					$file = $request->file('document')->getClientOriginalName();
 					$currentDate = Carbon::now()->format('Y-m-d His');
 					$fileName = $currentDate . '_' . $file;
@@ -821,7 +860,10 @@ class LeaveController extends Controller
 			$data += ['leave_no' => $hrleave->leave_no];
 			$data += ['leave_year' => $ye];
 			$data += ['leave_status_id' => $hrleave->leave_status_id];
-			if($request->file('document')){
+			$data += ['created_at' => $hrleave->created_at];
+			if ($hrleave->softcopy) {
+				$data += ['softcopy' => $hrleave->softcopy];
+			} elseif ($request->file('document')) {
 				$file = $request->file('document')->getClientOriginalName();
 				$currentDate = Carbon::now()->format('Y-m-d His');
 				$fileName = $currentDate . '_' . $file;
@@ -854,7 +896,10 @@ class LeaveController extends Controller
 					$data += ['leave_no' => $hrleave->leave_no];
 					$data += ['leave_year' => $ye];
 					$data += ['leave_status_id' => $hrleave->leave_status_id];
-					if($request->file('document')){
+					$data += ['created_at' => $hrleave->created_at];
+					if ($hrleave->softcopy) {
+						$data += ['softcopy' => $hrleave->softcopy];
+					} elseif ($request->file('document')) {
 						$file = $request->file('document')->getClientOriginalName();
 						$currentDate = Carbon::now()->format('Y-m-d His');
 						$fileName = $currentDate . '_' . $file;
@@ -877,7 +922,10 @@ class LeaveController extends Controller
 					$data += ['leave_no' => $hrleave->leave_no];
 					$data += ['leave_year' => $ye];
 					$data += ['leave_status_id' => $hrleave->leave_status_id];
-					if($request->file('document')){
+					$data += ['created_at' => $hrleave->created_at];
+					if ($hrleave->softcopy) {
+						$data += ['softcopy' => $hrleave->softcopy];
+					} elseif ($request->file('document')) {
 						$file = $request->file('document')->getClientOriginalName();
 						$currentDate = Carbon::now()->format('Y-m-d His');
 						$fileName = $currentDate . '_' . $file;
@@ -889,7 +937,6 @@ class LeaveController extends Controller
 						// public/uploads/file.png
 						$data += ['softcopy' => $fileName];
 					}
-
 					$l = $user->hasmanyleave()->create($data);																					// insert data into HRLeave
 				}
 			} else {																															// apply leave for 2 OR more days
@@ -901,7 +948,10 @@ class LeaveController extends Controller
 					$data += ['leave_no' => $hrleave->leave_no];
 					$data += ['leave_year' => $ye];
 					$data += ['leave_status_id' => $hrleave->leave_status_id];
-					if($request->file('document')){
+					$data += ['created_at' => $hrleave->created_at];
+					if ($hrleave->softcopy) {
+						$data += ['softcopy' => $hrleave->softcopy];
+					} elseif ($request->file('document')) {
 						$file = $request->file('document')->getClientOriginalName();
 						$currentDate = Carbon::now()->format('Y-m-d His');
 						$fileName = $currentDate . '_' . $file;
@@ -924,11 +974,23 @@ class LeaveController extends Controller
 			}
 		}
 
-		$l->hasmanyleaveamend()->create([
-											'amend_note' => ucwords(Str::lower($request->amend_note)),
-											'staff_id' => \Auth::user()->belongstostaff->id,
-											'date' => now()
-										]);
+		if ($hrleave->hasmanyleaveamend()->count()) {
+			foreach (HRLeaveAmend::where('leave_id', $hrleave->id)->get() as $v) {
+				HRLeaveAmend::find($v->id)->update([
+														'leave_id' => $l->id,
+														'amend_note' => ucwords(Str::lower($v->amend_note)).'<br />'.ucwords(Str::lower($request->amend_note)),
+														'staff_id' => \Auth::user()->belongstostaff->id,
+														'date' => now()
+				]);
+			}
+		} else {
+			$l->hasmanyleaveamend()->create([
+												'amend_note' => ucwords(Str::lower($request->amend_note)),
+												'staff_id' => \Auth::user()->belongstostaff->id,
+												'date' => now()
+			]);
+		}
+
 		if($user->belongstoleaveapprovalflow->backup_approval == 1){																// alert backup
 			if($request->staff_id) {																								// backup only valid for non EL leave
 				$bid = $hrleave->hasmanyleaveapprovalbackup()->first()->id;

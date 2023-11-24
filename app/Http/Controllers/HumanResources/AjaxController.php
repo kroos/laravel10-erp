@@ -16,6 +16,7 @@ use App\Models\Setting;
 
 use App\Models\Staff;
 use App\Models\HumanResources\HRAttendance;
+use App\Models\HumanResources\HRLeaveAmend;
 use App\Models\HumanResources\HRLeave;
 use App\Models\HumanResources\HRHolidayCalendar;
 use App\Models\HumanResources\HRLeaveApprovalBackup;
@@ -61,8 +62,8 @@ class AjaxController extends Controller
 	function __construct()
 	{
 		$this->middleware(['auth']);
-		$this->middleware('highMgmtAccess:1|5,14', ['only' => ['deactivatestaff', 'deletecrossbackup', 'staffactivate', 'generateannualleave', 'generatemcleave', 'generatematernityleave']]);	// HOD n asst HOD HR only
-		// $this->middleware('highMgmtAccess:1,14', ['only' => ['deactivatestaff', 'deletecrossbackup', 'staffactivate', 'generateannualleave', 'generatemcleave', 'generatematernityleave']]);	// HOD HR only
+		$this->middleware('highMgmtAccess:1|5,14', ['only' => ['deactivatestaff', 'deletecrossbackup', 'staffactivate', 'generateannualleave', 'generatemcleave', 'generatematernityleave', 'uploaddoc']]);	// HOD n asst HOD HR only
+		// $this->middleware('highMgmtAccess:1|5,14', ['only' => ['uploaddoc']]);	// HOD HR only
 	}
 
 	// cancel leave
@@ -968,5 +969,50 @@ class AjaxController extends Controller
 			'status' => 'success',
 			'message' => 'Success generate medical certificate leave for next year',
 		]);
+	}
+
+	public function uploaddoc(Request $request, HRLeave $hrleave)
+	{
+		// dd($request->all());
+
+		$validated = $request->validate([
+				'document' => 'required|file|max:5120|mimes:jpeg,jpg,png,bmp,pdf,doc,docx',
+				'amend_note' => 'required',
+			],
+			[
+				// 'document.required' => 'Please choose supporting document',
+				// 'amend_note.required' => 'Please insert :attribute to approve leave, otherwise it wont be necessary for leave application reject',
+			],
+			[
+				'document' => 'Supporting Document',
+				'amend_note' => 'Remarks'
+			]
+		);
+
+		if($request->file('document')){
+			$file = $request->file('document')->getClientOriginalName();
+			$currentDate = Carbon::now()->format('Y-m-d His');
+			$fileName = $currentDate . '_' . $file;
+			// Store File in Storage Folder
+			$request->document->storeAs('public/leaves', $fileName);
+			// storage/app/uploads/file.png
+			// Store File in Public Folder
+			// $request->document->move(public_path('uploads'), $fileName);
+			// public/uploads/file.png
+			// $data += ['softcopy' => $fileName];
+		}
+		$t = $hrleave->update(['softcopy' => $fileName]);
+		if (!$hrleave->hasmanyleaveamend()->count()) {
+			$hrleave->hasmanyleaveamend()->create( Arr::add(Arr::add($request->only(['amend_note']), 'staff_id', \Auth::user()->belongstostaff->id), 'date', now()) );
+		} else {
+			foreach (HRLeaveAmend::where('leave_id', $hrleave->id)->get() as $v) {
+				HRLeaveAmend::find($v->id)->update([
+					'amend_note' => ucwords(Str::lower($v->amend_note)).'<br />'.ucwords(Str::lower($request->amend_note)),
+					'staff_id' => \Auth::user()->belongstostaff->id,
+					'date' => now()
+				]);
+			}
+		}
+		return redirect()->back();
 	}
 }
