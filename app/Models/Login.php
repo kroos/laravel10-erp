@@ -185,7 +185,7 @@ class Login extends Authenticatable // implements MustVerifyEmail
 		$g = auth()->user()->belongstostaff()->whereIn('div_id', $hm);
 		// dd($g->ddRawSql());
 		foreach($g->get() as $t) {
-			if($t->get()->isNotEmpty()) {
+			if(!is_null($t->div_id)) {
 				return true;
 			}
 		}
