@@ -7,418 +7,120 @@ $emergencies = $profile->hasmanyemergency()->get();
 $spouses = $profile->hasmanyspouse()->get();
 $childrens = $profile->hasmanychildren()->get();
 ?>
-
-<div class="container rounded bg-white mt-2 mb-2">
-	<div class="row">
-		<div class="col-sm-2 border-right">
-			<div class="d-flex flex-column align-items-center text-center p-3 py-5">
-				<img class="rounded-5 mt-3" width="180px" src="{{ asset('storage/user_profile/' . $profile->image) }}">
-				<span class="font-weight-bold">ID: {{ $profile->hasmanylogin()->where('active', 1)->first()->username }}</span>
-				<span class="font-weight-bold">Password: {{ $profile->hasmanylogin()->where('active', 1)->first()->password }}</span>
-				<span> </span>
-			</div>
+<div class="container row align-items-start justify-content-center">
+	<div class="col-sm-2 row">
+		<img class="rounded-5" width="180px" src="{{ asset('storage/user_profile/' . $profile->image) }}">
+		<span class="font-weight-bold">ID: {{ $profile->hasmanylogin()->where('active', 1)->first()->username }}</span>
+		<span> </span>
+	</div>
+	<div class="col-sm-12 row align-items-start justify-content-center">
+		<h4>Staff Profile &nbsp; <a href="{{ route('profile.edit', $profile->id) }}" class="btn btn-sm btn-outline-secondary">Change Password</a></h4>
+		<div class="col-sm-6">
+			<dl class="row">
+				<dt class="col-sm-5">Name</dt>
+				<dd class="col-sm-7">{{ $profile->name }}</dd>
+				<dt class="col-sm-5">Identity Card/Passport</dt>
+				<dd class="col-sm-7">{{ $profile->ic }}</dd>
+				<dt class="col-sm-5">Mobile Number</dt>
+				<dd class="col-sm-7">{{ $profile->mobile }}</dd>
+				<dt class="col-sm-5">Email</dt>
+				<dd class="col-sm-7">{{ $profile->email }}</dd>
+				<dt class="col-sm-5">Address</dt>
+				<dd class="col-sm-7"><address>{{ $profile->address }}</address></dd>
+				<dt class="col-sm-5">Department</dt>
+				<dd class="col-sm-7">{{ $profile->belongstomanydepartment()?->wherePivot('main', 1)->first()?->department }}</dd>
+			</dl>
 		</div>
-		<div class="col-sm-10 border-right">
-			<div class="p-1 py-3">
-				<div class="row">
-					<div class="d-flex justify-content-between align-items-center col-sm-2">
-						<h4 class="text-right">Staff Profile</h4>
-					</div>
-					<div class="col-sm-10">
-						<a href="{{ route('profile.edit', $profile->id) }}">
-							<button class="btn btn-sm btn-outline-secondary">EDIT</button>
-						</a>
-					</div>
-				</div>
-				<div class="row mb-5">
-					<div class="col-sm-6 border-right">
-						<div class="px-3">
-							<div class="row mt-3">
-								<div class="col-sm-12">
-									<label class="labels">Name</label>
-									<input type="text" class="form-control" value="{{ $profile->name }}" readonly>
-								</div>
-							</div>
 
-							<div class="row mt-3">
-								<div class="col-sm-6">
-									<label class="labels">IC</label>
-									<input type="text" class="form-control" value="{{ $profile->ic }}" readonly>
-								</div>
-								<div class="col-sm-6">
-									<label class="labels">PHONE NUMBER</label>
-									<input type="text" class="form-control" value="{{ $profile->mobile }}" readonly>
-								</div>
-							</div>
+		<div class="col-sm-6">
+			<dl class="row">
+				<dt class="col-sm-5">Category</dt>
+				<dd class="col-sm-7">{{ $profile->belongstomanydepartment()?->wherePivot('main', 1)->first()?->belongstocategory->category }}</dd>
+				<dt class="col-sm-5">Saturday Group</dt>
+				<dd class="col-sm-7">{{ $profile->belongstorestdaygroup?->group }}</dd>
+				<dt class="col-sm-5">Date Of Birth</dt>
+				<dd class="col-sm-7">{{ \Carbon\Carbon::parse($profile->dob)->format('d F Y') }}</dd>
+				<dt class="col-sm-5">Date Of Birth</dt>
+				<dd class="col-sm-7">{{ \Carbon\Carbon::parse($profile->dob)->format('d F Y') }}</dd>
+				<dt class="col-sm-5">Gender</dt>
+				<dd class="col-sm-7">{{ $profile->belongstogender->gender }}</dd>
+				<dt class="col-sm-5">Nationality</dt>
+				<dd class="col-sm-7">{{ $profile->belongstonationality?->country }}</dd>
+				<dt class="col-sm-5">Race</dt>
+				<dd class="col-sm-7">{{ $profile->belongstorace?->race }}</dd>
+				<dt class="col-sm-5">Religion</dt>
+				<dd class="col-sm-7">{{ $profile->belongstoreligion?->religion }}</dd>
+				<dt class="col-sm-5">Marital Status</dt>
+				<dd class="col-sm-7">{{ $profile->belongstoreligion?->religion }}</dd>
+				<dt class="col-sm-5">Join Date</dt>
+				<dd class="col-sm-7">{{ \Carbon\Carbon::parse($profile->join)->format('d F Y') }}</dd>
+				<dt class="col-sm-5">Confirm Date</dt>
+				<dd class="col-sm-7">{{ \Carbon\Carbon::parse($profile->confirmed)->format('d F Y') }}</dd>
 
-							<div class="row mt-3">
-								<div class="col-sm-12">
-									<label class="labels">EMAIL</label>
-									<input type="text" class="form-control" value="{{ $profile->email }}" readonly>
-								</div>
-							</div>
-
-							<div class="row mt-3">
-								<div class="col-sm-12">
-									<label class="labels">ADDRESS</label>
-									<input type="text" class="form-control" value="{{ $profile->address }}" readonly>
-								</div>
-							</div>
-
-							<div class="row mt-3">
-								<div class="col-sm-12">
-									<label class="labels">DEPARTMENT</label>
-									<input type="text" class="form-control" value="{{ $profile->belongstomanydepartment()->first()->department }}" readonly>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="col-sm-6 border-right">
-						<div class="px-3">
-							<div class="row mt-3">
-								<div class="col-sm-6">
-									<label class="labels">CATEGORY</label>
-									<input type="text" class="form-control" value="{{ $profile->belongstomanydepartment?->first()?->belongstocategory->category }}" readonly>
-								</div>
-								<div class="col-sm-6">
-									<label class="labels">SATURDAY GROUPING</label>
-									<input type="text" class="form-control" value="Group {{ $profile->restday_group_id }}" readonly>
-								</div>
-							</div>
-
-							<div class="row mt-3">
-								<div class="col-sm-6">
-									<label class="labels">DATE OF BIRTH</label>
-									<input type="text" class="form-control" value="{{ \Carbon\Carbon::parse($profile->dob)->format('d F Y') }}" readonly>
-
-								</div>
-								<div class="col-sm-6">
-									<label class="labels">GENDER</label>
-									<input type="text" class="form-control" value="{{ $profile->belongstogender->gender }}" readonly>
-								</div>
-							</div>
-
-							<div class="row mt-3">
-								<div class="col-sm-6">
-									<label class="labels">NATIONALITY</label>
-									<input type="text" class="form-control" value="{{ $profile->belongstonationality?->country }}" readonly>
-								</div>
-								<div class="col-sm-6">
-									<label class="labels">RACE</label>
-									<input type="text" class="form-control" value="{{ $profile->belongstorace?->race }}" readonly>
-								</div>
-							</div>
-
-							<div class="row mt-3">
-								<div class="col-sm-6">
-									<label class="labels">RELIGION</label>
-									<input type="text" class="form-control" value="{{ $profile->belongstoreligion?->religion }}" readonly>
-								</div>
-								<div class="col-sm-6">
-									<label class="labels">MARITAL STATUS</label>
-									<input type="text" class="form-control" value="{{ $profile->belongstomaritalstatus?->marital_status }}" readonly>
-								</div>
-							</div>
-
-							<div class="row mt-3">
-								<div class="col-sm-6">
-									<label class="labels">JOIN DATE</label>
-									<input type="text" class="form-control" value="{{ \Carbon\Carbon::parse($profile->join)->format('d F Y') }}" readonly>
-								</div>
-								<div class="col-sm-6">
-									<label class="labels">CONFIRM DATE</label>
-									<input type="text" class="form-control" value="{{ \Carbon\Carbon::parse($profile->confirmed)->format('d F Y') }}" readonly>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-
-				@if ($emergencies->count() != 0)
-				<div class="row">
-					<div class="d-flex justify-content-between align-items-center">
-						<h4 class="text-right">Emergency Contact</h4>
-					</div>
-				</div>
-				<div class="row mb-5">
-					<div class="col-sm-6 border-right">
-						<div class="px-3">
-
-							@foreach ($emergencies as $emergency)
-							@if ($loop->odd)
-
-							<div>
-								<div class="row mt-3">
-									<div class="col-sm-12">
-										<label class="labels">NAME</label>
-										<input type="text" class="form-control" value="{{ $emergency->contact_person }}" readonly>
-									</div>
-								</div>
-
-								<div class="row mt-3">
-									<div class="col-sm-6">
-										<label class="labels">RELATIONSHIP</label>
-										<input type="text" class="form-control" value="{{ $emergency->belongstorelationship?->relationship}}" readonly>
-									</div>
-									<div class="col-sm-6">
-										<label class="labels">PHONE NUMBER</label>
-										<input type="text" class="form-control" value="{{ $emergency->phone }}" readonly>
-									</div>
-								</div>
-
-								<div class="row mt-3">
-									<div class="col-sm-12">
-										<label class="labels">ADDRESS</label>
-										<input type="text" class="form-control" value="{{ $emergency->address }}" readonly>
-									</div>
-								</div>
-							</div>
-
-							@endif
-							@endforeach
-
-						</div>
-					</div>
-					<div class="col-sm-6 border-right">
-						<div class="px-3">
-
-							@foreach ($emergencies as $emergency)
-							@if ($loop->even)
-
-							<div>
-								<div class="row mt-3">
-									<div class="col-sm-12">
-										<label class="labels">NAME</label>
-										<input type="text" class="form-control" value="{{ $emergency->contact_person }}" readonly>
-									</div>
-								</div>
-
-								<div class="row mt-3">
-									<div class="col-sm-6">
-										<label class="labels">RELATIONSHIP</label>
-										<input type="text" class="form-control" value="{{ $emergency->belongstorelationship?->relationship }}" readonly>
-									</div>
-									<div class="col-sm-6">
-										<label class="labels">PHONE NUMBER</label>
-										<input type="text" class="form-control" value="{{ $emergency->phone }}" readonly>
-									</div>
-								</div>
-
-								<div class="row mt-3">
-									<div class="col-sm-12">
-										<label class="labels">ADDRESS</label>
-										<input type="text" class="form-control" value="{{ $emergency->address }}" readonly>
-									</div>
-								</div>
-							</div>
-
-							@endif
-							@endforeach
-
-						</div>
-					</div>
-				</div>
-				@endif
-
-
-				@if ($spouses->count())
-				<div class="row">
-					<div class="d-flex justify-content-between align-items-center">
-						<h4 class="text-right">Spouse</h4>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-sm-6 border-right">
-						<div class="px-3">
-
-							@foreach ($spouses as $spouse)
-							@if ($loop->odd)
-
-							<div class="mb-5">
-								<div class="row mt-3">
-									<div class="col-sm-12">
-										<label class="labels">NAME</label>
-										<input type="text" class="form-control" value="{{ $spouse->spouse }}" readonly>
-									</div>
-								</div>
-
-								<div class="row mt-3">
-									<div class="col-sm-6">
-										<label class="labels">IC</label>
-										<input type="text" class="form-control" value="{{ $spouse->id_card_passport }}" readonly>
-									</div>
-									<div class="col-sm-6">
-										<label class="labels">PHONE NUMBER</label>
-										<input type="text" class="form-control" value="{{ $spouse->phone }}" readonly>
-									</div>
-								</div>
-
-								<div class="row mt-3">
-									<div class="col-sm-6">
-										<label class="labels">Date Of Birth</label>
-										<input type="text" class="form-control" value="{{ $spouse->dob }}" readonly>
-									</div>
-									<div class="col-sm-6">
-										<label class="labels">Profession</label>
-										<input type="text" class="form-control" value="{{ $spouse->profession }}" readonly>
-									</div>
-								</div>
-							</div>
-
-							@endif
-							@endforeach
-
-						</div>
-					</div>
-					<div class="col-sm-6 border-right">
-						<div class="px-3">
-
-							@foreach ($spouses as $spouse)
-							@if ($loop->even)
-
-							<div class="mb-5">
-								<div class="row mt-3">
-									<div class="col-sm-12">
-										<label class="labels">NAME</label>
-										<input type="text" class="form-control" value="{{ $spouse->spouse }}" readonly>
-									</div>
-								</div>
-
-								<div class="row mt-3">
-									<div class="col-sm-6">
-										<label class="labels">IC</label>
-										<input type="text" class="form-control" value="{{ $spouse->id_card_passport }}" readonly>
-									</div>
-									<div class="col-sm-6">
-										<label class="labels">PHONE NUMBER</label>
-										<input type="text" class="form-control" value="{{ $spouse->phone }}" readonly>
-									</div>
-								</div>
-
-								<div class="row mt-3">
-									<div class="col-sm-6">
-										<label class="labels">Date Of Birth</label>
-										<input type="text" class="form-control" value="{{ $spouse->dob }}" readonly>
-									</div>
-									<div class="col-sm-6">
-										<label class="labels">Profession</label>
-										<input type="text" class="form-control" value="{{ $spouse->profession }}" readonly>
-									</div>
-								</div>
-							</div>
-
-							@endif
-							@endforeach
-
-						</div>
-					</div>
-				</div>
-				@endif
-
-
-				@if ($childrens->count() != 0)
-				<div class="row">
-					<div class="d-flex justify-content-between align-items-center">
-						<h4 class="text-right">Children</h4>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-sm-6 border-right">
-						<div class="px-3">
-
-							@foreach ($childrens as $children)
-							@if ($loop->odd)
-
-							<div class="mb-5">
-								<div class="row mt-3">
-									<div class="col-sm-12">
-										<label class="labels">NAME</label>
-										<input type="text" class="form-control" value="{{ $children->children }}" readonly>
-									</div>
-								</div>
-
-								<div class="row mt-3">
-									<div class="col-sm-6">
-										<label class="labels">Date Of Birth</label>
-										<input type="text" class="form-control" value="{{ $children->dob }}" readonly>
-									</div>
-									<div class="col-sm-6">
-										<label class="labels">Gender</label>
-										<input type="text" class="form-control" value="{{ $children->belongstogender?->gender }}" readonly>
-									</div>
-								</div>
-
-								<div class="row mt-3">
-									<div class="col-sm-12">
-										<label class="labels">Health Condition</label>
-										<input type="text" class="form-control" value="{{ $children->belongstohealthstatus?->health_status }}" readonly>
-									</div>
-								</div>
-
-								<div class="row mt-3">
-									<div class="col-sm-12">
-										<label class="labels">Education Level</label>
-										<input type="text" class="form-control" value="{{ $children->belongstoeducationlevel?->education_level }}" readonly>
-									</div>
-								</div>
-							</div>
-
-							@endif
-							@endforeach
-
-						</div>
-					</div>
-					<div class="col-sm-6 border-right">
-						<div class="px-3">
-
-							@foreach ($childrens as $children)
-							@if ($loop->even)
-
-							<div class="mb-5">
-								<div class="row mt-3">
-									<div class="col-sm-12">
-										<label class="labels">NAME</label>
-										<input type="text" class="form-control" value="{{ $children->children }}" readonly>
-									</div>
-								</div>
-
-								<div class="row mt-3">
-									<div class="col-sm-6">
-										<label class="labels">Date Of Birth</label>
-										<input type="text" class="form-control" value="{{ $children->dob }}" readonly>
-									</div>
-									<div class="col-sm-6">
-										<label class="labels">Gender</label>
-										<input type="text" class="form-control" value="{{ $children->belongstogender?->gender }}" readonly>
-									</div>
-								</div>
-
-								<div class="row mt-3">
-									<div class="col-sm-12">
-										<label class="labels">Health Condition</label>
-										<input type="text" class="form-control" value="{{ $children->belongstohealthstatus?->health_status }}" readonly>
-									</div>
-								</div>
-
-								<div class="row mt-3">
-									<div class="col-sm-12">
-										<label class="labels">Education Level</label>
-										<input type="text" class="form-control" value="{{ $children->belongstoeducationlevel?->education_level }}" readonly>
-									</div>
-								</div>
-							</div>
-
-							@endif
-							@endforeach
-
-						</div>
-					</div>
-				</div>
-				@endif
-
-			</div>
+			</dl>
 		</div>
 	</div>
+
+	<div class="col-sm-12 row align-items-start justify-content-center mt-3">
+		<div class="col-sm-4">
+			<h4>Emergency Contact</h4>
+			@if ($emergencies->count())
+				@foreach ($emergencies as $emergency)
+					<dl class="row">
+						<dt class="col-sm-5">Name</dt>
+						<dd class="col-sm-7">{{ $emergency->contact_person }}</dd>
+						<dt class="col-sm-5">Relationship</dt>
+						<dd class="col-sm-7">{{ $emergency->belongstorelationship?->relationship }}</dd>
+						<dt class="col-sm-5">Phone Number</dt>
+						<dd class="col-sm-7">{{ $emergency->phone }}</dd>
+						<dt class="col-sm-5">Address</dt>
+						<dd class="col-sm-7"><address>{{ $emergency->address }}</address></dd>
+					</dl>
+				@endforeach
+			@endif
+		</div>
+
+		<div class="col-sm-4">
+			<h4>Spouse</h4>
+			@if ($spouses->count())
+				@foreach ($spouses as $spouse)
+					<dl class="row">
+						<dt class="col-sm-5">Name</dt>
+						<dd class="col-sm-7">{{ $spouse->spouse }}</dd>
+						<dt class="col-sm-5">Identity Card/Passport</dt>
+						<dd class="col-sm-7">{{ $spouse->id_card_passport }}</dd>
+						<dt class="col-sm-5">Phone Number</dt>
+						<dd class="col-sm-7">{{ $spouse->phone }}</dd>
+						<dt class="col-sm-5">Date Of Birth</dt>
+						<dd class="col-sm-7">{{ \Carbon\Carbon::parse($spouse->dob)->format('d F Y') }}</dd>
+						<dt class="col-sm-5">Profession</dt>
+						<dd class="col-sm-7">{{ $spouse->profession }}</dd>
+					</dl>
+				@endforeach
+			@endif
+		</div>
+
+		<div class="col-sm-4">
+			<h4>Children</h4>
+			@if ($childrens->count())
+				@foreach ($childrens as $children)
+					<dl class="row">
+						<dt class="col-sm-5">Name</dt>
+						<dd class="col-sm-7">{{ $children->children }}</dd>
+						<dt class="col-sm-5">Date Of Birth</dt>
+						<dd class="col-sm-7">{{ \Carbon\Carbon::parse($children->dob)->format('d F Y') }}</dd>
+						<dt class="col-sm-5">Gender</dt>
+						<dd class="col-sm-7">{{ $children->belongstogender?->gender }}</dd>
+						<dt class="col-sm-5">Health Condition</dt>
+						<dd class="col-sm-7">{{ $children->belongstohealthstatus?->health_status }}</dd>
+						<dt class="col-sm-5">Education Level</dt>
+						<dd class="col-sm-7">{{ $children->belongstoeducationlevel?->education_level }}</dd>
+					</dl>
+				@endforeach
+			@endif
+		</div>
+	</div>
+
 	<div class="col-sm-12 table-responsive">
 		<table id="attendance" class="table table-sm table-hover">
 			<thead>

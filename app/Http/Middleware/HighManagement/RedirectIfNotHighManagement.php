@@ -39,14 +39,13 @@ class RedirectIfNotHighManagement
 
 		$userH = $request->user()->belongstostaff->div_id;
 		// dd($userH);
-		$deptP = $request->user()->belongstostaff->belongstomanydepartment()->wherePivot('main', 1)->first();
+		$deptP = $request->user()->belongstostaff()->whereIn('div_id', $hmu)->first();
+		$deptHM = $deptP?->belongstomanydepartment()->wherePivot('main', 1)->first();
 
 		if ($dept == 'NULL' || $dept == 'null') {
-			foreach($hmu as $hmudi) {
-				if ( !($userH == $hmudi || $request->user()->isAdmin()) ) {
-					dd('no dept');
-					return redirect()->back();
-				}
+			if ( !(in_array($userH, $hmu) || $request->user()->isAdmin()) )
+			{
+				return redirect()->back();
 			}
 		}
 		else
@@ -57,16 +56,16 @@ class RedirectIfNotHighManagement
 				// dd($hmdept);
 				foreach ($hmdept as $hmdept1)
 				{
-					$hmdeptu[] += $hmdept1;
+					$hmdeptu[] = $hmdept1;
 				}
-				if(!(in_array($deptP->id, $hmdeptu) || $request->user()->isAdmin()))
+				if( !(in_array($deptHM?->id, $hmdeptu) || $request->user()->isAdmin()) )
 				{
 					return redirect()->back();
 				}
 			}
 			else															// $dept got only 1 dept ( no string '|' )
 			{
-				if ( !($deptP->id == $dept || $request->user()->isAdmin()) )
+				if ( !($deptP?->id == $dept || $request->user()->isAdmin()) )
 				{
 					return redirect()->back();
 				}

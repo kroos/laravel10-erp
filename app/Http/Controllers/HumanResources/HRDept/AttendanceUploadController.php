@@ -42,7 +42,7 @@ class AttendanceUploadController extends Controller
   function __construct()
   {
     $this->middleware(['auth']);
-    $this->middleware('highMgmtAccess:1|2|4|5,14', ['only' => ['index', 'show']]);
+    // $this->middleware('highMgmtAccess:1|2|4|5,14', ['only' => ['index', 'show']]);
     $this->middleware('highMgmtAccess:1|5,14', ['only' => ['create', 'store', 'edit', 'update', 'destroy']]);
   }
 
@@ -80,7 +80,7 @@ class AttendanceUploadController extends Controller
       Excel::import(new AttendanceImport, $request->file('softcopy'));
     }
 
-    
+
     // FETCH ACTIVE STAFF USER INFO
     $query_Recordset1 = DB::select('SELECT `logins`.username, `staffs`.id, `staffs`.`name`, `staffs`.restday_group_id FROM `logins` JOIN `staffs` ON `logins`.staff_id = `staffs`.id WHERE `staffs`.active = ? AND `logins`.active = ? AND `staffs`.id != ? AND `staffs`.id != ?', [1, 1, 61, 62]);
 
@@ -102,11 +102,11 @@ class AttendanceUploadController extends Controller
       $staffs[] = $staff;
     }
 
-    // GET THE LATEST ATTENDANCE RECORD DATE IN FACESCAN 
+    // GET THE LATEST ATTENDANCE RECORD DATE IN FACESCAN
     $query_Recordset3 = DB::select('SELECT DATE(`hr_temp_punch_time`.Att_Time) AS LastDate FROM `hr_temp_punch_time` GROUP BY DATE(`hr_temp_punch_time`.Att_Time) ORDER BY LastDate ASC LIMIT 1');
     $row_Recordset3 = $query_Recordset3[0]->LastDate;
 
-    // GET THE LATEST ATTENDANCE RECORD DATE IN FACESCAN 
+    // GET THE LATEST ATTENDANCE RECORD DATE IN FACESCAN
     $query_Recordset5 = DB::select('SELECT DATE(`hr_temp_punch_time`.Att_Time) AS CurrentDate FROM `hr_temp_punch_time` GROUP BY DATE(`hr_temp_punch_time`.Att_Time) ORDER BY CurrentDate DESC LIMIT 1');
     $row_Recordset5 = $query_Recordset5[0]->CurrentDate;
 
