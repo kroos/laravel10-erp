@@ -44,7 +44,7 @@ class AttendanceDailyReportController extends Controller
   function __construct()
   {
     $this->middleware(['auth']);
-    $this->middleware('highMgmtAccess:1|2|4|5,14', ['only' => ['index', 'show']]);
+    $this->middleware('highMgmtAccess:1|2|5,14|31', ['only' => ['index', 'show', 'print']]);
     $this->middleware('highMgmtAccess:1|5,14', ['only' => ['create', 'store', 'edit', 'update', 'destroy']]);
   }
 
@@ -115,29 +115,6 @@ class AttendanceDailyReportController extends Controller
       ->orderBy('logins.username', 'ASC')
       ->get();
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     $dailyreport_late = HRAttendance::join('staffs', 'staffs.id', '=', 'hr_attendances.staff_id')
       ->join('logins', 'hr_attendances.staff_id', '=', 'logins.staff_id')
       ->join('pivot_staff_pivotdepts', 'staffs.id', '=', 'pivot_staff_pivotdepts.staff_id')
@@ -160,41 +137,6 @@ class AttendanceDailyReportController extends Controller
       ->orderBy('option_branches.code', 'ASC')
       ->orderBy('logins.username', 'ASC')
       ->get();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
       $dailyreport_outstation = HRAttendance::join('staffs', 'staffs.id', '=', 'hr_attendances.staff_id')
       ->join('logins', 'hr_attendances.staff_id', '=', 'logins.staff_id')

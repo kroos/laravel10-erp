@@ -11,16 +11,21 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
 
+// load validation
+
+
 // load facade
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 
 // load models
-use App\Models\HumanResources\HRLeaveAnnual;
+use App\Models\Staff;
+use App\Models\HumanResources\HRLeaveApprovalSupervisor;
 
 // load array helper
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
+use Illuminate\Support\Collection;
 
 // load Carbon
 use \Carbon\Carbon;
@@ -29,13 +34,13 @@ use \Carbon\CarbonInterval;
 
 use Session;
 
-class AnnualLeaveController extends Controller
+class HRLeaveApprovalDirectorController extends Controller
 {
 	function __construct()
 	{
 		$this->middleware(['auth']);
-		$this->middleware('highMgmtAccess:1|2|5,14|31', ['only' => ['index', 'show']]);
-		$this->middleware('highMgmtAccess:1|5,14', ['only' => ['create', 'store', 'edit', 'update', 'destroy']]);
+		$this->middleware('highMgmtAccess:1|2|5,14|31', ['only' => ['index', 'show', 'update']]);
+		$this->middleware('highMgmtAccess:1|5,14', ['only' => ['create', 'store', 'edit', 'destroy']]);
 	}
 
 	/**
@@ -43,7 +48,7 @@ class AnnualLeaveController extends Controller
 	 */
 	public function index(): View
 	{
-		return view('humanresources.hrdept.setting.annualleave.index');
+		return view('humanresources.hrdept.leave.dirleaveapproval.index');
 	}
 
 	/**
@@ -51,7 +56,7 @@ class AnnualLeaveController extends Controller
 	 */
 	public function create(): View
 	{
-		return view('humanresources.hrdept.setting.annualleave.create');
+		//
 	}
 
 	/**
@@ -65,7 +70,7 @@ class AnnualLeaveController extends Controller
 	/**
 	 * Display the specified resource.
 	 */
-	public function show(HRLeaveAnnual $annualleave): View
+	public function show(HRLeaveApprovalSupervisor $hRLeaveApprovalSupervisor): View
 	{
 		//
 	}
@@ -73,25 +78,23 @@ class AnnualLeaveController extends Controller
 	/**
 	 * Show the form for editing the specified resource.
 	 */
-	public function edit(HRLeaveAnnual $annualleave): View
+	public function edit(HRLeaveApprovalSupervisor $hRLeaveApprovalSupervisor): View
 	{
-		return view('humanresources.hrdept.setting.annualleave.edit', ['annualleave' => $annualleave]);
+		//
 	}
 
 	/**
 	 * Update the specified resource in storage.
 	 */
-	public function update(Request $request, HRLeaveAnnual $annualleave): RedirectResponse
+	public function update(Request $request, HRLeaveApprovalSupervisor $hRLeaveApprovalSupervisor): RedirectResponse
 	{
-		$annualleave->update($request->except(['_method', '_token']));
-		Session::flash('flash_message', 'Data successfully updated!');
-		return Redirect::route('annualleave.index');
+		//
 	}
 
 	/**
 	 * Remove the specified resource from storage.
 	 */
-	public function destroy(HRLeaveAnnual $annualleave): JsonResponse
+	public function destroy(HRLeaveApprovalSupervisor $hRLeaveApprovalSupervisor): JsonResponse
 	{
 		//
 	}

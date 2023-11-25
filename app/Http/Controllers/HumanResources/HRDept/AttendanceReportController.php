@@ -46,7 +46,7 @@ class AttendanceReportController extends Controller
 	{
 		$this->middleware(['auth']);
 		// $this->middleware('highMgmtAccess:1|2|5,NULL', ['only' => ['create']]);
-		$this->middleware('highMgmtAccess:1|5,14', ['only' => ['create', 'store', 'edit', 'update', 'destroy']]);
+		$this->middleware('highMgmtAccess:1|2|5,14|31', ['only' => ['create', 'store', 'edit', 'update', 'destroy']]);
 	}
 
 	public function create(): View

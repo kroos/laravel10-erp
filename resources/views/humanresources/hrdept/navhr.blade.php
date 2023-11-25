@@ -34,6 +34,10 @@
 		<a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Leave</a>
 		<ul class="dropdown-menu">
 			<li><a class="dropdown-item btn btn-sm btn-outline-secondary" href="{{ route('hrleave.index') }}"><i class="fa-solid fa-person-walking-arrow-right fa-beat"></i> Leave List</a></li>
+			<li><a class="dropdown-item btn btn-sm btn-outline-secondary" href="{{ route('leaveapprovalsupervisor.index') }}"><span class="mdi mdi-account-supervisor-outline"></span> Supervisor Leave Approval</a></li>
+			<li><a class="dropdown-item btn btn-sm btn-outline-secondary" href="{{ route('leaveapprovalhod.index') }}"><span class="mdi mdi-human-capacity-increase"></span> Head of Department Leave Approval</a></li>
+			<li><a class="dropdown-item btn btn-sm btn-outline-secondary" href="{{ route('leaveapprovaldirector.index') }}"><span class="mdi mdi-human-male-board-poll"></span> Director Leave Approval</a></li>
+			<li><a class="dropdown-item btn btn-sm btn-outline-secondary" href="{{ route('leaveapprovalhr.index') }}"><i class="fa-solid fa-users-viewfinder fa-beat"></i> Human Resource Leave Approval</a></li>
 			<li><a class="dropdown-item btn btn-sm btn-outline-secondary" href="{{ route('rleave.index') }}"><i class="fa-solid fa-briefcase fa-beat"></i> Replacement Leave List</a></li>
 <!-- 			<li><a class="dropdown-item" href="#">Staff Leave</a></li>
 			<li><a class="dropdown-item" href="#">Something else here</a></li>
