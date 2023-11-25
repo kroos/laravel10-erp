@@ -135,24 +135,15 @@ foreach ($c as $v) {
 							$backup = $leav->hasmanyleaveapprovalbackup()->get();
 							if ($backup->count()) {
 								if (is_null($backup->first()->leave_status_id)) {
-									$bapp = 'Pending';
+									$bapp = '<span class="text-danger">Pending</span>';
+									$bappb = false;
 								} else {
-									$bapp = OptLeaveStatus::find($backup->first()->leave_status_id)->status;
+									$bapp = '<span class="text-success">'.OptLeaveStatus::find($backup->first()->leave_status_id)->status.'</span>';
+									$bappb = true;
 								}
 							} else {
-								$bapp = 'No Backup';
-							}
-
-							// find leave supervisor if any
-							$supervisor = $leav->hasmanyleaveapprovalsupervisor()->get();
-							if ($supervisor->count()) {
-								if (is_null($supervisor->first()->leave_status_id)) {
-									$supp = 'Pending';
-								} else {
-									$supp = OptLeaveStatus::find($supervisor->first()->leave_status_id)->status;
-								}
-							} else {
-								$supp = 'No Supervisor';
+								$bapp = '<span class="text-success">No Backup</span>';
+									$bappb = true;
 							}
 							?>
 							@if($me5)
@@ -172,15 +163,15 @@ foreach ($c as $v) {
 										<td>{{ $dts }}</td>
 										<td>{{ $dte }}</td>
 										<td>{{ $dper }}</td>
-										<td>{{ $bapp }}</td>
+										<td>{!! $bapp !!}</td>
 										<td>
 											<!-- Button trigger modal -->
 											@if($backup->count())
 												@if(!is_null($backup->first()->leave_status_id))
-													<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#sapproval{{ $a->id }}" data-id="{{ $a->id }}"><i class="bi bi-box-arrow-in-down"></i></button>
+													<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#hodapproval{{ $a->id }}" data-id="{{ $a->id }}"><i class="bi bi-box-arrow-in-down"></i></button>
 												@endif
 											@else
-												<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#sapproval{{ $a->id }}" data-id="{{ $a->id }}"><i class="bi bi-box-arrow-in-down"></i></button>
+												<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#hodapproval{{ $a->id }}" data-id="{{ $a->id }}"><i class="bi bi-box-arrow-in-down"></i></button>
 											@endif
 
 											<!-- Modal for supervisor approval-->
@@ -203,9 +194,9 @@ foreach ($c as $v) {
 															@endforeach
 															<div class="mb-3 row">
 																<div class="form-group row {{ $errors->has('verify_code') ? 'has-error' : '' }}">
-																	<label for="hodcode{{ $val['id'] }}" class="col-auto col-form-label col-form-label-sm">Verify Code :</label>
+																	<label for="hodcode{{ $a->id }}" class="col-auto col-form-label col-form-label-sm">Verify Code :</label>
 																	<div class="col-auto">
-																		<input type="text" name="verify_code" value="{{ @$value }}" id="hodcode{{ $val['id'] }}" class="form-control form-control-sm" placeholder="Verify Code">
+																		<input type="text" name="verify_code" value="{{ (($user->div_id == 1 && $user->belongstomanydepartment->first()->id == 14) || $user->authorise_id == 1)?$leav->verify_code:@$value }}" id="hodcode{{ $a->id }}" class="form-control form-control-sm" placeholder="Verify Code">
 																	</div>
 																</div>
 															</div>
@@ -245,10 +236,10 @@ foreach ($c as $v) {
 											<!-- Button trigger modal -->
 											@if($backup->count())
 												@if(!is_null($backup->first()->leave_status_id))
-													<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#sapproval{{ $a->id }}" data-id="{{ $a->id }}"><i class="bi bi-box-arrow-in-down"></i></button>
+													<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#hodapproval{{ $a->id }}" data-id="{{ $a->id }}"><i class="bi bi-box-arrow-in-down"></i></button>
 												@endif
 											@else
-												<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#sapproval{{ $a->id }}" data-id="{{ $a->id }}"><i class="bi bi-box-arrow-in-down"></i></button>
+												<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#hodapproval{{ $a->id }}" data-id="{{ $a->id }}"><i class="bi bi-box-arrow-in-down"></i></button>
 											@endif
 
 											<!-- Modal for supervisor approval-->
@@ -271,9 +262,9 @@ foreach ($c as $v) {
 															@endforeach
 															<div class="mb-3 row">
 																<div class="form-group row {{ $errors->has('verify_code') ? 'has-error' : '' }}">
-																	<label for="hodcode{{ $val['id'] }}" class="col-auto col-form-label col-form-label-sm">Verify Code :</label>
+																	<label for="hodcode{{ $a->id }}" class="col-auto col-form-label col-form-label-sm">Verify Code :</label>
 																	<div class="col-auto">
-																		<input type="text" name="verify_code" value="{{ @$value }}" id="hodcode{{ $val['id'] }}" class="form-control form-control-sm" placeholder="Verify Code">
+																		<input type="text" name="verify_code" value="{{ (($user->div_id == 1 && $user->belongstomanydepartment->first()->id == 14) || $user->authorise_id == 1)?$leav->verify_code:@$value }}" id="hodcode{{ $a->id }}" class="form-control form-control-sm" placeholder="Verify Code">
 																	</div>
 																</div>
 															</div>
@@ -314,10 +305,10 @@ foreach ($c as $v) {
 											<!-- Button trigger modal -->
 											@if($backup->count())
 												@if(!is_null($backup->first()->leave_status_id))
-													<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#sapproval{{ $a->id }}" data-id="{{ $a->id }}"><i class="bi bi-box-arrow-in-down"></i></button>
+													<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#hodapproval{{ $a->id }}" data-id="{{ $a->id }}"><i class="bi bi-box-arrow-in-down"></i></button>
 												@endif
 											@else
-												<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#sapproval{{ $a->id }}" data-id="{{ $a->id }}"><i class="bi bi-box-arrow-in-down"></i></button>
+												<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#hodapproval{{ $a->id }}" data-id="{{ $a->id }}"><i class="bi bi-box-arrow-in-down"></i></button>
 											@endif
 
 											<!-- Modal for supervisor approval-->
@@ -340,9 +331,9 @@ foreach ($c as $v) {
 															@endforeach
 															<div class="mb-3 row">
 																<div class="form-group row {{ $errors->has('verify_code') ? 'has-error' : '' }}">
-																	<label for="hodcode{{ $val['id'] }}" class="col-auto col-form-label col-form-label-sm">Verify Code :</label>
+																	<label for="hodcode{{ $a->id }}" class="col-auto col-form-label col-form-label-sm">Verify Code :</label>
 																	<div class="col-auto">
-																		<input type="text" name="verify_code" value="{{ @$value }}" id="hodcode{{ $val['id'] }}" class="form-control form-control-sm" placeholder="Verify Code">
+																		<input type="text" name="verify_code" value="{{ (($user->div_id == 1 && $user->belongstomanydepartment->first()->id == 14) || $user->authorise_id == 1)?$leav->verify_code:@$value }}" id="hodcode{{ $a->id }}" class="form-control form-control-sm" placeholder="Verify Code">
 																	</div>
 																</div>
 															</div>
@@ -383,10 +374,10 @@ foreach ($c as $v) {
 											<!-- Button trigger modal -->
 											@if($backup->count())
 												@if(!is_null($backup->first()->leave_status_id))
-													<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#sapproval{{ $a->id }}" data-id="{{ $a->id }}"><i class="bi bi-box-arrow-in-down"></i></button>
+													<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#hodapproval{{ $a->id }}" data-id="{{ $a->id }}"><i class="bi bi-box-arrow-in-down"></i></button>
 												@endif
 											@else
-												<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#sapproval{{ $a->id }}" data-id="{{ $a->id }}"><i class="bi bi-box-arrow-in-down"></i></button>
+												<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#hodapproval{{ $a->id }}" data-id="{{ $a->id }}"><i class="bi bi-box-arrow-in-down"></i></button>
 											@endif
 
 											<!-- Modal for supervisor approval-->
@@ -409,9 +400,9 @@ foreach ($c as $v) {
 															@endforeach
 															<div class="mb-3 row">
 																<div class="form-group row {{ $errors->has('verify_code') ? 'has-error' : '' }}">
-																	<label for="hodcode{{ $val['id'] }}" class="col-auto col-form-label col-form-label-sm">Verify Code :</label>
+																	<label for="hodcode{{ $a->id }}" class="col-auto col-form-label col-form-label-sm">Verify Code :</label>
 																	<div class="col-auto">
-																		<input type="text" name="verify_code" value="{{ @$value }}" id="hodcode{{ $val['id'] }}" class="form-control form-control-sm" placeholder="Verify Code">
+																		<input type="text" name="verify_code" value="{{ (($user->div_id == 1 && $user->belongstomanydepartment->first()->id == 14) || $user->authorise_id == 1)?$leav->verify_code:@$value }}" id="hodcode{{ $a->id }}" class="form-control form-control-sm" placeholder="Verify Code">
 																	</div>
 																</div>
 															</div>
@@ -452,10 +443,10 @@ foreach ($c as $v) {
 											<!-- Button trigger modal -->
 											@if($backup->count())
 												@if(!is_null($backup->first()->leave_status_id))
-													<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#sapproval{{ $a->id }}" data-id="{{ $a->id }}"><i class="bi bi-box-arrow-in-down"></i></button>
+													<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#hodapproval{{ $a->id }}" data-id="{{ $a->id }}"><i class="bi bi-box-arrow-in-down"></i></button>
 												@endif
 											@else
-												<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#sapproval{{ $a->id }}" data-id="{{ $a->id }}"><i class="bi bi-box-arrow-in-down"></i></button>
+												<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#hodapproval{{ $a->id }}" data-id="{{ $a->id }}"><i class="bi bi-box-arrow-in-down"></i></button>
 											@endif
 
 											<!-- Modal for supervisor approval-->
@@ -478,9 +469,9 @@ foreach ($c as $v) {
 															@endforeach
 															<div class="mb-3 row">
 																<div class="form-group row {{ $errors->has('verify_code') ? 'has-error' : '' }}">
-																	<label for="hodcode{{ $val['id'] }}" class="col-auto col-form-label col-form-label-sm">Verify Code :</label>
+																	<label for="hodcode{{ $a->id }}" class="col-auto col-form-label col-form-label-sm">Verify Code :</label>
 																	<div class="col-auto">
-																		<input type="text" name="verify_code" value="{{ @$value }}" id="hodcode{{ $val['id'] }}" class="form-control form-control-sm" placeholder="Verify Code">
+																		<input type="text" name="verify_code" value="{{ (($user->div_id == 1 && $user->belongstomanydepartment->first()->id == 14) || $user->authorise_id == 1)?$leav->verify_code:@$value }}" id="hodcode{{ $a->id }}" class="form-control form-control-sm" placeholder="Verify Code">
 																	</div>
 																</div>
 															</div>
@@ -521,10 +512,10 @@ foreach ($c as $v) {
 											<!-- Button trigger modal -->
 											@if($backup->count())
 												@if(!is_null($backup->first()->leave_status_id))
-													<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#sapproval{{ $a->id }}" data-id="{{ $a->id }}"><i class="bi bi-box-arrow-in-down"></i></button>
+													<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#hodapproval{{ $a->id }}" data-id="{{ $a->id }}"><i class="bi bi-box-arrow-in-down"></i></button>
 												@endif
 											@else
-												<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#sapproval{{ $a->id }}" data-id="{{ $a->id }}"><i class="bi bi-box-arrow-in-down"></i></button>
+												<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#hodapproval{{ $a->id }}" data-id="{{ $a->id }}"><i class="bi bi-box-arrow-in-down"></i></button>
 											@endif
 
 											<!-- Modal for supervisor approval-->
@@ -547,9 +538,9 @@ foreach ($c as $v) {
 															@endforeach
 															<div class="mb-3 row">
 																<div class="form-group row {{ $errors->has('verify_code') ? 'has-error' : '' }}">
-																	<label for="hodcode{{ $val['id'] }}" class="col-auto col-form-label col-form-label-sm">Verify Code :</label>
+																	<label for="hodcode{{ $a->id }}" class="col-auto col-form-label col-form-label-sm">Verify Code :</label>
 																	<div class="col-auto">
-																		<input type="text" name="verify_code" value="{{ @$value }}" id="hodcode{{ $val['id'] }}" class="form-control form-control-sm" placeholder="Verify Code">
+																		<input type="text" name="verify_code" value="{{ (($user->div_id == 1 && $user->belongstomanydepartment->first()->id == 14) || $user->authorise_id == 1)?$leav->verify_code:@$value }}" id="hodcode{{ $a->id }}" class="form-control form-control-sm" placeholder="Verify Code">
 																	</div>
 																</div>
 															</div>
@@ -590,10 +581,10 @@ foreach ($c as $v) {
 											<!-- Button trigger modal -->
 											@if($backup->count())
 												@if(!is_null($backup->first()->leave_status_id))
-													<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#sapproval{{ $a->id }}" data-id="{{ $a->id }}"><i class="bi bi-box-arrow-in-down"></i></button>
+													<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#hodapproval{{ $a->id }}" data-id="{{ $a->id }}"><i class="bi bi-box-arrow-in-down"></i></button>
 												@endif
 											@else
-												<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#sapproval{{ $a->id }}" data-id="{{ $a->id }}"><i class="bi bi-box-arrow-in-down"></i></button>
+												<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#hodapproval{{ $a->id }}" data-id="{{ $a->id }}"><i class="bi bi-box-arrow-in-down"></i></button>
 											@endif
 
 											<!-- Modal for supervisor approval-->
@@ -616,9 +607,9 @@ foreach ($c as $v) {
 															@endforeach
 															<div class="mb-3 row">
 																<div class="form-group row {{ $errors->has('verify_code') ? 'has-error' : '' }}">
-																	<label for="hodcode{{ $val['id'] }}" class="col-auto col-form-label col-form-label-sm">Verify Code :</label>
+																	<label for="hodcode{{ $a->id }}" class="col-auto col-form-label col-form-label-sm">Verify Code :</label>
 																	<div class="col-auto">
-																		<input type="text" name="verify_code" value="{{ @$value }}" id="hodcode{{ $val['id'] }}" class="form-control form-control-sm" placeholder="Verify Code">
+																		<input type="text" name="verify_code" value="{{ (($user->div_id == 1 && $user->belongstomanydepartment->first()->id == 14) || $user->authorise_id == 1)?$leav->verify_code:@$value }}" id="hodcode{{ $a->id }}" class="form-control form-control-sm" placeholder="Verify Code">
 																	</div>
 																</div>
 															</div>
@@ -659,10 +650,10 @@ foreach ($c as $v) {
 											<!-- Button trigger modal -->
 											@if($backup->count())
 												@if(!is_null($backup->first()->leave_status_id))
-													<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#sapproval{{ $a->id }}" data-id="{{ $a->id }}"><i class="bi bi-box-arrow-in-down"></i></button>
+													<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#hodapproval{{ $a->id }}" data-id="{{ $a->id }}"><i class="bi bi-box-arrow-in-down"></i></button>
 												@endif
 											@else
-												<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#sapproval{{ $a->id }}" data-id="{{ $a->id }}"><i class="bi bi-box-arrow-in-down"></i></button>
+												<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#hodapproval{{ $a->id }}" data-id="{{ $a->id }}"><i class="bi bi-box-arrow-in-down"></i></button>
 											@endif
 
 											<!-- Modal for supervisor approval-->
@@ -685,9 +676,9 @@ foreach ($c as $v) {
 															@endforeach
 															<div class="mb-3 row">
 																<div class="form-group row {{ $errors->has('verify_code') ? 'has-error' : '' }}">
-																	<label for="hodcode{{ $val['id'] }}" class="col-auto col-form-label col-form-label-sm">Verify Code :</label>
+																	<label for="hodcode{{ $a->id }}" class="col-auto col-form-label col-form-label-sm">Verify Code :</label>
 																	<div class="col-auto">
-																		<input type="text" name="verify_code" value="{{ @$value }}" id="hodcode{{ $val['id'] }}" class="form-control form-control-sm" placeholder="Verify Code">
+																		<input type="text" name="verify_code" value="{{ (($user->div_id == 1 && $user->belongstomanydepartment->first()->id == 14) || $user->authorise_id == 1)?$leav->verify_code:@$value }}" id="hodcode{{ $a->id }}" class="form-control form-control-sm" placeholder="Verify Code">
 																	</div>
 																</div>
 															</div>
@@ -728,10 +719,10 @@ foreach ($c as $v) {
 											<!-- Button trigger modal -->
 											@if($backup->count())
 												@if(!is_null($backup->first()->leave_status_id))
-													<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#sapproval{{ $a->id }}" data-id="{{ $a->id }}"><i class="bi bi-box-arrow-in-down"></i></button>
+													<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#hodapproval{{ $a->id }}" data-id="{{ $a->id }}"><i class="bi bi-box-arrow-in-down"></i></button>
 												@endif
 											@else
-												<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#sapproval{{ $a->id }}" data-id="{{ $a->id }}"><i class="bi bi-box-arrow-in-down"></i></button>
+												<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#hodapproval{{ $a->id }}" data-id="{{ $a->id }}"><i class="bi bi-box-arrow-in-down"></i></button>
 											@endif
 
 											<!-- Modal for supervisor approval-->
@@ -754,9 +745,9 @@ foreach ($c as $v) {
 															@endforeach
 															<div class="mb-3 row">
 																<div class="form-group row {{ $errors->has('verify_code') ? 'has-error' : '' }}">
-																	<label for="hodcode{{ $val['id'] }}" class="col-auto col-form-label col-form-label-sm">Verify Code :</label>
+																	<label for="hodcode{{ $a->id }}" class="col-auto col-form-label col-form-label-sm">Verify Code :</label>
 																	<div class="col-auto">
-																		<input type="text" name="verify_code" value="{{ @$value }}" id="hodcode{{ $val['id'] }}" class="form-control form-control-sm" placeholder="Verify Code">
+																		<input type="text" name="verify_code" value="{{ (($user->div_id == 1 && $user->belongstomanydepartment->first()->id == 14) || $user->authorise_id == 1)?$leav->verify_code:@$value }}" id="hodcode{{ $a->id }}" class="form-control form-control-sm" placeholder="Verify Code">
 																	</div>
 																</div>
 															</div>
@@ -797,10 +788,10 @@ foreach ($c as $v) {
 											<!-- Button trigger modal -->
 											@if($backup->count())
 												@if(!is_null($backup->first()->leave_status_id))
-													<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#sapproval{{ $a->id }}" data-id="{{ $a->id }}"><i class="bi bi-box-arrow-in-down"></i></button>
+													<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#hodapproval{{ $a->id }}" data-id="{{ $a->id }}"><i class="bi bi-box-arrow-in-down"></i></button>
 												@endif
 											@else
-												<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#sapproval{{ $a->id }}" data-id="{{ $a->id }}"><i class="bi bi-box-arrow-in-down"></i></button>
+												<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#hodapproval{{ $a->id }}" data-id="{{ $a->id }}"><i class="bi bi-box-arrow-in-down"></i></button>
 											@endif
 
 											<!-- Modal for supervisor approval-->
@@ -823,9 +814,9 @@ foreach ($c as $v) {
 															@endforeach
 															<div class="mb-3 row">
 																<div class="form-group row {{ $errors->has('verify_code') ? 'has-error' : '' }}">
-																	<label for="hodcode{{ $val['id'] }}" class="col-auto col-form-label col-form-label-sm">Verify Code :</label>
+																	<label for="hodcode{{ $a->id }}" class="col-auto col-form-label col-form-label-sm">Verify Code :</label>
 																	<div class="col-auto">
-																		<input type="text" name="verify_code" value="{{ @$value }}" id="hodcode{{ $val['id'] }}" class="form-control form-control-sm" placeholder="Verify Code">
+																		<input type="text" name="verify_code" value="{{ (($user->div_id == 1 && $user->belongstomanydepartment->first()->id == 14) || $user->authorise_id == 1)?$leav->verify_code:@$value }}" id="hodcode{{ $a->id }}" class="form-control form-control-sm" placeholder="Verify Code">
 																	</div>
 																</div>
 															</div>
@@ -866,10 +857,10 @@ foreach ($c as $v) {
 											<!-- Button trigger modal -->
 											@if($backup->count())
 												@if(!is_null($backup->first()->leave_status_id))
-													<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#sapproval{{ $a->id }}" data-id="{{ $a->id }}"><i class="bi bi-box-arrow-in-down"></i></button>
+													<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#hodapproval{{ $a->id }}" data-id="{{ $a->id }}"><i class="bi bi-box-arrow-in-down"></i></button>
 												@endif
 											@else
-												<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#sapproval{{ $a->id }}" data-id="{{ $a->id }}"><i class="bi bi-box-arrow-in-down"></i></button>
+												<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#hodapproval{{ $a->id }}" data-id="{{ $a->id }}"><i class="bi bi-box-arrow-in-down"></i></button>
 											@endif
 
 											<!-- Modal for supervisor approval-->
@@ -892,9 +883,9 @@ foreach ($c as $v) {
 															@endforeach
 															<div class="mb-3 row">
 																<div class="form-group row {{ $errors->has('verify_code') ? 'has-error' : '' }}">
-																	<label for="hodcode{{ $val['id'] }}" class="col-auto col-form-label col-form-label-sm">Verify Code :</label>
+																	<label for="hodcode{{ $a->id }}" class="col-auto col-form-label col-form-label-sm">Verify Code :</label>
 																	<div class="col-auto">
-																		<input type="text" name="verify_code" value="{{ @$value }}" id="hodcode{{ $val['id'] }}" class="form-control form-control-sm" placeholder="Verify Code">
+																		<input type="text" name="verify_code" value="{{ (($user->div_id == 1 && $user->belongstomanydepartment->first()->id == 14) || $user->authorise_id == 1)?$leav->verify_code:@$value }}" id="hodcode{{ $a->id }}" class="form-control form-control-sm" placeholder="Verify Code">
 																	</div>
 																</div>
 															</div>

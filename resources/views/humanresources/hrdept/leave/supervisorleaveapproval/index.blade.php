@@ -29,21 +29,22 @@ use \Carbon\CarbonPeriod;
 use \App\Helpers\UnavailableDateTime;
 
 // who am i?
-$me1 = \Auth::user()->belongstostaff->div_id == 1;		// hod
-$me2 = \Auth::user()->belongstostaff->div_id == 5;		// hod assistant
-$me3 = \Auth::user()->belongstostaff->div_id == 4;		// supervisor
-$me4 = \Auth::user()->belongstostaff->div_id == 3;		// HR
-$me5 = \Auth::user()->belongstostaff->authorise_id == 1;	// admin
-$me6 = \Auth::user()->belongstostaff->div_id == 2;		// director
-$dept = \Auth::user()->belongstostaff->belongstomanydepartment()->wherePivot('main', 1)->first();
+$user = \Auth::user()->belongstostaff;
+$me1 = $user->div_id == 1;		// hod
+$me2 = $user->div_id == 5;		// hod assistant
+$me3 = $user->div_id == 4;		// supervisor
+$me4 = $user->div_id == 3;		// HR
+$me5 = $user->authorise_id == 1;	// admin
+$me6 = $user->div_id == 2;		// director
+$dept = $user->belongstomanydepartment()->wherePivot('main', 1)->first();
 $deptid = $dept->id;
 $branch = $dept->branch_id;
 $category = $dept->category_id;
 
-$s1 = $me3 || (($me1 || $me2) && \Auth::user()->belongstostaff->belongstomanydepartment()->wherePivot('main', 1)->first()->department_id == 14) || $me5;	// supervisor and hod HR
-$h1 = $me1 || (($me1 || $me2) && \Auth::user()->belongstostaff->belongstomanydepartment()->wherePivot('main', 1)->first()->department_id == 14) || $me5;	// HOD and hod HR
-$d1 = $me6 || ($me1 && \Auth::user()->belongstostaff->belongstomanydepartment()->wherePivot('main', 1)->first()->department_id == 14) || $me5;	// dir and hod HR
-$r1 = (($me1 || $me2) && \Auth::user()->belongstostaff->belongstomanydepartment()->wherePivot('main', 1)->first()->department_id == 14) || $me5;													// hod HR
+$s1 = $me3 || (($me1 || $me2) && $user->belongstomanydepartment()->wherePivot('main', 1)->first()->department_id == 14) || $me5;	// supervisor and hod HR
+$h1 = $me1 || (($me1 || $me2) && $user->belongstomanydepartment()->wherePivot('main', 1)->first()->department_id == 14) || $me5;	// HOD and hod HR
+$d1 = $me6 || ($me1 && $user->belongstomanydepartment()->wherePivot('main', 1)->first()->department_id == 14) || $me5;	// dir and hod HR
+$r1 = (($me1 || $me2) && $user->belongstomanydepartment()->wherePivot('main', 1)->first()->department_id == 14) || $me5;													// hod HR
 
 
 // for supervisor and hod approval
@@ -58,7 +59,7 @@ foreach ($c as $v) {
 }
 
 // filtering the view
-$us = \Auth::user()->belongstostaff->belongstomanydepartment->first()?->branch_id;							//get user supervisor branch_id
+$us = $user->belongstomanydepartment->first()?->branch_id;							//get user supervisor branch_id
 ?>
 <div class="container row align-items-start justify-content-center">
 	@include('humanresources.hrdept.navhr')
@@ -126,14 +127,16 @@ $us = \Auth::user()->belongstostaff->belongstomanydepartment->first()?->branch_i
 							// find leave backup if any
 							$backup = $leav->hasmanyleaveapprovalbackup()->get();
 							if ($backup->count()) {
-								$bapp = $backup;
 								if (is_null($backup->first()->leave_status_id)) {
-									$bapp = 'Pending';
+									$bapp = '<span class="text-danger">Pending</span>';
+									$bappb = false;
 								} else {
-									$bapp = OptLeaveStatus::find($backup->first()->leave_status_id)->status;
+									$bapp = '<span class="text-success">'.OptLeaveStatus::find($backup->first()->leave_status_id)->status.'</span>';
+									$bappb = true;
 								}
 							} else {
-								$bapp = 'No Backup';
+								$bapp = '<span class="text-success">No Backup</span>';
+									$bappb = true;
 							}
 							?>
 							@if($me3)
@@ -152,7 +155,7 @@ $us = \Auth::user()->belongstostaff->belongstomanydepartment->first()?->branch_i
 										<td>{{ $dts }}</td>
 										<td>{{ $dte }}</td>
 										<td>{{ $dper }}</td>
-										<td>{{ $bapp }}</td>
+										<td>{!! $bapp !!}</td>
 										<td>
 											<!-- Button trigger modal -->
 											@if($backup->count())
@@ -185,9 +188,9 @@ $us = \Auth::user()->belongstostaff->belongstomanydepartment->first()?->branch_i
 
 															<div class="mb-3 row">
 																<div class="form-group row {{ $errors->has('verify_code') ? 'has-error' : '' }}">
-																	<label for="supcode{{ $val['id'] }}" class="col-auto col-form-label col-form-label-sm">Verify Code :</label>
+																	<label for="supcode{{ $a->id }}" class="col-auto col-form-label col-form-label-sm">Verify Code :</label>
 																	<div class="col-auto">
-																		<input type="text" name="verify_code" value="{{ @$value }}" id="supcode{{ $val['id'] }}" class="form-control form-control-sm" placeholder="Verify Code">
+																		<input type="text" name="verify_code" value="{{ (($user->div_id == 1 && $user->belongstomanydepartment->first()->id == 14) || $user->authorise_id == 1)?$leav->verify_code:@$value }}" id="supcode{{ $a->id }}" class="form-control form-control-sm" placeholder="Verify Code">
 																	</div>
 																</div>
 															</div>
@@ -219,7 +222,7 @@ $us = \Auth::user()->belongstostaff->belongstomanydepartment->first()?->branch_i
 									<td>{{ $dts }}</td>
 									<td>{{ $dte }}</td>
 									<td>{{ $dper }}</td>
-									<td>{{ $bapp }}</td>
+									<td>{!! $bapp !!}</td>
 									<td>
 										<!-- Button trigger modal -->
 										@if($backup->count())
@@ -252,9 +255,9 @@ $us = \Auth::user()->belongstostaff->belongstomanydepartment->first()?->branch_i
 
 														<div class="mb-3 row">
 															<div class="form-group row {{ $errors->has('verify_code') ? 'has-error' : '' }}">
-																<label for="supcode{{ $val['id'] }}" class="col-auto col-form-label col-form-label-sm">Verify Code :</label>
+																<label for="supcode{{ $a->id }}" class="col-auto col-form-label col-form-label-sm">Verify Code :</label>
 																<div class="col-auto">
-																	<input type="text" name="verify_code" value="{{ @$value }}" id="supcode{{ $val['id'] }}" class="form-control form-control-sm" placeholder="Verify Code">
+																	<input type="text" name="verify_code" value="{{ (($user->div_id == 1 && $user->belongstomanydepartment->first()->id == 14) || $user->authorise_id == 1)?$leav->verify_code:@$value }}" id="supcode{{ $a->id }}" class="form-control form-control-sm" placeholder="Verify Code">
 																</div>
 															</div>
 														</div>

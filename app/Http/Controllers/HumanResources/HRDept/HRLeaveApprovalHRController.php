@@ -39,7 +39,7 @@ class HRLeaveApprovalHRController extends Controller
 	function __construct()
 	{
 		$this->middleware(['auth']);
-		$this->middleware('highMgmtAccess:1|2|4|5,14|21|28|31', ['only' => ['index', 'show', 'update']]);
+		$this->middleware('highMgmtAccess:1|2|5,14|31', ['only' => ['index', 'show', 'update']]);
 		$this->middleware('highMgmtAccess:1|5,14', ['only' => ['create', 'store', 'edit', 'destroy']]);
 	}
 
@@ -48,7 +48,7 @@ class HRLeaveApprovalHRController extends Controller
 	 */
 	public function index(): View
 	{
-		//
+		return view('humanresources.hrdept.leave.hrleaveapproval.index');
 	}
 
 	/**
