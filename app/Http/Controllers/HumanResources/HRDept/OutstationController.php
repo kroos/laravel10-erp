@@ -32,7 +32,7 @@ class OutstationController extends Controller
 	{
 		$this->middleware(['auth']);
 		$this->middleware('highMgmtAccess:1|2|5,6|14|31', ['only' => ['index', 'show']]);                                  // all high management
-		$this->middleware('highMgmtAccess:1|5,14', ['only' => ['create', 'store', 'edit', 'update', 'destroy']]);       // only hod and asst hod HR can access
+		$this->middleware('highMgmtAccess:1|5,6|14', ['only' => ['create', 'store', 'edit', 'update', 'destroy']]);       // only hod and asst hod HR can access
 	}
 
 	/**

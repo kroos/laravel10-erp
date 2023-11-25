@@ -20,50 +20,57 @@ class RedirectIfNotHighManagement
 	 */
 	public function handle(Request $request, Closure $next, $highManagement, $dept): Response
 	{
-		// dd($highManagement, $dept);
 		// make sure its high management
-		$hmu = [];
-		if (Str::contains($highManagement, '|')) {
+		// dd($highManagement, $dept);
+
+		if (Str::contains($highManagement, '|'))
+		{
 			$hms = explode("|", $highManagement);									// convert $hm to array
 			foreach ($hms as $hm1) {
-				$hmu[] += $hm1;
-			}
-		} else {
-			$hmu = [$highManagement];
-		}
-		$deptP = $request->user()->belongstostaff->belongstomanydepartment()->wherePivot('main', 1)->first();
-		// dd($deptP);
-
-		// if($dept == 'NULL') {
-		// 	if( !($request->user()->isHighManagement($hmu) || $request->user()->isAdmin()) ) {
-		// 			return redirect()->back();
-		// 	}
-		// } else {
-		// 	if( !(($request->user()->isHighManagement($hmu) && $deptP->id == $dept) || $request->user()->isHighManagement($hmu) || $request->user()->isAdmin()) ) {
-		// 		return redirect()->back();
-		// 	}
-		// }
-
-		$hmdeptu = [];
-		if($dept == 'NULL') {
-			if( !($request->user()->isHighManagement($hmu) || $request->user()->isAdmin()) ) {
-					return redirect()->back();
+				$hmu[] = $hm1;
 			}
 		}
-		if (Str::contains($dept, '|')) {
-			$hmdept = explode("|", $dept);									// convert $hm to array
-			foreach ($hmdept as $hmdept1) {
-				$hmdeptu[] += $hmdept1;
-			}
-			if(!(in_array($deptP->id, $hmdeptu) || $request->user()->isAdmin())) {
+		else
+		{
+			$hmu[] = $highManagement;
+		}
+		// dd($hmu);
+		// dd(is_array($hmu));
+
+		$userH = $request->user()->belongstostaff->div_id;
+		// dd($userH);
+		$deptP = $request->user()->belongstostaff()->whereIn('div_id', $hmu)->first();
+		$deptHM = $deptP?->belongstomanydepartment()->wherePivot('main', 1)->first();
+
+		if ($dept == 'NULL' || $dept == 'null') {
+			if ( !(in_array($userH, $hmu) || $request->user()->isAdmin()) )
+			{
 				return redirect()->back();
 			}
 		}
-
-		// 	if( !(($request->user()->isHighManagement($hmu) && $deptP->id == $dept) || $request->user()->isHighManagement($hmu) || $request->user()->isAdmin()) ) {
-		// 		return redirect()->back();
-		// 	}
-
+		else
+		{
+			if (Str::contains($dept, '|'))									// $dept got more than 1 dept ( string '|' )
+			{
+				$hmdept = explode("|", $dept);								// convert $hm to array
+				// dd($hmdept);
+				foreach ($hmdept as $hmdept1)
+				{
+					$hmdeptu[] = $hmdept1;
+				}
+				if( !(in_array($deptHM?->id, $hmdeptu) || $request->user()->isAdmin()) )
+				{
+					return redirect()->back();
+				}
+			}
+			else															// $dept got only 1 dept ( no string '|' )
+			{
+				if ( !($deptP?->id == $dept || $request->user()->isAdmin()) )
+				{
+					return redirect()->back();
+				}
+			}
+		}
 		return $next($request);
 	}
 }
