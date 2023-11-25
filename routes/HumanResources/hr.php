@@ -26,6 +26,10 @@ use App\Http\Controllers\HumanResources\HRDept\AttendanceDailyReportController;
 use App\Http\Controllers\HumanResources\HRDept\AttendanceExcelReportController;
 use App\Http\Controllers\HumanResources\HRDept\AttendanceReportPDFController;
 use App\Http\Controllers\HumanResources\HRDept\OvertimeReportController;
+use App\Http\Controllers\HumanResources\HRDept\HRLeaveApprovalSupervisorController;
+use App\Http\Controllers\HumanResources\HRDept\HRLeaveApprovalHODController;
+use App\Http\Controllers\HumanResources\HRDept\HRLeaveApprovalDirectorController;
+use App\Http\Controllers\HumanResources\HRDept\HRLeaveApprovalHRController;
 
 
 Route::resources([
@@ -49,6 +53,10 @@ Route::resources([
 	'mcleave' => MCLeaveController::class,
 	'maternityleave' => MaternityLeaveController::class,
 	'overtime' => OvertimeController::class,
+	'leaveapprovalsupervisor' => HRLeaveApprovalSupervisorController::class,
+	'leaveapprovalhod' => HRLeaveApprovalHODController::class,
+	'leaveapprovaldirector' => HRLeaveApprovalDirectorController::class,
+	'leaveapprovalhr' => HRLeaveApprovalHRController::class,
 ]);
 
 Route::get('/excelreport', [AttendanceExcelReportController::class, 'index'])->name('excelreport.index');
