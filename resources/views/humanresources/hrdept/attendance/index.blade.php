@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="col-sm-12 row">
+<div class="container row align-items-start justify-content-center">
 @include('humanresources.hrdept.navhr')
 	<h4>Attendance</h4>
 	<div class="col-sm-12">
