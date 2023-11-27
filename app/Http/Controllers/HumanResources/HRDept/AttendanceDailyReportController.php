@@ -91,10 +91,33 @@ class AttendanceDailyReportController extends Controller
       $selected_date = $current_time->format('Y-m-d');
     }
 
-    
-    $saturday = HRRestdayCalendar::where('saturday_date', '=', $selected_date)->select('restday_group_id');
 
-    if ($saturday->isNotEmpty()) {
+    // $saturday = HRRestdayCalendar::where('saturday_date', '=', $selected_date)->select('restday_group_id');
+
+    // if ($saturday->isNotEmpty()) {
+    //   $dailyreport_absent = HRAttendance::join('staffs', 'staffs.id', '=', 'hr_attendances.staff_id')
+    //     ->join('logins', 'hr_attendances.staff_id', '=', 'logins.staff_id')
+    //     ->join('pivot_staff_pivotdepts', 'staffs.id', '=', 'pivot_staff_pivotdepts.staff_id')
+    //     ->join('pivot_dept_cate_branches', 'pivot_staff_pivotdepts.pivot_dept_id', '=',  'pivot_dept_cate_branches.id')
+    //     ->join('option_branches', 'pivot_dept_cate_branches.branch_id', '=', 'option_branches.id')
+    //     ->join('option_restday_groups', 'staffs.restday_group_id', '=', 'option_restday_groups.id')
+    //     ->where('hr_attendances.attend_date', '=', $selected_date)
+    //     ->where(function ($query) {
+    //       $query->where('hr_attendances.in', '=', '00:00:00')
+    //         ->orWhere('hr_attendances.leave_id', '!=', NULL);
+    //     })
+    //     ->where('hr_attendances.outstation_id', '=', NULL)
+    //     ->where(function ($query) {
+    //       $query->where('hr_attendances.attendance_type_id', '!=', 4)
+    //         ->orWhere('hr_attendances.attendance_type_id', '=', NULL);
+    //     })
+    //     ->where('logins.active', '=', 1)
+    //     ->where('pivot_staff_pivotdepts.main', '=', 1)
+    //     ->select('hr_attendances.attend_date', 'option_branches.code', 'pivot_dept_cate_branches.department', 'option_restday_groups.group', 'logins.username', 'staffs.name', 'hr_attendances.leave_id', 'hr_attendances.remarks')
+    //     ->orderBy('option_branches.code', 'ASC')
+    //     ->orderBy('logins.username', 'ASC')
+    //     ->get();
+    // } else {
       $dailyreport_absent = HRAttendance::join('staffs', 'staffs.id', '=', 'hr_attendances.staff_id')
         ->join('logins', 'hr_attendances.staff_id', '=', 'logins.staff_id')
         ->join('pivot_staff_pivotdepts', 'staffs.id', '=', 'pivot_staff_pivotdepts.staff_id')
@@ -117,30 +140,7 @@ class AttendanceDailyReportController extends Controller
         ->orderBy('option_branches.code', 'ASC')
         ->orderBy('logins.username', 'ASC')
         ->get();
-    } else {
-      $dailyreport_absent = HRAttendance::join('staffs', 'staffs.id', '=', 'hr_attendances.staff_id')
-        ->join('logins', 'hr_attendances.staff_id', '=', 'logins.staff_id')
-        ->join('pivot_staff_pivotdepts', 'staffs.id', '=', 'pivot_staff_pivotdepts.staff_id')
-        ->join('pivot_dept_cate_branches', 'pivot_staff_pivotdepts.pivot_dept_id', '=',  'pivot_dept_cate_branches.id')
-        ->join('option_branches', 'pivot_dept_cate_branches.branch_id', '=', 'option_branches.id')
-        ->join('option_restday_groups', 'staffs.restday_group_id', '=', 'option_restday_groups.id')
-        ->where('hr_attendances.attend_date', '=', $selected_date)
-        ->where(function ($query) {
-          $query->where('hr_attendances.in', '=', '00:00:00')
-            ->orWhere('hr_attendances.leave_id', '!=', NULL);
-        })
-        ->where('hr_attendances.outstation_id', '=', NULL)
-        ->where(function ($query) {
-          $query->where('hr_attendances.attendance_type_id', '!=', 4)
-            ->orWhere('hr_attendances.attendance_type_id', '=', NULL);
-        })
-        ->where('logins.active', '=', 1)
-        ->where('pivot_staff_pivotdepts.main', '=', 1)
-        ->select('hr_attendances.attend_date', 'option_branches.code', 'pivot_dept_cate_branches.department', 'option_restday_groups.group', 'logins.username', 'staffs.name', 'hr_attendances.leave_id', 'hr_attendances.remarks')
-        ->orderBy('option_branches.code', 'ASC')
-        ->orderBy('logins.username', 'ASC')
-        ->get();
-    }
+    // }
 
     $dailyreport_late = HRAttendance::join('staffs', 'staffs.id', '=', 'hr_attendances.staff_id')
       ->join('logins', 'hr_attendances.staff_id', '=', 'logins.staff_id')
