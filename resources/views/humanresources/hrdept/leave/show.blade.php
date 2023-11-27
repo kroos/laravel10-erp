@@ -86,10 +86,7 @@
 	}
 </style>
 
-
-
 <?php
-// dd($hrleave);
 $staff = $hrleave->belongstostaff()?->first();
 $login = \App\Models\Login::where([['staff_id', $hrleave->staff_id], ['active', 1]])->first();
 
@@ -143,7 +140,7 @@ if ((\Carbon\Carbon::parse($hrleave->date_time_end)->format('H:i')) == '00:00') 
 	$date_end = \Carbon\Carbon::parse($hrleave->date_time_end)->format('d F Y h:i a');
 }
 
-if ($hrleave->period_day !== 0.0 &&$hrleave->period_time == NULL) {
+if ($hrleave->period_day !== 0.0 && $hrleave->period_time == NULL) {
 	$total_leave =$hrleave->period_day . ' Days';
 } else {
 	$total_leave =$hrleave->period_time;
@@ -161,6 +158,14 @@ if ($backup) {
 	$backup_name = '-';
 	$approved_date = '-';
 }
+
+$start = \Carbon\Carbon::parse($hrleave->date_time_start)->format('Y-m-d');
+$end = \Carbon\Carbon::parse($hrleave->date_time_end)->format('Y-m-d');
+$hr_remark = \App\Models\HumanResources\HRAttendance::where('hr_attendances.staff_id', '=', $hrleave->staff_id)
+->whereBetween('hr_attendances.attend_date', [$start, $end])
+->where('hr_attendances.hr_remarks', '!=', NULL)
+->select('hr_attendances.hr_remarks')
+->first();
 ?>
 
 <div class="col-sm-12 row">
@@ -206,6 +211,14 @@ if ($backup) {
 				<div class="table-cell-top" style="width: 40%;">DATE APPROVED : {{ @$approved_date }} </div>
 			</div>
 		</div>
+
+		@if ($hr_remark->hr_remarks != NULL && $hr_remark->hr_remarks != '')
+		<div class="table">
+			<div class="table-row">
+				<div class="table-cell-top text-wrap" style="width: 100%;">HR REMARK : {{ @$hr_remark->hr_remarks }}</div>
+			</div>
+		</div>
+		@endif
 
 		<div class="table">
 			<div class="table-row">
@@ -265,38 +278,6 @@ if ($backup) {
 			</div>
 		</div>
 	</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 </div>
 @endsection
