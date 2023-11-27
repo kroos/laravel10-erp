@@ -38,10 +38,18 @@ use App\Models\HumanResources\HROutstation;
 
   {!! Form::close() !!}
 
-  @if ($dailyreport_absent->isNotEmpty() && $dailyreport_late->isNotEmpty() && $dailyreport_outstation->isNotEmpty())
+  
+  @if ($dailyreport_absent->isNotEmpty() || $dailyreport_late->isNotEmpty() || $dailyreport_outstation->isNotEmpty())
   <div class="row g-3 mb-3">
     <table class="table table-hover table-sm align-middle">
+
+      @if ($dailyreport_absent->isNotEmpty())
       <?php $no = 1; ?>
+      <tr class="top-row">
+        <td colspan="10">
+          <b>ABSENT</b>
+        </td>
+      </tr>
       <tr class="top-row">
         <td class="text-center" style="width: 30px;">
           NO
@@ -134,6 +142,7 @@ use App\Models\HumanResources\HROutstation;
         </td>
       </tr>
       @endforeach
+      @endif
 
 
 
@@ -167,9 +176,13 @@ use App\Models\HumanResources\HROutstation;
 
 
 
-
-
+      @if ($dailyreport_outstation->isNotEmpty())
       <?php $no = 1; ?>
+      <tr class="top-row">
+        <td colspan="10">
+          <b>OUTSTATION</b>
+        </td>
+      </tr>
       <tr class="top-row">
         <td class="text-center" style="width: 30px;">
           NO
@@ -269,6 +282,8 @@ use App\Models\HumanResources\HROutstation;
         </td>
       </tr>
       @endforeach
+      @endif
+
     </table>
   </div>
   @endif
