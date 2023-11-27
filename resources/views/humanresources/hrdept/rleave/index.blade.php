@@ -16,10 +16,10 @@ use Illuminate\Database\Eloquent\Builder;
 	}
 </style>
 
-<div class="container">
+<div class="container row align-items-start justify-content-center">
 	@include('humanresources.hrdept.navhr')
 	<h4>Replacement Leave&nbsp; <a class="btn btn-sm btn-outline-secondary" href="{{ route('rleave.create') }}"><i class="fa-solid fa-person-walking-arrow-loop-left fa-beat"></i> Add Replacement Leave</a></h4>
-	<div>
+	<div class="col-sm-12 row table-responsive">
 		<table id="replacement" class="table table-hover table-sm align-middle" style="font-size:12px">
 			<thead>
 				<tr>
@@ -89,14 +89,13 @@ use Illuminate\Database\Eloquent\Builder;
 $.fn.dataTable.moment( 'D MMM YYYY' );
 $.fn.dataTable.moment( 'h:mm a' );
 $('#replacement').DataTable({
-	"paging": false,
-	"lengthMenu": [ [10,25,50,-1], [10,25,50,"All"] ],
+	"lengthMenu": [ [100,250,500,-1], [100,250,500,"All"] ],
 	"columnDefs": [
 					{ type: 'date', 'targets': [2] },
 					{ type: 'time', 'targets': [3] },
 	],
 	"order": [ 2, 'desc' ], // sorting the 6th column descending
-	// responsive: true
+	responsive: true
 })
 .on( 'length.dt page.dt order.dt search.dt', function ( e, settings, len ) {
 	$(document).ready(function(){

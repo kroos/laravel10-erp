@@ -178,8 +178,7 @@ foreach ($c as $v) {
 	?>
 					<tr>
 						<td>
-							<a href="{{ route('leave.show', $leav->id) }}" class="btn btn-sm btn-outline-secondary" alt="Print PDF" title="Print PDF" target="_blank"><i class="far fa-file-pdf"></i></a>
-							HR9-{{ str_pad( $leav->leave_no, 5, "0", STR_PAD_LEFT ) }}/{{ $leav->leave_year }}
+							<a href="{{ route('leave.show', $leav->id) }}" alt="Print PDF" title="Print PDF" target="_blank">HR9-{{ str_pad( $leav->leave_no, 5, "0", STR_PAD_LEFT ) }}/{{ $leav->leave_year }}</a>
 						</td>
 	<?php
 	if ( ($leav->leave_type_id == 9) || ($leav->leave_type_id != 9 && $leav->half_type_id == 2) || ($leav->leave_type_id != 9 && $leav->half_type_id == 1) ) {
@@ -263,6 +262,9 @@ foreach ($c as $v) {
 								@endif
 							@else
 								{{ $leav->belongstooptleavestatus->status }}
+								@if($dt === true && ($leav->leave_status_id == 5 || $leav->leave_status_id == 6))
+									<a href="{{ __('route') }}" class="btn btn-sm btn-outline-secondary cancel_btn" id="cancel_btn_{{ $leav->id }}" data-id="{{ $leav->id }}" alt="Cancel" title="Cancel"><i class="fas fa-ban"></i></a>
+								@endif
 							@endif
 						</td>
 					</tr>
