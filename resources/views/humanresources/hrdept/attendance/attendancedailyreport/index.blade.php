@@ -38,7 +38,7 @@ use App\Models\HumanResources\HROutstation;
 
   {!! Form::close() !!}
 
-  
+
   @if ($dailyreport_absent->isNotEmpty() || $dailyreport_late->isNotEmpty() || $dailyreport_outstation->isNotEmpty())
   <div class="row g-3 mb-3">
     <table class="table table-hover table-sm align-middle">
@@ -60,10 +60,10 @@ use App\Models\HumanResources\HROutstation;
         <td class="text-center" style="max-width: 100px;">
           STATUS
         </td>
-        <td class="text-center" style="max-width: 50px;">
+        <td class="text-center" style="max-width: 60px;">
           LOCATION
         </td>
-        <td class="text-center" style="max-width: 100px;">
+        <td class="text-center" style="max-width: 70px;">
           DEPARTMENT
         </td>
         <td class="text-center" style="width: 55px;">
@@ -72,14 +72,14 @@ use App\Models\HumanResources\HROutstation;
         <td class="text-center" style="width: 55px;">
           ID
         </td>
-        <td class="text-center" style="max-width: 150px;">
+        <td class="text-center" style="max-width: 120px;">
           NAME
         </td>
         <td class="text-center" style="max-width: 100%;">
           REASON / REMARK
         </td>
-        <td class="text-center" style="width: 120px;">
-          CONTACT NO
+        <td class="text-center" style="width: 90px;">
+          LEAVE ID
         </td>
       </tr>
 
@@ -89,12 +89,12 @@ use App\Models\HumanResources\HROutstation;
       if ($absent->leave_id != NULL) {
         $leave = HRLeave::join('option_leave_types', 'hr_leaves.leave_type_id', '=', 'option_leave_types.id')
           ->where('hr_leaves.id', '=', $absent->leave_id)
-          ->select('option_leave_types.leave_type_code', 'hr_leaves.reason')
+          ->select('hr_leaves.id as leave_id', 'hr_leaves.leave_no', 'hr_leaves.leave_year', 'option_leave_types.leave_type_code', 'hr_leaves.reason')
           ->first();
 
         $status = $leave->leave_type_code;
         $remark = $leave->reason;
-        $contact = NULL;
+        $leave_number = 'HR9-' . str_pad( $leave->leave_no, 5, "0", STR_PAD_LEFT ) . '/' . $leave->leave_year;
       } else {
 
         if ($absent->attendance_type_id != NULL) {
@@ -105,7 +105,7 @@ use App\Models\HumanResources\HROutstation;
         }
 
         $remark = $absent->remarks;
-        $contact = NULL;
+        $leave_number = NULL;
       }
       ?>
 
@@ -119,10 +119,10 @@ use App\Models\HumanResources\HROutstation;
         <td class="text-truncate text-center" style="max-width: 100px;" title="{{ $status }}">
           {{ $status }}
         </td>
-        <td class="text-truncate text-center" style="max-width: 50px;" title="{{ $absent->code }}">
+        <td class="text-truncate text-center" style="max-width: 60px;" title="{{ $absent->code }}">
           {{ $absent->code }}
         </td>
-        <td class="text-truncate" style="max-width: 100px;" title="{{ $absent->department }}">
+        <td class="text-truncate" style="max-width: 70px;" title="{{ $absent->department }}">
           {{ $absent->department }}
         </td>
         <td class="text-center">
@@ -131,14 +131,18 @@ use App\Models\HumanResources\HROutstation;
         <td class="text-center">
           {{ $absent->username }}
         </td>
-        <td class="text-truncate" style="max-width: 150px;" title="{{ $absent->name }}">
+        <td class="text-truncate" style="max-width: 120px;" title="{{ $absent->name }}">
           {{ $absent->name }}
         </td>
         <td class="text-truncate" style="max-width: 100%;" title="{{ $remark }}">
           {{ $remark }}
         </td>
         <td class="text-center">
-          {{ $contact }}
+          @if ($leave_number != NULL)
+          <a href="{{ route('hrleave.show', $leave->leave_id) }}" target="_blank">
+            {{ $leave_number }}
+          </a>
+          @endif
         </td>
       </tr>
       @endforeach
@@ -193,10 +197,10 @@ use App\Models\HumanResources\HROutstation;
         <td class="text-center" style="max-width: 100px;">
           STATUS
         </td>
-        <td class="text-center" style="max-width: 50px;">
+        <td class="text-center" style="max-width: 60px;">
           LOCATION
         </td>
-        <td class="text-center" style="max-width: 100px;">
+        <td class="text-center" style="max-width: 70px;">
           DEPARTMENT
         </td>
         <td class="text-center" style="width: 55px;">
@@ -205,14 +209,14 @@ use App\Models\HumanResources\HROutstation;
         <td class="text-center" style="width: 55px;">
           ID
         </td>
-        <td class="text-center" style="max-width: 150px;">
+        <td class="text-center" style="max-width: 120px;">
           NAME
         </td>
         <td class="text-center" style="max-width: 100%;">
           REASON / REMARK
         </td>
-        <td class="text-center" style="width: 120px;">
-          CONTACT NO
+        <td class="text-center" style="width: 90px;">
+          LEAVE ID
         </td>
       </tr>
 
@@ -259,10 +263,10 @@ use App\Models\HumanResources\HROutstation;
         <td class="text-truncate text-center" style="max-width: 100px;" title="{{ $status }}">
           {{ $status }}
         </td>
-        <td class="text-truncate text-center" style="max-width: 50px;" title="{{ $outstation->code }}">
+        <td class="text-truncate text-center" style="max-width: 60px;" title="{{ $outstation->code }}">
           {{ $outstation->code }}
         </td>
-        <td class="text-truncate" style="max-width: 100px;" title="{{ $outstation->department }}">
+        <td class="text-truncate" style="max-width: 70px;" title="{{ $outstation->department }}">
           {{ $outstation->department }}
         </td>
         <td class="text-center">
@@ -271,7 +275,7 @@ use App\Models\HumanResources\HROutstation;
         <td class="text-center">
           {{ $outstation->username }}
         </td>
-        <td class="text-truncate" style="max-width: 150px;" title="{{ $outstation->name }}">
+        <td class="text-truncate" style="max-width: 120px;" title="{{ $outstation->name }}">
           {{ $outstation->name }}
         </td>
         <td class="text-truncate" style="max-width: 100%;" title="{{ $remark }}">
