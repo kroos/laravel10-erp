@@ -41,7 +41,7 @@ class OvertimeReportController extends Controller
 	function __construct()
 	{
 		$this->middleware(['auth']);
-		$this->middleware('highMgmtAccess:1|2|4|5,14|21|28|31', ['only' => ['create', 'store', 'index', 'show']]);      // all high management
+		$this->middleware('highMgmtAccess:1|2|4|5,NULL', ['only' => ['create', 'store', 'index', 'show']]);      // all high management
 		$this->middleware('highMgmtAccess:1|5,14', ['only' => ['edit', 'update', 'destroy']]);            // only hod and asst hod HR can access
 	}
 
