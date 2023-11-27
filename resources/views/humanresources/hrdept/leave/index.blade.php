@@ -74,12 +74,13 @@ $deptid = $dept->id;
 $branch = $dept->branch_id;
 $category = $dept->category_id;
 ?>
-<div class="col-sm-12 row">
+<div class="container row align-items-start justify-content-center">
 @include('humanresources.hrdept.navhr')
 	<h4>Leaves</h4>
 	<p>&nbsp;</p>
 	<h5>Upcoming Leaves</h5>
 	@if($upleave)
+	<div class="col-sm-12 table-responsive">
 		<table id="upleave" class="table table-sm table-hover" style="font-size:12px;">
 			<thead>
 				<tr>
@@ -174,30 +175,7 @@ if ($me1) {																				// hod
 							</td>
 							<td>
 								@if($ul->softcopy)
-									<!-- Button trigger modal -->
-									<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#staticBackdrop_{{ $ul->id }}">
-										<i class="bi bi-file-richtext"></i>
-									</button>
-
-									<!-- Modal -->
-									<div class="modal fade" id="staticBackdrop_{{ $ul->id }}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel_{{ $ul->id }}" aria-hidden="true">
-										<div class="modal-dialog">
-											<div class="modal-content">
-												<div class="modal-header">
-													<h1 class="modal-title fs-5" id="staticBackdropLabel_{{ $ul->id }}">Supporting Document</h1>
-													<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-												</div>
-												<div class="modal-body text-center">
-													<div class="col-sm-12 justify-content-center align-items-center">
-														<img src="{{ asset('storage/leaves/'.$ul->softcopy) }}" class="img-fluid" alt="Supporting Document">
-													</div>
-												</div>
-												<div class="modal-footer">
-													<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Close</button>
-												</div>
-											</div>
-										</div>
-									</div>
+									<a href="{{ asset('storage/leaves/'.$ul->softcopy) }}" class="btn btn-sm btn-outline-secondary" target="_blank"><i class="bi bi-file-richtext"></i></a>
 								@else
 									<!-- Button trigger modal -->
 									<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#uploaddoc_{{ $ul->id }}">
@@ -247,6 +225,7 @@ if ($me1) {																				// hod
 				@endforeach
 			</tbody>
 		</table>
+	</div>
 	@else
 	<p>No Upcoming Leave</p>
 	@endif
@@ -254,6 +233,7 @@ if ($me1) {																				// hod
 	<p>&nbsp;</p>
 	<h5>Current Leaves</h5>
 	@if($toleave)
+	<div class="col-sm-12 table-responsive">
 		<table id="toleave" class="table table-sm table-hover" style="font-size:12px;">
 			<thead>
 				<tr>
@@ -350,30 +330,7 @@ if ($me1) {																				// hod
 							</td>
 							<td>
 								@if($ul->softcopy)
-									<!-- Button trigger modal -->
-									<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#staticBackdrop_{{ $ul->id }}">
-										<i class="bi bi-file-richtext"></i>
-									</button>
-
-									<!-- Modal -->
-									<div class="modal fade" id="staticBackdrop_{{ $ul->id }}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel_{{ $ul->id }}" aria-hidden="true">
-										<div class="modal-dialog">
-											<div class="modal-content">
-												<div class="modal-header">
-													<h1 class="modal-title fs-5" id="staticBackdropLabel_{{ $ul->id }}">Supporting Document</h1>
-													<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-												</div>
-												<div class="modal-body text-center">
-													<div class="col-sm-12 justify-content-center align-items-center">
-														<img src="{{ asset('storage/leaves/'.$ul->softcopy) }}" class="img-fluid" alt="Supporting Document">
-													</div>
-												</div>
-												<div class="modal-footer">
-													<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Close</button>
-												</div>
-											</div>
-										</div>
-									</div>
+									<a href="{{ asset('storage/leaves/'.$ul->softcopy) }}" class="btn btn-sm btn-outline-secondary" target="_blank"><i class="bi bi-file-richtext"></i></a>
 								@else
 									<!-- Button trigger modal -->
 									<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#uploaddoc_{{ $ul->id }}">
@@ -423,6 +380,7 @@ if ($me1) {																				// hod
 				@endforeach
 			</tbody>
 		</table>
+	</div>
 	@else
 	<p>No Current Leave</p>
 	@endif
@@ -430,6 +388,7 @@ if ($me1) {																				// hod
 <p>&nbsp;</p>
 	<h5>Past Leaves</h5>
 	@if($paleave)
+	<div class="col-sm-12 table-responsive">
 		<table id="paleave" class="table table-sm table-hover" style="font-size:12px;">
 			<thead>
 				<tr>
@@ -526,30 +485,7 @@ if ($me1) {																				// hod
 							</td>
 							<td>
 								@if($ul->softcopy)
-									<!-- Button trigger modal -->
-									<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#staticBackdrop_{{ $ul->id }}">
-										<i class="bi bi-file-richtext"></i>
-									</button>
-
-									<!-- Modal -->
-									<div class="modal fade" id="staticBackdrop_{{ $ul->id }}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel_{{ $ul->id }}" aria-hidden="true">
-										<div class="modal-dialog">
-											<div class="modal-content">
-												<div class="modal-header">
-													<h1 class="modal-title fs-5" id="staticBackdropLabel_{{ $ul->id }}">Supporting Document</h1>
-													<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-												</div>
-												<div class="modal-body text-center">
-													<div class="col-sm-12 justify-content-center align-items-center">
-														<img src="{{ asset('storage/leaves/'.$ul->softcopy) }}" class="img-fluid" alt="Supporting Document">
-													</div>
-												</div>
-												<div class="modal-footer">
-													<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Close</button>
-												</div>
-											</div>
-										</div>
-									</div>
+									<a href="{{ asset('storage/leaves/'.$ul->softcopy) }}" class="btn btn-sm btn-outline-secondary" target="_blank"><i class="bi bi-file-richtext"></i></a>
 								@else
 									<!-- Button trigger modal -->
 									<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#uploaddoc_{{ $ul->id }}">
@@ -600,11 +536,14 @@ if ($me1) {																				// hod
 			</tbody>
 		</table>
 	@else
+	</div>
 	<p>No Past Leave</p>
 	@endif
 
 	<p>&nbsp;</p>
-	<div id="calendar"></div>
+	<div class="col-sm-12">
+		<div id="calendar"></div>
+	</div>
 </div>
 @endsection
 

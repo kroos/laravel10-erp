@@ -45,7 +45,9 @@ class ReplacementLeaveController extends Controller
 	public function index(): View
 	{
 		Paginator::useBootstrap();
-		$replacements = HRLeaveReplacement::orderBy('id', 'desc')->paginate(30);
+		$rep = HRLeaveReplacement::whereYear('date_start', now()->format('Y'))->orderBy('id', 'desc')->get()->count();
+		// dd($rep);
+		$replacements = HRLeaveReplacement::whereYear('date_start', now()->format('Y'))->orderBy('id', 'desc')->paginate($rep);
 		return view('humanresources.hrdept.rleave.index', compact('replacements'));
 	}
 

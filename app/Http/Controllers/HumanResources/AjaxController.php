@@ -346,7 +346,7 @@ class AjaxController extends Controller
 				]);
 			} else {
 				Session::flash('flash_message', 'Verification Code was incorrect');
-				return redirect()->route('leave.index')->withInput();
+				return redirect()->back()->withInput();
 			}
 		} elseif($request->leave_status_id == 4) {								// leave rejected
 			$saly = $sal->leave_type_id;										// need to find out leave type
@@ -426,7 +426,7 @@ class AjaxController extends Controller
 			}
 		}
 		Session::flash('flash_message', 'Successfully make an approval for user.');
-		return redirect()->route('leave.index');
+		return redirect()->back();
 	}
 
 	public function hodstatus(Request $request)
@@ -469,7 +469,7 @@ class AjaxController extends Controller
 				]);
 			} else {
 				Session::flash('flash_message', 'Verification Code was incorrect');
-				return redirect()->route('leave.index')->withInput();
+				return redirect()->back()->withInput();
 			}
 		} elseif($request->leave_status_id == 4) {								// leave rejected
 			$saly = $sal->leave_type_id;										// need to find out leave type
@@ -549,7 +549,7 @@ class AjaxController extends Controller
 			}
 		}
 		Session::flash('flash_message', 'Successfully make an approval for user.');
-		return redirect()->route('leave.index');
+		return redirect()->back();
 	}
 
 	public function dirstatus(Request $request)
@@ -592,7 +592,7 @@ class AjaxController extends Controller
 				]);
 			} else {
 				Session::flash('flash_message', 'Verification Code was incorrect');
-				return redirect()->route('leave.index')->withInput();
+				return redirect()->back()->withInput();
 			}
 		} elseif($request->leave_status_id == 4) {								// leave rejected
 			$saly = $sal->leave_type_id;										// need to find out leave type
@@ -723,7 +723,7 @@ class AjaxController extends Controller
 			}
 		}
 		Session::flash('flash_message', 'Successfully make an approval for user.');
-		return redirect()->route('leave.index');
+		return redirect()->back();
 	}
 
 	public function hrstatus(Request $request)
@@ -766,7 +766,7 @@ class AjaxController extends Controller
 				]);
 			} else {
 				Session::flash('flash_message', 'Verification Code was incorrect');
-				return redirect()->route('leave.index')->withInput();
+				return redirect()->back()->withInput();
 			}
 		} elseif($request->leave_status_id == 4) {								// leave rejected
 			$saly = $sal->leave_type_id;										// need to find out leave type
@@ -849,7 +849,7 @@ class AjaxController extends Controller
 
 		}
 		Session::flash('flash_message', 'Successfully make an approval for user.');
-		return redirect()->route('leave.index');
+		return redirect()->back();
 	}
 
 	public function deactivatestaff(Request $request, Staff $staff): JsonResponse
