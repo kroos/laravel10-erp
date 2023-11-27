@@ -91,6 +91,7 @@ class AttendanceDailyReportController extends Controller
       $selected_date = $current_time->format('Y-m-d');
     }
 
+    
     $saturday = HRRestdayCalendar::where('saturday_date', '=', $selected_date)->select('restday_group_id');
 
     if ($saturday->isNotEmpty()) {

@@ -38,6 +38,7 @@ use App\Models\HumanResources\HROutstation;
 
   {!! Form::close() !!}
 
+  
   @if ($dailyreport_absent->isNotEmpty() || $dailyreport_late->isNotEmpty() || $dailyreport_outstation->isNotEmpty())
   <div class="row g-3 mb-3">
     <table class="table table-hover table-sm align-middle">
