@@ -41,7 +41,7 @@ class LeaveController extends Controller
 	function __construct()
 	{
 		$this->middleware(['auth']);
-		$this->middleware('highMgmtAccess:1|2|4|5,1|5|6|12||14|21|23|24|28|31', ['only' => ['index', 'show']]);		// all high management
+		$this->middleware('highMgmtAccess:1|2|4|5,NULL', ['only' => ['index', 'show']]);		// all high management
 		$this->middleware('highMgmtAccess:1|5,14', ['only' => ['create', 'store', 'edit', 'update', 'destroy']]);	// only hod and asst hod HR can access
 	}
 
