@@ -212,10 +212,10 @@ $hr_remark = \App\Models\HumanResources\HRAttendance::where('hr_attendances.staf
 			</div>
 		</div>
 
-		@if ($hr_remark->hr_remarks != NULL && $hr_remark->hr_remarks != '')
+		@if ($hr_remark?->hr_remarks != NULL && $hr_remark?->hr_remarks != '')
 		<div class="table">
 			<div class="table-row">
-				<div class="table-cell-top text-wrap" style="width: 100%;">HR REMARK : {{ @$hr_remark->hr_remarks }}</div>
+				<div class="table-cell-top text-wrap" style="width: 100%;">HR REMARK : {{ @$hr_remark?->hr_remarks }}</div>
 			</div>
 		</div>
 		@endif
