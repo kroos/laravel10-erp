@@ -268,44 +268,43 @@ if ($backup) {
 		</div>
 	</div>
 
-		<p>&nbsp;</p>
+	<p>&nbsp;</p>
 
-		<div class="col-sm-12 row justify-content-center align-items-start">
-			{{ Form::model($hrleave, ['route' => ['hrleave.update', $hrleave], 'method' => 'PATCH', 'id' => 'form', 'autocomplete' => 'off', 'files' => true, 'data-toggle' => 'validator']) }}
-			<h5>Edit Leave Application</h5>
+	<div class="col-sm-12 row justify-content-center align-items-start">
+		{{ Form::model($hrleave, ['route' => ['hrleave.update', $hrleave], 'method' => 'PATCH', 'id' => 'form', 'autocomplete' => 'off', 'files' => true, 'data-toggle' => 'validator']) }}
+		<h5>Edit Leave Application</h5>
 
-			<div class="form-group row {{ $errors->has('leave_id') ? 'has-error' : '' }}">
-				{{ Form::label( 'leave_type_id', 'Leave Type : ', ['class' => 'col-sm-4 col-form-label'] ) }}
-				<div class="col-sm-8">
-					{{ Form::select('leave_type_id', \App\Models\HumanResources\OptLeaveType::pluck('leave_type', 'id'), @$value, ['id' => 'leave_id', 'class' => 'form-select form-select-sm']) }}
-				</div>
+		<div class="form-group row {{ $errors->has('leave_id') ? 'has-error' : '' }}">
+			{{ Form::label( 'leave_type_id', 'Leave Type : ', ['class' => 'col-sm-4 col-form-label'] ) }}
+			<div class="col-sm-8">
+				{{ Form::select('leave_type_id', \App\Models\HumanResources\OptLeaveType::pluck('leave_type', 'id'), @$value, ['id' => 'leave_id', 'class' => 'form-select form-select-sm']) }}
 			</div>
-
-			<div class="form-group row m-3 {{ $errors->has('reason') ? 'has-error' : '' }}">
-				{{ Form::label( 'reason', 'Reason : ', ['class' => 'col-sm-4 col-form-label'] ) }}
-				<div class="col-sm-8">
-					{{ Form::textarea('reason', @$value, ['class' => 'form-control form-control-sm', 'id' => 'reason', 'placeholder' => 'Reason', 'autocomplete' => 'off']) }}
-				</div>
-			</div>
-
-			<div id="wrapper">
-			</div>
-
-			<div class="form-group row m-3 {{ $errors->has('amend_note') ? 'has-error' : '' }}">
-				{{ Form::label( 'amend_note', 'Amend Note : ', ['class' => 'col-sm-4 col-form-label'] ) }}
-				<div class="col-sm-8">
-					{{ Form::textarea('amend_note', @$value, ['class' => 'form-control ', 'id' => 'amend_note', 'placeholder' => 'Amend Note', 'autocomplete' => 'off']) }}
-				</div>
-			</div>
-
-			<div class="form-group row m-3">
-				<div class="col-sm-8 offset-sm-4">
-					{!! Form::button('Submit Application', ['class' => 'btn btn-sm btn-outline-secondary', 'type' => 'submit']) !!}
-				</div>
-			</div>
-			{{ Form::close() }}
 		</div>
 
+		<div class="form-group row {{ $errors->has('reason') ? 'has-error' : '' }}">
+			{{ Form::label( 'reason', 'Reason : ', ['class' => 'col-sm-4 col-form-label'] ) }}
+			<div class="col-sm-8">
+				{{ Form::textarea('reason', @$value, ['class' => 'form-control form-control-sm', 'id' => 'reason', 'placeholder' => 'Reason', 'autocomplete' => 'off']) }}
+			</div>
+		</div>
+
+		<div id="wrapper">
+		</div>
+
+		<div class="form-group row {{ $errors->has('amend_note') ? 'has-error' : '' }}">
+			{{ Form::label( 'amend_note', 'Amend Note : ', ['class' => 'col-sm-4 col-form-label'] ) }}
+			<div class="col-sm-8">
+				{{ Form::textarea('amend_note', @$value, ['class' => 'form-control ', 'id' => 'amend_note', 'placeholder' => 'Amend Note', 'autocomplete' => 'off']) }}
+			</div>
+		</div>
+
+		<div class="form-group row">
+			<div class="col-sm-8 offset-sm-4">
+				{!! Form::button('Submit Application', ['class' => 'btn btn-sm btn-outline-secondary', 'type' => 'submit']) !!}
+			</div>
+		</div>
+		{{ Form::close() }}
+	</div>
 </div>
 @endsection
 
@@ -439,10 +438,10 @@ $(document).ready(function(){
 					'{{ Form::label('to', 'Time : ', ['class' => 'col-sm-4 col-form-label']) }}' +
 					'<div class="col-sm-8">' +
 							'<div class="form-row time">' +
-								'<div class="col-sm-4 m-2" style="position: relative">' +
+								'<div class="col-sm-4" style="position: relative">' +
 									'{{ Form::text('time_start', Carbon::parse($hrleave->date_time_start)->format('H:i:s'), ['class' => 'form-control form-control-sm', 'id' => 'start', 'placeholder' => 'From : ', 'autocomplete' => 'off']) }}' +
 								'</div>' +
-								'<div class="col-sm-4 m-2" style="position: relative">' +
+								'<div class="col-sm-4" style="position: relative">' +
 									'{{ Form::text('time_end', Carbon::parse($hrleave->date_time_end)->format('H:i:s'), ['class' => 'form-control form-control-sm', 'id' => 'end', 'placeholder' => 'To : ', 'autocomplete' => 'off']) }}' +
 								'</div>' +
 							'</div>' +
@@ -472,7 +471,6 @@ $(document).ready(function(){
 						'<label for="suppdoc" class="form-check-label p-1 bg-warning text-danger rounded">Please ensure you will submit <strong>Supporting Document</strong> within a period of  <strong>3 Days</strong> upon return.</label>' +
 					'</div>' +
 				'</div>' +
-
 			'</div>'
 
 		);
@@ -506,13 +504,13 @@ $(document).ready(function(){
 
 		$('#wrapper').append(
 			'<div id="remove">' +
-				'<div class="form-group row m-2 {{ $errors->has('date_time_start') ? 'has-error' : '' }}">' +
+				'<div class="form-group row {{ $errors->has('date_time_start') ? 'has-error' : '' }}">' +
 					'{{ Form::label('from', 'From : ', ['class' => 'col-sm-4 col-form-label']) }}' +
 					'<div class="col-sm-8 datetime" style="position: relative">' +
 						'{{ Form::text('date_time_start', Carbon::parse($hrleave->date_time_start)->format('Y-m-d'), ['class' => 'form-control form-control-sm', 'id' => 'from', 'placeholder' => 'From : ', 'autocomplete' => 'off']) }}' +
 					'</div>' +
 				'</div>' +
-				'<div class="form-group row m-2 {{ $errors->has('date_time_end') ? 'has-error' : '' }}">' +
+				'<div class="form-group row {{ $errors->has('date_time_end') ? 'has-error' : '' }}">' +
 					'{{ Form::label('to', 'To : ', ['class' => 'col-sm-4 col-form-label']) }}' +
 					'<div class="col-sm-8 datetime" style="position: relative">' +
 						'{{ Form::text('date_time_end', Carbon::parse($hrleave->date_time_end)->format('Y-m-d'), ['class' => 'form-control form-control-sm', 'id' => 'to', 'placeholder' => 'To : ', 'autocomplete' => 'off']) }}' +
@@ -536,7 +534,6 @@ $(document).ready(function(){
 								'<div class="form-check form-check-inline removetest">' +
 									'<input type="radio" name="half_type_id" value="1/' + obj.time_start_am + '/' + obj.time_end_am + '" id="am"  {{ ($hrleave->half_type_id == 1)?'checked=checked':NULL }}>' +
 									'<label for="am" class="form-check-label m-1">' + moment(obj.time_start_am, 'HH:mm:ss').format('h:mm a') + ' to ' + moment(obj.time_end_am, 'HH:mm:ss').format('h:mm a') + '</label> ' +
-
 									'<input type="radio" name="half_type_id" value="2/' + obj.time_start_pm + '/' + obj.time_end_pm + '" id="pm"  {{ ($hrleave->half_type_id == 2)?'checked=checked':NULL }}>' +
 									'<label for="pm" class="form-check-label m-1">' + moment(obj.time_start_pm, 'HH:mm:ss').format('h:mm a') + ' to ' + moment(obj.time_end_pm, 'HH:mm:ss').format('h:mm a') + '</label> ' +
 								'</div>' +
@@ -546,20 +543,20 @@ $(document).ready(function(){
 
 				'</div>' +
 				'@if( $userneedbackup == 1 )' +
-				'<div class="form-group row m-2 {{ $errors->has('staff_id') ? 'has-error' : '' }}">' +
+				'<div class="form-group row {{ $errors->has('staff_id') ? 'has-error' : '' }}">' +
 					'{{ Form::label('backupperson', 'Replacement : ', ['class' => 'col-sm-4 col-form-label']) }}' +
 					'<div class="col-sm-8 backup">' +
 						'{{ Form::select('staff_id', Staff::where('active', 1)->pluck('name', 'id'), $hrleave->hasmanyleaveapprovalbackup()->first()?->staff_id??NULL, ['id' => 'backupperson', 'class' => 'form-select form-select-sm', 'placeholder' => 'Please Choose']) }}' +
 					'</div>' +
 				'</div>' +
 				'@endif' +
-				'<div class="form-group row m-2 {{ $errors->has('document') ? 'has-error' : '' }}">' +
+				'<div class="form-group row {{ $errors->has('document') ? 'has-error' : '' }}">' +
 					'{{ Form::label( 'doc', 'Upload Supporting Document : ', ['class' => 'col-sm-4 col-form-label'] ) }}' +
 					'<div class="col-sm-8 supportdoc">' +
 						'{{ Form::file( 'document', ['class' => 'form-control form-control-file', 'id' => 'doc', 'placeholder' => 'Supporting Document']) }}' +
 					'</div>' +
 				'</div>' +
-				'<div class="form-group row m-2 {{ $errors->has('documentsupport') ? 'has-error' : '' }}">' +
+				'<div class="form-group row {{ $errors->has('documentsupport') ? 'has-error' : '' }}">' +
 					'<div class="offset-sm-4 col-sm-8 form-check suppdoc">' +
 						'{{ Form::checkbox('documentsupport', 1, @$value, ['class' => 'form-check-input ', 'id' => 'suppdoc']) }}' +
 						'<label for="suppdoc" class="form-check-label p-1 bg-warning text-danger rounded">Please ensure you will submit <strong>Supporting Documents</strong> within <strong>3 Days</strong> after date leave.</label>' +
@@ -574,8 +571,6 @@ $(document).ready(function(){
 						'<div class="form-check form-check-inline removetest">' +
 							'<input type="radio" name="half_type_id" value="1/' + obj.time_start_am + '/' + obj.time_end_am + '" id="am"  {{ ($hrleave->half_type_id == 1)?'checked=checked':NULL }}>' +
 							'<label for="am" class="form-check-label m-1">' + moment(obj.time_start_am, 'HH:mm:ss').format('h:mm a') + ' to ' + moment(obj.time_end_am, 'HH:mm:ss').format('h:mm a') + '</label> ' +
-						'</div>' +
-						'<div class="form-check form-check-inline removetest">' +
 							'<input type="radio" name="half_type_id" value="2/' + obj.time_start_pm + '/' + obj.time_end_pm + '" id="pm"  {{ ($hrleave->half_type_id == 2)?'checked=checked':NULL }}>' +
 							'<label for="pm" class="form-check-label m-1">' + moment(obj.time_start_pm, 'HH:mm:ss').format('h:mm a') + ' to ' + moment(obj.time_end_pm, 'HH:mm:ss').format('h:mm a') + '</label> ' +
 						'</div>'
@@ -722,7 +717,6 @@ if(obj.time_start_pm == itime_start) {
 								'</div>' +
 							'</div>' +
 							'<div class="form-group col-sm-8 offset-sm-4 {{ $errors->has('half_type_id') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
-
 							'</div>'
 					);
 					$('#form').bootstrapValidator('addField', $('.time').find('[name="time_start"]'));
@@ -952,26 +946,22 @@ $('#leave_id').on('change', function() {
 			$('#wrapper').append(
 				'<div id="remove">' +
 					<!-- annual leave -->
-
 					'<div class="form-group row {{ $errors->has('date_time_start') ? 'has-error' : '' }}">' +
 						'{{ Form::label('from', 'From : ', ['class' => 'col-sm-4 col-form-label']) }}' +
 						'<div class="col-sm-8 datetime" style="position: relative">' +
 							'{{ Form::text('date_time_start', @$value, ['class' => 'form-control form-control-sm', 'id' => 'from', 'placeholder' => 'From : ', 'autocomplete' => 'off']) }}' +
 						'</div>' +
 					'</div>' +
-
 					'<div class="form-group row {{ $errors->has('date_time_end') ? 'has-error' : '' }}">' +
 						'{{ Form::label('to', 'To : ', ['class' => 'col-sm-4 col-form-label']) }}' +
 						'<div class="col-sm-8 datetime" style="position: relative">' +
 							'{{ Form::text('date_time_end', @$value, ['class' => 'form-control form-control-sm', 'id' => 'to', 'placeholder' => 'To : ', 'autocomplete' => 'off']) }}' +
 						'</div>' +
 					'</div>' +
-
 					'<div class="form-group row {{ $errors->has('leave_cat') ? 'has-error' : '' }}" id="wrapperday">' +
 						'<div class="form-group col-sm-8 offset-sm-4 {{ $errors->has('half_type_id') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
 						'</div>' +
 					'</div>' +
-
 					@if( $userneedbackup == 1 )
 					'<div class="form-group row {{ $errors->has('staff_id') ? 'has-error' : '' }}">' +
 						'{{ Form::label('backupperson', 'Replacement : ', ['class' => 'col-sm-4 col-form-label']) }}' +
@@ -980,47 +970,40 @@ $('#leave_id').on('change', function() {
 						'</div>' +
 					'</div>' +
 					@endif
-
 					'<div class="form-group row {{ $errors->has('document') ? 'has-error' : '' }}">' +
 						'{{ Form::label( 'doc', 'Upload Supporting Document : ', ['class' => 'col-sm-4 col-form-label'] ) }}' +
 						'<div class="col-sm-8 supportdoc">' +
 							'{{ Form::file( 'document', ['class' => 'form-control form-control-file', 'id' => 'doc', 'placeholder' => 'Supporting Document']) }}' +
 						'</div>' +
 					'</div>' +
-
 					'<div class="form-group row {{ $errors->has('documentsupport') ? 'has-error' : '' }}">' +
 						'<div class="offset-sm-4 col-sm-8 form-check suppdoc">' +
 							'{{ Form::checkbox('documentsupport', 1, @$value, ['class' => 'form-check-input ', 'id' => 'suppdoc']) }}' +
 							'<label for="suppdoc" class="form-check-label p-1 bg-warning text-danger rounded">Please ensure you will submit <strong>Supporting Documents</strong> within <strong>3 Days</strong> after date leave.</label>' +
 						'</div>' +
 					'</div>' +
-
 				'</div>'
 			);
 		} else {
 			$('#wrapper').append(
 				'<div id="remove">' +
 					<!-- annual leave -->
-
 					'<div class="form-group row {{ $errors->has('date_time_start') ? 'has-error' : '' }}">' +
 						'{{ Form::label('from', 'From : ', ['class' => 'col-sm-4 col-form-label']) }}' +
 						'<div class="col-sm-8 datetime" style="position: relative">' +
 							'{{ Form::text('date_time_start', @$value, ['class' => 'form-control form-control-sm', 'id' => 'from', 'placeholder' => 'From : ', 'autocomplete' => 'off']) }}' +
 						'</div>' +
 					'</div>' +
-
 					'<div class="form-group row {{ $errors->has('date_time_end') ? 'has-error' : '' }}">' +
 						'{{ Form::label('to', 'To : ', ['class' => 'col-sm-4 col-form-label']) }}' +
 						'<div class="col-sm-8 datetime" style="position: relative">' +
 							'{{ Form::text('date_time_end', @$value, ['class' => 'form-control form-control-sm', 'id' => 'to', 'placeholder' => 'To : ', 'autocomplete' => 'off']) }}' +
 						'</div>' +
 					'</div>' +
-
 					'<div class="form-group row {{ $errors->has('leave_cat') ? 'has-error' : '' }}" id="wrapperday">' +
 						'<div class="form-group col-sm-8 offset-sm-4 {{ $errors->has('half_type_id') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
 						'</div>' +
 					'</div>' +
-
 					@if( $userneedbackup == 1 )
 					'<div class="form-group row {{ $errors->has('staff_id') ? 'has-error' : '' }}">' +
 						'{{ Form::label('backupperson', 'Replacement : ', ['class' => 'col-sm-4 col-form-label']) }}' +
@@ -1120,7 +1103,6 @@ if(d === true) {
 								'</div>' +
 							'</div>' +
 							'<div class="form-group col-sm-8 offset-sm-4 {{ $errors->has('half_type_id') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
-
 							'</div>'
 					);
 					$('#form').bootstrapValidator('addField', $('.time').find('[name="time_start"]'));
@@ -1251,7 +1233,6 @@ if(d === true) {
 								'</div>' +
 							'</div>' +
 							'<div class="form-group col-sm-8 offset-sm-4 {{ $errors->has('half_type_id') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
-
 							'</div>'
 					);
 					$('#form').bootstrapValidator('addField', $('.time').find('[name="time_start"]'));
@@ -1402,22 +1383,19 @@ if(obj.time_start_pm == itime_start) {
 						'{{ Form::text('date_time_start', @$value, ['class' => 'form-control form-control-sm', 'id' => 'from', 'placeholder' => 'From : ', 'autocomplete' => 'off']) }}' +
 					'</div>' +
 				'</div>' +
-
 				'<div class="form-group row {{ $errors->has('date_time_end') ? 'has-error' : '' }}">' +
 					'{{ Form::label('to', 'To : ', ['class' => 'col-sm-4 col-form-label']) }}' +
 					'<div class="col-sm-8 datetime" style="position: relative">' +
 						'{{ Form::text('date_time_end', @$value, ['class' => 'form-control form-control-sm', 'id' => 'to', 'placeholder' => 'To : ', 'autocomplete' => 'off']) }}' +
 					'</div>' +
 				'</div>' +
-
 				@if($setHalfDayMC == 1)
 				'<div class="form-group row {{ $errors->has('leave_cat') ? 'has-error' : '' }}" id="wrapperday">' +
 					'<div class="form-group col-sm-8 offset-sm-4 {{ $errors->has('half_type_id') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
 					'</div>' +
 				'</div>' +
 				@endif
-
-				@if( $userneedbackup == 1 )
+				@if( $userneedbackup == 99 )
 				'<div id="backupwrapper">' +
 					'<div class="form-group row {{ $errors->has('staff_id') ? 'has-error' : '' }}" id="backupremove">' +
 						'{{ Form::label('backupperson', 'Replacement : ', ['class' => 'col-sm-4 col-form-label']) }}' +
@@ -1427,7 +1405,6 @@ if(obj.time_start_pm == itime_start) {
 					'</div>' +
 				'</div>' +
 				@endif
-
 				'<div class="form-group row {{ $errors->has('document') ? 'has-error' : '' }}">' +
 					'{{ Form::label( 'doc', 'Upload Supporting Document : ', ['class' => 'col-sm-4 col-form-label'] ) }}' +
 					'<div class="col-sm-8 supportdoc">' +
@@ -1530,7 +1507,6 @@ if(d === true) {
 								'</div>' +
 							'</div>' +
 							'<div class="form-group col-sm-8 offset-sm-4 {{ $errors->has('half_type_id') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
-
 							'</div>'
 					);
 					$('#form').bootstrapValidator('addField', $('.time').find('[name="time_start"]'));
@@ -1598,7 +1574,6 @@ if(obj.time_start_pm == itime_start) {
 								'</div>' +
 							'</div>' +
 							'<div class="form-group col-sm-8 offset-sm-4 {{ $errors->has('half_type_id') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
-
 							'</div>'
 					);
 					$('#form').bootstrapValidator('addField', $('.time').find('[name="time_start"]'));
@@ -1828,7 +1803,6 @@ $oi = $hrleave->belongstostaff->hasmanyleavereplacement()->where('leave_balance'
 						'</select>' +
 					'</div>' +
 				'</div>' +
-
 				'<div class="form-group row {{ $errors->has('date_time_start') ? 'has-error' : '' }}">' +
 					'{{ Form::label('from', 'From : ', ['class' => 'col-sm-4 col-form-label']) }}' +
 					'<div class="col-sm-8 datetime" style="position: relative">' +
@@ -1841,12 +1815,10 @@ $oi = $hrleave->belongstostaff->hasmanyleavereplacement()->where('leave_balance'
 						'{{ Form::text('date_time_end', @$value, ['class' => 'form-control form-control-sm', 'id' => 'to', 'placeholder' => 'To : ', 'autocomplete' => 'off']) }}' +
 					'</div>' +
 				'</div>' +
-
 				'<div class="form-group row {{ $errors->has('leave_cat') ? 'has-error' : '' }}" id="wrapperday">' +
 					'<div class="form-group col-sm-8 offset-sm-4 {{ $errors->has('half_type_id') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
 					'</div>' +
 				'</div>' +
-
 				@if( $userneedbackup == 1 )
 				'<div id="backupwrapper">' +
 					'<div class="form-group row {{ $errors->has('staff_id') ? 'has-error' : '' }}" id="backupremove">' +
@@ -1857,7 +1829,6 @@ $oi = $hrleave->belongstostaff->hasmanyleavereplacement()->where('leave_balance'
 					'</div>' +
 				'</div>' +
 				@endif
-
 			'</div>'
 		);
 
@@ -1946,18 +1917,17 @@ $.each(objtime, function() {
 // console.log(d);
 if(d === true) {
 					$('#wrapperday').append(
-							'{{ Form::label('leave_cat', 'Leave Category : ', ['class' => 'col-sm-4 col-form-label removehalfleave']) }}' +
-							'<div class="col-sm-8 removehalfleave " id="halfleave">' +
-								'<div class="form-check form-check-inline removehalfleave" id="removeleavehalf">' +
-									'<input type="radio" name="leave_cat" value="1" id="radio1" class="removehalfleave" disabled="disabled">' +
-									'{{ Form::label('radio1', 'Full Day Off', ['class' => 'form-check-label m-1 removehalfleave']) }}' +
-									'<input type="radio" name="leave_cat" value="2" id="radio2" class="removehalfleave" checked="checked">' +
-									'{{ Form::label('radio2', 'Half Day Off', ['class' => 'form-check-label m-1 removehalfleave']) }}' +
-								'</div>' +
+						'{{ Form::label('leave_cat', 'Leave Category : ', ['class' => 'col-sm-4 col-form-label removehalfleave']) }}' +
+						'<div class="col-sm-8 removehalfleave " id="halfleave">' +
+							'<div class="form-check form-check-inline removehalfleave" id="removeleavehalf">' +
+								'<input type="radio" name="leave_cat" value="1" id="radio1" class="removehalfleave" disabled="disabled">' +
+								'{{ Form::label('radio1', 'Full Day Off', ['class' => 'form-check-label m-1 removehalfleave']) }}' +
+								'<input type="radio" name="leave_cat" value="2" id="radio2" class="removehalfleave" checked="checked">' +
+								'{{ Form::label('radio2', 'Half Day Off', ['class' => 'form-check-label m-1 removehalfleave']) }}' +
 							'</div>' +
-							'<div class="form-group col-auto offset-sm-2 {{ $errors->has('half_type_id') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
-
-							'</div>'
+						'</div>' +
+						'<div class="form-group col-auto offset-sm-2 {{ $errors->has('half_type_id') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
+						'</div>'
 					);
 					$('#form').bootstrapValidator('addField', $('.time').find('[name="time_start"]'));
 					$('#form').bootstrapValidator('addField', $('.time').find('[name="time_end"]'));
@@ -2024,7 +1994,6 @@ if(obj.time_start_pm == itime_start) {
 								'</div>' +
 							'</div>' +
 							'<div class="form-group col-sm-8 offset-sm-4 {{ $errors->has('half_type_id') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
-
 							'</div>'
 					);
 					$('#form').bootstrapValidator('addField', $('.time').find('[name="time_start"]'));
@@ -2088,7 +2057,6 @@ if(d === true) {
 								'</div>' +
 							'</div>' +
 							'<div class="form-group col-sm-8 offset-sm-4 {{ $errors->has('half_type_id') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
-
 							'</div>'
 					);
 					$('#form').bootstrapValidator('addField', $('.time').find('[name="time_start"]'));
@@ -2156,7 +2124,6 @@ if(obj.time_start_pm == itime_start) {
 								'</div>' +
 							'</div>' +
 							'<div class="form-group col-sm-8 offset-sm-4 {{ $errors->has('half_type_id') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
-
 							'</div>'
 					);
 					$('#form').bootstrapValidator('addField', $('.time').find('[name="time_start"]'));
@@ -2420,21 +2387,18 @@ if(obj.time_start_pm == itime_start) {
 		$('#wrapper').append(
 			'<div id="remove">' +
 				<!-- emergency leave -->
-
 				'<div class="form-group row {{ $errors->has('date_time_start') ? 'has-error' : '' }}">' +
 					'{{ Form::label('from', 'From : ', ['class' => 'col-sm-4 col-form-label']) }}' +
 					'<div class="col-sm-8 datetime" style="position: relative">' +
 						'{{ Form::text('date_time_start', @$value, ['class' => 'form-control form-control-sm', 'id' => 'from', 'placeholder' => 'From : ', 'autocomplete' => 'off']) }}' +
 					'</div>' +
 				'</div>' +
-
 				'<div class="form-group row {{ $errors->has('date_time_end') ? 'has-error' : '' }}">' +
 					'{{ Form::label('to', 'To : ', ['class' => 'col-sm-4 col-form-label']) }}' +
 					'<div class="col-sm-8 datetime" style="position: relative">' +
 						'{{ Form::text('date_time_end', @$value, ['class' => 'form-control form-control-sm', 'id' => 'to', 'placeholder' => 'To : ', 'autocomplete' => 'off']) }}' +
 					'</div>' +
 				'</div>' +
-
 				'<div class="form-group row {{ $errors->has('leave_cat') ? 'has-error' : '' }}" id="wrapperday">' +
 					'{{ Form::label('leave_cat', 'Leave Category : ', ['class' => 'col-sm-4 col-form-label removehalfleave']) }}' +
 					'<div class="col-sm-8 removehalfleave" id="halfleave">' +
@@ -2442,7 +2406,6 @@ if(obj.time_start_pm == itime_start) {
 					'<div class="form-group col-sm-8 offset-sm-4 {{ $errors->has('half_type_id') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
 					'</div>' +
 				'</div>' +
-
 				@if( $userneedbackup == 1 )
 				'<div id="backupwrapper">' +
 					'<div class="form-group row {{ $errors->has('staff_id') ? 'has-error' : '' }}" id="backupremove">' +
@@ -2453,14 +2416,12 @@ if(obj.time_start_pm == itime_start) {
 					'</div>' +
 				'</div>' +
 				@endif
-
 				'<div class="form-group row {{ $errors->has('document') ? 'has-error' : '' }}">' +
 					'{{ Form::label( 'doc', 'Upload Supporting Document : ', ['class' => 'col-sm-4 col-form-label'] ) }}' +
 					'<div class="col-sm-8 supportdoc">' +
 						'{{ Form::file( 'document', ['class' => 'form-control form-control-file', 'id' => 'doc', 'placeholder' => 'Supporting Document']) }}' +
 					'</div>' +
 				'</div>' +
-
 				'<div class="form-group row {{ $errors->has('akuan') ? 'has-error' : '' }}">' +
 					'{{ Form::label('suppdoc', 'Supporting Document : ', ['class' => 'col-sm-4 col-form-label']) }}' +
 					'<div class="col-sm-8 form-check suppdoc">' +
@@ -2560,7 +2521,6 @@ if(d === true) {
 								'</div>' +
 							'</div>' +
 							'<div class="form-group col-sm-8 offset-sm-4 {{ $errors->has('half_type_id') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
-
 							'</div>'
 					);
 					$('#form').bootstrapValidator('addField', $('.time').find('[name="time_start"]'));
@@ -2783,9 +2743,9 @@ if(obj.time_start_pm == itime_start) {
 					$('#wrappertest').append(
 						'<div class="form-check form-check-inline removetest">' +
 							'<input type="radio" name="half_type_id" value="1/' + obj.time_start_am + '/' + obj.time_end_am + '" id="am" ' + toggle_time_start_am + ' ' + checkedam + '>' +
-								'<label for="am" class="form-check-label m-1">' + moment(obj.time_start_am, 'HH:mm:ss').format('h:mm a') + ' to ' + moment(obj.time_end_am, 'HH:mm:ss').format('h:mm a') + '</label> ' +
+							'<label for="am" class="form-check-label m-1">' + moment(obj.time_start_am, 'HH:mm:ss').format('h:mm a') + ' to ' + moment(obj.time_end_am, 'HH:mm:ss').format('h:mm a') + '</label> ' +
 							'<input type="radio" name="half_type_id" value="2/' + obj.time_start_pm + '/' + obj.time_end_pm + '" id="pm" ' + toggle_time_start_pm + ' ' + checkedpm + '>' +
-								'<label for="pm" class="form-check-label m-1">' + moment(obj.time_start_pm, 'HH:mm:ss').format('h:mm a') + ' to ' + moment(obj.time_end_pm, 'HH:mm:ss').format('h:mm a') + '</label> ' +
+							'<label for="pm" class="form-check-label m-1">' + moment(obj.time_start_pm, 'HH:mm:ss').format('h:mm a') + ' to ' + moment(obj.time_end_pm, 'HH:mm:ss').format('h:mm a') + '</label> ' +
 						'</div>'
 					);
 					$('#form').bootstrapValidator('addField', $('.time').find('[name="time_start"]'));
@@ -2882,7 +2842,6 @@ if(obj.time_start_pm == itime_start) {
 						'{{ Form::text('date_time_start', @$value, ['class' => 'form-control form-control-sm', 'id' => 'from', 'placeholder' => 'Date : ', 'autocomplete' => 'off']) }}' +
 					'</div>' +
 				'</div>' +
-
 				'<div class="form-group row {{ $errors->has('date_time_end') ? 'has-error' : '' }}">' +
 					'{{ Form::label('to', 'Time : ', ['class' => 'col-sm-4 col-form-label']) }}' +
 					'<div class="col-sm-8">' +
@@ -2912,7 +2871,6 @@ if(obj.time_start_pm == itime_start) {
 						'{{ Form::file( 'document', ['class' => 'form-control form-control-file', 'id' => 'doc', 'placeholder' => 'Supporting Document']) }}' +
 					'</div>' +
 				'</div>' +
-
 				'<div class="form-group row {{ $errors->has('akuan') ? 'has-error' : '' }}">' +
 					'{{ Form::label('suppdoc', 'Supporting Documents : ', ['class' => 'col-sm-4 col-form-label']) }}' +
 					'<div class="col-sm-8 form-check suppdoc">' +
@@ -2920,7 +2878,6 @@ if(obj.time_start_pm == itime_start) {
 						'<label for="suppdoc" class="form-check-label p-1 bg-warning text-danger rounded">Please ensure you will submit <strong>Supporting Document</strong> within a period of  <strong>3 Days</strong> upon return.</label>' +
 					'</div>' +
 				'</div>' +
-
 			'</div>'
 		);
 		/////////////////////////////////////////////////////////////////////////////////////////
@@ -3090,21 +3047,18 @@ if(obj.time_start_pm == itime_start) {
 						'{{ Form::text('date_time_start', @$value, ['class' => 'form-control form-control-sm', 'id' => 'from', 'placeholder' => 'From : ', 'autocomplete' => 'off']) }}' +
 					'</div>' +
 				'</div>' +
-
 				'<div class="form-group row {{ $errors->has('date_time_end') ? 'has-error' : '' }}">' +
 					'{{ Form::label('to', 'To : ', ['class' => 'col-sm-4 col-form-label']) }}' +
 					'<div class="col-sm-8 datetime" style="position: relative">' +
 						'{{ Form::text('date_time_end', @$value, ['class' => 'form-control form-control-sm', 'id' => 'to', 'placeholder' => 'To : ', 'autocomplete' => 'off']) }}' +
 					'</div>' +
 				'</div>' +
-
 				@if($setHalfDayMC == 1)
 				'<div class="form-group row {{ $errors->has('leave_cat') ? 'has-error' : '' }}" id="wrapperday">' +
 					'<div class="form-group col-sm-8 offset-sm-4 {{ $errors->has('half_type_id') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
 					'</div>' +
 				'</div>' +
 				@endif
-
 				@if( $userneedbackup == 1 )
 				'<div id="backupwrapper">' +
 					'<div class="form-group row {{ $errors->has('staff_id') ? 'has-error' : '' }}" id="backupremove">' +
@@ -3556,7 +3510,6 @@ $oi = $hrleave->belongstostaff->hasmanyleavereplacement()->where('leave_balance'
 						'</select>' +
 					'</div>' +
 				'</div>' +
-
 				'<div class="form-group row {{ $errors->has('date_time_start') ? 'has-error' : '' }}">' +
 					'{{ Form::label('from', 'From : ', ['class' => 'col-sm-4 col-form-label']) }}' +
 					'<div class="col-sm-8 datetime" style="position: relative">' +
@@ -3569,7 +3522,6 @@ $oi = $hrleave->belongstostaff->hasmanyleavereplacement()->where('leave_balance'
 						'{{ Form::text('date_time_end', @$value, ['class' => 'form-control form-control-sm', 'id' => 'to', 'placeholder' => 'To : ', 'autocomplete' => 'off']) }}' +
 					'</div>' +
 				'</div>' +
-
 				'<div class="form-group row {{ $errors->has('leave_cat') ? 'has-error' : '' }}" id="wrapperday">' +
 					'<div class="form-group col-sm-8 offset-sm-4 {{ $errors->has('half_type_id') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
 					'</div>' +
@@ -3584,14 +3536,12 @@ $oi = $hrleave->belongstostaff->hasmanyleavereplacement()->where('leave_balance'
 					'</div>' +
 				'</div>' +
 				@endif
-
 				'<div class="form-group row {{ $errors->has('document') ? 'has-error' : '' }}">' +
 					'{{ Form::label( 'doc', 'Upload Supporting Document : ', ['class' => 'col-sm-4 col-form-label'] ) }}' +
 					'<div class="col-sm-8 supportdoc">' +
 						'{{ Form::file( 'document', ['class' => 'form-control form-control-file', 'id' => 'doc', 'placeholder' => 'Supporting Document']) }}' +
 					'</div>' +
 				'</div>' +
-
 				'<div class="form-group row {{ $errors->has('akuan') ? 'has-error' : '' }}">' +
 					'{{ Form::label('suppdoc', 'Supporting Document : ', ['class' => 'col-sm-4 col-form-label']) }}' +
 					'<div class="col-sm-8 form-check suppdoc">' +
@@ -3687,17 +3637,17 @@ $.each(objtime, function() {
 // console.log(d);
 if(d === true) {
 					$('#wrapperday').append(
-							'{{ Form::label('leave_cat', 'Leave Category : ', ['class' => 'col-sm-4 col-form-label removehalfleave']) }}' +
-							'<div class="col-sm-8 removehalfleave " id="halfleave">' +
-								'<div class="form-check form-check-inline removehalfleave" id="removeleavehalf">' +
-									'<input type="radio" name="leave_cat" value="1" id="radio1" class="removehalfleave" disabled="disabled">' +
-									'{{ Form::label('radio1', 'Full Day Off', ['class' => 'form-check-label m-1 removehalfleave']) }}' +
-									'<input type="radio" name="leave_cat" value="2" id="radio2" class="removehalfleave" checked="checked">' +
-									'{{ Form::label('radio2', 'Half Day Off', ['class' => 'form-check-label m-1 removehalfleave']) }}' +
-								'</div>' +
+						'{{ Form::label('leave_cat', 'Leave Category : ', ['class' => 'col-sm-4 col-form-label removehalfleave']) }}' +
+						'<div class="col-sm-8 removehalfleave " id="halfleave">' +
+							'<div class="form-check form-check-inline removehalfleave" id="removeleavehalf">' +
+								'<input type="radio" name="leave_cat" value="1" id="radio1" class="removehalfleave" disabled="disabled">' +
+								'{{ Form::label('radio1', 'Full Day Off', ['class' => 'form-check-label m-1 removehalfleave']) }}' +
+								'<input type="radio" name="leave_cat" value="2" id="radio2" class="removehalfleave" checked="checked">' +
+								'{{ Form::label('radio2', 'Half Day Off', ['class' => 'form-check-label m-1 removehalfleave']) }}' +
 							'</div>' +
-							'<div class="form-group col-sm-8 offset-sm-4 {{ $errors->has('half_type_id') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
-							'</div>'
+						'</div>' +
+						'<div class="form-group col-sm-8 offset-sm-4 {{ $errors->has('half_type_id') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
+						'</div>'
 					);
 					$('#form').bootstrapValidator('addField', $('.time').find('[name="time_start"]'));
 					$('#form').bootstrapValidator('addField', $('.time').find('[name="time_end"]'));
@@ -4077,55 +4027,47 @@ if(obj.time_start_pm == itime_start) {
 
 		$('#remove').remove();
 		$('#wrapper').append(
-
 			'<div id="remove">' +
 				<!-- annual leave -->
-
-				'<div class="form-group row mb-3 {{ $errors->has('date_time_start') ? 'has-error' : '' }}">' +
-					'{{ Form::label('from', 'From : ', ['class' => 'col-sm-2 col-form-label']) }}' +
-					'<div class="col-auto datetime" style="position: relative">' +
-						'{{ Form::text('date_time_start', @$value, ['class' => 'form-control col-auto', 'id' => 'from', 'placeholder' => 'From : ', 'autocomplete' => 'off']) }}' +
+				'<div class="form-group row {{ $errors->has('date_time_start') ? 'has-error' : '' }}">' +
+					'{{ Form::label('from', 'From : ', ['class' => 'col-sm-4 col-form-label']) }}' +
+					'<div class="col-sm-8 datetime" style="position: relative">' +
+						'{{ Form::text('date_time_start', @$value, ['class' => 'form-control form-control-sm', 'id' => 'from', 'placeholder' => 'From : ', 'autocomplete' => 'off']) }}' +
 					'</div>' +
 				'</div>' +
-
-				'<div class="form-group row mb-3 {{ $errors->has('date_time_end') ? 'has-error' : '' }}">' +
-					'{{ Form::label('to', 'To : ', ['class' => 'col-sm-2 col-form-label']) }}' +
-					'<div class="col-auto datetime" style="position: relative">' +
-						'{{ Form::text('date_time_end', @$value, ['class' => 'form-control col-auto', 'id' => 'to', 'placeholder' => 'To : ', 'autocomplete' => 'off']) }}' +
+				'<div class="form-group row {{ $errors->has('date_time_end') ? 'has-error' : '' }}">' +
+					'{{ Form::label('to', 'To : ', ['class' => 'col-sm-4 col-form-label']) }}' +
+					'<div class="col-sm-8 datetime" style="position: relative">' +
+						'{{ Form::text('date_time_end', @$value, ['class' => 'form-control form-control-sm', 'id' => 'to', 'placeholder' => 'To : ', 'autocomplete' => 'off']) }}' +
 					'</div>' +
 				'</div>' +
-
-				'<div class="form-group row mb-3 {{ $errors->has('leave_cat') ? 'has-error' : '' }}" id="wrapperday">' +
-					'<div class="form-group col-auto offset-sm-2 {{ $errors->has('half_type_id') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
+				'<div class="form-group row {{ $errors->has('leave_cat') ? 'has-error' : '' }}" id="wrapperday">' +
+					'<div class="form-group col-sm-8 offset-sm-4 {{ $errors->has('half_type_id') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
 					'</div>' +
 				'</div>' +
-
 				@if( $userneedbackup == 1 )
 				'<div id="backupwrapper">' +
-					'<div class="form-group row mb-3 {{ $errors->has('staff_id') ? 'has-error' : '' }}">' +
-						'{{ Form::label('backupperson', 'Backup Person : ', ['class' => 'col-sm-2 col-form-label']) }}' +
-						'<div class="col-auto backup">' +
-							'<select name="staff_id" id="backupperson" class="form-control form-select form-select-sm " placeholder="Please choose" autocomplete="off"></select>' +
+					'<div class="form-group row {{ $errors->has('staff_id') ? 'has-error' : '' }}">' +
+						'{{ Form::label('backupperson', 'Backup Person : ', ['class' => 'col-sm-4 col-form-label']) }}' +
+						'<div class="col-sm-8 backup">' +
+							'<select name="staff_id" id="backupperson" class="form-select form-select-sm " placeholder="Please choose" autocomplete="off"></select>' +
 						'</div>' +
 					'</div>' +
 				'</div>' +
 				@endif
-
 				'<div class="form-group row {{ $errors->has('document') ? 'has-error' : '' }}">' +
-					'{{ Form::label( 'doc', 'Upload Supporting Document : ', ['class' => 'col-sm-2 col-form-label'] ) }}' +
-					'<div class="col-auto supportdoc">' +
+					'{{ Form::label( 'doc', 'Upload Supporting Document : ', ['class' => 'col-sm-4 col-form-label'] ) }}' +
+					'<div class="col-sm-8 supportdoc">' +
 						'{{ Form::file( 'document', ['class' => 'form-control form-control-file', 'id' => 'doc', 'placeholder' => 'Supporting Document']) }}' +
 					'</div>' +
 				'</div>' +
-
 				'<div class="form-group row {{ $errors->has('akuan') ? 'has-error' : '' }}">' +
-					'{{ Form::label('suppdoc', 'Supporting Document : ', ['class' => 'col-sm-2 col-form-label']) }}' +
-					'<div class="col-auto form-check suppdoc">' +
+					'{{ Form::label('suppdoc', 'Supporting Document : ', ['class' => 'col-sm-4 col-form-label']) }}' +
+					'<div class="col-sm-8 form-check suppdoc">' +
 						'{{ Form::checkbox('documentsupport', 1, @$value, ['class' => 'form-check-input rounded', 'id' => 'suppdoc']) }}' +
 						'<label for="suppdoc" class="form-check-label p-1 bg-warning text-danger rounded">Please ensure you will submit <strong>Supporting Document</strong> within a period of  <strong>3 Days</strong> upon return.</label>' +
 					'</div>' +
 				'</div>' +
-
 			'</div>'
 			);
 		/////////////////////////////////////////////////////////////////////////////////////////
@@ -4208,24 +4150,17 @@ $.each(objtime, function() {
 // console.log(d);
 if(d === true) {
 					$('#wrapperday').append(
-							'{{ Form::label('leave_cat', 'Leave Category : ', ['class' => 'col-sm-2 col-form-label removehalfleave']) }}' +
-							'<div class="col-auto mb-3 removehalfleave " id="halfleave">' +
-								'<div class="form-check form-check-inline removehalfleave" id="removeleavehalf">' +
-									'<input type="radio" name="leave_cat" value="1" id="radio1" class="removehalfleave" disabled="disabled">' +
-									'<div class="state p-success removehalfleave">' +
-										'{{ Form::label('radio1', 'Full Day Off', ['class' => 'form-check-label removehalfleave']) }}' +
-									'</div>' +
-								'</div>' +
-								'<div class="form-check form-check-inline removehalfleave" id="appendleavehalf">' +
-									'<input type="radio" name="leave_cat" value="2" id="radio2" class="removehalfleave" checked="checked">' +
-									'<div class="state p-success removehalfleave">' +
-										'{{ Form::label('radio2', 'Half Day Off', ['class' => 'form-check-label removehalfleave']) }}' +
-									'</div>' +
-								'</div>' +
+						'{{ Form::label('leave_cat', 'Leave Category : ', ['class' => 'col-sm-4 col-form-label removehalfleave']) }}' +
+						'<div class="col-sm-8 removehalfleave " id="halfleave">' +
+							'<div class="form-check form-check-inline removehalfleave" id="removeleavehalf">' +
+								'<input type="radio" name="leave_cat" value="1" id="radio1" class="removehalfleave" disabled="disabled">' +
+								'{{ Form::label('radio1', 'Full Day Off', ['class' => 'form-check-label m-1 removehalfleave']) }}' +
+								'<input type="radio" name="leave_cat" value="2" id="radio2" class="removehalfleave" checked="checked">' +
+								'{{ Form::label('radio2', 'Half Day Off', ['class' => 'form-check-label m-1 removehalfleave']) }}' +
 							'</div>' +
-							'<div class="form-group col-auto offset-sm-2 {{ $errors->has('half_type_id') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
-
-							'</div>'
+						'</div>' +
+						'<div class="form-group col-sm-8 offset-sm-4 {{ $errors->has('half_type_id') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
+						'</div>'
 					);
 					$('#form').bootstrapValidator('addField', $('.time').find('[name="time_start"]'));
 					$('#form').bootstrapValidator('addField', $('.time').find('[name="time_end"]'));
@@ -4272,15 +4207,9 @@ if(obj.time_start_pm == itime_start) {
 					$('#wrappertest').append(
 						'<div class="form-check form-check-inline removetest">' +
 							'<input type="radio" name="half_type_id" value="1/' + obj.time_start_am + '/' + obj.time_end_am + '" id="am" ' + toggle_time_start_am + ' ' + checkedam + '>' +
-							'<div class="state p-primary">' +
-								'<label for="am" class="form-check-label">' + moment(obj.time_start_am, 'HH:mm:ss').format('h:mm a') + ' to ' + moment(obj.time_end_am, 'HH:mm:ss').format('h:mm a') + '</label> ' +
-							'</div>' +
-						'</div>' +
-						'<div class="form-check form-check-inline removetest">' +
+							'<label for="am" class="form-check-label m-1">' + moment(obj.time_start_am, 'HH:mm:ss').format('h:mm a') + ' to ' + moment(obj.time_end_am, 'HH:mm:ss').format('h:mm a') + '</label> ' +
 							'<input type="radio" name="half_type_id" value="2/' + obj.time_start_pm + '/' + obj.time_end_pm + '" id="pm" ' + toggle_time_start_pm + ' ' + checkedpm + '>' +
-							'<div class="state p-primary">' +
-								'<label for="pm" class="form-check-label">' + moment(obj.time_start_pm, 'HH:mm:ss').format('h:mm a') + ' to ' + moment(obj.time_end_pm, 'HH:mm:ss').format('h:mm a') + '</label> ' +
-							'</div>' +
+							'<label for="pm" class="form-check-label m-1">' + moment(obj.time_start_pm, 'HH:mm:ss').format('h:mm a') + ' to ' + moment(obj.time_end_pm, 'HH:mm:ss').format('h:mm a') + '</label> ' +
 						'</div>'
 					);
 					$('#form').bootstrapValidator('addField', $('.time').find('[name="time_start"]'));
@@ -4288,24 +4217,17 @@ if(obj.time_start_pm == itime_start) {
 
 } else {
 					$('#wrapperday').append(
-							'{{ Form::label('leave_cat', 'Leave Category : ', ['class' => 'col-sm-2 col-form-label removehalfleave']) }}' +
-							'<div class="col-auto mb-3 removehalfleave " id="halfleave">' +
-								'<div class="form-check form-check-inline removehalfleave" id="removeleavehalf">' +
-									'<input type="radio" name="leave_cat" value="1" id="radio1" class="removehalfleave" checked="checked">' +
-									'<div class="state p-success removehalfleave">' +
-										'{{ Form::label('radio1', 'Full Day Off', ['class' => 'form-check-label removehalfleave']) }}' +
-									'</div>' +
-								'</div>' +
-								'<div class="form-check form-check-inline removehalfleave" id="appendleavehalf">' +
-									'<input type="radio" name="leave_cat" value="2" id="radio2" class="removehalfleave" >' +
-									'<div class="state p-success removehalfleave">' +
-										'{{ Form::label('radio2', 'Half Day Off', ['class' => 'form-check-label removehalfleave']) }}' +
-									'</div>' +
-								'</div>' +
+						'{{ Form::label('leave_cat', 'Leave Category : ', ['class' => 'col-sm-4 col-form-label removehalfleave']) }}' +
+						'<div class="col-sm-8 removehalfleave " id="halfleave">' +
+							'<div class="form-check form-check-inline removehalfleave" id="removeleavehalf">' +
+								'<input type="radio" name="leave_cat" value="1" id="radio1" class="removehalfleave" checked="checked">' +
+								'{{ Form::label('radio1', 'Full Day Off', ['class' => 'form-check-label m-1 removehalfleave']) }}' +
+								'<input type="radio" name="leave_cat" value="2" id="radio2" class="removehalfleave" >' +
+								'{{ Form::label('radio2', 'Half Day Off', ['class' => 'form-check-label m-1 removehalfleave']) }}' +
 							'</div>' +
-							'<div class="form-group col-auto offset-sm-2 {{ $errors->has('half_type_id') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
-
-							'</div>'
+						'</div>' +
+						'<div class="form-group col-sm-8 offset-sm-4 {{ $errors->has('half_type_id') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
+						'</div>'
 					);
 					$('#form').bootstrapValidator('addField', $('.time').find('[name="time_start"]'));
 					$('#form').bootstrapValidator('addField', $('.time').find('[name="time_end"]'));
@@ -4327,8 +4249,8 @@ if(obj.time_start_pm == itime_start) {
 				if( $('#backupwrapper').children().length == 0 ) {
 					$('#backupwrapper').append(
 						'<div class="form-group row {{ $errors->has('staff_id') ? 'has-error' : '' }}">' +
-							'{{ Form::label('backupperson', 'Backup Person : ', ['class' => 'col-sm-2 col-form-label']) }}' +
-							'<div class="col-auto backup">' +
+							'{{ Form::label('backupperson', 'Backup Person : ', ['class' => 'col-sm-4 col-form-label']) }}' +
+							'<div class="col-sm-8 backup">' +
 								'<select name="staff_id" id="backupperson" class="form-control form-select form-select-sm" placeholder="Please choose" autocomplete="off"></select>' +
 							'</div>' +
 						'</div>'
@@ -4403,24 +4325,17 @@ $.each(objtime, function() {
 // console.log(d);
 if(d === true) {
 					$('#wrapperday').append(
-							'{{ Form::label('leave_cat', 'Leave Category : ', ['class' => 'col-sm-2 col-form-label removehalfleave']) }}' +
-							'<div class="col-auto mb-3 removehalfleave " id="halfleave">' +
-								'<div class="form-check form-check-inline removehalfleave" id="removeleavehalf">' +
-									'<input type="radio" name="leave_cat" value="1" id="radio1" class="removehalfleave" disabled="disabled">' +
-									'<div class="state p-success removehalfleave">' +
-										'{{ Form::label('radio1', 'Full Day Off', ['class' => 'form-check-label removehalfleave']) }}' +
-									'</div>' +
-								'</div>' +
-								'<div class="form-check form-check-inline removehalfleave" id="appendleavehalf">' +
-									'<input type="radio" name="leave_cat" value="2" id="radio2" class="removehalfleave" checked="checked">' +
-									'<div class="state p-success removehalfleave">' +
-										'{{ Form::label('radio2', 'Half Day Off', ['class' => 'form-check-label removehalfleave']) }}' +
-									'</div>' +
-								'</div>' +
+						'{{ Form::label('leave_cat', 'Leave Category : ', ['class' => 'col-sm-4 col-form-label removehalfleave']) }}' +
+						'<div class="col-sm-8 removehalfleave " id="halfleave">' +
+							'<div class="form-check form-check-inline removehalfleave" id="removeleavehalf">' +
+								'<input type="radio" name="leave_cat" value="1" id="radio1" class="removehalfleave" disabled="disabled">' +
+								'{{ Form::label('radio1', 'Full Day Off', ['class' => 'form-check-label m-1 removehalfleave']) }}' +
+								'<input type="radio" name="leave_cat" value="2" id="radio2" class="removehalfleave" checked="checked">' +
+								'{{ Form::label('radio2', 'Half Day Off', ['class' => 'form-check-label m-1 removehalfleave']) }}' +
 							'</div>' +
-							'<div class="form-group col-auto offset-sm-2 {{ $errors->has('half_type_id') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
-
-							'</div>'
+						'</div>' +
+						'<div class="form-group col-auto offset-sm-2 {{ $errors->has('half_type_id') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
+						'</div>'
 					);
 					$('#form').bootstrapValidator('addField', $('.time').find('[name="time_start"]'));
 					$('#form').bootstrapValidator('addField', $('.time').find('[name="time_end"]'));
@@ -4467,39 +4382,26 @@ if(obj.time_start_pm == itime_start) {
 					$('#wrappertest').append(
 						'<div class="form-check form-check-inline removetest">' +
 							'<input type="radio" name="half_type_id" value="1/' + obj.time_start_am + '/' + obj.time_end_am + '" id="am" ' + toggle_time_start_am + ' ' + checkedam + '>' +
-							'<div class="state p-primary">' +
-								'<label for="am" class="form-check-label">' + moment(obj.time_start_am, 'HH:mm:ss').format('h:mm a') + ' to ' + moment(obj.time_end_am, 'HH:mm:ss').format('h:mm a') + '</label> ' +
-							'</div>' +
-						'</div>' +
-						'<div class="form-check form-check-inline removetest">' +
+							'<label for="am" class="form-check-label m-1">' + moment(obj.time_start_am, 'HH:mm:ss').format('h:mm a') + ' to ' + moment(obj.time_end_am, 'HH:mm:ss').format('h:mm a') + '</label> ' +
 							'<input type="radio" name="half_type_id" value="2/' + obj.time_start_pm + '/' + obj.time_end_pm + '" id="pm" ' + toggle_time_start_pm + ' ' + checkedpm + '>' +
-							'<div class="state p-primary">' +
-								'<label for="pm" class="form-check-label">' + moment(obj.time_start_pm, 'HH:mm:ss').format('h:mm a') + ' to ' + moment(obj.time_end_pm, 'HH:mm:ss').format('h:mm a') + '</label> ' +
-							'</div>' +
+							'<label for="pm" class="form-check-label m-1">' + moment(obj.time_start_pm, 'HH:mm:ss').format('h:mm a') + ' to ' + moment(obj.time_end_pm, 'HH:mm:ss').format('h:mm a') + '</label> ' +
 						'</div>'
 					);
 					$('#form').bootstrapValidator('addField', $('.time').find('[name="time_start"]'));
 					$('#form').bootstrapValidator('addField', $('.time').find('[name="time_end"]'));
 } else {
 					$('#wrapperday').append(
-							'{{ Form::label('leave_cat', 'Leave Category : ', ['class' => 'col-sm-2 col-form-label removehalfleave']) }}' +
-							'<div class="col-auto mb-3 removehalfleave " id="halfleave">' +
-								'<div class="form-check form-check-inline removehalfleave" id="removeleavehalf">' +
-									'<input type="radio" name="leave_cat" value="1" id="radio1" class="removehalfleave" checked="checked">' +
-									'<div class="state p-success removehalfleave">' +
-										'{{ Form::label('radio1', 'Full Day Off', ['class' => 'form-check-label removehalfleave']) }}' +
-									'</div>' +
-								'</div>' +
-								'<div class="form-check form-check-inline removehalfleave" id="appendleavehalf">' +
-									'<input type="radio" name="leave_cat" value="2" id="radio2" class="removehalfleave" >' +
-									'<div class="state p-success removehalfleave">' +
-										'{{ Form::label('radio2', 'Half Day Off', ['class' => 'form-check-label removehalfleave']) }}' +
-									'</div>' +
-								'</div>' +
+						'{{ Form::label('leave_cat', 'Leave Category : ', ['class' => 'col-sm-4 col-form-label removehalfleave']) }}' +
+						'<div class="col-sm-8 removehalfleave " id="halfleave">' +
+							'<div class="form-check form-check-inline removehalfleave" id="removeleavehalf">' +
+								'<input type="radio" name="leave_cat" value="1" id="radio1" class="removehalfleave" checked="checked">' +
+								'{{ Form::label('radio1', 'Full Day Off', ['class' => 'form-check-label m-1 removehalfleave']) }}' +
+								'<input type="radio" name="leave_cat" value="2" id="radio2" class="removehalfleave" >' +
+								'{{ Form::label('radio2', 'Half Day Off', ['class' => 'form-check-label m-1 removehalfleave']) }}' +
 							'</div>' +
-							'<div class="form-group col-auto offset-sm-2 {{ $errors->has('half_type_id') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
-
-							'</div>'
+						'</div>' +
+						'<div class="form-group col-sm-8 offset-sm-4 {{ $errors->has('half_type_id') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
+						'</div>'
 					);
 					$('#form').bootstrapValidator('addField', $('.time').find('[name="time_start"]'));
 					$('#form').bootstrapValidator('addField', $('.time').find('[name="time_end"]'));
@@ -4549,15 +4451,9 @@ if(obj.time_start_pm == itime_start) {
 					$('#wrappertest').append(
 						'<div class="form-check form-check-inline removetest">' +
 							'<input type="radio" name="half_type_id" value="1/' + obj.time_start_am + '/' + obj.time_end_am + '" id="am" {{ ($hrleave->half_type_id == 1)?'checked=checked':NULL }}>' +
-							'<div class="state p-primary">' +
-								'<label for="am" class="form-check-label">' + moment(obj.time_start_am, 'HH:mm:ss').format('h:mm a') + ' to ' + moment(obj.time_end_am, 'HH:mm:ss').format('h:mm a') + '</label> ' +
-							'</div>' +
-						'</div>' +
-						'<div class="form-check form-check-inline removetest">' +
+							'<label for="am" class="form-check-label m-1">' + moment(obj.time_start_am, 'HH:mm:ss').format('h:mm a') + ' to ' + moment(obj.time_end_am, 'HH:mm:ss').format('h:mm a') + '</label> ' +
 							'<input type="radio" name="half_type_id" value="2/' + obj.time_start_pm + '/' + obj.time_end_pm + '" id="pm" {{ ($hrleave->half_type_id == 2)?'checked=checked':NULL }}>' +
-							'<div class="state p-primary">' +
-								'<label for="pm" class="form-check-label">' + moment(obj.time_start_pm, 'HH:mm:ss').format('h:mm a') + ' to ' + moment(obj.time_end_pm, 'HH:mm:ss').format('h:mm a') + '</label> ' +
-							'</div>' +
+							'<label for="pm" class="form-check-label m-1">' + moment(obj.time_start_pm, 'HH:mm:ss').format('h:mm a') + ' to ' + moment(obj.time_end_pm, 'HH:mm:ss').format('h:mm a') + '</label> ' +
 						'</div>'
 					);
 				}
