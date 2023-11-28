@@ -764,6 +764,7 @@ class AjaxController extends Controller
 					'staff_id' => \Auth::user()->belongstostaff->id,
 					'leave_status_id' => $request->leave_status_id
 				]);
+				$sal->update(['leave_status_id' => $request->leave_status_id]);
 			} else {
 				Session::flash('flash_message', 'Verification Code was incorrect');
 				return redirect()->back()->withInput();

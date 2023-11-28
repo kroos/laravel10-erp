@@ -161,10 +161,10 @@ if ($backup) {
 
 $start = \Carbon\Carbon::parse($hrleave->date_time_start)->format('Y-m-d');
 $end = \Carbon\Carbon::parse($hrleave->date_time_end)->format('Y-m-d');
-$hr_remark = \App\Models\HumanResources\HRAttendance::where('hr_attendances.staff_id', '=', $hrleave->staff_id)
-->whereBetween('hr_attendances.attend_date', [$start, $end])
-->where('hr_attendances.hr_remarks', '!=', NULL)
-->select('hr_attendances.hr_remarks')
+$hr_remark = \App\Models\HumanResources\HRAttendance::where('staff_id', '=', $hrleave->staff_id)
+->whereBetween('attend_date', [$start, $end])
+->where('hr_remarks', '!=', NULL)
+->select('hr_remarks')
 ->first();
 ?>
 
@@ -293,5 +293,4 @@ $hr_remark = \App\Models\HumanResources\HRAttendance::where('hr_attendances.staf
 	function back() {
 		window.history.back();
 	}
-
 @endsection
