@@ -75,7 +75,7 @@ class DisciplineController extends Controller
 				'disciplinary_action_id' => $request->disciplinary_action_id,
 				'violation_id' => $request->violation_id,
 				'date' => $request->date,
-				'reason' => ucwords(Str::of($request->reason)->lower()),
+				'reason' => $request->reason,
 				'softcopy' => $file,
 			]);
 		} else {
@@ -85,7 +85,7 @@ class DisciplineController extends Controller
 				'disciplinary_action_id' => $request->disciplinary_action_id,
 				'violation_id' => $request->violation_id,
 				'date' => $request->date,
-				'reason' => ucwords(Str::of($request->reason)->lower()),
+				'reason' => $request->reason,
 			]);
 		}
 
@@ -132,7 +132,7 @@ class DisciplineController extends Controller
 				'disciplinary_action_id' => $request->disciplinary_action_id,
 				'violation_id' => $request->violation_id,
 				'date' => $request->date,
-				'reason' => ucwords(Str::of($request->reason)->lower()),
+				'reason' => $request->reason,
 				'softcopy' => $file,
 			]);
 		} else {
@@ -141,7 +141,7 @@ class DisciplineController extends Controller
 				'disciplinary_action_id' => $request->disciplinary_action_id,
 				'violation_id' => $request->violation_id,
 				'date' => $request->date,
-				'reason' => ucwords(Str::of($request->reason)->lower()),
+				'reason' => $request->reason,
 			]);
 		}
 
