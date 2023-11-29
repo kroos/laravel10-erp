@@ -274,31 +274,31 @@ if ($backup) {
 		{{ Form::model($hrleave, ['route' => ['hrleave.update', $hrleave], 'method' => 'PATCH', 'id' => 'form', 'autocomplete' => 'off', 'files' => true, 'data-toggle' => 'validator']) }}
 		<h5>Edit Leave Application</h5>
 
-		<div class="form-group row {{ $errors->has('leave_id') ? 'has-error' : '' }}">
+		<div class="form-group row m-1{{ $errors->has('leave_id') ? 'has-error' : '' }}">
 			{{ Form::label( 'leave_type_id', 'Leave Type : ', ['class' => 'col-sm-4 col-form-label'] ) }}
 			<div class="col-sm-8">
 				{{ Form::select('leave_type_id', \App\Models\HumanResources\OptLeaveType::pluck('leave_type', 'id'), @$value, ['id' => 'leave_id', 'class' => 'form-select form-select-sm']) }}
 			</div>
 		</div>
 
-		<div class="form-group row {{ $errors->has('reason') ? 'has-error' : '' }}">
+		<div class="form-group row m-1{{ $errors->has('reason') ? 'has-error' : '' }}">
 			{{ Form::label( 'reason', 'Reason : ', ['class' => 'col-sm-4 col-form-label'] ) }}
 			<div class="col-sm-8">
 				{{ Form::textarea('reason', @$value, ['class' => 'form-control form-control-sm', 'id' => 'reason', 'placeholder' => 'Reason', 'autocomplete' => 'off']) }}
 			</div>
 		</div>
 
-		<div id="wrapper">
+		<div id="wrapper" class="m-1">
 		</div>
 
-		<div class="form-group row {{ $errors->has('amend_note') ? 'has-error' : '' }}">
+		<div class="form-group row m-1{{ $errors->has('amend_note') ? 'has-error' : '' }}">
 			{{ Form::label( 'amend_note', 'Amend Note : ', ['class' => 'col-sm-4 col-form-label'] ) }}
 			<div class="col-sm-8">
 				{{ Form::textarea('amend_note', @$value, ['class' => 'form-control ', 'id' => 'amend_note', 'placeholder' => 'Amend Note', 'autocomplete' => 'off']) }}
 			</div>
 		</div>
 
-		<div class="form-group row">
+		<div class="form-group m-1 row">
 			<div class="col-sm-8 offset-sm-4">
 				{!! Form::button('Submit Application', ['class' => 'btn btn-sm btn-outline-secondary', 'type' => 'submit']) !!}
 			</div>
@@ -426,7 +426,7 @@ $(document).ready(function(){
 
 			'<div id="remove">' +
 				<!-- time off -->
-				'<div class="form-group row {{ $errors->has('date_time_start') ? 'has-error' : '' }}">' +
+				'<div class="form-group row m-1 {{ $errors->has('date_time_start') ? 'has-error' : '' }}">' +
 					'{{ Form::label('from', 'Date : ', ['class' => 'col-sm-4 col-form-label']) }}' +
 					'<div class="col-sm-8 datetime" style="position: relative">' +
 						'{{ Form::text('date_time_start', Carbon::parse($hrleave->date_time_start)->format('Y-m-d'), ['class' => 'form-control form-control-sm', 'id' => 'from', 'placeholder' => 'Date : ', 'autocomplete' => 'off']) }}' +
@@ -434,22 +434,25 @@ $(document).ready(function(){
 					'</div>' +
 				'</div>' +
 
-				'<div class="form-group row {{ $errors->has('date_time_end') ? 'has-error' : '' }}">' +
+				'<div class="form-group row m-1 {{ $errors->has('date_time_end') ? 'has-error' : '' }}">' +
 					'{{ Form::label('to', 'Time : ', ['class' => 'col-sm-4 col-form-label']) }}' +
 					'<div class="col-sm-8">' +
-							'<div class="form-row time">' +
+							'<div class="form-group row time">' +
 								'<div class="col-sm-4" style="position: relative">' +
-									'{{ Form::text('time_start', Carbon::parse($hrleave->date_time_start)->format('H:i:s'), ['class' => 'form-control form-control-sm', 'id' => 'start', 'placeholder' => 'From : ', 'autocomplete' => 'off']) }}' +
+									'{{ Form::text('time_start', Carbon::parse($hrleave->date_time_start)->format('H:i:s'), ['class' => 'form-control form-control-sm', 'id' => 'start', 'placeholder' => 'Time From : ', 'autocomplete' => 'off']) }}' +
 								'</div>' +
 								'<div class="col-sm-4" style="position: relative">' +
-									'{{ Form::text('time_end', Carbon::parse($hrleave->date_time_end)->format('H:i:s'), ['class' => 'form-control form-control-sm', 'id' => 'end', 'placeholder' => 'To : ', 'autocomplete' => 'off']) }}' +
+									'{{ Form::text('time_end', Carbon::parse($hrleave->date_time_end)->format('H:i:s'), ['class' => 'form-control form-control-sm', 'id' => 'end', 'placeholder' => 'Time To : ', 'autocomplete' => 'off']) }}' +
 								'</div>' +
 							'</div>' +
 					'</div>' +
 				'</div>' +
 				@if( $userneedbackup == 1 )
+				@if($hrleave->leave_type_id != 2 || $hrleave->leave_type_id != 11)
+
+				@endif
 				'<div id="backupwrapper">' +
-					'<div class="form-group row m-2 {{ $errors->has('staff_id') ? 'has-error' : '' }}" id="backupremove">' +
+					'<div class="form-group row m-1 {{ $errors->has('staff_id') ? 'has-error' : '' }}" id="backupremove">' +
 						'{{ Form::label('backupperson', 'Backup Person : ', ['class' => 'col-sm-4 col-form-label']) }}' +
 						'<div class="col-sm-8 backup">' +
 							'{{ Form::select('staff_id', Staff::where('active', 1)->pluck('name', 'id'), $hrleave->hasmanyleaveapprovalbackup()->first()?->staff_id??NULL, ['id' => 'backupperson', 'class' => 'form-select form-select-sm', 'placeholder' => 'Please Choose']) }}' +
@@ -457,14 +460,14 @@ $(document).ready(function(){
 					'</div>' +
 				'</div>' +
 				@endif
-				'<div class="form-group row m-2 {{ $errors->has('document') ? 'has-error' : '' }}">' +
+				'<div class="form-group row m-1 {{ $errors->has('document') ? 'has-error' : '' }}">' +
 					'{{ Form::label( 'doc', 'Upload Supporting Document : ', ['class' => 'col-sm-4 col-form-label'] ) }}' +
 					'<div class="col-sm-8 supportdoc">' +
 						'{{ Form::file( 'document', ['class' => 'form-control form-control-file', 'id' => 'doc', 'placeholder' => 'Supporting Document']) }}' +
 					'</div>' +
 				'</div>' +
 
-				'<div class="form-group row m-2 {{ $errors->has('akuan') ? 'has-error' : '' }}">' +
+				'<div class="form-group row m-1 {{ $errors->has('akuan') ? 'has-error' : '' }}">' +
 					'{{ Form::label('suppdoc', 'Supporting Documents : ', ['class' => 'col-sm-4 col-form-label']) }}' +
 					'<div class="col-sm-8 form-check suppdoc">' +
 						'{{ Form::checkbox('documentsupport', 1, @$value, ['class' => 'form-check-input rounded', 'id' => 'suppdoc']) }}' +
@@ -504,22 +507,22 @@ $(document).ready(function(){
 
 		$('#wrapper').append(
 			'<div id="remove">' +
-				'<div class="form-group row {{ $errors->has('date_time_start') ? 'has-error' : '' }}">' +
+				'<div class="form-group row m-1 {{ $errors->has('date_time_start') ? 'has-error' : '' }}">' +
 					'{{ Form::label('from', 'From : ', ['class' => 'col-sm-4 col-form-label']) }}' +
 					'<div class="col-sm-8 datetime" style="position: relative">' +
 						'{{ Form::text('date_time_start', Carbon::parse($hrleave->date_time_start)->format('Y-m-d'), ['class' => 'form-control form-control-sm', 'id' => 'from', 'placeholder' => 'From : ', 'autocomplete' => 'off']) }}' +
 					'</div>' +
 				'</div>' +
-				'<div class="form-group row {{ $errors->has('date_time_end') ? 'has-error' : '' }}">' +
+				'<div class="form-group row m-1 {{ $errors->has('date_time_end') ? 'has-error' : '' }}">' +
 					'{{ Form::label('to', 'To : ', ['class' => 'col-sm-4 col-form-label']) }}' +
 					'<div class="col-sm-8 datetime" style="position: relative">' +
 						'{{ Form::text('date_time_end', Carbon::parse($hrleave->date_time_end)->format('Y-m-d'), ['class' => 'form-control form-control-sm', 'id' => 'to', 'placeholder' => 'To : ', 'autocomplete' => 'off']) }}' +
 					'</div>' +
 				'</div>' +
-				'<div class="form-group row {{ $errors->has('leave_cat') ? 'has-error' : '' }}" id="wrapperday">' +
+				'<div class="form-group row m-1 {{ $errors->has('leave_cat') ? 'has-error' : '' }}" id="wrapperday">' +
 					@if($hrleave->period_day <= 1)
 						'{{ Form::label('leave_cat', 'Leave Category : ', ['class' => 'col-sm-4 col-form-label removehalfleave']) }}' +
-						'<div class="col-sm-8 removehalfleave " id="halfleave">' +
+						'<div class="col-sm-8 removehalfleave mb-1" id="halfleave">' +
 							'<div class="form-check form-check-inline removehalfleave" id="removeleavehalf">' +
 								'<input type="radio" name="leave_cat" value="1" id="radio1" class="removehalfleave" {{ ($hrleave->period_day == 1)?'checked=checked':NULL }}>' +
 								'{{ Form::label('radio1', 'Full Day Off', ['class' => 'form-check-label m-1 removehalfleave']) }}' +
@@ -529,7 +532,7 @@ $(document).ready(function(){
 								'{{ Form::label('radio2', 'Half Day Off', ['class' => 'form-check-label m-1 removehalfleave']) }}' +
 							'</div>' +
 						'</div>' +
-						'<div class="form-group col-sm-8 offset-sm-4 {{ $errors->has('half_type_id') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
+						'<div class="form-group col-sm-8 offset-sm-4 mb-1 {{ $errors->has('half_type_id') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
 							@if($hrleave->period_day <= 0.5)
 								'<div class="form-check form-check-inline removetest">' +
 									'<input type="radio" name="half_type_id" value="1/' + obj.time_start_am + '/' + obj.time_end_am + '" id="am"  {{ ($hrleave->half_type_id == 1)?'checked=checked':NULL }}>' +
@@ -543,20 +546,20 @@ $(document).ready(function(){
 
 				'</div>' +
 				'@if( $userneedbackup == 1 )' +
-				'<div class="form-group row {{ $errors->has('staff_id') ? 'has-error' : '' }}">' +
+				'<div class="form-group row m-1 {{ $errors->has('staff_id') ? 'has-error' : '' }}">' +
 					'{{ Form::label('backupperson', 'Replacement : ', ['class' => 'col-sm-4 col-form-label']) }}' +
 					'<div class="col-sm-8 backup">' +
 						'{{ Form::select('staff_id', Staff::where('active', 1)->pluck('name', 'id'), $hrleave->hasmanyleaveapprovalbackup()->first()?->staff_id??NULL, ['id' => 'backupperson', 'class' => 'form-select form-select-sm', 'placeholder' => 'Please Choose']) }}' +
 					'</div>' +
 				'</div>' +
 				'@endif' +
-				'<div class="form-group row {{ $errors->has('document') ? 'has-error' : '' }}">' +
+				'<div class="form-group row m-1 {{ $errors->has('document') ? 'has-error' : '' }}">' +
 					'{{ Form::label( 'doc', 'Upload Supporting Document : ', ['class' => 'col-sm-4 col-form-label'] ) }}' +
 					'<div class="col-sm-8 supportdoc">' +
 						'{{ Form::file( 'document', ['class' => 'form-control form-control-file', 'id' => 'doc', 'placeholder' => 'Supporting Document']) }}' +
 					'</div>' +
 				'</div>' +
-				'<div class="form-group row {{ $errors->has('documentsupport') ? 'has-error' : '' }}">' +
+				'<div class="form-group row m-1 {{ $errors->has('documentsupport') ? 'has-error' : '' }}">' +
 					'<div class="offset-sm-4 col-sm-8 form-check suppdoc">' +
 						'{{ Form::checkbox('documentsupport', 1, @$value, ['class' => 'form-check-input ', 'id' => 'suppdoc']) }}' +
 						'<label for="suppdoc" class="form-check-label p-1 bg-warning text-danger rounded">Please ensure you will submit <strong>Supporting Documents</strong> within <strong>3 Days</strong> after date leave.</label>' +
@@ -946,37 +949,37 @@ $('#leave_id').on('change', function() {
 			$('#wrapper').append(
 				'<div id="remove">' +
 					<!-- annual leave -->
-					'<div class="form-group row {{ $errors->has('date_time_start') ? 'has-error' : '' }}">' +
+					'<div class="form-group row m-1 {{ $errors->has('date_time_start') ? 'has-error' : '' }}">' +
 						'{{ Form::label('from', 'From : ', ['class' => 'col-sm-4 col-form-label']) }}' +
 						'<div class="col-sm-8 datetime" style="position: relative">' +
 							'{{ Form::text('date_time_start', @$value, ['class' => 'form-control form-control-sm', 'id' => 'from', 'placeholder' => 'From : ', 'autocomplete' => 'off']) }}' +
 						'</div>' +
 					'</div>' +
-					'<div class="form-group row {{ $errors->has('date_time_end') ? 'has-error' : '' }}">' +
+					'<div class="form-group row m-1 {{ $errors->has('date_time_end') ? 'has-error' : '' }}">' +
 						'{{ Form::label('to', 'To : ', ['class' => 'col-sm-4 col-form-label']) }}' +
 						'<div class="col-sm-8 datetime" style="position: relative">' +
 							'{{ Form::text('date_time_end', @$value, ['class' => 'form-control form-control-sm', 'id' => 'to', 'placeholder' => 'To : ', 'autocomplete' => 'off']) }}' +
 						'</div>' +
 					'</div>' +
-					'<div class="form-group row {{ $errors->has('leave_cat') ? 'has-error' : '' }}" id="wrapperday">' +
+					'<div class="form-group row m-1 {{ $errors->has('leave_cat') ? 'has-error' : '' }}" id="wrapperday">' +
 						'<div class="form-group col-sm-8 offset-sm-4 {{ $errors->has('half_type_id') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
 						'</div>' +
 					'</div>' +
 					@if( $userneedbackup == 1 )
-					'<div class="form-group row {{ $errors->has('staff_id') ? 'has-error' : '' }}">' +
+					'<div class="form-group row m-1 {{ $errors->has('staff_id') ? 'has-error' : '' }}">' +
 						'{{ Form::label('backupperson', 'Replacement : ', ['class' => 'col-sm-4 col-form-label']) }}' +
 						'<div class="col-sm-8 backup">' +
 							'<select name="staff_id" id="backupperson" class="form-select form-select-sm " placeholder="Please choose" autocomplete="off"></select>' +
 						'</div>' +
 					'</div>' +
 					@endif
-					'<div class="form-group row {{ $errors->has('document') ? 'has-error' : '' }}">' +
+					'<div class="form-group row m-1 {{ $errors->has('document') ? 'has-error' : '' }}">' +
 						'{{ Form::label( 'doc', 'Upload Supporting Document : ', ['class' => 'col-sm-4 col-form-label'] ) }}' +
 						'<div class="col-sm-8 supportdoc">' +
 							'{{ Form::file( 'document', ['class' => 'form-control form-control-file', 'id' => 'doc', 'placeholder' => 'Supporting Document']) }}' +
 						'</div>' +
 					'</div>' +
-					'<div class="form-group row {{ $errors->has('documentsupport') ? 'has-error' : '' }}">' +
+					'<div class="form-group row m-1 {{ $errors->has('documentsupport') ? 'has-error' : '' }}">' +
 						'<div class="offset-sm-4 col-sm-8 form-check suppdoc">' +
 							'{{ Form::checkbox('documentsupport', 1, @$value, ['class' => 'form-check-input ', 'id' => 'suppdoc']) }}' +
 							'<label for="suppdoc" class="form-check-label p-1 bg-warning text-danger rounded">Please ensure you will submit <strong>Supporting Documents</strong> within <strong>3 Days</strong> after date leave.</label>' +
@@ -988,24 +991,24 @@ $('#leave_id').on('change', function() {
 			$('#wrapper').append(
 				'<div id="remove">' +
 					<!-- annual leave -->
-					'<div class="form-group row {{ $errors->has('date_time_start') ? 'has-error' : '' }}">' +
+					'<div class="form-group row m-1 {{ $errors->has('date_time_start') ? 'has-error' : '' }}">' +
 						'{{ Form::label('from', 'From : ', ['class' => 'col-sm-4 col-form-label']) }}' +
 						'<div class="col-sm-8 datetime" style="position: relative">' +
 							'{{ Form::text('date_time_start', @$value, ['class' => 'form-control form-control-sm', 'id' => 'from', 'placeholder' => 'From : ', 'autocomplete' => 'off']) }}' +
 						'</div>' +
 					'</div>' +
-					'<div class="form-group row {{ $errors->has('date_time_end') ? 'has-error' : '' }}">' +
+					'<div class="form-group row m-1 {{ $errors->has('date_time_end') ? 'has-error' : '' }}">' +
 						'{{ Form::label('to', 'To : ', ['class' => 'col-sm-4 col-form-label']) }}' +
 						'<div class="col-sm-8 datetime" style="position: relative">' +
 							'{{ Form::text('date_time_end', @$value, ['class' => 'form-control form-control-sm', 'id' => 'to', 'placeholder' => 'To : ', 'autocomplete' => 'off']) }}' +
 						'</div>' +
 					'</div>' +
-					'<div class="form-group row {{ $errors->has('leave_cat') ? 'has-error' : '' }}" id="wrapperday">' +
+					'<div class="form-group row m-1 {{ $errors->has('leave_cat') ? 'has-error' : '' }}" id="wrapperday">' +
 						'<div class="form-group col-sm-8 offset-sm-4 {{ $errors->has('half_type_id') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
 						'</div>' +
 					'</div>' +
 					@if( $userneedbackup == 1 )
-					'<div class="form-group row {{ $errors->has('staff_id') ? 'has-error' : '' }}">' +
+					'<div class="form-group row m-1 {{ $errors->has('staff_id') ? 'has-error' : '' }}">' +
 						'{{ Form::label('backupperson', 'Replacement : ', ['class' => 'col-sm-4 col-form-label']) }}' +
 						'<div class="col-sm-8 backup">' +
 							'<select name="staff_id" id="backupperson" class="form-select form-select-sm " placeholder="Please choose" autocomplete="off"></select>' +
@@ -1377,27 +1380,27 @@ if(obj.time_start_pm == itime_start) {
 		$('#wrapper').append(
 			'<div id="remove">' +
 				<!-- mc leave -->
-				'<div class="form-group row {{ $errors->has('date_time_start') ? 'has-error' : '' }}">' +
+				'<div class="form-group row m-1 {{ $errors->has('date_time_start') ? 'has-error' : '' }}">' +
 					'{{ Form::label('from', 'From : ', ['class' => 'col-sm-4 col-form-label']) }}' +
 					'<div class="col-sm-8 datetime" style="position: relative">' +
 						'{{ Form::text('date_time_start', @$value, ['class' => 'form-control form-control-sm', 'id' => 'from', 'placeholder' => 'From : ', 'autocomplete' => 'off']) }}' +
 					'</div>' +
 				'</div>' +
-				'<div class="form-group row {{ $errors->has('date_time_end') ? 'has-error' : '' }}">' +
+				'<div class="form-group row m-1 {{ $errors->has('date_time_end') ? 'has-error' : '' }}">' +
 					'{{ Form::label('to', 'To : ', ['class' => 'col-sm-4 col-form-label']) }}' +
 					'<div class="col-sm-8 datetime" style="position: relative">' +
 						'{{ Form::text('date_time_end', @$value, ['class' => 'form-control form-control-sm', 'id' => 'to', 'placeholder' => 'To : ', 'autocomplete' => 'off']) }}' +
 					'</div>' +
 				'</div>' +
 				@if($setHalfDayMC == 1)
-				'<div class="form-group row {{ $errors->has('leave_cat') ? 'has-error' : '' }}" id="wrapperday">' +
+				'<div class="form-group row m-1 {{ $errors->has('leave_cat') ? 'has-error' : '' }}" id="wrapperday">' +
 					'<div class="form-group col-sm-8 offset-sm-4 {{ $errors->has('half_type_id') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
 					'</div>' +
 				'</div>' +
 				@endif
 				@if( $userneedbackup == 99 )
 				'<div id="backupwrapper">' +
-					'<div class="form-group row {{ $errors->has('staff_id') ? 'has-error' : '' }}" id="backupremove">' +
+					'<div class="form-group row m-1 {{ $errors->has('staff_id') ? 'has-error' : '' }}" id="backupremove">' +
 						'{{ Form::label('backupperson', 'Replacement : ', ['class' => 'col-sm-4 col-form-label']) }}' +
 						'<div class="col-sm-8 backup">' +
 							'<select name="staff_id" id="backupperson" class="form-select form-select-sm " placeholder="Please choose" autocomplete="off"></select>' +
@@ -1405,20 +1408,19 @@ if(obj.time_start_pm == itime_start) {
 					'</div>' +
 				'</div>' +
 				@endif
-				'<div class="form-group row {{ $errors->has('document') ? 'has-error' : '' }}">' +
+				'<div class="form-group row m-1 {{ $errors->has('document') ? 'has-error' : '' }}">' +
 					'{{ Form::label( 'doc', 'Upload Supporting Document : ', ['class' => 'col-sm-4 col-form-label'] ) }}' +
 					'<div class="col-sm-8 supportdoc">' +
 						'{{ Form::file( 'document', ['class' => 'form-control form-control-file', 'id' => 'doc', 'placeholder' => 'Supporting Document']) }}' +
 					'</div>' +
 				'</div>' +
 
-				'<div class="form-group row {{ $errors->has('documentsupport') ? 'has-error' : '' }}">' +
+				'<div class="form-group row m-1 {{ $errors->has('documentsupport') ? 'has-error' : '' }}">' +
 					'<div class="offset-sm-4 col-sm-8 form-check suppdoc">' +
 						'{{ Form::checkbox('documentsupport', 1, @$value, ['class' => 'form-check-input ', 'id' => 'suppdoc']) }}' +
 						'<label for="suppdoc" class="form-check-label p-1 bg-warning text-danger rounded">Please ensure you will submit <strong>Supporting Documents</strong> within <strong>3 Days</strong> after date leave.</label>' +
 					'</div>' +
 				'</div>' +
-
 			'</div>'
 		);
 
@@ -1791,7 +1793,7 @@ $oi = $hrleave->belongstostaff->hasmanyleavereplacement()->where('leave_balance'
 		$('#remove').remove();
 		$('#wrapper').append(
 			'<div id="remove">' +
-				'<div class="form-group row {{ $errors->has('leave_id') ? 'has-error' : '' }}">' +
+				'<div class="form-group row m-1 {{ $errors->has('leave_id') ? 'has-error' : '' }}">' +
 					'{{ Form::label('nrla', 'Please Choose Your Replacement Leave : ', ['class' => 'col-sm-4 col-form-label']) }}' +
 					'<div class="col-sm-8 nrl">' +
 						'<p>Total Replacement Leave = {{ $oi->sum('leave_balance') }} days</p>' +
@@ -1803,25 +1805,25 @@ $oi = $hrleave->belongstostaff->hasmanyleavereplacement()->where('leave_balance'
 						'</select>' +
 					'</div>' +
 				'</div>' +
-				'<div class="form-group row {{ $errors->has('date_time_start') ? 'has-error' : '' }}">' +
+				'<div class="form-group row m-1 {{ $errors->has('date_time_start') ? 'has-error' : '' }}">' +
 					'{{ Form::label('from', 'From : ', ['class' => 'col-sm-4 col-form-label']) }}' +
 					'<div class="col-sm-8 datetime" style="position: relative">' +
 						'{{ Form::text('date_time_start', @$value, ['class' => 'form-control form-control-sm', 'id' => 'from', 'placeholder' => 'From : ', 'autocomplete' => 'off']) }}' +
 					'</div>' +
 				'</div>' +
-				'<div class="form-group row {{ $errors->has('date_time_end') ? 'has-error' : '' }}">' +
+				'<div class="form-group row m-1 {{ $errors->has('date_time_end') ? 'has-error' : '' }}">' +
 					'{{ Form::label('to', 'To : ', ['class' => 'col-sm-4 col-form-label']) }}' +
 					'<div class="col-sm-8 datetime" style="position: relative">' +
 						'{{ Form::text('date_time_end', @$value, ['class' => 'form-control form-control-sm', 'id' => 'to', 'placeholder' => 'To : ', 'autocomplete' => 'off']) }}' +
 					'</div>' +
 				'</div>' +
-				'<div class="form-group row {{ $errors->has('leave_cat') ? 'has-error' : '' }}" id="wrapperday">' +
+				'<div class="form-group row m-1 {{ $errors->has('leave_cat') ? 'has-error' : '' }}" id="wrapperday">' +
 					'<div class="form-group col-sm-8 offset-sm-4 {{ $errors->has('half_type_id') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
 					'</div>' +
 				'</div>' +
 				@if( $userneedbackup == 1 )
 				'<div id="backupwrapper">' +
-					'<div class="form-group row {{ $errors->has('staff_id') ? 'has-error' : '' }}" id="backupremove">' +
+					'<div class="form-group row m-1 {{ $errors->has('staff_id') ? 'has-error' : '' }}" id="backupremove">' +
 						'{{ Form::label('backupperson', 'Replacement : ', ['class' => 'col-sm-4 col-form-label']) }}' +
 						'<div class="col-sm-8 backup">' +
 							'<select name="staff_id" id="backupperson" class="form-select form-select-sm " placeholder="Please choose" autocomplete="off"></select>' +
@@ -1926,7 +1928,7 @@ if(d === true) {
 								'{{ Form::label('radio2', 'Half Day Off', ['class' => 'form-check-label m-1 removehalfleave']) }}' +
 							'</div>' +
 						'</div>' +
-						'<div class="form-group col-auto offset-sm-2 {{ $errors->has('half_type_id') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
+						'<div class="form-group col-sm-8 offset-sm-4 m-1 {{ $errors->has('half_type_id') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
 						'</div>'
 					);
 					$('#form').bootstrapValidator('addField', $('.time').find('[name="time_start"]'));
@@ -2264,21 +2266,21 @@ if(obj.time_start_pm == itime_start) {
 		$('#wrapper').append(
 			'<div id="remove">' +
 				<!-- maternity leave -->
-				'<div class="form-group row {{ $errors->has('date_time_start') ? 'has-error' : '' }}">' +
+				'<div class="form-group row m-1 {{ $errors->has('date_time_start') ? 'has-error' : '' }}">' +
 					'{{ Form::label('from', 'From : ', ['class' => 'col-sm-4 col-form-label']) }}' +
 					'<div class="col-sm-8 datetime" style="position: relative">' +
 						'{{ Form::text('date_time_start', @$value, ['class' => 'form-control form-control-sm', 'id' => 'from', 'placeholder' => 'From : ', 'autocomplete' => 'off']) }}' +
 					'</div>' +
 				'</div>' +
 
-				'<div class="form-group row {{ $errors->has('date_time_end') ? 'has-error' : '' }}">' +
+				'<div class="form-group row m-1 {{ $errors->has('date_time_end') ? 'has-error' : '' }}">' +
 					'{{ Form::label('to', 'To : ', ['class' => 'col-sm-4 col-form-label']) }}' +
 					'<div class="col-sm-8 datetime" style="position: relative">' +
 						'{{ Form::text('date_time_end', @$value, ['class' => 'form-control form-control-sm', 'id' => 'to', 'placeholder' => 'To : ', 'autocomplete' => 'off']) }}' +
 					'</div>' +
 				'</div>' +
 			@if( $userneedbackup == 1 )
-				'<div class="form-group row {{ $errors->has('staff_id') ? 'has-error' : '' }}">' +
+				'<div class="form-group row m-1 {{ $errors->has('staff_id') ? 'has-error' : '' }}">' +
 					'{{ Form::label('backupperson', 'Replacement : ', ['class' => 'col-sm-4 col-form-label']) }}' +
 					'<div class="col-sm-8 backup">' +
 						'<select name="staff_id" id="backupperson" class="form-select form-select-sm" placeholder="Please choose" autocomplete="off"></select>' +
@@ -2387,19 +2389,19 @@ if(obj.time_start_pm == itime_start) {
 		$('#wrapper').append(
 			'<div id="remove">' +
 				<!-- emergency leave -->
-				'<div class="form-group row {{ $errors->has('date_time_start') ? 'has-error' : '' }}">' +
+				'<div class="form-group row m-1{{ $errors->has('date_time_start') ? 'has-error' : '' }}">' +
 					'{{ Form::label('from', 'From : ', ['class' => 'col-sm-4 col-form-label']) }}' +
 					'<div class="col-sm-8 datetime" style="position: relative">' +
 						'{{ Form::text('date_time_start', @$value, ['class' => 'form-control form-control-sm', 'id' => 'from', 'placeholder' => 'From : ', 'autocomplete' => 'off']) }}' +
 					'</div>' +
 				'</div>' +
-				'<div class="form-group row {{ $errors->has('date_time_end') ? 'has-error' : '' }}">' +
+				'<div class="form-group row m-1{{ $errors->has('date_time_end') ? 'has-error' : '' }}">' +
 					'{{ Form::label('to', 'To : ', ['class' => 'col-sm-4 col-form-label']) }}' +
 					'<div class="col-sm-8 datetime" style="position: relative">' +
 						'{{ Form::text('date_time_end', @$value, ['class' => 'form-control form-control-sm', 'id' => 'to', 'placeholder' => 'To : ', 'autocomplete' => 'off']) }}' +
 					'</div>' +
 				'</div>' +
-				'<div class="form-group row {{ $errors->has('leave_cat') ? 'has-error' : '' }}" id="wrapperday">' +
+				'<div class="form-group row m-1{{ $errors->has('leave_cat') ? 'has-error' : '' }}" id="wrapperday">' +
 					'{{ Form::label('leave_cat', 'Leave Category : ', ['class' => 'col-sm-4 col-form-label removehalfleave']) }}' +
 					'<div class="col-sm-8 removehalfleave" id="halfleave">' +
 					'</div>' +
@@ -2408,7 +2410,7 @@ if(obj.time_start_pm == itime_start) {
 				'</div>' +
 				@if( $userneedbackup == 1 )
 				'<div id="backupwrapper">' +
-					'<div class="form-group row {{ $errors->has('staff_id') ? 'has-error' : '' }}" id="backupremove">' +
+					'<div class="form-group row m-1{{ $errors->has('staff_id') ? 'has-error' : '' }}" id="backupremove">' +
 						'{{ Form::label('backupperson', 'Backup Person : ', ['class' => 'col-sm-4 col-form-label']) }}' +
 						'<div class="col-sm-8 backup">' +
 							'<select name="staff_id" id="backupperson" class="form-select form-select-sm " placeholder="Please choose" autocomplete="off"></select>' +
@@ -2416,13 +2418,13 @@ if(obj.time_start_pm == itime_start) {
 					'</div>' +
 				'</div>' +
 				@endif
-				'<div class="form-group row {{ $errors->has('document') ? 'has-error' : '' }}">' +
+				'<div class="form-group row m-1 {{ $errors->has('document') ? 'has-error' : '' }}">' +
 					'{{ Form::label( 'doc', 'Upload Supporting Document : ', ['class' => 'col-sm-4 col-form-label'] ) }}' +
 					'<div class="col-sm-8 supportdoc">' +
 						'{{ Form::file( 'document', ['class' => 'form-control form-control-file', 'id' => 'doc', 'placeholder' => 'Supporting Document']) }}' +
 					'</div>' +
 				'</div>' +
-				'<div class="form-group row {{ $errors->has('akuan') ? 'has-error' : '' }}">' +
+				'<div class="form-group row m-1 {{ $errors->has('akuan') ? 'has-error' : '' }}">' +
 					'{{ Form::label('suppdoc', 'Supporting Document : ', ['class' => 'col-sm-4 col-form-label']) }}' +
 					'<div class="col-sm-8 form-check suppdoc">' +
 						'{{ Form::checkbox('documentsupport', 1, @$value, ['class' => 'form-check-input rounded', 'id' => 'suppdoc']) }}' +
@@ -2836,16 +2838,16 @@ if(obj.time_start_pm == itime_start) {
 		$('#wrapper').append(
 			'<div id="remove">' +
 				<!-- time off -->
-				'<div class="form-group row {{ $errors->has('date_time_start') ? 'has-error' : '' }}">' +
+				'<div class="form-group row m-1 {{ $errors->has('date_time_start') ? 'has-error' : '' }}">' +
 					'{{ Form::label('from', 'Date : ', ['class' => 'col-sm-4 col-form-label']) }}' +
 					'<div class="col-sm-8 datetime" style="position: relative">' +
 						'{{ Form::text('date_time_start', @$value, ['class' => 'form-control form-control-sm', 'id' => 'from', 'placeholder' => 'Date : ', 'autocomplete' => 'off']) }}' +
 					'</div>' +
 				'</div>' +
-				'<div class="form-group row {{ $errors->has('date_time_end') ? 'has-error' : '' }}">' +
+				'<div class="form-group row m-1 {{ $errors->has('date_time_end') ? 'has-error' : '' }}">' +
 					'{{ Form::label('to', 'Time : ', ['class' => 'col-sm-4 col-form-label']) }}' +
 					'<div class="col-sm-8">' +
-							'<div class="form-row time">' +
+							'<div class="form-row row time">' +
 								'<div class="col-sm-4 m-1" style="position: relative">' +
 									'{{ Form::text('time_start', @$value, ['class' => 'form-control form-control-sm', 'id' => 'start', 'placeholder' => 'From : ', 'autocomplete' => 'off']) }}' +
 								'</div>' +
@@ -2857,7 +2859,7 @@ if(obj.time_start_pm == itime_start) {
 				'</div>' +
 				@if( $userneedbackup == 1 )
 				'<div id="backupwrapper">' +
-					'<div class="form-group row {{ $errors->has('staff_id') ? 'has-error' : '' }}" id="backupremove">' +
+					'<div class="form-group row m-1 {{ $errors->has('staff_id') ? 'has-error' : '' }}" id="backupremove">' +
 						'{{ Form::label('backupperson', 'Backup Person : ', ['class' => 'col-sm-4 col-form-label']) }}' +
 						'<div class="col-sm-8 backup">' +
 							'<select name="staff_id" id="backupperson" class="form-select form-select-sm " placeholder="Please choose" autocomplete="off"></select>' +
@@ -2865,13 +2867,13 @@ if(obj.time_start_pm == itime_start) {
 					'</div>' +
 				'</div>' +
 				@endif
-				'<div class="form-group row {{ $errors->has('document') ? 'has-error' : '' }}">' +
+				'<div class="form-group row m-1 {{ $errors->has('document') ? 'has-error' : '' }}">' +
 					'{{ Form::label( 'doc', 'Upload Supporting Document : ', ['class' => 'col-sm-4 col-form-label'] ) }}' +
 					'<div class="col-sm-8 supportdoc">' +
 						'{{ Form::file( 'document', ['class' => 'form-control form-control-file', 'id' => 'doc', 'placeholder' => 'Supporting Document']) }}' +
 					'</div>' +
 				'</div>' +
-				'<div class="form-group row {{ $errors->has('akuan') ? 'has-error' : '' }}">' +
+				'<div class="form-group row m-1 {{ $errors->has('akuan') ? 'has-error' : '' }}">' +
 					'{{ Form::label('suppdoc', 'Supporting Documents : ', ['class' => 'col-sm-4 col-form-label']) }}' +
 					'<div class="col-sm-8 form-check suppdoc">' +
 						'{{ Form::checkbox('documentsupport', 1, @$value, ['class' => 'form-check-input rounded', 'id' => 'suppdoc']) }}' +
@@ -3041,27 +3043,27 @@ if(obj.time_start_pm == itime_start) {
 		$('#wrapper').append(
 			'<div id="remove">' +
 				<!-- mc leave -->
-				'<div class="form-group row {{ $errors->has('date_time_start') ? 'has-error' : '' }}">' +
+				'<div class="form-group row m-1 {{ $errors->has('date_time_start') ? 'has-error' : '' }}">' +
 					'{{ Form::label('from', 'From : ', ['class' => 'col-sm-4 col-form-label']) }}' +
 					'<div class="col-sm-8 datetime" style="position: relative">' +
 						'{{ Form::text('date_time_start', @$value, ['class' => 'form-control form-control-sm', 'id' => 'from', 'placeholder' => 'From : ', 'autocomplete' => 'off']) }}' +
 					'</div>' +
 				'</div>' +
-				'<div class="form-group row {{ $errors->has('date_time_end') ? 'has-error' : '' }}">' +
+				'<div class="form-group row m-1 {{ $errors->has('date_time_end') ? 'has-error' : '' }}">' +
 					'{{ Form::label('to', 'To : ', ['class' => 'col-sm-4 col-form-label']) }}' +
 					'<div class="col-sm-8 datetime" style="position: relative">' +
 						'{{ Form::text('date_time_end', @$value, ['class' => 'form-control form-control-sm', 'id' => 'to', 'placeholder' => 'To : ', 'autocomplete' => 'off']) }}' +
 					'</div>' +
 				'</div>' +
 				@if($setHalfDayMC == 1)
-				'<div class="form-group row {{ $errors->has('leave_cat') ? 'has-error' : '' }}" id="wrapperday">' +
+				'<div class="form-group row m-1 {{ $errors->has('leave_cat') ? 'has-error' : '' }}" id="wrapperday">' +
 					'<div class="form-group col-sm-8 offset-sm-4 {{ $errors->has('half_type_id') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
 					'</div>' +
 				'</div>' +
 				@endif
 				@if( $userneedbackup == 1 )
 				'<div id="backupwrapper">' +
-					'<div class="form-group row {{ $errors->has('staff_id') ? 'has-error' : '' }}" id="backupremove">' +
+					'<div class="form-group row m-1 {{ $errors->has('staff_id') ? 'has-error' : '' }}" id="backupremove">' +
 						'{{ Form::label('backupperson', 'Backup Person : ', ['class' => 'col-sm-4 col-form-label']) }}' +
 						'<div class="col-sm-8 backup">' +
 							'<select name="staff_id" id="backupperson" class="form-select form-select-sm " placeholder="Please choose" autocomplete="off"></select>' +
@@ -3069,13 +3071,13 @@ if(obj.time_start_pm == itime_start) {
 					'</div>' +
 				'</div>' +
 				@endif
-				'<div class="form-group row {{ $errors->has('document') ? 'has-error' : '' }}">' +
+				'<div class="form-group row m-1 {{ $errors->has('document') ? 'has-error' : '' }}">' +
 					'{{ Form::label( 'doc', 'Upload Supporting Document : ', ['class' => 'col-sm-4 col-form-label'] ) }}' +
 					'<div class="col-sm-8 supportdoc">' +
 						'{{ Form::file( 'document', ['class' => 'form-control form-control-file', 'id' => 'doc', 'placeholder' => 'Supporting Document']) }}' +
 					'</div>' +
 				'</div>' +
-				'<div class="form-group row {{ $errors->has('akuan') ? 'has-error' : '' }}">' +
+				'<div class="form-group row m-1 {{ $errors->has('akuan') ? 'has-error' : '' }}">' +
 					'{{ Form::label('suppdoc', 'Supporting Document : ', ['class' => 'col-sm-4 col-form-label']) }}' +
 					'<div class="col-sm-8 form-check suppdoc">' +
 						'{{ Form::checkbox('documentsupport', 1, @$value, ['class' => 'form-check-input rounded', 'id' => 'suppdoc']) }}' +
@@ -3498,7 +3500,7 @@ $oi = $hrleave->belongstostaff->hasmanyleavereplacement()->where('leave_balance'
 		$('#remove').remove();
 		$('#wrapper').append(
 			'<div id="remove">' +
-				'<div class="form-group row {{ $errors->has('leave_id') ? 'has-error' : '' }}">' +
+				'<div class="form-group row m-1 {{ $errors->has('leave_id') ? 'has-error' : '' }}">' +
 					'{{ Form::label('nrla', 'Please Choose Your Replacement Leave : ', ['class' => 'col-sm-4 col-form-label']) }}' +
 					'<div class="col-sm-8 nrl">' +
 						'<p>Total Replacement Leave = {{ $oi->sum('leave_balance') }} days</p>' +
@@ -3510,25 +3512,25 @@ $oi = $hrleave->belongstostaff->hasmanyleavereplacement()->where('leave_balance'
 						'</select>' +
 					'</div>' +
 				'</div>' +
-				'<div class="form-group row {{ $errors->has('date_time_start') ? 'has-error' : '' }}">' +
+				'<div class="form-group row m-1 {{ $errors->has('date_time_start') ? 'has-error' : '' }}">' +
 					'{{ Form::label('from', 'From : ', ['class' => 'col-sm-4 col-form-label']) }}' +
 					'<div class="col-sm-8 datetime" style="position: relative">' +
 						'{{ Form::text('date_time_start', @$value, ['class' => 'form-control form-control-sm', 'id' => 'from', 'placeholder' => 'From : ', 'autocomplete' => 'off']) }}' +
 					'</div>' +
 				'</div>' +
-				'<div class="form-group row {{ $errors->has('date_time_end') ? 'has-error' : '' }}">' +
+				'<div class="form-group row m-1 {{ $errors->has('date_time_end') ? 'has-error' : '' }}">' +
 					'{{ Form::label('to', 'To : ', ['class' => 'col-sm-4 col-form-label']) }}' +
 					'<div class="col-sm-8 datetime" style="position: relative">' +
 						'{{ Form::text('date_time_end', @$value, ['class' => 'form-control form-control-sm', 'id' => 'to', 'placeholder' => 'To : ', 'autocomplete' => 'off']) }}' +
 					'</div>' +
 				'</div>' +
-				'<div class="form-group row {{ $errors->has('leave_cat') ? 'has-error' : '' }}" id="wrapperday">' +
+				'<div class="form-group row m-1 {{ $errors->has('leave_cat') ? 'has-error' : '' }}" id="wrapperday">' +
 					'<div class="form-group col-sm-8 offset-sm-4 {{ $errors->has('half_type_id') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
 					'</div>' +
 				'</div>' +
 				@if( $userneedbackup == 1 )
 				'<div id="backupwrapper">' +
-					'<div class="form-group row {{ $errors->has('staff_id') ? 'has-error' : '' }}" id="backupremove">' +
+					'<div class="form-group row m-1 {{ $errors->has('staff_id') ? 'has-error' : '' }}" id="backupremove">' +
 						'{{ Form::label('backupperson', 'Backup Person : ', ['class' => 'col-sm-4 col-form-label']) }}' +
 						'<div class="col-sm-8 backup">' +
 							'<select name="staff_id" id="backupperson" class="form-select form-select-sm " placeholder="Please choose" autocomplete="off"></select>' +
@@ -3536,13 +3538,13 @@ $oi = $hrleave->belongstostaff->hasmanyleavereplacement()->where('leave_balance'
 					'</div>' +
 				'</div>' +
 				@endif
-				'<div class="form-group row {{ $errors->has('document') ? 'has-error' : '' }}">' +
+				'<div class="form-group row m-1 {{ $errors->has('document') ? 'has-error' : '' }}">' +
 					'{{ Form::label( 'doc', 'Upload Supporting Document : ', ['class' => 'col-sm-4 col-form-label'] ) }}' +
 					'<div class="col-sm-8 supportdoc">' +
 						'{{ Form::file( 'document', ['class' => 'form-control form-control-file', 'id' => 'doc', 'placeholder' => 'Supporting Document']) }}' +
 					'</div>' +
 				'</div>' +
-				'<div class="form-group row {{ $errors->has('akuan') ? 'has-error' : '' }}">' +
+				'<div class="form-group row m-1 {{ $errors->has('akuan') ? 'has-error' : '' }}">' +
 					'{{ Form::label('suppdoc', 'Supporting Document : ', ['class' => 'col-sm-4 col-form-label']) }}' +
 					'<div class="col-sm-8 form-check suppdoc">' +
 						'{{ Form::checkbox('documentsupport', 1, @$value, ['class' => 'form-check-input', 'id' => 'suppdoc']) }}' +
@@ -4029,25 +4031,25 @@ if(obj.time_start_pm == itime_start) {
 		$('#wrapper').append(
 			'<div id="remove">' +
 				<!-- annual leave -->
-				'<div class="form-group row {{ $errors->has('date_time_start') ? 'has-error' : '' }}">' +
+				'<div class="form-group row m-1 {{ $errors->has('date_time_start') ? 'has-error' : '' }}">' +
 					'{{ Form::label('from', 'From : ', ['class' => 'col-sm-4 col-form-label']) }}' +
 					'<div class="col-sm-8 datetime" style="position: relative">' +
 						'{{ Form::text('date_time_start', @$value, ['class' => 'form-control form-control-sm', 'id' => 'from', 'placeholder' => 'From : ', 'autocomplete' => 'off']) }}' +
 					'</div>' +
 				'</div>' +
-				'<div class="form-group row {{ $errors->has('date_time_end') ? 'has-error' : '' }}">' +
+				'<div class="form-group row m-1 {{ $errors->has('date_time_end') ? 'has-error' : '' }}">' +
 					'{{ Form::label('to', 'To : ', ['class' => 'col-sm-4 col-form-label']) }}' +
 					'<div class="col-sm-8 datetime" style="position: relative">' +
 						'{{ Form::text('date_time_end', @$value, ['class' => 'form-control form-control-sm', 'id' => 'to', 'placeholder' => 'To : ', 'autocomplete' => 'off']) }}' +
 					'</div>' +
 				'</div>' +
-				'<div class="form-group row {{ $errors->has('leave_cat') ? 'has-error' : '' }}" id="wrapperday">' +
+				'<div class="form-group row m-1 {{ $errors->has('leave_cat') ? 'has-error' : '' }}" id="wrapperday">' +
 					'<div class="form-group col-sm-8 offset-sm-4 {{ $errors->has('half_type_id') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
 					'</div>' +
 				'</div>' +
 				@if( $userneedbackup == 1 )
 				'<div id="backupwrapper">' +
-					'<div class="form-group row {{ $errors->has('staff_id') ? 'has-error' : '' }}">' +
+					'<div class="form-group row m-1 {{ $errors->has('staff_id') ? 'has-error' : '' }}">' +
 						'{{ Form::label('backupperson', 'Backup Person : ', ['class' => 'col-sm-4 col-form-label']) }}' +
 						'<div class="col-sm-8 backup">' +
 							'<select name="staff_id" id="backupperson" class="form-select form-select-sm " placeholder="Please choose" autocomplete="off"></select>' +
@@ -4055,13 +4057,13 @@ if(obj.time_start_pm == itime_start) {
 					'</div>' +
 				'</div>' +
 				@endif
-				'<div class="form-group row {{ $errors->has('document') ? 'has-error' : '' }}">' +
+				'<div class="form-group row m-1 {{ $errors->has('document') ? 'has-error' : '' }}">' +
 					'{{ Form::label( 'doc', 'Upload Supporting Document : ', ['class' => 'col-sm-4 col-form-label'] ) }}' +
 					'<div class="col-sm-8 supportdoc">' +
 						'{{ Form::file( 'document', ['class' => 'form-control form-control-file', 'id' => 'doc', 'placeholder' => 'Supporting Document']) }}' +
 					'</div>' +
 				'</div>' +
-				'<div class="form-group row {{ $errors->has('akuan') ? 'has-error' : '' }}">' +
+				'<div class="form-group row m-1 {{ $errors->has('akuan') ? 'has-error' : '' }}">' +
 					'{{ Form::label('suppdoc', 'Supporting Document : ', ['class' => 'col-sm-4 col-form-label']) }}' +
 					'<div class="col-sm-8 form-check suppdoc">' +
 						'{{ Form::checkbox('documentsupport', 1, @$value, ['class' => 'form-check-input rounded', 'id' => 'suppdoc']) }}' +
