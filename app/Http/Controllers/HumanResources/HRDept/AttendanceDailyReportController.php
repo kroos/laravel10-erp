@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 
 // load models
+use App\Models\HumanResources\HRLeave;
 use App\Models\HumanResources\HRAttendance;
 use App\Models\HumanResources\HRRestdayCalendar;
 

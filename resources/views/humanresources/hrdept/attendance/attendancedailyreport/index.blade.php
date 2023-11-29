@@ -139,7 +139,7 @@ use App\Models\HumanResources\HROutstation;
         </td>
         <td class="text-center">
           @if ($leave_number != NULL)
-          <a href="{{ route('hrleave.show', $leave->leave_id) }}" target="_blank">
+          <a href="{{ route('leave.show', $leave->leave_id) }}" target="_blank">
             {{ $leave_number }}
           </a>
           @endif

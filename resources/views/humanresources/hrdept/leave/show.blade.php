@@ -166,6 +166,9 @@ $hr_remark = \App\Models\HumanResources\HRAttendance::where('staff_id', '=', $hr
 ->where('hr_remarks', '!=', NULL)
 ->select('hr_remarks')
 ->first();
+
+$auth = \Auth::user()->belongstostaff?->div_id;
+$auth_admin = \Auth::user()->belongstostaff?->authorise_id;
 ?>
 
 <div class="col-sm-12 row">
@@ -212,12 +215,14 @@ $hr_remark = \App\Models\HumanResources\HRAttendance::where('staff_id', '=', $hr
 			</div>
 		</div>
 
+		@if ($auth == 2 || $auth == 3 || $auth_admin == 1)
 		@if ($hr_remark?->hr_remarks != NULL && $hr_remark?->hr_remarks != '')
 		<div class="table">
 			<div class="table-row">
 				<div class="table-cell-top text-wrap" style="width: 100%;">HR REMARK : {{ @$hr_remark?->hr_remarks }}</div>
 			</div>
 		</div>
+		@endif
 		@endif
 
 		<div class="table">
