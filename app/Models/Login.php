@@ -161,29 +161,41 @@ class Login extends Authenticatable // implements MustVerifyEmail
 		}
 	}
 
-	public function isHODdept($dept)
+	// high management level 1
+	public function isHighManagement(array $hm)
 	{
-		$hmu = [];
-		if (Str::contains($dept, '|')) {
-			$hms = explode("|", $dept);									// convert $hm to array
-			foreach ($hms as $hm1) {
-				$hmu[] += $hm1;
+		$g = auth()->user()->belongstostaff()->whereIn('div_id', $hm)->get();
+		foreach($g as $t) {
+			if(!is_null($t->div_id)) {
+				return true;
 			}
-		} else {
-			$hmu = [$dept];
-		}
-		$h = \Auth::user()->belongstostaff->whereIn('div_id', 1)->belongstomanydepartment()->wherePivot('main', 1)->whereIn('department_id', $hmu);
-		// dd($h->ddRawSql());
-		if($h->isNotaEmpty()) {
-			return true;
 		}
 	}
 
-	// high management
-	public function isHighManagement(array $hm)
+	// high management level 1
+	public function isHighManagementlvl1(array $hm)
 	{
-		$g = auth()->user()->belongstostaff()->whereIn('div_id', $hm);
-		// dd($g->ddRawSql());
+		$g = auth()->user()->belongstostaff()->whereIn('div_id', $hm)->get();
+		foreach($g as $t) {
+			if(!is_null($t->div_id)) {
+				return true;
+			}
+		}
+	}
+
+	public function isHighManagementlvl2(array $hm)
+	{
+		$g = auth()->user()->belongstostaff()->whereIn('div_id', $hm)->get();
+		foreach($g->get() as $t) {
+			if(!is_null($t->div_id)) {
+				return true;
+			}
+		}
+	}
+
+	public function isHighManagementlvl3(array $hm)
+	{
+		$g = auth()->user()->belongstostaff()->whereIn('div_id', $hm)->get();
 		foreach($g->get() as $t) {
 			if(!is_null($t->div_id)) {
 				return true;

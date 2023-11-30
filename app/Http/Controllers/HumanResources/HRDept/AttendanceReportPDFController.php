@@ -44,8 +44,7 @@ class AttendanceReportPDFController extends Controller
 	function __construct()
 	{
 		$this->middleware(['auth']);
-		$this->middleware('highMgmtAccess:1|2|5,14|31', ['only' => ['index', 'show']]);
-		$this->middleware('highMgmtAccess:1|2|5,14|31', ['only' => ['create', 'store', 'edit', 'update', 'destroy']]);
+		$this->middleware('highMgmtAccess:1|2|5,14|31', ['only' => ['store']]);
 	}
 
 	public function store(Request $request): View
