@@ -63,7 +63,7 @@ class OutstationController extends Controller
 				'customer_id' => $request->customer_id,
 				'date_from' => $request->date_from,
 				'date_to' => $request->date_to,
-				'remarks' => ucwords(Str::of($request->remarks)->lower()),
+				'remarks' => $request->remarks,
 				'active' => 1,
 			]);
 		}
@@ -94,7 +94,7 @@ class OutstationController extends Controller
 	{
 		// dd($request->all());
 		// $outstation->update($request->only(['customer_id', 'date_from', 'date_to', 'remarks']));
-		$outstation->update( Arr::add( $request->only(['customer_id', 'date_from', 'date_to']), 'remarks', ucwords(Str::of($request->remarks)->lower())) );
+		$outstation->update( Arr::add( $request->only(['customer_id', 'date_from', 'date_to']), 'remarks', $request->remarks) );
 		Session::flash('flash_message', 'Successfully edit staff for outstation');
 		return redirect()->route('outstation.index');
 	}
@@ -104,12 +104,17 @@ class OutstationController extends Controller
 	 */
 	public function destroy(HROutstation $outstation): JsonResponse
 	{
-		// remove from attendance
-		$r = HRAttendance::where('outstation_id', $overtime->id)->get();
+		// DELETE FROM TABLE ATTENDANCE
+		$r = HRAttendance::where('outstation_id', $outstation['id'])->get();
+
 		foreach ($r as $c) {
-			HRAttendance::where('id', $c->id)->update(['outstation_id' => null]);
+			HRAttendance::where('id', $c->id)->update(['outstation_id' => NULL]);
 		}
+
+		// DELETE AT TABLE OUTSTATION
 		$outstation->update(['active' => NULL]);
+
+		// RETURN MESSAGE
 		return response()->json([
 			'message' => 'Data deleted',
 			'status' => 'success'
