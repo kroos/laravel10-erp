@@ -248,7 +248,7 @@ $p = [];
 		$pdf->SetAligns(['C', 'C', 'C', 'C', 'C', 'C', 'C', 'C', 'C', 'C', 'C', 'C', 'C', 'C', 'C']);
 
 		// set line heights. This is the height of each lines, not rows.
-		$pdf->SetLineHeight(5);
+		$pdf->SetLineHeight(4);
 		/////////////////////////////
 
 		// loop attendance for each staff

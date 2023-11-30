@@ -41,7 +41,7 @@ class HRLeaveApprovalSupervisorController extends Controller
 	{
 		$this->middleware(['auth']);
 		$this->middleware('highMgmtAccess:1|2|4|5,NULL', ['only' => ['index', 'show', 'update']]);
-		$this->middleware('highMgmtAccess:1|5,14', ['only' => ['create', 'store', 'edit', 'destroy']]);
+		$this->middleware('highMgmtAccessLevel1:1|5,14', ['only' => ['create', 'store', 'edit', 'destroy']]);
 	}
 
 	/**

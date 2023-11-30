@@ -37,8 +37,6 @@ class HRLeaveController extends Controller
 	function __construct()
 	{
 		$this->middleware('auth');
-		// $this->middleware('leaveaccess', ['only' => ['show', 'edit', 'update']]);
-		$this->middleware('highMgmtAccess:1|5,14', ['only' => ['edit', 'update', 'destroy']]);
 	}
 
 	/**

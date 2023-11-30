@@ -124,7 +124,7 @@ class UnavailableDateTime
 			$query->whereIn('leave_status_id', [5,6])
 			->orwhereNull('leave_status_id');
 		})
-		// ->where('half_type_id', 2)
+		// ->where('leave_cat', 2)
 		->where(function (Builder $query) use ($d){
 			$query->whereYear('date_time_start', '<=', $d->copy()->year)
 			->whereYear('date_time_end', '>=', $d->copy()->year);
@@ -142,7 +142,7 @@ class UnavailableDateTime
 			$query->whereIn('leave_status_id', [5,6])
 			->orwhereNull('leave_status_id');
 		})
-		->where('half_type_id', 2)
+		->where('leave_cat', 2)
 		->where(function (Builder $query) use ($d){
 			$query->whereYear('date_time_start', '<=', $d->copy()->year)
 			->whereYear('date_time_end', '>=', $d->copy()->year);
@@ -183,13 +183,12 @@ class UnavailableDateTime
 		} else {
 			$leavday2 = [];
 		}
-		// $leaveo = array_diff($leavday1, $leavday2);
-		// dd($leaveo);
+		// dd(array_diff($leavday1, $leavday2), $leavday1, $leavday2);
 
 		if(Setting::find(1)->active == 1) {																				// overlapped leave date checking
-			$leavday = $leavday1;
-		} else {
 			$leavday = array_diff($leavday1, $leavday2);																// remove 1 value from array so not blocking date with half day
+		} else {
+			$leavday = $leavday1;
 		}
 		// dd($leavday);
 
@@ -205,7 +204,7 @@ class UnavailableDateTime
 			$query->whereIn('leave_status_id', [5,6])
 			->orwhereNull('leave_status_id');
 		})
-		->where('half_type_id', 2)
+		->whereNotNull('half_type_id')
 		->where(function (Builder $query) use ($d){
 			$query->whereYear('date_time_start', '<=', $d->copy()->year)
 			->whereYear('date_time_end', '>=', $d->copy()->year);
@@ -222,8 +221,8 @@ class UnavailableDateTime
 			foreach ($hleaveday1 as $v2) {
 				$timeuhd[] = [
 								'date_half_leave' => \Carbon\Carbon::parse($v2->date_time_start)->format('Y-m-d'),
-								'time_start' => \Carbon\Carbon::parse($v2->date_time_start)->format('G:i:s'),
-								'time_end' => \Carbon\Carbon::parse($v2->date_time_end)->format('G:i:s')
+								'time_start' => \Carbon\Carbon::parse($v2->date_time_start)->format('H:i:s'),
+								'time_end' => \Carbon\Carbon::parse($v2->date_time_end)->format('H:i:s')
 							];
 			}
 		} else {
