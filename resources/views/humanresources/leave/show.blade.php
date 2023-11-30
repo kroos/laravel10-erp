@@ -1,16 +1,6 @@
 @extends('layouts.app')
 
 @section('content')
-<script>
-  function printPage() {
-    window.print();
-  }
-
-    function back() {
-   window.history.back();
-  }
-</script>
-
 <style>
   @media print {
     body {
@@ -97,8 +87,8 @@
 </style>
 
 <?php
-$staff = $leave->belongstostaff()->get()->first();
-$login = $staff->hasmanylogin()->get()->first();
+$staff = $leave->belongstostaff()?->first();
+$login = \App\Models\Login::where([['staff_id', $leave->staff_id], ['active', 1]])->first();
 
 $count = 0;
 $supervisor_no = 0;
@@ -106,11 +96,11 @@ $hod_no = 0;
 $director_no = 0;
 $hr_no = 0;
 
-$backup = $leave->hasmanyleaveapprovalbackup->first();
-$supervisor = $leave->hasmanyleaveapprovalsupervisor->first();
-$hod = $leave->hasmanyleaveapprovalhod->first();
-$director = $leave->hasmanyleaveapprovaldir->first();
-$hr = $leave->hasmanyleaveapprovalhr->first();
+$backup = $leave->hasmanyleaveapprovalbackup?->first();
+$supervisor = $leave->hasmanyleaveapprovalsupervisor?->first();
+$hod = $leave->hasmanyleaveapprovalhod?->first();
+$director = $leave->hasmanyleaveapprovaldir?->first();
+$hr = $leave->hasmanyleaveapprovalhr?->first();
 
 if ($supervisor) {
   $count++;
@@ -157,7 +147,7 @@ if ($leave->period_day !== 0.0 && $leave->period_time == NULL) {
 }
 
 if ($backup) {
-  $backup_name = $backup->belongstostaff->name;
+  $backup_name = $backup->belongstostaff?->name;
 
   if ($backup->created_at == $backup->updated_at) {
     $approved_date = '-';
@@ -168,6 +158,17 @@ if ($backup) {
   $backup_name = '-';
   $approved_date = '-';
 }
+
+$start = \Carbon\Carbon::parse($leave->date_time_start)->format('Y-m-d');
+$end = \Carbon\Carbon::parse($leave->date_time_end)->format('Y-m-d');
+$hr_remark = \App\Models\HumanResources\HRAttendance::where('staff_id', '=', $leave->staff_id)
+->whereBetween('attend_date', [$start, $end])
+->where('hr_remarks', '!=', NULL)
+->select('hr_remarks')
+->first();
+
+$auth = \Auth::user()->belongstostaff?->div_id;
+$auth_admin = \Auth::user()->belongstostaff?->authorise_id;
 ?>
 
 <div class="table-container">
@@ -207,6 +208,16 @@ if ($backup) {
     </div>
   </div>
 
+  @if ($auth == 2 || $auth == 3 || $auth_admin == 1)
+	@if ($hr_remark?->hr_remarks != NULL && $hr_remark?->hr_remarks != '')
+	<div class="table">
+		<div class="table-row">
+			<div class="table-cell-top text-wrap" style="width: 100%;">HR REMARK : {{ @$hr_remark?->hr_remarks }}</div>
+		</div>
+	</div>
+	@endif
+	@endif
+
   <div class="table">
     <div class="table-row">
       <div class="table-cell-top text-center" style="width: 100%; background-color: #ffcc99; font-size: 18px;">SIGNATURE / APPROVALS</div>
@@ -229,26 +240,30 @@ if ($backup) {
 
 <div class="table">
   <div class="table-row" style="height: 50px;">
-    @for ($a = 1; $a <= $count; $a++) @if ($supervisor_no==$a) <div class="table-cell-top-bottom text-center text-decoration-underline text-wrap" style="width: {{ $width }}%; vertical-align: bottom;">{{ @$supervisor->belongstostaff->name }}</div>
-  @elseif ($hod_no == $a)
-  <div class="table-cell-top-bottom text-center text-decoration-underline text-wrap" style="width: {{ $width }}%; vertical-align: bottom;">{{ @$hod->belongstostaff->name }}</div>
-  @elseif ($director_no == $a)
-  <div class="table-cell-top-bottom text-center text-decoration-underline text-wrap" style="width: {{ $width }}%; vertical-align: bottom;">{{ @$director->belongstostaff->name }}</div>
-  @elseif ($hr_no == $a)
-  <div class="table-cell-top-bottom text-center text-decoration-underline text-wrap" style="width: {{ $width }}%; vertical-align: bottom;">{{ @$hr->belongstostaff->name }}</div>
-  @endif
-  @endfor
+    @for ($a = 1; $a <= $count; $a++) 
+      @if ($supervisor_no==$a) 
+        <div class="table-cell-top-bottom text-center text-decoration-underline text-wrap" style="width: {{ $width }}%; vertical-align: bottom;">{{ @$supervisor->belongstostaff->name }}</div>
+      @elseif ($hod_no == $a)
+        <div class="table-cell-top-bottom text-center text-decoration-underline text-wrap" style="width: {{ $width }}%; vertical-align: bottom;">{{ @$hod->belongstostaff->name }}</div>
+      @elseif ($director_no == $a)
+        <div class="table-cell-top-bottom text-center text-decoration-underline text-wrap" style="width: {{ $width }}%; vertical-align: bottom;">{{ @$director->belongstostaff->name }}</div>
+      @elseif ($hr_no == $a)
+        <div class="table-cell-top-bottom text-center text-decoration-underline text-wrap" style="width: {{ $width }}%; vertical-align: bottom;">{{ @$hr->belongstostaff->name }}</div>
+      @endif
+    @endfor
 </div>
 <div class="table-row">
-  @for ($a = 1; $a <= $count; $a++) @if ($supervisor_no==$a) <div class="table-cell-top1 text-center">{{ @$supervisor->updated_at }}</div>
-@elseif ($hod_no == $a)
-<div class="table-cell-top1 text-center">{{ @$hod->updated_at }}</div>
-@elseif ($director_no == $a)
-<div class="table-cell-top1 text-center">{{ @$director->updated_at }}</div>
-@elseif ($hr_no == $a)
-<div class="table-cell-top1 text-center">{{ @$hr->updated_at }}</div>
-@endif
-@endfor
+    @for ($a = 1; $a <= $count; $a++) 
+      @if ($supervisor_no==$a) 
+        <div class="table-cell-top1 text-center">{{ @$supervisor->updated_at }}</div>
+      @elseif ($hod_no == $a)
+        <div class="table-cell-top1 text-center">{{ @$hod->updated_at }}</div>
+      @elseif ($director_no == $a)
+        <div class="table-cell-top1 text-center">{{ @$director->updated_at }}</div>
+      @elseif ($hr_no == $a)
+        <div class="table-cell-top1 text-center">{{ @$hr->updated_at }}</div>
+      @endif
+    @endfor
 </div>
 </div>
 
@@ -270,5 +285,11 @@ if ($backup) {
 @endsection
 
 @section('js')
+  function printPage() {
+    window.print();
+  }
 
+  function back() {
+    window.history.back();
+  }
 @endsection

@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 
 // load models
+use App\Models\HumanResources\HRLeave;
 use App\Models\HumanResources\HRAttendance;
 use App\Models\HumanResources\HRRestdayCalendar;
 
@@ -115,6 +116,7 @@ class AttendanceDailyReportController extends Controller
         ->where('pivot_staff_pivotdepts.main', '=', 1)
         ->select('hr_attendances.attend_date', 'option_branches.code', 'pivot_dept_cate_branches.department', 'option_restday_groups.group', 'logins.username', 'staffs.name', 'hr_attendances.leave_id', 'hr_attendances.remarks')
         ->orderBy('option_branches.code', 'ASC')
+        ->orderBy('pivot_dept_cate_branches.department', 'ASC')
         ->orderBy('logins.username', 'ASC')
         ->get();
     } else {
@@ -138,6 +140,7 @@ class AttendanceDailyReportController extends Controller
         ->where('pivot_staff_pivotdepts.main', '=', 1)
         ->select('hr_attendances.attend_date', 'option_branches.code', 'pivot_dept_cate_branches.department', 'option_restday_groups.group', 'logins.username', 'staffs.name', 'hr_attendances.leave_id', 'hr_attendances.remarks')
         ->orderBy('option_branches.code', 'ASC')
+        ->orderBy('pivot_dept_cate_branches.department', 'ASC')
         ->orderBy('logins.username', 'ASC')
         ->get();
     }
@@ -216,6 +219,7 @@ class AttendanceDailyReportController extends Controller
       ->where('pivot_staff_pivotdepts.main', '=', 1)
       ->select('hr_attendances.attend_date', 'option_branches.code', 'pivot_dept_cate_branches.department', 'option_restday_groups.group', 'logins.username', 'staffs.name', 'hr_attendances.outstation_id', 'hr_attendances.remarks', 'hr_attendances.attendance_type_id')
       ->orderBy('option_branches.code', 'ASC')
+      ->orderBy('pivot_dept_cate_branches.department', 'ASC')
       ->orderBy('logins.username', 'ASC')
       ->get();
 

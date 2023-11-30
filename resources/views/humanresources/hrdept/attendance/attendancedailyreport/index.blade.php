@@ -57,7 +57,7 @@ use App\Models\HumanResources\HROutstation;
         <td class="text-center" style="width: 75px;">
           DATE
         </td>
-        <td class="text-center" style="max-width: 100px;">
+        <td class="text-center" style="width: 90px;">
           STATUS
         </td>
         <td class="text-center" style="max-width: 60px;">
@@ -116,7 +116,7 @@ use App\Models\HumanResources\HROutstation;
         <td class="text-center">
           {{ $absent->attend_date }}
         </td>
-        <td class="text-truncate text-center" style="max-width: 100px;" title="{{ $status }}">
+        <td class="text-center" title="{{ $status }}">
           {{ $status }}
         </td>
         <td class="text-truncate text-center" style="max-width: 60px;" title="{{ $absent->code }}">
@@ -139,7 +139,7 @@ use App\Models\HumanResources\HROutstation;
         </td>
         <td class="text-center">
           @if ($leave_number != NULL)
-          <a href="{{ route('hrleave.show', $leave->leave_id) }}" target="_blank">
+          <a href="{{ route('leave.show', $leave->leave_id) }}" target="_blank">
             {{ $leave_number }}
           </a>
           @endif
@@ -194,7 +194,7 @@ use App\Models\HumanResources\HROutstation;
         <td class="text-center" style="width: 75px;">
           DATE
         </td>
-        <td class="text-center" style="max-width: 100px;">
+        <td class="text-center" style="width: 90px;">
           STATUS
         </td>
         <td class="text-center" style="max-width: 60px;">
@@ -260,7 +260,7 @@ use App\Models\HumanResources\HROutstation;
         <td class="text-center">
           {{ $outstation->attend_date }}
         </td>
-        <td class="text-truncate text-center" style="max-width: 100px;" title="{{ $status }}">
+        <td class="text-center" title="{{ $status }}">
           {{ $status }}
         </td>
         <td class="text-truncate text-center" style="max-width: 60px;" title="{{ $outstation->code }}">
