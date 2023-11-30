@@ -1,3 +1,6 @@
+@extends('layouts.app')
+
+@section('content')
 <?php
 use App\Models\Staff;
 use App\Models\HumanResources\OptReligion;
@@ -6,43 +9,40 @@ use App\Models\HumanResources\OptRace;
 use App\Models\HumanResources\OptMaritalStatus;
 use App\Models\HumanResources\OptCountry;
 use App\Models\HumanResources\HRLeaveApprovalFlow;
-
 ?>
-@extends('layouts.app')
 
-@section('content')
-<div class="container justify-content-center align-items-start">
+<div class="container">
 @include('humanresources.hrdept.navhr')
-	<h4 class="align-items-start">Add Staff</h4>
+	<h4>Add Staff</h4>
 	{{ Form::open(['route' => ['staff.store'], 'id' => 'form', 'class' => 'form-horizontal', 'autocomplete' => 'off', 'files' => true]) }}
 
-	<div class="row justify-content-center">
-		<div class="col-sm-6 gy-1 gx-1 align-items-start">
+	<div class="row container p-0">
+		<div class="col-sm-6 container">
 
 			<div class="form-group row mb-3 {{ $errors->has('name') ? 'has-error' : '' }}">
 				{{ Form::label( 'nam', 'Name : ', ['class' => 'col-sm-4 col-form-label'] ) }}
-				<div class="col-auto">
-					{{ Form::text('name', @$value, ['class' => 'form-control form-control-sm col-auto', 'id' => 'nam', 'placeholder' => 'Name', 'autocomplete' => 'off']) }}
+				<div class="col-sm-7">
+					{{ Form::text('name', @$value, ['class' => 'form-control form-control-sm', 'id' => 'nam', 'placeholder' => 'Name', 'autocomplete' => 'off']) }}
 				</div>
 			</div>
 
 			<div class="form-group row mb-3 {{ $errors->has('ic') ? 'has-error' : '' }}">
 				{{ Form::label( 'ic', 'Identity Card/Passport : ', ['class' => 'col-sm-4 col-form-label'] ) }}
-				<div class="col-auto">
-					{{ Form::text('ic', @$value, ['class' => 'form-control form-control-sm col-auto', 'id' => 'ic', 'placeholder' => 'Identity Card/Passport', 'autocomplete' => 'off']) }}
+				<div class="col-sm-7">
+					{{ Form::text('ic', @$value, ['class' => 'form-control form-control-sm', 'id' => 'ic', 'placeholder' => 'Identity Card/Passport', 'autocomplete' => 'off']) }}
 				</div>
 			</div>
 
 			<div class="form-group row mb-3 {{ $errors->has('email') ? 'has-error' : '' }}">
 				{{ Form::label( 'ema', 'Email : ', ['class' => 'col-sm-4 col-form-label'] ) }}
-				<div class="col-auto">
-					{{ Form::text('email', @$value, ['class' => 'form-control form-control-sm col-auto', 'id' => 'ema', 'placeholder' => 'Email', 'autocomplete' => 'off']) }}
+				<div class="col-sm-7">
+					{{ Form::text('email', @$value, ['class' => 'form-control form-control-sm', 'id' => 'ema', 'placeholder' => 'Email', 'autocomplete' => 'off']) }}
 				</div>
 			</div>
 
 			<div class="form-group row mb-3 {{ $errors->has('gender_id') ? 'has-error' : '' }}">
-				<p class="col-sm-4">Gender :</p>
-				<div class="col-auto">
+				{{ Form::label( 'gender', 'Gender : ', ['class' => 'col-sm-4 col-form-label'] ) }}
+				<div class="col-sm-7">
 					<?php $i=0 ?>
 					@foreach(\App\Models\HumanResources\OptGender::orderBy('id')->get() as $g)
 					<div class="form-check form-check-inline">
@@ -56,324 +56,301 @@ use App\Models\HumanResources\HRLeaveApprovalFlow;
 
 			<div class="form-group row mb-3 {{ $errors->has('marital_status_id') ? 'has-error' : '' }}">
 				{{ Form::label( 'mar', 'Marital Status : ', ['class' => 'col-sm-4 col-form-label'] ) }}
-				<div class="col-auto">
-					{{ Form::select('marital_status_id', OptMaritalStatus::pluck('marital_status', 'id')->toArray(), @$value, ['class' => 'form-control form-select col-auto', 'id' => 'mar', 'placeholder' => 'Marital Status', 'autocomplete' => 'off']) }}
+				<div class="col-sm-7">
+					{{ Form::select('marital_status_id', OptMaritalStatus::pluck('marital_status', 'id')->toArray(), @$value, ['class' => 'form-control form-select', 'id' => 'mar', 'placeholder' => 'Marital Status', 'autocomplete' => 'off']) }}
 				</div>
 			</div>
 
 			<div class="form-group row mb-3 {{ $errors->has('dob') ? 'has-error' : '' }}" style="position: relative">
 				{{ Form::label( 'dob', 'Date Of Birth : ', ['class' => 'col-sm-4 col-form-label'] ) }}
-				<div class="col-auto">
-					{{ Form::text('dob', @$value, ['class' => 'form-control form-control-sm col-auto', 'id' => 'dob', 'placeholder' => 'Date Of Birth', 'autocomplete' => 'off']) }}
+				<div class="col-sm-7">
+					{{ Form::text('dob', @$value, ['class' => 'form-control form-control-sm', 'id' => 'dob', 'placeholder' => 'Date Of Birth', 'autocomplete' => 'off']) }}
 				</div>
 			</div>
 
 			<div class="form-group row mb-3 {{ $errors->has('address') ? 'has-error' : '' }}">
 				{{ Form::label( 'add', 'Address : ', ['class' => 'col-sm-4 col-form-label'] ) }}
-				<div class="col-auto">
-					{{ Form::textarea('address', @$value, ['class' => 'form-control form-control-sm col-auto', 'id' => 'add', 'placeholder' => 'Address', 'autocomplete' => 'off']) }}
+				<div class="col-sm-7">
+					{{ Form::textarea('address', @$value, ['class' => 'form-control form-control-sm', 'id' => 'add', 'placeholder' => 'Address', 'autocomplete' => 'off']) }}
 				</div>
 			</div>
 
 			<div class="form-group row mb-3 {{ $errors->has('mobile') ? 'has-error' : '' }}">
 				{{ Form::label( 'mob', 'Mobile : ', ['class' => 'col-sm-4 col-form-label'] ) }}
-				<div class="col-auto">
-					{{ Form::text('mobile', @$value, ['class' => 'form-control form-control-sm col-auto', 'id' => 'mob', 'placeholder' => 'Mobile', 'autocomplete' => 'off']) }}
+				<div class="col-sm-7">
+					{{ Form::text('mobile', @$value, ['class' => 'form-control form-control-sm', 'id' => 'mob', 'placeholder' => 'Mobile', 'autocomplete' => 'off']) }}
 				</div>
 			</div>
 
 			<div class="form-group row mb-3 {{ $errors->has('phone') ? 'has-error' : '' }}">
 				{{ Form::label( 'pho', 'Phone : ', ['class' => 'col-sm-4 col-form-label'] ) }}
-				<div class="col-auto">
-					{{ Form::text('phone', @$value, ['class' => 'form-control form-control-sm col-auto', 'id' => 'pho', 'placeholder' => 'Phone', 'autocomplete' => 'off']) }}
+				<div class="col-sm-7">
+					{{ Form::text('phone', @$value, ['class' => 'form-control form-control-sm', 'id' => 'pho', 'placeholder' => 'Phone', 'autocomplete' => 'off']) }}
 				</div>
 			</div>
 
 			<div class="form-group row mb-3 {{ $errors->has('religion_id') ? 'has-error' : '' }}">
 				{{ Form::label( 'rel', 'Religion : ', ['class' => 'col-sm-4 col-form-label'] ) }}
-				<div class="col-auto">
-					{{ Form::select('religion_id', OptReligion::pluck('religion', 'id')->toArray(), @$value, ['class' => 'form-control form-select form-select-sm col-auto', 'id' => 'rel', 'placeholder' => 'Religion', 'autocomplete' => 'off']) }}
+				<div class="col-sm-7">
+					{{ Form::select('religion_id', OptReligion::pluck('religion', 'id')->toArray(), @$value, ['class' => 'form-control form-select form-select-sm', 'id' => 'rel', 'placeholder' => 'Religion', 'autocomplete' => 'off']) }}
 				</div>
 			</div>
 
 			<div class="form-group row mb-3 {{ $errors->has('race_id') ? 'has-error' : '' }}">
 				{{ Form::label( 'rac', 'Race : ', ['class' => 'col-sm-4 col-form-label'] ) }}
-				<div class="col-auto">
-					{{ Form::select('race_id', OptRace::pluck('race', 'id')->toArray(), @$value, ['class' => 'form-control form-select col-auto', 'id' => 'rac', 'placeholder' => 'Race', 'autocomplete' => 'off']) }}
+				<div class="col-sm-7">
+					{{ Form::select('race_id', OptRace::pluck('race', 'id')->toArray(), @$value, ['class' => 'form-control form-select', 'id' => 'rac', 'placeholder' => 'Race', 'autocomplete' => 'off']) }}
 				</div>
 			</div>
 
 			<div class="form-group row mb-3 {{ $errors->has('nationality_id') ? 'has-error' : '' }}">
 				{{ Form::label( 'nat', 'Nationality : ', ['class' => 'col-sm-4 col-form-label'] ) }}
-				<div class="col-auto">
-					{{ Form::select('nationality_id', OptCountry::pluck('country', 'id')->toArray(), @$value, ['class' => 'form-control form-select col-auto', 'id' => 'nat', 'placeholder' => 'Nationality', 'autocomplete' => 'off']) }}
+				<div class="col-sm-7">
+					{{ Form::select('nationality_id', OptCountry::pluck('country', 'id')->toArray(), @$value, ['class' => 'form-control form-select', 'id' => 'nat', 'placeholder' => 'Nationality', 'autocomplete' => 'off']) }}
 				</div>
 			</div>
 
 			<div class="form-group row mb-3 {{ $errors->has('cimb_account') ? 'has-error' : '' }}">
 				{{ form::label( 'cia', 'CIMB Account : ', ['class' => 'col-sm-4 col-form-label'] ) }}
-				<div class="col-auto">
-					{{ form::text('cimb_account', @$value, ['class' => 'form-control form-control-sm col-auto', 'id' => 'cia', 'placeholder' => 'CIMB Account', 'autocomplete' => 'off']) }}
+				<div class="col-sm-7">
+					{{ form::text('cimb_account', @$value, ['class' => 'form-control form-control-sm', 'id' => 'cia', 'placeholder' => 'CIMB Account', 'autocomplete' => 'off']) }}
 				</div>
 			</div>
 
 			<div class="form-group row mb-3 {{ $errors->has('epf_account') ? 'has-error' : '' }}">
 				{{ form::label( 'epf', 'EPF Account : ', ['class' => 'col-sm-4 col-form-label'] ) }}
-				<div class="col-auto">
-					{{ form::text('epf_account', @$value, ['class' => 'form-control form-control-sm col-auto', 'id' => 'epf', 'placeholder' => 'EPF Account', 'autocomplete' => 'off']) }}
+				<div class="col-sm-7">
+					{{ form::text('epf_account', @$value, ['class' => 'form-control form-control-sm', 'id' => 'epf', 'placeholder' => 'EPF Account', 'autocomplete' => 'off']) }}
 				</div>
 			</div>
 
 			<div class="form-group row mb-3 {{ $errors->has('income_tax_no') ? 'has-error' : '' }}">
 				{{ form::label( 'itn', 'Income Tax No : ', ['class' => 'col-sm-4 col-form-label'] ) }}
-				<div class="col-auto">
-					{{ form::text('income_tax_no', @$value, ['class' => 'form-control form-control-sm col-auto', 'id' => 'itn', 'placeholder' => 'Income Tax No', 'autocomplete' => 'off']) }}
+				<div class="col-sm-7">
+					{{ form::text('income_tax_no', @$value, ['class' => 'form-control form-control-sm', 'id' => 'itn', 'placeholder' => 'Income Tax No', 'autocomplete' => 'off']) }}
 				</div>
 			</div>
 
 			<div class="form-group row mb-3 {{ $errors->has('socso_no') ? 'has-error' : '' }}">
 				{{ form::label( 'son', 'SOCSO No : ', ['class' => 'col-sm-4 col-form-label'] ) }}
-				<div class="col-auto">
-					{{ form::text('socso_no', @$value, ['class' => 'form-control form-control-sm col-auto', 'id' => 'son', 'placeholder' => 'SOCSO No', 'autocomplete' => 'off']) }}
+				<div class="col-sm-7">
+					{{ form::text('socso_no', @$value, ['class' => 'form-control form-control-sm', 'id' => 'son', 'placeholder' => 'SOCSO No', 'autocomplete' => 'off']) }}
 				</div>
 			</div>
 
 			<div class="form-group row mb-3 {{ $errors->has('weight') ? 'has-error' : '' }}">
 				{{ form::label( 'wei', 'Weight : ', ['class' => 'col-sm-4 col-form-label'] ) }}
-				<div class="col-auto">
-					{{ form::text('weight', @$value, ['class' => 'form-control form-control-sm col-auto', 'id' => 'wei', 'placeholder' => 'Weight', 'autocomplete' => 'off']) }}
+				<div class="col-sm-7">
+					{{ form::text('weight', @$value, ['class' => 'form-control form-control-sm', 'id' => 'wei', 'placeholder' => 'Weight', 'autocomplete' => 'off']) }}
 				</div>
 			</div>
 
 			<div class="form-group row mb-3 {{ $errors->has('height') ? 'has-error' : '' }}">
 				{{ form::label( 'hei', 'Height : ', ['class' => 'col-sm-4 col-form-label'] ) }}
-				<div class="col-auto">
-					{{ form::text('height', @$value, ['class' => 'form-control form-control-sm col-auto', 'id' => 'hei', 'placeholder' => 'Height', 'autocomplete' => 'off']) }}
+				<div class="col-sm-7">
+					{{ form::text('height', @$value, ['class' => 'form-control form-control-sm', 'id' => 'hei', 'placeholder' => 'Height', 'autocomplete' => 'off']) }}
 				</div>
 			</div>
 
 			<div class="form-group row mb-3 {{ $errors->has('join') ? 'has-error' : '' }}" style="position: relative">
 				{{ form::label( 'jpo', 'Date Join : ', ['class' => 'col-sm-4 col-form-label'] ) }}
-				<div class="col-auto">
-					{{ form::text('join', @$value, ['class' => 'form-control form-control-sm col-auto', 'id' => 'jpo', 'placeholder' => 'Date Join', 'autocomplete' => 'off']) }}
+				<div class="col-sm-7">
+					{{ form::text('join', @$value, ['class' => 'form-control form-control-sm', 'id' => 'jpo', 'placeholder' => 'Date Join', 'autocomplete' => 'off']) }}
 				</div>
 			</div>
 
 			<div class="form-group row mb-3 {{ $errors->has('image') ? 'has-error' : '' }}">
 				{{ Form::label( 'ima', 'Image : ', ['class' => 'col-sm-4 col-form-label'] ) }}
-				<div class="col-auto supportdoc">
+				<div class="col-sm-7 supportdoc">
 					{{ Form::file( 'image', ['class' => 'form-control form-control-sm form-control-file', 'id' => 'ima', 'placeholder' => 'Image']) }}
 				</div>
 			</div>
 
 			<p>&nbsp;</p>
-			<div class="col-auto row">
-				<div class="row">
-					<div class="col-auto">
+
+			<div>
+				<div class="row mb-1">
+					<div class="col-sm-4">
 						<h6>Staff Emergency Contact</h6>
 					</div>
-					<div class="col-auto">
+					<div class="col-sm-7">
 						<button type="button" class="col-auto btn btn-sm btn-outline-secondary emergency_add">
 							<i class="fas fa-plus" aria-hidden="true"></i>&nbsp;Add Emergency Contact
 						</button>
 					</div>
 				</div>
-				<div class="row mb-1 g-1 emergency_wrap">
-					<div class="row emergency_row">
-						<div class="col-auto mb-1 g-1 ">
+				<div class="row emergency_wrap">
+					<div class="row mb-1 emergency_row">
+						<div class="col-sm-1">
 							<button class="btn btn-sm btn-outline-secondary emergency_remove" type="button">
 								<i class="fas fa-trash" aria-hidden="true"></i>
 							</button>
 						</div>
-						<div class="col-auto mb-1 g-1 form-group {{ $errors->has('staffemergency.*.contact_person') ? 'has-error' : '' }}">
-							<input type="text" name="staffemergency[1][contact_person]" id="ecp_1" class="form-control form-control-sm" placeholder="Emergency Contact">
+						<div class="col-sm-11 form-group {{ $errors->has('staffemergency.*.contact_person') ? 'has-error' : '' }}">
+							<input type="text" name="staffemergency[1][contact_person]" id="ecp_1" class="form-control form-control-sm" placeholder="Name">
 						</div>
-						<div class="col-auto mb-1 g-1 form-group {{ $errors->has('staffemergency.*.phone') ? 'has-error' : '' }}">
+						<div class="col-sm-1"></div>
+						<div class="col-sm-5 form-group {{ $errors->has('staffemergency.*.phone') ? 'has-error' : '' }}">
 							<input type="text" name="staffemergency[1][phone]" id="epp_1" class="form-control form-control-sm" placeholder="Phone">
 						</div>
-						<div class="col-auto mb-1 g-1 form-group {{ $errors->has('staffemergency.*.relationship_id') ? 'has-error' : '' }}">
+						<div class="col-sm-6 form-group {{ $errors->has('staffemergency.*.relationship_id') ? 'has-error' : '' }}">
 							<select name="staffemergency[1][relationship_id]" id="ere_1" class="form-select form-select-sm" placeholder="Relationship"></select>
 						</div>
-						<div class="col-auto mb-1 gx-1 form-group {{ $errors->has('staffemergency.*.address') ? 'has-error' : '' }}">
+						<div class="col-sm-1"></div>
+						<div class="col-sm-11 form-group {{ $errors->has('staffemergency.*.address') ? 'has-error' : '' }}">
 							<input type="textarea" name="staffemergency[1][address]" id="ead_1" class="form-control form-control-sm" placeholder="Address">
 						</div>
 					</div>
 				</div>
 			</div>
+
 			<p>&nbsp;</p>
-			<div class="col-auto row wrap_spouse">
-				<div class="row">
-					<div class="col-auto">
+
+			<div class="wrap_spouse">
+				<div class="row mb-1">
+					<div class="col-sm-3">
 						<h6>Staff Spouse</h6>
 					</div>
-					<div class="col-auto">
+					<div class="col-sm-7">
 						<button type="button" class="col-auto btn btn-sm btn-outline-secondary spouse_add">
 							<i class="fas fa-plus" aria-hidden="true"></i>&nbsp;Add Spouse
 						</button>
 					</div>
 				</div>
-				<div class="row mb-1 g-1 spouse_wrap">
-					<div class="row spouse_row">
-						<div class="col-auto mb-1 g-1 ">
-							<button class="btn btn-sm btn-outline-secondary spouse_remove" type="button">
-								<i class="fas fa-trash" aria-hidden="true"></i>
-							</button>
-						</div>
-						<div class="col-auto mb-1 g-1 form-group {{ $errors->has('staffspouse.*.spouse') ? 'has-error' : '' }}">
-							<input type="text" name="staffspouse[1][spouse]" id="spo" class="form-control form-control-sm" placeholder="Spouse">
-						</div>
-						<div class="col-auto mb-1 g-1 form-group {{ $errors->has('staffspouse.*.phone') ? 'has-error' : '' }}">
-							<input type="text" name="staffspouse[1][phone]" id="pho" class="form-control form-control-sm" placeholder="Spouse Phone">
-						</div>
-						<div class="col-auto mb-1 g-1 form-group {{ $errors->has('staffspouse.*.profession') ? 'has-error' : '' }}">
-							<input type="text" name="staffspouse[1][profession]" id="pro" class="form-control form-control-sm" placeholder="Spouse Profession">
-						</div>
-					</div>
+				<div class="row spouse_wrap">
+					<!-- JAVASCRIPT ADD FORM SPOUSE -->
 				</div>
 			</div>
 
 			<p>&nbsp;</p>
-			<div class="col-auto row wrap_children">
-				<div class="row">
-					<div class="col-auto">
+
+			<div class="wrap_children">
+				<div class="row mb-1">
+					<div class="col-sm-3">
 						<h6>Staff Children</h6>
 					</div>
-					<div class="col-auto">
+					<div class="col-sm-7">
 						<button type="button" class="col-auto btn btn-sm btn-outline-secondary children_add">
 							<i class="fas fa-plus" aria-hidden="true"></i>&nbsp;Add Children
 						</button>
 					</div>
 				</div>
-				<div class="row mb-1 g-1 children_wrap">
-					<div class="row children_row">
-						<div class="col-auto mb-1 g-1 ">
-							<button class="btn btn-sm btn-outline-secondary children_remove" type="button">
-								<i class="fas fa-trash" aria-hidden="true"></i>
-							</button>
-						</div>
-						<div class="col-auto mb-1 g-1 form-group {{ $errors->has('staffchildren.*.children') ? 'has-error' : '' }}">
-							<input type="text" name="staffchildren[1][children]" id="chi_1" class="form-control form-control-sm" placeholder="Children">
-						</div>
-						<div class="col-auto mb-1 g-1 form-group {{ $errors->has('staffchildren.*.dob') ? 'has-error' : '' }}">
-							<input type="text" name="staffchildren[1][dob]" id="cdo_1" class="form-control form-control-sm" placeholder="Date Of Birth">
-						</div>
-						<div class="col-auto mb-1 g-1 form-group {{ $errors->has('staffchildren.*.gender_id') ? 'has-error' : '' }}">
-							<select name="staffchildren[1][gender_id]" id="cge_1" class="form-select form-select-sm" placeholder="Gender"></select>
-						</div>
-						<div class="col-auto mb-1 g-1 form-group {{ $errors->has('staffchildren.*.education_level_id') ? 'has-error' : '' }}">
-							<select name="staffchildren[1][education_level_id]" id="cel_1" class="form-select form-select-sm" placeholder="Education Level"></select>
-						</div>
-						<div class="col-auto mb-1 gx-6 form-group {{ $errors->has('staffchildren.*.health_status_id') ? 'has-error' : '' }}">
-							<select name="staffchildren[1][health_status_id]" id="chs_1" class="form-select form-select-sm" placeholder="Health Status"></select>
-						</div>
-						<div class="form-group form-check col-auto mb-1 gx-6 {{ $errors->has('staffchildren.*.tax_exemption') ? 'has-error' : '' }}">
-							<input type="hidden" name="staffchildren[1][tax_exemption]" class="form-check-input" value="0">
-							<input type="checkbox" name="staffchildren[1][tax_exemption]" class="form-check-input" value="1" id="cte_1">
-							<label class="form-check-label" for="cte_1">Valid for Tax Exemption?</label>
-						</div>
-						<div class="col-auto mb-1 g-1 form-group {{ $errors->has('staffchildren.*.tax_exemption_percentage_id') ? 'has-error' : '' }}">
-							<select name="staffchildren[1][tax_exemption_percentage_id]" id="ctep_1" class="form-select form-select-sm" placeholder="Tax Exemption Percentage"></select>
-						</div>
-					</div>
+				<div class="row children_wrap">
+					<!-- JAVASCRIPT ADD FORM CHILDREN -->
 				</div>
-
 			</div>
 		</div>
 
-		<div class="col-sm-6 gy-1 gx-1 align-items-start">
-			<div class="offset-sm-4 form-check mb-3 {{ $errors->has('authorise_id') ? 'has-error' : '' }}">
-				<div class="pretty p-icon p-curve p-tada">
-					<input type="hidden" name="authorise_id" value="">
-					<input type="checkbox" name="authorise_id" class="form-check-input" value="1" id="auth">
-					<div class="state p-primary-o">
-						<i class="icon mdi mdi-check-all"></i>
-						<label class="form-check-label" for="auth">System Administrator</label>
+		<div class="col-sm-6 container">
+
+			<div class="row mb-3 form-group {{ $errors->has('authorise_id') ? 'has-error' : '' }}">
+			{{ Form::label( '&nbsp;', '&nbsp;', ['class' => 'col-sm-4 col-form-label'] ) }}
+
+				<div class="col-sm-7 form-check">
+					<div class="pretty p-icon p-curve p-tada">
+						<input type="hidden" name="authorise_id" value="">
+						<input type="checkbox" name="authorise_id" class="form-check-input" value="1" id="auth">
+						<div class="state p-primary-o">
+							<i class="icon mdi mdi-check-all"></i>
+							<label class="form-check-label" for="auth">System Administrator</label>
+						</div>
 					</div>
 				</div>
 			</div>
 
 			<div class="form-group row mb-3 {{ $errors->has('status_id') ? 'has-error' : '' }}">
 				{{ Form::label( 'sta', 'Staff Status : ', ['class' => 'col-sm-4 col-form-label'] ) }}
-				<div class="col-auto">
+				<div class="col-sm-7">
 					<select name="status_id" id="sta" class="form-select form-select-sm" placeholder="Status"></select>
 				</div>
 			</div>
 
 			<div class="form-group row mb-3 {{ $errors->has('username') ? 'has-error' : '' }}">
 				{{ Form::label( 'unam', 'Username : ', ['class' => 'col-sm-4 col-form-label'] ) }}
-				<div class="col-auto">
-					{{ Form::text('username', @$value, ['class' => 'form-control form-control-sm col-auto', 'id' => 'unam', 'placeholder' => 'Username', 'autocomplete' => 'off']) }}
+				<div class="col-sm-7">
+					{{ Form::text('username', @$value, ['class' => 'form-control form-control-sm', 'id' => 'unam', 'placeholder' => 'Username', 'autocomplete' => 'off']) }}
 				</div>
 			</div>
 
 			<div class="form-group row mb-3 {{ $errors->has('password') ? 'has-error' : '' }}">
 				{{ Form::label( 'pas', 'Password : ', ['class' => 'col-sm-4 col-form-label'] ) }}
-				<div class="col-auto">
-					{{ Form::text('password', @$value, ['class' => 'form-control form-control-sm col-auto', 'id' => 'pas', 'placeholder' => 'Password', 'autocomplete' => 'off']) }}
+				<div class="col-sm-7">
+					{{ Form::text('password', @$value, ['class' => 'form-control form-control-sm', 'id' => 'pas', 'placeholder' => 'Password', 'autocomplete' => 'off']) }}
 				</div>
 			</div>
 
 			<div class="form-group row mb-3 {{ $errors->has('category_id') ? 'has-error' : '' }}">
 				{{ Form::label( 'cat', 'Category : ', ['class' => 'col-sm-4 col-form-label'] ) }}
-				<div class="col-auto">
+				<div class="col-sm-7">
 					<select name="category_id" id="cat" class="form-select form-select-sm" placeholder="Category"></select>
 				</div>
 			</div>
 
 			<div class="form-group row mb-3 {{ $errors->has('branch_id') ? 'has-error' : '' }}">
 				{{ Form::label( 'bra', 'Branch : ', ['class' => 'col-sm-4 col-form-label'] ) }}
-				<div class="col-auto">
+				<div class="col-sm-7">
 					<select name="branch_id" id="bra" class="form-select form-select-sm" placeholder="Branch"></select>
 				</div>
 			</div>
 
 			<div class="form-group row mb-3 {{ $errors->has('pivot_dept_id') ? 'has-error' : '' }}">
 				{{ Form::label( 'dep', 'Department : ', ['class' => 'col-sm-4 col-form-label'] ) }}
-				<div class="col-auto">
+				<div class="col-sm-7">
 					<select name="pivot_dept_id" id="dep" class="form-select form-select-sm" placeholder="Department"></select>
 				</div>
 			</div>
 
 			<div class="form-group row mb-3 {{ $errors->has('div_id') ? 'has-error' : '' }}">
 				{{ Form::label( 'him', 'Management : ', ['class' => 'col-sm-4 col-form-label'] ) }}
-				<div class="col-auto">
+				<div class="col-sm-7">
 					<select name="div_id" id="him" class="form-select form-select-sm" placeholder="Management"></select>
 				</div>
 			</div>
 
 			<div class="form-group row mb-3 {{ $errors->has('restday_group_id') ? 'has-error' : '' }}">
 				{{ Form::label( 'rdg', 'Rest Day Group : ', ['class' => 'col-sm-4 col-form-label'] ) }}
-				<div class="col-auto">
+				<div class="col-sm-7">
 					<select name="restday_group_id" id="rdg" class="form-select form-select-sm" placeholder="Please Select"></select>
 				</div>
 			</div>
 
-			<p class="col-sm-4">Leave Flow Approval :</p>
-			<div class="offset-sm-4 mb-3 form-check row {{ $errors->has('leave_flow_id') ? 'has-error' : '' }}">
-			@foreach(HRLeaveApprovalFlow::all() as $k)
-				<div class="pretty p-icon p-curve p-tada mb-2">
-					<input type="radio" name="leave_flow_id" class="form-check-input" value="{{ $k->id }}" id="auth">
-					<div class="state p-primary-o">
-						<i class="icon mdi mdi-check"></i>
-						<label class="form-check-label" for="auth">{{ $k->description }}</label>
+			<div class="form-group row mb-3 {{ $errors->has('leave_flow_id') ? 'has-error' : '' }}">
+			{{ Form::label( 'flow', 'Leave Flow Approval : ', ['class' => 'col-sm-4 col-form-label'] ) }}
+
+				<div class="col-sm-7 form-check">
+				@foreach(HRLeaveApprovalFlow::all() as $k)
+					<div class="pretty p-icon p-curve p-tada mb-2">
+						<input type="radio" name="leave_flow_id" class="form-check-input" value="{{ $k->id }}" id="auth">
+						<div class="state p-primary-o">
+							<i class="icon mdi mdi-check"></i>
+							<label class="form-check-label" for="auth">{{ $k->description }}</label>
+						</div>
 					</div>
+				@endforeach
 				</div>
-			@endforeach
 			</div>
 
-			<div class="col-auto row">
+
+
+
+
+
+
+
+
+			<div class="mb-3">
 				<div class="row">
-					<div class="col-auto">
+					<div class="col-sm-4">
 						<h6>Staff Cross Backup</h6>
 					</div>
-					<div class="col-auto">
+					<div class="col-sm-7">
 						<button type="button" class="col-auto btn btn-sm btn-outline-secondary crossbackup_add">
 							<i class="fas fa-plus" aria-hidden="true"></i>&nbsp;Add Cross Backup
 						</button>
 					</div>
 				</div>
-				<div class="row mb-1 g-1 crossbackup_wrap">
-					<div class="row crossbackup_row">
+				<div class="row crossbackup_wrap">
+					<div class="row mb-1 crossbackup_row">
 						<div class="form-group row mb-1 g-1 {{ $errors->has('crossbackup.*.backup_staff_id') ? 'has-error' : '' }}">
 							<div class="col-auto mb-1 g-1 ">
 								<button class="btn btn-sm btn-outline-secondary crossbackup_remove" type="button">
@@ -390,17 +367,35 @@ use App\Models\HumanResources\HRLeaveApprovalFlow;
 				</div>
 			</div>
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 			<div class="form-group row mb-3 {{ $errors->has('annual_leave') ? 'has-error' : '' }}">
 				{{ Form::label( 'annu', 'Annual Leave : ', ['class' => 'col-sm-4 col-form-label'] ) }}
-				<div class="col-auto">
-					{{ Form::text('annual_leave', @$value, ['class' => 'form-control form-control-sm col-auto', 'id' => 'annu', 'placeholder' => 'Annual Leave', 'autocomplete' => 'off']) }}
+				<div class="col-sm-7">
+					{{ Form::text('annual_leave', @$value, ['class' => 'form-control form-control-sm', 'id' => 'annu', 'placeholder' => 'Annual Leave', 'autocomplete' => 'off']) }}
 				</div>
 			</div>
 
 			<div class="form-group row mb-3 {{ $errors->has('mc_leave') ? 'has-error' : '' }}">
 				{{ Form::label( 'mcl', 'Medical Certificate Leave : ', ['class' => 'col-sm-4 col-form-label'] ) }}
-				<div class="col-auto">
-					{{ Form::text('mc_leave', @$value, ['class' => 'form-control form-control-sm col-auto', 'id' => 'mcl', 'placeholder' => 'Medical Certificate Leave', 'autocomplete' => 'off']) }}
+				<div class="col-sm-7">
+					{{ Form::text('mc_leave', @$value, ['class' => 'form-control form-control-sm', 'id' => 'mcl', 'placeholder' => 'Medical Certificate Leave', 'autocomplete' => 'off']) }}
 				</div>
 			</div>
 
@@ -408,8 +403,8 @@ use App\Models\HumanResources\HRLeaveApprovalFlow;
 				<div id="append">
 					<div class="form-group row mb-3 {{ $errors->has('maternity_leave') ? 'has-error' : '' }}">
 						<label for="matl" id="matl" class="col-sm-4 col-form-label">Maternity Leave : </label>
-						<div class="col-auto">
-							{{ Form::text('maternity_leave', @$value, ['class' => 'form-control form-control-sm col-auto', 'id' => 'matl', 'placeholder' => 'Maternity Leave', 'autocomplete' => 'off']) }}
+						<div class="col-sm-7">
+							{{ Form::text('maternity_leave', @$value, ['class' => 'form-control form-control-sm', 'id' => 'matl', 'placeholder' => 'Maternity Leave', 'autocomplete' => 'off']) }}
 						</div>
 					</div>
 				</div>
@@ -775,7 +770,7 @@ var max_fields  = 4;						//maximum input boxes allowed
 var add_buttons	= $(".spouse_add");
 var wrappers	= $(".spouse_wrap");
 
-var xs = 1;
+var xs = 0;
 $(add_buttons).click(function(){
 	// e.preventDefault();
 
@@ -784,19 +779,20 @@ $(add_buttons).click(function(){
 		xs++;
 		wrappers.append(
 
-			'<div class="row spouse_row">' +
-				'<div class="col-auto mb-1 g-1 ">' +
+			'<div class="row mb-1 spouse_row">' +
+				'<div class="col-sm-1">' +
 					'<button class="btn btn-sm btn-outline-secondary spouse_remove" type="button">' +
 						'<i class="fas fa-trash" aria-hidden="true"></i>' +
 					'</button>' +
 				'</div>' +
-				'<div class="col-auto mb-1 g-1 form-group {{ $errors->has('staffspouse.*.spouse') ? 'has-error' : '' }}">' +
-					'<input type="text" name="staffspouse[' + xs + '][spouse]" id="spo" class="form-control form-control-sm" placeholder="Spouse">' +
+				'<div class="col-sm-11 form-group {{ $errors->has('staffspouse.*.spouse') ? 'has-error' : '' }}">' +
+					'<input type="text" name="staffspouse[' + xs + '][spouse]" id="spo" class="form-control form-control-sm" placeholder="Spouse Name">' +
 				'</div>' +
-				'<div class="col-auto mb-1 g-1 form-group {{ $errors->has('staffspouse.*.phone') ? 'has-error' : '' }}">' +
+				'<div class="col-sm-1"></div>' +
+				'<div class="col-sm-5 form-group {{ $errors->has('staffspouse.*.phone') ? 'has-error' : '' }}">' +
 					'<input type="text" name="staffspouse[' + xs + '][phone]" id="pho" class="form-control form-control-sm" placeholder="Spouse Phone">' +
 				'</div>' +
-				'<div class="col-auto mb-1 g-1 form-group {{ $errors->has('staffspouse.*.profession') ? 'has-error' : '' }}">' +
+				'<div class="col-sm-6 form-group {{ $errors->has('staffspouse.*.profession') ? 'has-error' : '' }}">' +
 					'<input type="text" name="staffspouse[' + xs + '][profession]" id="pro" class="form-control form-control-sm" placeholder="Spouse Profession">' +
 				'</div>' +
 			'</div>'
@@ -833,7 +829,7 @@ var cmax_fields  = 12;						//maximum input boxes allowed
 var cadd_buttons	= $(".children_add");
 var cwrappers	= $(".children_wrap");
 
-var xc = 1;
+var xc = 0;
 $(cadd_buttons).click(function(){
 	// e.preventDefault();
 
@@ -841,33 +837,36 @@ $(cadd_buttons).click(function(){
 	if(xc < cmax_fields){
 		xc++;
 		cwrappers.append(
-			'<div class="row children_row">' +
-				'<div class="col-auto mb-1 g-1 ">' +
+			'<div class="row mb-1 children_row">' +
+				'<div class="col-sm-1">' +
 					'<button class="btn btn-sm btn-outline-secondary children_remove" type="button">' +
 						'<i class="fas fa-trash" aria-hidden="true"></i>' +
 					'</button>' +
 				'</div>' +
-				'<div class="col-auto mb-1 g-1 form-group {{ $errors->has('staffchildren.*.children') ? 'has-error' : '' }}">' +
-					'<input type="text" name="staffchildren[' + xc + '][children]" id="chi_' + xc + '" class="form-control form-control-sm" placeholder="Children">' +
+				'<div class="col-sm-11 form-group {{ $errors->has('staffchildren.*.children') ? 'has-error' : '' }}">' +
+					'<input type="text" name="staffchildren[' + xc + '][children]" id="chi_' + xc + '" class="form-control form-control-sm" placeholder="Children Name">' +
 				'</div>' +
-				'<div class="col-auto mb-1 g-1 form-group {{ $errors->has('staffchildren.*.dob') ? 'has-error' : '' }}">' +
+				'<div class="col-sm-1"></div>' +
+				'<div class="col-sm-7 form-group {{ $errors->has('staffchildren.*.dob') ? 'has-error' : '' }}">' +
 					'<input type="text" name="staffchildren[1][dob]" id="cdo_' + xc + '" class="form-control form-control-sm" placeholder="Date Of Birth">' +
 				'</div>' +
-				'<div class="col-auto mb-1 g-1 form-group {{ $errors->has('staffchildren.*.gender_id') ? 'has-error' : '' }}">' +
+				'<div class="col-sm-4 form-group {{ $errors->has('staffchildren.*.gender_id') ? 'has-error' : '' }}">' +
 					'<select name="staffchildren[' + xc + '][gender_id]" id="cge_' + xc + '" class="form-select form-select-sm" placeholder="Gender"></select>' +
 				'</div>' +
-				'<div class="col-auto mb-1 g-1 form-group {{ $errors->has('staffchildren.*.education_level_id') ? 'has-error' : '' }}">' +
+				'<div class="col-sm-1"></div>' +
+				'<div class="col-sm-7 form-group {{ $errors->has('staffchildren.*.education_level_id') ? 'has-error' : '' }}">' +
 					'<select name="staffchildren[' + xc + '][education_level_id]" id="cel_' + xc + '" class="form-select form-select-sm" placeholder="Education Level"></select>' +
 				'</div>' +
-				'<div class="col-auto mb-1 gx-6 form-group {{ $errors->has('staffchildren.*.health_status_id') ? 'has-error' : '' }}">' +
+				'<div class="col-sm-4 form-group {{ $errors->has('staffchildren.*.health_status_id') ? 'has-error' : '' }}">' +
 					'<select name="staffchildren[' + xc + '][health_status_id]" id="chs_' + xc + '" class="form-select form-select-sm" placeholder="Health Status"></select>' +
 				'</div>' +
-				'<div class="form-group form-check col-auto mb-1 gx-6 {{ $errors->has('staffchildren.*.tax_exemption') ? 'has-error' : '' }}">' +
+				'<div class="col-sm-1"></div>' +
+				'<div class="col-sm-5 form-group form-check {{ $errors->has('staffchildren.*.tax_exemption') ? 'has-error' : '' }}">' +
 					'<input type="hidden" name="staffchildren[' + xc + '][tax_exemption]" class="form-check-input" value="0">' +
 					'<input type="checkbox" name="staffchildren[' + xc + '][tax_exemption]" class="form-check-input" value="1" id="cte_' + xc + '">' +
 					'<label class="form-check-label" for="cte_' + xc + '">Valid for Tax Exemption?</label>' +
 				'</div>' +
-				'<div class="col-auto mb-1 g-1 form-group {{ $errors->has('staffchildren.*.tax_exemption_percentage_id') ? 'has-error' : '' }}">' +
+				'<div class="col-sm-6 form-group {{ $errors->has('staffchildren.*.tax_exemption_percentage_id') ? 'has-error' : '' }}">' +
 					'<select name="staffchildren[' + xc + '][tax_exemption_percentage_id]" id="ctep_' + xc + '" class="form-select form-select-sm" placeholder="Tax Exemption Percentage"></select>' +
 				'</div>' +
 			'</div>'
@@ -1008,22 +1007,24 @@ $(eadd_buttons).click(function(){
 	if(xe < emax_fields){
 		xe++;
 		ewrappers.append(
-			'<div class="row emergency_row">' +
-				'<div class="col-auto mb-1 g-1 ">' +
+			'<div class="row mb-1 emergency_row">' +
+				'<div class="col-sm-1">' +
 					'<button class="btn btn-sm btn-outline-secondary emergency_remove" type="button">' +
 						'<i class="fas fa-trash" aria-hidden="true"></i>' +
 					'</button>' +
 				'</div>' +
-				'<div class="col-auto mb-1 g-1 form-group {{ $errors->has('staffemergency.*.contact_person') ? 'has-error' : '' }}">' +
-					'<input type="text" name="staffemergency[' + xe + '][contact_person]" id="ecp_' + xe + '" class="form-control form-control-sm" placeholder="Emergency Contact">' +
+				'<div class="col-sm-11 form-group {{ $errors->has('staffemergency.*.contact_person') ? 'has-error' : '' }}">' +
+					'<input type="text" name="staffemergency[' + xe + '][contact_person]" id="ecp_' + xe + '" class="form-control form-control-sm" placeholder="Name">' +
 				'</div>' +
-				'<div class="col-auto mb-1 g-1 form-group {{ $errors->has('staffemergency.*.phone') ? 'has-error' : '' }}">' +
+				'<div class="col-sm-1"></div>' +
+				'<div class="col-sm-5 form-group {{ $errors->has('staffemergency.*.phone') ? 'has-error' : '' }}">' +
 					'<input type="text" name="staffemergency[' + xe + '][phone]" id="epp_' + xe + '" class="form-control form-control-sm" placeholder="Phone">' +
 				'</div>' +
-				'<div class="col-auto mb-1 g-1 form-group {{ $errors->has('staffemergency.*.relationship_id') ? 'has-error' : '' }}">' +
+				'<div class="col-sm-6 form-group {{ $errors->has('staffemergency.*.relationship_id') ? 'has-error' : '' }}">' +
 					'<select name="staffemergency[' + xe + '][relationship_id]" id="ere_' + xe + '" class="form-select form-select-sm" placeholder="Relationship"></select>' +
 				'</div>' +
-				'<div class="col-auto mb-1 gx-1 form-group {{ $errors->has('staffemergency.*.address') ? 'has-error' : '' }}">' +
+				'<div class="col-sm-1"></div>' +
+				'<div class="col-sm-11 form-group {{ $errors->has('staffemergency.*.address') ? 'has-error' : '' }}">' +
 					'<input type="textarea" name="staffemergency[' + xe + '][address]" id="ead_' + xe + '" class="form-control form-control-sm" placeholder="Address">' +
 				'</div>' +
 			'</div>'
