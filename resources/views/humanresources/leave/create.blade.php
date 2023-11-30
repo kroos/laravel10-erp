@@ -26,7 +26,6 @@
 
 	<!-- herecomes the hardest part, leave application -->
 
-
 	<div class="container row">
 		{{ Form::open(['route' => ['leave.store'], 'id' => 'form', 'autocomplete' => 'off', 'files' => true,  'data-toggle' => 'validator']) }}
 		<h5 class="text-center">Leave Application</h5>
@@ -114,6 +113,7 @@ $setHalfDayMC = \App\Models\Setting::find(2)->active;
 
 /////////////////////////////////////////////////////////////////////////////////////////
 //  global variable : ajax to get the unavailable date
+
 var data2 = $.ajax({
 	url: "{{ route('leavedate.unavailabledate') }}",
 	type: "POST",
@@ -194,9 +194,9 @@ var data10 = $.ajax({
 // convert data10 into json
 var objtime = $.parseJSON( data10 );
 
-// console.log(objtime);
+console.log(objtime);
 
-//concept of checking overlapped half day leave
+// concept of checking overlapped half day leave
 // var d = false;
 // var itime_start = 0;
 // var itime_end = 0;
@@ -373,7 +373,7 @@ var d = false;
 var itime_start = 0;
 var itime_end = 0;
 $.each(objtime, function() {
-// console.log(this.date_half_leave);
+console.log(this.date_half_leave);
 	if(this.date_half_leave == $('#from').val()) {
 		return [d = true, itime_start = this.time_start, itime_end = this.time_end];
 	}
@@ -506,11 +506,11 @@ var itime_start = 0;
 var itime_end = 0;
 $.each(objtime, function() {
 // console.log(this.date_half_leave);
-	if(this.date_half_leave == $('#from').val()) {
+	if(this.date_half_leave == $('#to').val()) {
 		return [d = true, itime_start = this.time_start, itime_end = this.time_end];
 	}
 });
-// console.log(d);
+console.log(d, itime_start, itime_end);
 if(d === true) {
 					$('#wrapperday').append(
 							'{{ Form::label('leave_cat', 'Leave Category : ', ['class' => 'col-sm-4 col-form-label removehalfleave']) }}' +
@@ -555,6 +555,7 @@ var obj = $.parseJSON( data1 );
 
 var checkedam = 'checked';
 var checkedpm = 'checked';
+console.log(obj.time_start_am, itime_start);
 if(obj.time_start_am == itime_start) {
 	var toggle_time_start_am = 'disabled';
 	var checkedam = '';

@@ -97,8 +97,6 @@ class AjaxController extends Controller
 						'status' => 'error',
 						'message' => 'Please inform IT Department with this message: "No link between leave and annual leave table (database). This is old leave created from old system."',
 					]);
-				} else {
-					$n->belongstomanyleaveannual()->detach($p1->id);
 				}
 				// cari al dari staffleave dan tambah balik masuk dalam hasmanyleaveannual
 
@@ -120,6 +118,7 @@ class AjaxController extends Controller
 				]);
 				// update period, status leave of the applicant. status close by HOD/supervisor
 				$n->update(['period_day' => 0, 'leave_status_id' => 3, 'remarks' => 'Cancelled By '.\Auth::user()->belongstostaff->name]);
+				$n->belongstomanyleaveannual()->detach($p1->id);
 			}
 
 			if( $n->leave_type_id == 2 ) { // leave deduct from MC
@@ -129,8 +128,6 @@ class AjaxController extends Controller
 						'status' => 'error',
 						'message' => 'Please inform IT Department with this message: "No link between leave and MC leave table (database). This is old leave created from old system."',
 					]);
-				} else {
-					$n->belongstomanyleavemc()->detach($p2->id);
 				}
 				// sama lebih kurang AL mcm kat atas. so....
 				$addl = $n->period_day + $n->belongstostaff->hasmanyleavemc()->where('year', $dts->format('Y'))->first()->mc_leave_balance;
@@ -143,6 +140,7 @@ class AjaxController extends Controller
 				]);
 				// update period, status leave of the applicant. status close by HOD/supervisor
 				$n->update(['period_day' => 0, 'leave_status_id' => 3, 'remarks' => 'Cancelled By '.\Auth::user()->belongstostaff->name]);
+				$n->belongstomanyleavemc()->detach($p2->id);
 			}
 
 			if( $n->leave_type_id == 3 || $n->leave_type_id == 6 || $n->leave_type_id == 11  || $n->leave_type_id == 12 ) { // leave deduct from UPL, EL-UPL, MC-UPL & S-UPL
@@ -162,8 +160,6 @@ class AjaxController extends Controller
 						'status' => 'error',
 						'message' => 'Please inform IT Department with this message: "No link between leave and replacement leave table (database). This is old leave created from old system."',
 					]);
-				} else {
-					$n->belongstomanyleavereplacement()->detach($p4->id);
 				}
 				// echo 'leave deduct from NRL<br />';
 
@@ -191,6 +187,7 @@ class AjaxController extends Controller
 				]);
 				// update di table staff leave pulokk staffleave
 				$n->update(['period_day' => 0, 'leave_status_id' => 3, 'remarks' => 'Cancelled By '.\Auth::user()->belongstostaff->name]);
+				$n->belongstomanyleavereplacement()->detach($p4->id);
 			}
 
 			if( $n->leave_type_id == 7 ) { // leave deduct from ML
@@ -199,9 +196,8 @@ class AjaxController extends Controller
 						'status' => 'error',
 						'message' => 'Please inform IT Department with this message: "No link between leave and maternity leave table (database). This is old leave created from old system."',
 					]);
-				} else {
-					$n->belongstomanyleavematernity()->detach($p3->id);
 				}
+
 				// echo 'leave deduct from ML<br />';
 
 				// lebih kurang sama dengan al atau mc, maka..... :) copy paste
@@ -230,6 +226,7 @@ class AjaxController extends Controller
 				]);
 				// update period, status leave of the applicant. status close by HOD/supervisor
 				$n->update(['period_day' => 0, 'leave_status_id' => 3, 'remarks' => 'Cancelled By '.\Auth::user()->belongstostaff->name]);
+				$n->belongstomanyleavematernity()->detach($p3->id);
 			}
 
 			if( $n->leave_type_id == 9 ) { // leave deduct from Time Off

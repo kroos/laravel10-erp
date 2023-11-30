@@ -69,6 +69,9 @@ class Kernel extends HttpKernel
 		'adminAccess' => \App\Http\Middleware\SystemAccess\RedirectIfNotSystemAdmin::class,
 
 		'highMgmtAccess' => \App\Http\Middleware\HighManagement\RedirectIfNotHighManagement::class,
+		'highMgmtAccessLevel1' => \App\Http\Middleware\HighManagement\RedirectIfNotHighManagementLevel1::class,
+		'highMgmtAccessLevel2' => \App\Http\Middleware\HighManagement\RedirectIfNotHighManagementLevel2::class,
+		'highMgmtAccessLevel3' => \App\Http\Middleware\HighManagement\RedirectIfNotHighManagementLevel3::class,
 
 		'leaveaccess' => \App\Http\Middleware\HumanResources\Leave\RedirectIfNotOwnerLeave::class,
 		'profileaccess' => \App\Http\Middleware\HumanResources\Profile\RedirectIfNotOwnerProfile::class,

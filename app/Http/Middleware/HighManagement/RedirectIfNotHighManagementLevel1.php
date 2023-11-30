@@ -9,7 +9,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Str;
 
 
-class RedirectIfNotHighManagement
+class RedirectIfNotHighManagementLevel1
 {
 	/**
 	 * Handle an incoming request.
@@ -21,7 +21,7 @@ class RedirectIfNotHighManagement
 	public function handle(Request $request, Closure $next, $highManagement, $dept): Response
 	{
 		// make sure its high management
-		// dd($highManagement, $dept);
+		// dd($request->user()->isHighManagementlvl1([1]));
 
 		if (Str::contains($highManagement, '|'))
 		{
@@ -41,7 +41,7 @@ class RedirectIfNotHighManagement
 		// dd($userH);
 		// $deptP = $request->user()->belongstostaff()->where('div_id', $hmu)->first();
 		$deptHM = $request->user()->belongstostaff->belongstomanydepartment()->wherePivot('main', 1)->first();
-		// dd($highManagement, $dept, $deptHM->id, $userH, in_array($userH, $hmu));
+		// dd($deptHM);
 
 		if ($dept == 'NULL' || $dept == 'null') {
 			if ( !(in_array($userH, $hmu) || $request->user()->isAdmin()) )
