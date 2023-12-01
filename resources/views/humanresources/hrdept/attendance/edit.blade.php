@@ -3,6 +3,7 @@
 @section('content')
 <?php
 use \App\Models\HumanResources\HRLeave;
+use \App\Models\Staff;
 use \Illuminate\Database\Eloquent\Builder;
 
 $day_type = App\Models\HumanResources\OptDayType::pluck('daytype', 'id')->sortKeys()->toArray();
@@ -10,7 +11,8 @@ $day_type = App\Models\HumanResources\OptDayType::pluck('daytype', 'id')->sortKe
 
 $tcms = App\Models\HumanResources\OptTcms::pluck('leave_short', 'id')->sortKeys()->toArray();
 
-$staff = $attendance->belongstostaff;
+// $staff = $attendance->belongstostaff;
+$staff = Staff::find($attendance->staff_id);
 $login = $staff->hasmanylogin()->where('active', '1')->get()->first();
 
 if ($attendance->time_work_hour != NULL || $attendance->time_work_hour != '') {
@@ -21,11 +23,21 @@ if ($attendance->time_work_hour != NULL || $attendance->time_work_hour != '') {
 
 $dayName = \Carbon\Carbon::parse($attendance->attend_date)->format('l');
 
-if ($dayName == 'Friday') {
-	$working_hour = $staff->belongstomanydepartment()->wherePivot('main', 1)->first()->belongstowhgroup()->where('effective_date_start', '<=', $attendance->attend_date)->where('effective_date_end', '>=', $attendance->attend_date)->where('category', 3)->first();
+
+if ($staff->belongstomanydepartment()->wherePivot('main', 1)->first()->id == 19 || $staff->belongstomanydepartment()->wherePivot('main', 1)->first()->id == 28) {
+	if ($dayName == 'Friday') {
+		$working_hour = $staff->belongstomanydepartment()->wherePivot('main', 1)->first()->belongstowhgroup()->where('effective_date_start', '<=', $attendance->attend_date)->where('effective_date_end', '>=', $attendance->attend_date)->where('category', '!=', 3)->first();
+	} else {
+		$working_hour = $staff->belongstomanydepartment()->wherePivot('main', 1)->first()->belongstowhgroup()->where('effective_date_start', '<=', $attendance->attend_date)->where('effective_date_end', '>=', $attendance->attend_date)->where('category', 3)->first();
+	}
 } else {
-	$working_hour = $staff->belongstomanydepartment()->wherePivot('main', 1)->first()->belongstowhgroup()->where('effective_date_start', '<=', $attendance->attend_date)->where('effective_date_end', '>=', $attendance->attend_date)->where('category', '!=', 3)->first();
+	if ($dayName == 'Friday') {
+		$working_hour = $staff->belongstomanydepartment()->wherePivot('main', 1)->first()->belongstowhgroup()->where('effective_date_start', '<=', $attendance->attend_date)->where('effective_date_end', '>=', $attendance->attend_date)->where('category', 3)->first();
+	} else {
+		$working_hour = $staff->belongstomanydepartment()->wherePivot('main', 1)->first()->belongstowhgroup()->where('effective_date_start', '<=', $attendance->attend_date)->where('effective_date_end', '>=', $attendance->attend_date)->where('category', '!=', 3)->first();
+	}
 }
+// dd($working_hour, $staff->belongstomanydepartment()->wherePivot('main', 1)->first()->belongstowhgroup());
 
 $time_start_am = \Carbon\Carbon::parse($working_hour->time_start_am)->format('H:i');
 $time_end_am = \Carbon\Carbon::parse($working_hour->time_end_am)->format('H:i');
