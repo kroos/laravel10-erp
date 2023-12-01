@@ -1286,8 +1286,8 @@ $p = [];
 				$out1,
 				$workhour,
 				$ort,
-				($os)?$os->first()?->belongstocustomer?->customer:null,
-				$v1->remarks.'    '.$v1->hr_remarks,
+				($os)?Str::limit(ucwords(Str::lower($os->first()?->belongstocustomer?->customer)), 10, ' >'):null,
+				$v1->remarks.' | '.$v1->hr_remarks,
 				$v1->exception,
 			]);
 			$n++;
