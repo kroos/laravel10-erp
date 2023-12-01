@@ -86,8 +86,6 @@
 	}
 </style>
 
-
-
 <?php
 use \App\Models\Staff;
 use \Carbon\Carbon;
@@ -214,6 +212,35 @@ if ($backup) {
 					<div class="table-cell-top" style="width: 40%;">DATE APPROVED : {{ @$approved_date }} </div>
 				</div>
 			</div>
+
+		<?php
+		use \App\Models\HumanResources\HRAttendance;
+		use Illuminate\Database\Eloquent\Builder;
+
+		$hrremarksattendance = HRAttendance::where(function (Builder $query) use ($hrleave){
+												$query->whereDate('attend_date', '>=', $hrleave->date_time_start)
+												->whereDate('attend_date', '<=', $hrleave->date_time_end);
+											})
+								->where('staff_id', $hrleave->staff_id)
+								->where(function (Builder $query) {
+									$query->whereNotNull('remarks')->orWhereNotNull('hr_remarks');
+								})
+								// ->ddrawsql();
+								->get();
+		?>
+		@if($hrremarksattendance)
+		<div class="table">
+			@foreach($hrremarksattendance as $key => $valueble)
+				<div class="table-row">
+					<div class="table-cell-top" style="width: 100%;">REMARKS FROM ATTENDANCE : {{ $valueble->remarks }}<br/>HR REMARKS FROM ATTENDANCE : {{ $valueble->hr_remarks }}</div>
+				</div>
+			@endforeach
+		</div>
+		@endif
+
+
+
+
 
 			<div class="table">
 				<div class="table-row">
