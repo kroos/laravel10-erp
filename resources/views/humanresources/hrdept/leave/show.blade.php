@@ -87,6 +87,10 @@
 </style>
 
 <?php
+use \App\Models\HumanResources\HRAttendance;
+use Illuminate\Database\Eloquent\Builder;
+
+
 $staff = $hrleave->belongstostaff()?->first();
 $login = \App\Models\Login::where([['staff_id', $hrleave->staff_id], ['active', 1]])->first();
 
@@ -225,12 +229,34 @@ $auth_admin = \Auth::user()->belongstostaff?->authorise_id;
 		@endif
 		@endif
 
+		<?php
+		$hrremarksattendance = HRAttendance::where(function (Builder $query) use ($hrleave){
+												$query->whereDate('attend_date', '>=', $hrleave->date_time_start)
+												->whereDate('attend_date', '<=', $hrleave->date_time_end);
+											})
+								->where('staff_id', $hrleave->staff_id)
+								->where(function (Builder $query) {
+									$query->whereNotNull('remarks')->orWhereNotNull('hr_remarks');
+								})
+								// ->ddrawsql();
+								->get();
+		?>
+		@if($hrremarksattendance)
+		<div class="table">
+			@foreach($hrremarksattendance as $key => $value)
+				<div class="table-row">
+					<div class="table-cell-top" style="width: 100%;">REMARKS FROM ATTENDANCE : {{ $value->remarks }}<br/>HR REMARKS FROM ATTENDANCE : {{ $value->hr_remarks }}</div>
+				</div>
+			@endforeach
+		</div>
+		@endif
+
+
 		<div class="table">
 			<div class="table-row">
-				<div class="table-cell-top text-center" style="width: 100%; background-color: #ffcc99; font-size: 18px;">SIGNATURE / APPROVALS</div>
+				<div class="table-cell-top text-center" style="width: 100%; background-color: #ffcc99; font-size: 18px;">SIGNATURE / APPROVAL</div>
 			</div>
 		</div>
-
 		<div class="table">
 			<div class="table-row">
 				@for ($a = 1; $a <= $count; $a++)

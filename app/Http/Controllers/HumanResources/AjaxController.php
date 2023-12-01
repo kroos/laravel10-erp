@@ -299,7 +299,7 @@ class AjaxController extends Controller
 		$hrleaveapprovalsupervisor->update(['leave_status_id' => $request->id]);
 			return response()->json([
 				'status' => 'success',
-				'message' => 'Leave has been approved.',
+				'message' => 'Leave approved.',
 			]);
 	}
 
@@ -369,7 +369,7 @@ class AjaxController extends Controller
 				$albal = $sala->leave_balance + $pd;							// replacement leave balance
 				$aluti = $sala->leave_utilize - $pd;							// replacement leave utilize
 				$sala->update(['leave_balance' => $albal, 'leave_utilize' => $aluti]);
-				$sal->update(['period_day' => 0, 'leave_status_id' => $request->leave_status_id]);
+				$sal->update(['leave_status_id' => $request->leave_status_id]);
 				$sal->belongstomanyleavereplacement()->detach($p4->id);
 			} elseif($saly == 2) {												// mc leave
 				if (!$p2) {
@@ -381,7 +381,7 @@ class AjaxController extends Controller
 				$albal = $sala->mc_leave_balance + $pd;							// mc leave balance
 				$aluti = $sala->mc_leave_utilize - $pd;							// mc leave utilize
 				$sala->update(['mc_leave_balance' => $albal, 'mc_leave_utilize' => $aluti]);
-				$sal->update(['period_day' => 0, 'leave_status_id' => $request->leave_status_id]);
+				$sal->update(['leave_status_id' => $request->leave_status_id]);
 				$sal->belongstomanyleavemc()->detach($p2->id);
 			} elseif($saly == 7) {
 				if (!$p3) {
@@ -393,12 +393,12 @@ class AjaxController extends Controller
 				$albal = $sala->maternity_leave_balance + $pd;					// maternity leave balance
 				$aluti = $sala->maternity_leave_utilize - $pd;					// maternity leave utilize
 				$sala->update(['maternity_leave_balance' => $albal, 'maternity_leave_utilize' => $aluti]);
-				$sal->update(['period_day' => 0, 'leave_status_id' => $request->leave_status_id]);
+				$sal->update(['leave_status_id' => $request->leave_status_id]);
 				$sal->belongstomanyleavematernity()->detach($p3->id);
 			} elseif($saly == 3 || $saly == 6 || $saly == 11 || $saly == 12) {
-				$sal->update(['period_day' => 0, 'leave_status_id' => $request->leave_status_id]);
+				$sal->update(['leave_status_id' => $request->leave_status_id]);
 			} elseif($saly == 9) {
-				$sal->update(['period_time' => 0, 'leave_status_id' => $request->leave_status_id]);
+				$sal->update(['leave_status_id' => $request->leave_status_id]);
 			}
 
 			if($sauser->belongstoleaveapprovalflow->backup_approval == 1){																// update on backup
@@ -422,7 +422,7 @@ class AjaxController extends Controller
 				HRAttendance::where('id', $s->id)->update(['leave_id' => null]);
 			}
 		}
-		Session::flash('flash_message', 'Successfully make an approval for user.');
+		Session::flash('flash_message', 'Successfully make an approval.');
 		return redirect()->back();
 	}
 
