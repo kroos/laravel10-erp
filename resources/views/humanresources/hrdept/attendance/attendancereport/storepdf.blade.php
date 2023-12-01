@@ -1275,7 +1275,7 @@ $p = [];
 
 			$pdf->Row([
 				Login::where([['staff_id', $v->staff_id], ['active', 1]])->first()?->username,
-				Staff::find($v->staff_id)->name,
+				Str::of(Staff::find($v->staff_id)->name)->words(3, ' >'),
 				$dayt,
 				$ll,
 				$lea,
@@ -1287,7 +1287,7 @@ $p = [];
 				$workhour,
 				$ort,
 				($os)?Str::limit(ucwords(Str::lower($os->first()?->belongstocustomer?->customer)), 10, ' >'):null,
-				$v1->remarks.' | '.$v1->hr_remarks,
+				Str::limit(ucwords(Str::lower($v1->remarks. (($v1->hr_remarks)?' | ':''). $v1->hr_remarks)), 40, ' >'),
 				$v1->exception,
 			]);
 			$n++;
