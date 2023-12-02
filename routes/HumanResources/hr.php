@@ -59,6 +59,9 @@ Route::resources([
 	'leaveapprovalhr' => HRLeaveApprovalHRController::class,
 ]);
 
+Route::get('/leavereject', [LeaveController::class, 'reject'])->name('hrleave.reject');
+Route::get('/leavecancel', [LeaveController::class, 'cancel'])->name('hrleave.cancel');
+
 Route::get('/excelreport', [AttendanceExcelReportController::class, 'index'])->name('excelreport.index');
 Route::get('/excelreport/create', [AttendanceExcelReportController::class, 'create'])->name('excelreport.create');
 Route::post('/excelreport', [AttendanceExcelReportController::class, 'store'])->name('excelreport.store');

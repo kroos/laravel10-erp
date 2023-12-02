@@ -114,10 +114,10 @@ class AjaxController extends Controller
 				$n->belongstostaff->hasmanyleaveannual()->where('year', $dts->format('Y'))->update([
 					'annual_leave_balance' => $addl,
 					'annual_leave_utilize' => $addu,
-					'remarks' => 'Cancelled By '.\Auth::user()->belongstostaff->name.' reference hr_leaves.id'.$request->id
+					// 'remarks' => 'Cancelled By '.\Auth::user()->belongstostaff->name.' reference hr_leaves.id'.$request->id
 				]);
 				// update period, status leave of the applicant. status close by HOD/supervisor
-				$n->update(['period_day' => 0, 'leave_status_id' => 3, 'remarks' => 'Cancelled By '.\Auth::user()->belongstostaff->name]);
+				$n->update(['leave_status_id' => 3, 'remarks' => 'Cancelled By '.\Auth::user()->belongstostaff->name]);
 				$n->belongstomanyleaveannual()->detach($p1->id);
 			}
 
@@ -136,10 +136,10 @@ class AjaxController extends Controller
 				$n->belongstostaff->hasmanyleavemc()->where('year', $dts->format('Y'))->update([
 					'mc_leave_balance' => $addl,
 					'mc_leave_utilize' => $addu,
-					'remarks' => 'Cancelled By '.\Auth::user()->belongstostaff->name
+					// 'remarks' => 'Cancelled By '.\Auth::user()->belongstostaff->name
 				]);
 				// update period, status leave of the applicant. status close by HOD/supervisor
-				$n->update(['period_day' => 0, 'leave_status_id' => 3, 'remarks' => 'Cancelled By '.\Auth::user()->belongstostaff->name]);
+				$n->update(['leave_status_id' => 3, 'remarks' => 'Cancelled By '.\Auth::user()->belongstostaff->name]);
 				$n->belongstomanyleavemc()->detach($p2->id);
 			}
 
@@ -150,7 +150,7 @@ class AjaxController extends Controller
 				// we can ignore all the data in hasmanyleaveentitlement mode. just take care all the things in staff leaves only.
 				// make period 0 again, regardsless of the ttotal period and then update as al and mc.
 				// update period, status leave of the applicant. status close by HOD/supervisor
-				$n->update(['period_day' => 0, 'leave_status_id' => 3, 'remarks' => 'Cancelled By '.\Auth::user()->belongstostaff->name]);
+				$n->update(['leave_status_id' => 3, 'remarks' => 'Cancelled By '.\Auth::user()->belongstostaff->name]);
 				// update status for all approval
 			}
 
@@ -183,10 +183,10 @@ class AjaxController extends Controller
 					// 'leave_type_id' => NULL,
 					'leave_balance' => $addr,
 					'leave_utilize' => $addru,
-					'remarks' => 'Cancelled by '.\Auth::user()->belongstostaff->name,
+					// 'remarks' => 'Cancelled by '.\Auth::user()->belongstostaff->name,
 				]);
 				// update di table staff leave pulokk staffleave
-				$n->update(['period_day' => 0, 'leave_status_id' => 3, 'remarks' => 'Cancelled By '.\Auth::user()->belongstostaff->name]);
+				$n->update(['leave_status_id' => 3, 'remarks' => 'Cancelled By '.\Auth::user()->belongstostaff->name]);
 				$n->belongstomanyleavereplacement()->detach($p4->id);
 			}
 
@@ -222,10 +222,10 @@ class AjaxController extends Controller
 				$n->belongstostaff->hasmanyleavematernity()->where('year', $dts->format('Y'))->update([
 					'maternity_leave_balance' => $addl,
 					'maternity_leave_utilize' => $addu,
-					'remarks' => 'Cancelled By '.\Auth::user()->belongstostaff->name,
+					// 'remarks' => 'Cancelled By '.\Auth::user()->belongstostaff->name,
 				]);
 				// update period, status leave of the applicant. status close by HOD/supervisor
-				$n->update(['period_day' => 0, 'leave_status_id' => 3, 'remarks' => 'Cancelled By '.\Auth::user()->belongstostaff->name]);
+				$n->update(['leave_status_id' => 3, 'remarks' => 'Cancelled By '.\Auth::user()->belongstostaff->name]);
 				$n->belongstomanyleavematernity()->detach($p3->id);
 			}
 
@@ -238,7 +238,7 @@ class AjaxController extends Controller
 				// we can ignore all the data in staffannualmcmaternity mode. just take care all the things in staff leaves only.
 				// make period 0 again, regardsless of the ttotal period and then update as al and mc.
 				// update period, status leave of the applicant. status close by HOD/supervisor
-				$n->update(['period_time' => 0, 'leave_status_id' => 3, 'remarks' => 'Cancelled By '.\Auth::user()->belongstostaff->name]);
+				$n->update(['leave_status_id' => 3, 'remarks' => 'Cancelled By '.\Auth::user()->belongstostaff->name]);
 			}
 			// finally update at all the approver according to his/her leave flow
 			if($n->belongstostaff->belongstoleaveapprovalflow?->backup_approval == 1) {
