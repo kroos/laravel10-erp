@@ -50,8 +50,14 @@
 			</li>
 			<li>
 				<a class="dropdown-item btn btn-sm btn-outline-secondary" href="{{ route('hrmaternityleave.index') }}">
-					<i class="fa-solid fa-person-pregnant"></i>
+					<i class="fa-solid fa-person-pregnant fa-beat"></i>
 					Maternity Leave List
+				</a>
+			</li>
+			<li>
+				<a class="dropdown-item btn btn-sm btn-outline-secondary" href="{{ route('hrreplacementleave.index') }}">
+					<i class="fa-solid fa-arrow-rotate-right fa-rotate-270"></i>
+					Replacement Leave List
 				</a>
 			</li>
 		</ul>
