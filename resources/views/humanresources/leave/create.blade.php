@@ -1,6 +1,6 @@
 @extends('layouts.app')
 @section('content')
-<div class="container row rounded align-items-start justify-content-center">
+<div class="container row align-items-start justify-content-center">
 	<div class="table-responsive col-sm-12 m-5">
 		<table class="table table-hover table-sm">
 			<tbody>
@@ -26,7 +26,7 @@
 
 	<!-- herecomes the hardest part, leave application -->
 
-	<div class="container row">
+	<div class="col-sm-12 row">
 		{{ Form::open(['route' => ['leave.store'], 'id' => 'form', 'autocomplete' => 'off', 'files' => true,  'data-toggle' => 'validator']) }}
 		<h5 class="text-center">Leave Application</h5>
 
@@ -48,9 +48,9 @@
 		</div>
 
 		<div class="form-group row m-2 {{ $errors->has('akuan') ? 'has-error' : '' }}">
-			<div class="col-sm-8 offset-sm-4">
+			<div class="col-sm-8 offset-sm-4 form-check">
 				{{ Form::checkbox('akuan', 1, @$value, ['class' => 'form-check-input ', 'id' => 'akuan1']) }}
-					<label for="akuan1" class="form-check-label p-1 bg-warning text-danger rounded"><p>I hereby confirmed that all details and information filled in are <strong>CORRECT</strong> and <strong>CHECKED</strong> before sending.</p></label>
+				<label for="akuan1" class="form-check-label p-1 bg-warning text-danger rounded"><p>I hereby confirmed that all details and information filled in are <strong>CORRECT</strong> and <strong>CHECKED</strong> before sending.</p></label>
 			</div>
 		</div>
 
@@ -239,8 +239,8 @@ $('#leave_id').on('change', function() {
 						'</div>' +
 					'</div>' +
 
-					'<div class="form-group row m-2 {{ $errors->has('leave_cat') ? 'has-error' : '' }}" id="wrapperday">' +
-						'<div class="form-group col-sm-8 offset-sm-4 {{ $errors->has('half_type_id') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
+					'<div class="form-group row m-2 form-check {{ $errors->has('leave_cat') ? 'has-error' : '' }}" id="wrapperday">' +
+						'<div class="form-group col-sm-8 offset-sm-4 form-check {{ $errors->has('half_type_id') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
 						'</div>' +
 					'</div>' +
 
@@ -287,8 +287,8 @@ $('#leave_id').on('change', function() {
 						'</div>' +
 					'</div>' +
 
-					'<div class="form-group row m-2 {{ $errors->has('leave_cat') ? 'has-error' : '' }}" id="wrapperday">' +
-						'<div class="form-group col-sm-8 offset-sm-4 {{ $errors->has('half_type_id') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
+					'<div class="form-group row m-2 form-check {{ $errors->has('leave_cat') ? 'has-error' : '' }}" id="wrapperday">' +
+						'<div class="form-group col-sm-8 offset-sm-4 form-check {{ $errors->has('half_type_id') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
 						'</div>' +
 					'</div>' +
 
@@ -688,8 +688,8 @@ if(obj.time_start_pm == itime_start) {
 				'</div>' +
 
 				@if($setHalfDayMC == 1)
-				'<div class="form-group row m-2 {{ $errors->has('leave_cat') ? 'has-error' : '' }}" id="wrapperday">' +
-					'<div class="form-group col-sm-8 offset-sm-4 {{ $errors->has('half_type_id') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
+				'<div class="form-group row m-2 form-check {{ $errors->has('leave_cat') ? 'has-error' : '' }}" id="wrapperday">' +
+					'<div class="form-group col-sm-8 form-check offset-sm-4 {{ $errors->has('half_type_id') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
 					'</div>' +
 				'</div>' +
 				@endif
@@ -713,9 +713,9 @@ if(obj.time_start_pm == itime_start) {
 				'</div>' +
 
 				'<div class="form-group row m-2 {{ $errors->has('documentsupport') ? 'has-error' : '' }}">' +
-					'<div class="offset-sm-4 col-sm-8 suppdoc">' +
+					'<div class="offset-sm-4 col-sm-8 suppdoc form-check">' +
 						'{{ Form::checkbox('documentsupport', 1, @$value, ['class' => 'form-check-input', 'id' => 'suppdoc']) }}' +
-						' <label for="suppdoc" class="form-check-label"><p class="p-1 bg-warning text-danger rounded">Please ensure you will submit <strong>Supporting Documents</strong> within <strong>3 Days</strong> after date leave.</p></label>' +
+						' <label for="suppdoc" class="form-check-label p-1 bg-warning text-danger rounded">Please ensure you will submit <strong>Supporting Documents</strong> within <strong>3 Days</strong> after date leave.</label>' +
 					'</div>' +
 				'</div>' +
 
@@ -877,8 +877,7 @@ if(obj.time_start_pm == itime_start) {
 									'{{ Form::label('radio2', 'Half Day Off', ['class' => 'form-check-label removehalfleave m-2']) }}' +
 								'</div>' +
 							'</div>' +
-							'<div class="form-group col-sm-8 offset-sm-4 {{ $errors->has('half_type_id') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
-
+							'<div class="form-group col-sm-8 offset-sm-4 form-check {{ $errors->has('half_type_id') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
 							'</div>'
 					);
 					$('#form').bootstrapValidator('addField', $('.time').find('[name="time_start"]'));
@@ -1131,7 +1130,7 @@ $oi = \Auth::user()->belongstostaff->hasmanyleavereplacement()->where('leave_bal
 
 				@if( $userneedbackup == 1 )
 				'<div id="backupwrapper">' +
-					'<div class="form-group row mb-3 {{ $errors->has('staff_id') ? 'has-error' : '' }}" id="backupremove">' +
+					'<div class="form-group row m-2 {{ $errors->has('staff_id') ? 'has-error' : '' }}" id="backupremove">' +
 						'{{ Form::label('backupperson', 'Backup : ', ['class' => 'col-sm-4 col-form-label']) }}' +
 						'<div class="col-sm-8 backup">' +
 							'<select name="staff_id" id="backupperson" class="form-control form-select form-select-sm col-auto" placeholder="Please choose" autocomplete="off"></select>' +
@@ -1739,9 +1738,9 @@ if(obj.time_start_pm == itime_start) {
 
 				'<div class="form-group row m-2 {{ $errors->has('akuan') ? 'has-error' : '' }}">' +
 					'{{ Form::label('suppdoc', 'Supporting Document : ', ['class' => 'col-sm-4 col-form-label']) }}' +
-					'<div class="col-sm-8 suppdoc">' +
-						'{{ Form::checkbox('documentsupport', 1, @$value, ['class' => 'form-check-input', 'id' => 'suppdoc', 'style' => 'width:25px; height:25px;']) }}' +
-						' <label for="suppdoc" class="form-check-label"><p class="p-1 bg-warning text-danger rounded">Please ensure you will submit <strong>Supporting Document</strong> within a period of  <strong>3 Days</strong> upon return.</p></label>' +
+					'<div class="col-sm-8 suppdoc form-check">' +
+						'{{ Form::checkbox('documentsupport', 1, @$value, ['class' => 'form-check-input', 'id' => 'suppdoc']) }}' +
+						' <label for="suppdoc" class="form-check-label p-1 bg-warning text-danger rounded">Please ensure you will submit <strong>Supporting Document</strong> within a period of  <strong>3 Days</strong> upon return.</label>' +
 					'</div>' +
 				'</div>' +
 			'</div>'
@@ -2193,9 +2192,9 @@ if(obj.time_start_pm == itime_start) {
 
 				'<div class="form-group row m-2 {{ $errors->has('akuan') ? 'has-error' : '' }}">' +
 					'{{ Form::label('suppdoc', 'Supporting Document : ', ['class' => 'col-sm-4 col-form-label']) }}' +
-					'<div class="col-sm-8 suppdoc">' +
-						'{{ Form::checkbox('documentsupport', 1, @$value, ['class' => 'form-check-input', 'id' => 'suppdoc', 'style' => 'width:25px; height:25px;']) }}' +
-						' <label for="suppdoc" class="form-check-label"><p class="p-1 bg-warning text-danger rounded">Please ensure you will submit <strong>Supporting Document</strong> within a period of  <strong>3 Days</strong> upon return.</p></label>' +
+					'<div class="col-sm-8 suppdoc form-check">' +
+						'{{ Form::checkbox('documentsupport', 1, @$value, ['class' => 'form-check-input', 'id' => 'suppdoc']) }}' +
+						' <label for="suppdoc" class="form-check-label p-1 bg-warning text-danger rounded">Please ensure you will submit <strong>Supporting Document</strong> within a period of <strong>3 Days</strong> upon return.</label>' +
 					'</div>' +
 				'</div>' +
 
@@ -2403,9 +2402,9 @@ if(obj.time_start_pm == itime_start) {
 
 				'<div class="form-group row m-2 {{ $errors->has('akuan') ? 'has-error' : '' }}">' +
 					'{{ Form::label('suppdoc', 'Supporting Document : ', ['class' => 'col-sm-4 col-form-label']) }}' +
-					'<div class="col-sm-8 suppdoc">' +
-						'{{ Form::checkbox('documentsupport', 1, @$value, ['class' => 'form-check-input', 'id' => 'suppdoc', 'style' => 'width:25px; height:25px;']) }}' +
-						' <label for="suppdoc" class="form-check-label"><p class="p-1 bg-warning text-danger rounded">Please ensure you will submit <strong>Supporting Document</strong> within a period of  <strong>3 Days</strong> upon return.</p></label>' +
+					'<div class="col-sm-8 suppdoc form-check">' +
+						'{{ Form::checkbox('documentsupport', 1, @$value, ['class' => 'form-check-input', 'id' => 'suppdoc']) }}' +
+						' <label for="suppdoc" class="form-check-label p-1 bg-warning text-danger rounded">Please ensure you will submit <strong>Supporting Document</strong> within a period of  <strong>3 Days</strong> upon return.</label>' +
 					'</div>' +
 				'</div>' +
 
@@ -2877,9 +2876,9 @@ $oi = \Auth::user()->belongstostaff->hasmanyleavereplacement()->where('leave_bal
 
 				'<div class="form-group row m-2 {{ $errors->has('akuan') ? 'has-error' : '' }}">' +
 					'{{ Form::label('suppdoc', 'Supporting Document : ', ['class' => 'col-sm-4 col-form-label']) }}' +
-					'<div class="col-sm-8 suppdoc">' +
-						'{{ Form::checkbox('documentsupport', 1, @$value, ['class' => 'form-check-input', 'id' => 'suppdoc', 'style' => 'width:25px; height:25px;']) }}' +
-						' <label for="suppdoc" class="form-check-label"><p class="p-1 bg-warning text-danger rounded">Please ensure you will submit <strong>Supporting Document</strong> within a period of  <strong>3 Days</strong> upon return.</p></label>' +
+					'<div class="col-sm-8 suppdoc form-check">' +
+						'{{ Form::checkbox('documentsupport', 1, @$value, ['class' => 'form-check-input', 'id' => 'suppdoc']) }}' +
+						' <label for="suppdoc" class="form-check-label p-1 bg-warning text-danger rounded">Please ensure you will submit <strong>Supporting Document</strong> within a period of  <strong>3 Days</strong> upon return.</label>' +
 					'</div>' +
 				'</div>' +
 			'</div>'
@@ -3404,9 +3403,9 @@ if(obj.time_start_pm == itime_start) {
 
 				'<div class="form-group row m-2 {{ $errors->has('akuan') ? 'has-error' : '' }}">' +
 					'{{ Form::label('suppdoc', 'Supporting Document : ', ['class' => 'col-sm-4 col-form-label']) }}' +
-					'<div class="col-sm-8 suppdoc">' +
-						'{{ Form::checkbox('documentsupport', 1, @$value, ['class' => 'form-check-input', 'id' => 'suppdoc', 'style' => 'width:25px; height:25px;']) }}' +
-						' <label for="suppdoc" class="form-check-label"><p class="p-1 bg-warning text-danger rounded">Please ensure you will submit <strong>Supporting Document</strong> within a period of  <strong>3 Days</strong> upon return.</p></label>' +
+					'<div class="col-sm-8 suppdoc form-check">' +
+						'{{ Form::checkbox('documentsupport', 1, @$value, ['class' => 'form-check-input', 'id' => 'suppdoc']) }}' +
+						' <label for="suppdoc" class="form-check-label p-1 bg-warning text-danger rounded">Please ensure you will submit <strong>Supporting Document</strong> within a period of  <strong>3 Days</strong> upon return.</label>' +
 					'</div>' +
 				'</div>' +
 

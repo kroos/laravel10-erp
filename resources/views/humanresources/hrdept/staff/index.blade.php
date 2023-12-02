@@ -7,7 +7,7 @@ use App\Models\Staff;
 <div class="container row justify-content-center align-items-start">
 @include('humanresources.hrdept.navhr')
 	<h2>Staffs&nbsp;<a class="btn btn-sm btn-outline-secondary" href="{{ route('staff.create') }}"><i class="fa-solid fa-person-circle-plus fa-beat"></i> Add Staff</a></h2>
-	<div class="table-responsive">
+	<div class="col-sm-12 table-responsive">
 		<table id="staff" class="table table-hover table-sm align-middle" style="font-size:12px">
 			<thead>
 				<tr>
@@ -33,7 +33,7 @@ use App\Models\Staff;
 					<th>Confirmed</th> -->
 				</tr>
 			</thead>
-			<tbody class="table-group-divider">
+			<tbody>
 <?php
 // who am i?
 $me1 = \Auth::user()->belongstostaff->div_id == 1;		// hod
@@ -121,7 +121,7 @@ if ($me1) {																				// hod
 
 	<p>&nbsp;</p>
 	<h2>Inactive Staffs</h2>
-	<div class="table-responsive">
+	<div class="col-sm-12 table-responsive">
 
 		<table id="inactivestaff" class="table table-hover table-sm align-middle" style="font-size:12px">
 			<thead>
