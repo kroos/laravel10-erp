@@ -29,7 +29,7 @@ use \Carbon\CarbonInterval;
 
 use Session;
 
-class MaternityLeaveController extends Controller
+class HRMaternityLeaveController extends Controller
 {
 	function __construct()
 	{

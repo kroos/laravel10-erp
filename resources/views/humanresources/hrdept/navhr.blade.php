@@ -31,10 +31,45 @@
 		</ul>
 	</li>
 	<li class="nav-item dropdown">
+		<a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Entitlement</a>
+		<ul class="dropdown-menu">
+			<li>
+				<a class="dropdown-item btn btn-sm btn-outline-secondary" href="{{ route('hrannualleave.index') }}">
+					<i class="fa-regular fa-calendar fa-beat"></i>
+					Annual Leave List
+				</a>
+			</li>
+			<li>
+				<a class="dropdown-item btn btn-sm btn-outline-secondary" href="{{ route('hrmcleave.index') }}">
+					<i class="fa-stack fa-2X">
+						<i class="fa-regular fa-calendar fa-beat fa-stack-1x"></i>
+						<i class="fa-regular fa-moon fa-beat fa-stack-1x"></i>
+					</i>
+					Medical Certificate Leave List
+				</a>
+			</li>
+			<li>
+				<a class="dropdown-item btn btn-sm btn-outline-secondary" href="{{ route('hrmaternityleave.index') }}">
+					<i class="fa-solid fa-person-pregnant"></i>
+					Maternity Leave List
+				</a>
+			</li>
+		</ul>
+	</li>
+	<li class="nav-item dropdown">
 		<a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Leave</a>
 		<ul class="dropdown-menu">
 			<li><a class="dropdown-item btn btn-sm btn-outline-secondary" href="{{ route('hrleave.index') }}"><i class="fa-solid fa-person-walking-arrow-right fa-beat"></i> Leave List</a></li>
-			<!-- <li><a class="dropdown-item btn btn-sm btn-outline-secondary" href="{{ route('hrleave.reject') }}"><i class="fa-solid fa-person-walking-arrow-right fa-beat"></i> Rejected Leave List</a></li> -->
+			<li><a class="dropdown-item btn btn-sm btn-outline-secondary" href="{{ route('hrleave.reject') }}"><i class="fa-solid fa-eject fa-beat"></i> Rejected Leave List</a></li>
+			<li>
+				<a class="dropdown-item btn btn-sm btn-outline-secondary" href="{{ route('hrleave.cancel') }}">
+					<i class="fa-stack fa-2X">
+						<i class="fa-solid fa-person-walking-arrow-right fa-beat fa-stack-1x"></i>
+						<i class="fa-solid fa-ban fa-stack-1x" style="color:Tomato"></i>
+					</i>
+				Cancel Leave List
+				</a>
+			</li>
 			<li><a class="dropdown-item btn btn-sm btn-outline-secondary" href="{{ route('leaveapprovalsupervisor.index') }}"><span class="mdi mdi-account-supervisor-outline"></span> Supervisor Leave Approval</a></li>
 			<li><a class="dropdown-item btn btn-sm btn-outline-secondary" href="{{ route('leaveapprovalhod.index') }}"><span class="mdi mdi-human-capacity-increase"></span> Head of Department Leave Approval</a></li>
 			<li><a class="dropdown-item btn btn-sm btn-outline-secondary" href="{{ route('leaveapprovaldirector.index') }}"><span class="mdi mdi-human-male-board-poll"></span> Director Leave Approval</a></li>

@@ -16,7 +16,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 
 // load models
-use App\Models\HumanResources\HRLeaveMaternity;
+use App\Models\HumanResources\HRLeaveMC;
 
 // load array helper
 use Illuminate\Support\Arr;
@@ -29,7 +29,7 @@ use \Carbon\CarbonInterval;
 
 use Session;
 
-class MaternityLeaveController extends Controller
+class HRMCLeaveController extends Controller
 {
 	function __construct()
 	{
@@ -43,7 +43,7 @@ class MaternityLeaveController extends Controller
 	 */
 	public function index(): View
 	{
-		return view('humanresources.hrdept.setting.maternityleave.index');
+		return view('humanresources.hrdept.setting.mcleave.index');
 	}
 
 	/**
@@ -51,7 +51,7 @@ class MaternityLeaveController extends Controller
 	 */
 	public function create(): View
 	{
-		return view('humanresources.hrdept.setting.maternityleave.create');
+		return view('humanresources.hrdept.setting.mcleave.create');
 	}
 
 	/**
@@ -65,7 +65,7 @@ class MaternityLeaveController extends Controller
 	/**
 	 * Display the specified resource.
 	 */
-	public function show(HRLeaveMaternity $maternityleave): View
+	public function show(HRLeaveMC $mcleave): View
 	{
 		//
 	}
@@ -73,25 +73,25 @@ class MaternityLeaveController extends Controller
 	/**
 	 * Show the form for editing the specified resource.
 	 */
-	public function edit(HRLeaveMaternity $maternityleave): View
+	public function edit(HRLeaveMC $mcleave): View
 	{
-		return view('humanresources.hrdept.setting.maternityleave.edit', ['maternityleave' => $maternityleave]);
+		return view('humanresources.hrdept.setting.mcleave.edit', ['mcleave' => $mcleave]);
 	}
 
 	/**
 	 * Update the specified resource in storage.
 	 */
-	public function update(Request $request, HRLeaveMaternity $maternityleave): RedirectResponse
+	public function update(Request $request, HRLeaveMC $mcleave): RedirectResponse
 	{
-		$maternityleave->update($request->except(['_method', '_token']));
+		$mcleave->update($request->except(['_method', '_token']));
 		Session::flash('flash_message', 'Data successfully updated!');
-		return Redirect::route('maternityleave.index');
+		return Redirect::route('mcleave.index');
 	}
 
 	/**
 	 * Remove the specified resource from storage.
 	 */
-	public function destroy(HRLeaveMaternity $maternityleave)
+	public function destroy(HRLeaveMC $mcleave): JsonResponse
 	{
 		//
 	}
