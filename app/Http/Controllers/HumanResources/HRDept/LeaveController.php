@@ -44,7 +44,7 @@ class LeaveController extends Controller
 	{
 		$this->middleware(['auth']);
 		$this->middleware('highMgmtAccess:1|2|4|5,NULL', ['only' => ['index', 'show']]);		// all high management
-		$this->middleware('highMgmtAccessLevel1:1|5,14', ['only' => ['create', 'store', 'edit', 'update', 'destroy']]);	// only hod and asst hod HR can access
+		$this->middleware('highMgmtAccessLevel1:1|5,14', ['only' => ['reject', 'cancel', 'create', 'store', 'edit', 'update', 'destroy']]);	// only hod and asst hod HR can access
 	}
 
 	/**
@@ -59,8 +59,8 @@ class LeaveController extends Controller
 	{
 		$reject = HRLeave::where('leave_status_id', 4)
 							->where(function (Builder $query) {
-								$query->whereDate('date_time_start', '<=', now()->startOfYear())
-								->whereDate('date_time_end', '>=', now()->endOfYear());
+								$query->whereDate('date_time_start', '>=', now()->startOfYear())
+								->whereDate('date_time_end', '<=', now()->endOfYear());
 							})
 							->get();
 
@@ -69,7 +69,13 @@ class LeaveController extends Controller
 
 	public function cancel(): View
 	{
-		return view('humanresources.hrdept.leave.cancel');
+		$cancel = HRLeave::where('leave_status_id', 3)
+							->where(function (Builder $query) {
+								$query->whereDate('date_time_start', '>=', now()->startOfYear())
+								->whereDate('date_time_end', '<=', now()->endOfYear());
+							})
+							->get();
+		return view('humanresources.hrdept.leave.cancel', ['cancel' => $cancel]);
 	}
 
 	/**

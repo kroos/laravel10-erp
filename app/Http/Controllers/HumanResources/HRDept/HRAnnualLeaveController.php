@@ -16,7 +16,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 
 // load models
-use App\Models\HumanResources\HRLeaveMaternity;
+use App\Models\HumanResources\HRLeaveAnnual;
 
 // load array helper
 use Illuminate\Support\Arr;
@@ -29,12 +29,13 @@ use \Carbon\CarbonInterval;
 
 use Session;
 
-class MaternityLeaveController extends Controller
+class HRAnnualLeaveController extends Controller
 {
 	function __construct()
 	{
 		$this->middleware(['auth']);
 		$this->middleware('highMgmtAccess:1|2|5,14|31', ['only' => ['index', 'show']]);
+		// $this->middleware('highMgmtAccess:1|2|5,14|31')->only('index', 'show');
 		$this->middleware('highMgmtAccessLevel1:1,14', ['only' => ['create', 'store', 'edit', 'update', 'destroy']]);
 	}
 
@@ -43,7 +44,7 @@ class MaternityLeaveController extends Controller
 	 */
 	public function index(): View
 	{
-		return view('humanresources.hrdept.setting.maternityleave.index');
+		return view('humanresources.hrdept.entitlement.annual.index');
 	}
 
 	/**
@@ -51,7 +52,7 @@ class MaternityLeaveController extends Controller
 	 */
 	public function create(): View
 	{
-		return view('humanresources.hrdept.setting.maternityleave.create');
+		return view('humanresources.hrdept.setting.annualleave.create');
 	}
 
 	/**
@@ -65,7 +66,7 @@ class MaternityLeaveController extends Controller
 	/**
 	 * Display the specified resource.
 	 */
-	public function show(HRLeaveMaternity $maternityleave): View
+	public function show(HRLeaveAnnual $annualleave): View
 	{
 		//
 	}
@@ -73,25 +74,25 @@ class MaternityLeaveController extends Controller
 	/**
 	 * Show the form for editing the specified resource.
 	 */
-	public function edit(HRLeaveMaternity $maternityleave): View
+	public function edit(HRLeaveAnnual $annualleave): View
 	{
-		return view('humanresources.hrdept.setting.maternityleave.edit', ['maternityleave' => $maternityleave]);
+		return view('humanresources.hrdept.setting.annualleave.edit', ['annualleave' => $annualleave]);
 	}
 
 	/**
 	 * Update the specified resource in storage.
 	 */
-	public function update(Request $request, HRLeaveMaternity $maternityleave): RedirectResponse
+	public function update(Request $request, HRLeaveAnnual $annualleave): RedirectResponse
 	{
-		$maternityleave->update($request->except(['_method', '_token']));
+		$annualleave->update($request->except(['_method', '_token']));
 		Session::flash('flash_message', 'Data successfully updated!');
-		return Redirect::route('maternityleave.index');
+		return Redirect::route('annualleave.index');
 	}
 
 	/**
 	 * Remove the specified resource from storage.
 	 */
-	public function destroy(HRLeaveMaternity $maternityleave)
+	public function destroy(HRLeaveAnnual $annualleave): JsonResponse
 	{
 		//
 	}
