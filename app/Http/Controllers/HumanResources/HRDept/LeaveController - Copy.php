@@ -25,8 +25,6 @@ use App\Models\HumanResources\HRLeaveApprovalHOD;
 use App\Models\HumanResources\HRLeaveApprovalDirector;
 use App\Models\HumanResources\HRLeaveApprovalHR;
 
-use Illuminate\Database\Eloquent\Builder;
-
 // load array helper
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
@@ -44,7 +42,7 @@ class LeaveController extends Controller
 	{
 		$this->middleware(['auth']);
 		$this->middleware('highMgmtAccess:1|2|4|5,NULL', ['only' => ['index', 'show']]);		// all high management
-		$this->middleware('highMgmtAccessLevel1:1|5,14', ['only' => ['create', 'store', 'edit', 'update', 'destroy']]);	// only hod and asst hod HR can access
+		$this->middleware('highMgmtAccess:1|5,14', ['only' => ['create', 'store', 'edit', 'update', 'destroy']]);	// only hod and asst hod HR can access
 	}
 
 	/**
@@ -53,23 +51,6 @@ class LeaveController extends Controller
 	public function index(): View
 	{
 		return view('humanresources.hrdept.leave.index');
-	}
-
-	public function reject(): View
-	{
-		$reject = HRLeave::where('leave_status_id', 4)
-							->where(function (Builder $query) {
-								$query->whereDate('date_time_start', '<=', now()->startOfYear())
-								->whereDate('date_time_end', '>=', now()->endOfYear());
-							})
-							->get();
-
-		return view('humanresources.hrdept.leave.reject', ['reject' => $reject]);
-	}
-
-	public function cancel(): View
-	{
-		return view('humanresources.hrdept.leave.cancel');
 	}
 
 	/**
@@ -662,7 +643,7 @@ class LeaveController extends Controller
 			if (($hrleave->leave_type_id == 2) || ($hrleave->leave_type_id == 7) || ($hrleave->leave_type_id == 4 || $hrleave->leave_type_id == 10) || ($hrleave->leave_type_id == 3 || $hrleave->leave_type_id == 6 || $hrleave->leave_type_id == 9 || $hrleave->leave_type_id == 11 || $hrleave->leave_type_id == 12)) {
 				// detach all entitlement especially for MC, ML, NRL/EL-NRL
 
-				// $hrleave->belongstomanyleaveannual()?->detach($r1->id);
+				// $hrleave->belongstomanyleaveannual()->detach($r1->id);
 				$hrleave->belongstomanyleavemc()?->detach($r2?->id);
 				$hrleave->belongstomanyleavematernity()?->detach($r3?->id);
 				$hrleave->belongstomanyleavereplacement()?->detach($r4?->id);
@@ -823,7 +804,7 @@ class LeaveController extends Controller
 			if (($hrleave->leave_type_id == 1 || $hrleave->leave_type_id == 5) || ($hrleave->leave_type_id == 7) || ($hrleave->leave_type_id == 4 || $hrleave->leave_type_id == 10) || ($hrleave->leave_type_id == 3 || $hrleave->leave_type_id == 6 || $hrleave->leave_type_id == 9 || $hrleave->leave_type_id == 11 || $hrleave->leave_type_id == 12)) {
 
 				// detach all entitlement especially for MC, ML, NRL/EL-NRL
-				$hrleave->belongstomanyleaveannual()?->detach($r1->id);
+				$hrleave->belongstomanyleaveannual()->detach($r1->id);
 				// $hrleave->belongstomanyleavemc()?->detach($r2?->id);
 				$hrleave->belongstomanyleavematernity()?->detach($r3?->id);
 				$hrleave->belongstomanyleavereplacement()?->detach($r4?->id);
@@ -935,7 +916,7 @@ class LeaveController extends Controller
 			if (($hrleave->leave_type_id == 1 || $hrleave->leave_type_id == 5) || ($hrleave->leave_type_id == 2) || ($hrleave->leave_type_id == 4 || $hrleave->leave_type_id == 10) || ($hrleave->leave_type_id == 3 || $hrleave->leave_type_id == 6 || $hrleave->leave_type_id == 9 || $hrleave->leave_type_id == 11 || $hrleave->leave_type_id == 12)) {
 				// detach all entitlement especially for MC, ML, NRL/EL-NRL
 
-				$hrleave->belongstomanyleaveannual()?->detach($r1->id);
+				$hrleave->belongstomanyleaveannual()->detach($r1->id);
 				$hrleave->belongstomanyleavemc()?->detach($r2?->id);
 				// $hrleave->belongstomanyleavematernity()?->detach($r3?->id);
 				$hrleave->belongstomanyleavereplacement()?->detach($r4?->id);
@@ -1123,7 +1104,7 @@ class LeaveController extends Controller
 			if (($hrleave->leave_type_id == 1 || $hrleave->leave_type_id == 5) || ($hrleave->leave_type_id == 7) || ($hrleave->leave_type_id == 2) || ($hrleave->leave_type_id == 3 || $hrleave->leave_type_id == 6 || $hrleave->leave_type_id == 9 || $hrleave->leave_type_id == 11 || $hrleave->leave_type_id == 12)) {
 				// detach all entitlement especially for MC, ML, NRL/EL-NRL
 
-				$hrleave->belongstomanyleaveannual()?->detach($r1->id);
+				$hrleave->belongstomanyleaveannual()->detach($r1->id);
 				$hrleave->belongstomanyleavemc()?->detach($r2?->id);
 				$hrleave->belongstomanyleavematernity()?->detach($r3?->id);
 				// $hrleave->belongstomanyleavereplacement()?->detach($r4?->id);
