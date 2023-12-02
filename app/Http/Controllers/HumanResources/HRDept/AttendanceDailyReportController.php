@@ -101,8 +101,13 @@ class AttendanceDailyReportController extends Controller
         ->join('pivot_dept_cate_branches', 'pivot_staff_pivotdepts.pivot_dept_id', '=',  'pivot_dept_cate_branches.id')
         ->join('option_branches', 'pivot_dept_cate_branches.branch_id', '=', 'option_branches.id')
         ->leftjoin('option_restday_groups', 'staffs.restday_group_id', '=', 'option_restday_groups.id')
+
         ->where('hr_attendances.attend_date', '=', $selected_date)
-        ->where('staffs.restday_group_id', '!=', $saturday->restday_group_id)
+        // ->where('staffs.restday_group_id', '!=', $saturday->restday_group_id)
+        ->where(function ($query) use ($saturday) {
+            $query->where('staffs.restday_group_id', '!=', $saturday->restday_group_id)
+                  ->orWhereNull('staffs.restday_group_id');
+        })
         ->where(function ($query) {
           $query->where('hr_attendances.in', '=', '00:00:00')
             ->orWhere('hr_attendances.leave_id', '!=', NULL);
@@ -118,6 +123,7 @@ class AttendanceDailyReportController extends Controller
         ->orderBy('option_branches.code', 'ASC')
         ->orderBy('pivot_dept_cate_branches.department', 'ASC')
         ->orderBy('logins.username', 'ASC')
+        // ->ddrawsql();
         ->get();
     } else {
       $dailyreport_absent = HRAttendance::join('staffs', 'staffs.id', '=', 'hr_attendances.staff_id')

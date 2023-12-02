@@ -357,8 +357,8 @@ class AjaxController extends Controller
 				$albal = $sala->annual_leave_balance + $pd;						// annual leave balance
 				$aluti = $sala->annual_leave_utilize - $pd;						// annual leave utilize
 				$sala->update(['annual_leave_balance' => $albal, 'annual_leave_utilize' => $aluti]);
-				$sal->update(['period_day' => 0, 'leave_status_id' => $request->leave_status_id]);
-				$sal->belongstomanyleaveannual()->detach($p1->id);
+				$sal->update(['leave_status_id' => $request->leave_status_id]);
+				// $sal->belongstomanyleaveannual()->detach($p1->id);
 			} elseif($saly == 4 || $saly == 10) {								// replacement leave
 				if (!$p4) {
 					Session::flash('flash_danger', 'Please inform IT Department with this message: "No link between leave and replacement leave table (database). This is old leave created from old system."');
@@ -370,7 +370,7 @@ class AjaxController extends Controller
 				$aluti = $sala->leave_utilize - $pd;							// replacement leave utilize
 				$sala->update(['leave_balance' => $albal, 'leave_utilize' => $aluti]);
 				$sal->update(['leave_status_id' => $request->leave_status_id]);
-				$sal->belongstomanyleavereplacement()->detach($p4->id);
+				// $sal->belongstomanyleavereplacement()->detach($p4->id);
 			} elseif($saly == 2) {												// mc leave
 				if (!$p2) {
 					Session::flash('flash_danger', 'Please inform IT Department with this message: "No link between leave and MC leave table (database). This is old leave created from old system."');
@@ -382,7 +382,7 @@ class AjaxController extends Controller
 				$aluti = $sala->mc_leave_utilize - $pd;							// mc leave utilize
 				$sala->update(['mc_leave_balance' => $albal, 'mc_leave_utilize' => $aluti]);
 				$sal->update(['leave_status_id' => $request->leave_status_id]);
-				$sal->belongstomanyleavemc()->detach($p2->id);
+				// $sal->belongstomanyleavemc()->detach($p2->id);
 			} elseif($saly == 7) {
 				if (!$p3) {
 					Session::flash('flash_danger', 'Please inform IT Department with this message: "No link between leave and maternity leave table (database). This is old leave created from old system."');
@@ -394,7 +394,7 @@ class AjaxController extends Controller
 				$aluti = $sala->maternity_leave_utilize - $pd;					// maternity leave utilize
 				$sala->update(['maternity_leave_balance' => $albal, 'maternity_leave_utilize' => $aluti]);
 				$sal->update(['leave_status_id' => $request->leave_status_id]);
-				$sal->belongstomanyleavematernity()->detach($p3->id);
+				// $sal->belongstomanyleavematernity()->detach($p3->id);
 			} elseif($saly == 3 || $saly == 6 || $saly == 11 || $saly == 12) {
 				$sal->update(['leave_status_id' => $request->leave_status_id]);
 			} elseif($saly == 9) {
@@ -480,8 +480,8 @@ class AjaxController extends Controller
 				$albal = $sala->annual_leave_balance + $pd;						// annual leave balance
 				$aluti = $sala->annual_leave_utilize - $pd;						// annual leave utilize
 				$sala->update(['annual_leave_balance' => $albal, 'annual_leave_utilize' => $aluti]);
-				$sal->update(['period_day' => 0, 'leave_status_id' => $request->leave_status_id]);
-				$sal->belongstomanyleaveannual()->detach($p1->id);
+				$sal->update(['leave_status_id' => $request->leave_status_id]);
+				// $sal->belongstomanyleaveannual()->detach($p1->id);
 			} elseif($saly == 4 || $saly == 10) {								// replacement leave
 				if (!$p4) {
 					Session::flash('flash_danger', 'Please inform IT Department with this message: "No link between leave and replacement leave table (database). This is old leave created from old system."');
@@ -492,8 +492,8 @@ class AjaxController extends Controller
 				$albal = $sala->leave_balance + $pd;							// replacement leave balance
 				$aluti = $sala->leave_utilize - $pd;							// replacement leave utilize
 				$sala->update(['leave_balance' => $albal, 'leave_utilize' => $aluti]);
-				$sal->update(['period_day' => 0, 'leave_status_id' => $request->leave_status_id]);
-				$sal->belongstomanyleavereplacement()->detach($p4->id);
+				$sal->update(['leave_status_id' => $request->leave_status_id]);
+				// $sal->belongstomanyleavereplacement()->detach($p4->id);
 			} elseif($saly == 2) {												// mc leave
 				if (!$p2) {
 					Session::flash('flash_danger', 'Please inform IT Department with this message: "No link between leave and MC leave table (database). This is old leave created from old system."');
@@ -504,8 +504,8 @@ class AjaxController extends Controller
 				$albal = $sala->mc_leave_balance + $pd;							// mc leave balance
 				$aluti = $sala->mc_leave_utilize - $pd;							// mc leave utilize
 				$sala->update(['mc_leave_balance' => $albal, 'mc_leave_utilize' => $aluti]);
-				$sal->update(['period_day' => 0, 'leave_status_id' => $request->leave_status_id]);
-				$sal->belongstomanyleavemc()->detach($p2->id);
+				$sal->update(['leave_status_id' => $request->leave_status_id]);
+				// $sal->belongstomanyleavemc()->detach($p2->id);
 			} elseif($saly == 7) {
 				if (!$p3) {
 					Session::flash('flash_danger', 'Please inform IT Department with this message: "No link between leave and maternity leave table (database). This is old leave created from old system."');
@@ -516,8 +516,8 @@ class AjaxController extends Controller
 				$albal = $sala->maternity_leave_balance + $pd;					// maternity leave balance
 				$aluti = $sala->maternity_leave_utilize - $pd;					// maternity leave utilize
 				$sala->update(['maternity_leave_balance' => $albal, 'maternity_leave_utilize' => $aluti]);
-				$sal->update(['period_day' => 0, 'leave_status_id' => $request->leave_status_id]);
-				$sal->belongstomanyleavematernity()->detach($p3->id);
+				$sal->update(['leave_status_id' => $request->leave_status_id]);
+				// $sal->belongstomanyleavematernity()->detach($p3->id);
 			} elseif($saly == 3 || $saly == 6 || $saly == 11 || $saly == 12) {
 				$sal->update(['period_day' => 0, 'leave_status_id' => $request->leave_status_id]);
 			} elseif($saly == 9) {
@@ -603,8 +603,8 @@ class AjaxController extends Controller
 				$albal = $sala->annual_leave_balance + $pd;						// annual leave balance
 				$aluti = $sala->annual_leave_utilize - $pd;						// annual leave utilize
 				$sala->update(['annual_leave_balance' => $albal, 'annual_leave_utilize' => $aluti]);
-				$sal->update(['period_day' => 0, 'leave_status_id' => $request->leave_status_id]);
-				$sal->belongstomanyleaveannual()->detach($p1->id);
+				$sal->update(['leave_status_id' => $request->leave_status_id]);
+				// $sal->belongstomanyleaveannual()->detach($p1->id);
 			} elseif($saly == 4 || $saly == 10) {								// replacement leave
 				if (!$p4) {
 					Session::flash('flash_danger', 'Please inform IT Department with this message: "No link between leave and replacement leave table (database). This is old leave created from old system."');
@@ -615,8 +615,8 @@ class AjaxController extends Controller
 				$albal = $sala->leave_balance + $pd;							// replacement leave balance
 				$aluti = $sala->leave_utilize - $pd;							// replacement leave utilize
 				$sala->update(['leave_balance' => $albal, 'leave_utilize' => $aluti]);
-				$sal->update(['period_day' => 0, 'leave_status_id' => $request->leave_status_id]);
-				$sal->belongstomanyleavereplacement()->detach($p4->id);
+				$sal->update(['leave_status_id' => $request->leave_status_id]);
+				// $sal->belongstomanyleavereplacement()->detach($p4->id);
 			} elseif($saly == 2) {												// mc leave
 				if (!$p2) {
 					Session::flash('flash_danger', 'Please inform IT Department with this message: "No link between leave and MC leave table (database). This is old leave created from old system."');
@@ -627,8 +627,8 @@ class AjaxController extends Controller
 				$albal = $sala->mc_leave_balance + $pd;							// mc leave balance
 				$aluti = $sala->mc_leave_utilize - $pd;							// mc leave utilize
 				$sala->update(['mc_leave_balance' => $albal, 'mc_leave_utilize' => $aluti]);
-				$sal->update(['period_day' => 0, 'leave_status_id' => $request->leave_status_id]);
-				$sal->belongstomanyleavemc()->detach($p2->id);
+				$sal->update(['leave_status_id' => $request->leave_status_id]);
+				// $sal->belongstomanyleavemc()->detach($p2->id);
 			} elseif($saly == 7) {
 				if (!$p3) {
 					Session::flash('flash_danger', 'Please inform IT Department with this message: "No link between leave and maternity leave table (database). This is old leave created from old system."');
@@ -639,8 +639,8 @@ class AjaxController extends Controller
 				$albal = $sala->maternity_leave_balance + $pd;					// maternity leave balance
 				$aluti = $sala->maternity_leave_utilize - $pd;					// maternity leave utilize
 				$sala->update(['maternity_leave_balance' => $albal, 'maternity_leave_utilize' => $aluti]);
-				$sal->update(['period_day' => 0, 'leave_status_id' => $request->leave_status_id]);
-				$sal->belongstomanyleavematernity()->detach($p3->id);
+				$sal->update(['leave_status_id' => $request->leave_status_id]);
+				// $sal->belongstomanyleavematernity()->detach($p3->id);
 			} elseif($saly == 3 || $saly == 6 || $saly == 11 || $saly == 12) {
 				$sal->update(['period_day' => 0, 'leave_status_id' => $request->leave_status_id]);
 			} elseif($saly == 9) {
@@ -696,7 +696,7 @@ class AjaxController extends Controller
 				$albal = $sala->maternity_leave_balance + $pd;					// maternity leave balance
 				$aluti = $sala->maternity_leave_utilize - $pd;					// maternity leave utilize
 				$sala->update(['maternity_leave_balance' => $albal, 'maternity_leave_utilize' => $aluti]);
-				$sal->update(['period_day' => 0, 'leave_status_id' => $request->leave_status_id]);
+				$sal->update(['leave_status_id' => $request->leave_status_id]);
 			} elseif($saly == 3 || $saly == 6 || $saly == 11 || $saly == 12) {
 				$sal->update(['leave_status_id' => $request->leave_status_id]);
 			} elseif($saly == 9) {
@@ -778,8 +778,8 @@ class AjaxController extends Controller
 				$albal = $sala->annual_leave_balance + $pd;						// annual leave balance
 				$aluti = $sala->annual_leave_utilize - $pd;						// annual leave utilize
 				$sala->update(['annual_leave_balance' => $albal, 'annual_leave_utilize' => $aluti]);
-				$sal->update(['period_day' => 0, 'leave_status_id' => $request->leave_status_id]);
-				$sal->belongstomanyleaveannual()->detach($p1->id);
+				$sal->update(['leave_status_id' => $request->leave_status_id]);
+				// $sal->belongstomanyleaveannual()->detach($p1->id);
 			} elseif($saly == 4 || $saly == 10) {								// replacement leave
 				if (!$p4) {
 					Session::flash('flash_danger', 'Please inform IT Department with this message: "No link between leave and replacement leave table (database). This is old leave created from old system."');
@@ -790,8 +790,8 @@ class AjaxController extends Controller
 				$albal = $sala->leave_balance + $pd;							// replacement leave balance
 				$aluti = $sala->leave_utilize - $pd;							// replacement leave utilize
 				$sala->update(['leave_balance' => $albal, 'leave_utilize' => $aluti]);
-				$sal->update(['period_day' => 0, 'leave_status_id' => $request->leave_status_id]);
-				$sal->belongstomanyleavereplacement()->detach($p4->id);
+				$sal->update(['leave_status_id' => $request->leave_status_id]);
+				// $sal->belongstomanyleavereplacement()->detach($p4->id);
 			} elseif($saly == 2) {												// mc leave
 				if (!$p2) {
 					Session::flash('flash_danger', 'Please inform IT Department with this message: "No link between leave and MC leave table (database). This is old leave created from old system."');
@@ -802,21 +802,20 @@ class AjaxController extends Controller
 				$albal = $sala->mc_leave_balance + $pd;							// mc leave balance
 				$aluti = $sala->mc_leave_utilize - $pd;							// mc leave utilize
 				$sala->update(['mc_leave_balance' => $albal, 'mc_leave_utilize' => $aluti]);
-				$sal->update(['period_day' => 0, 'leave_status_id' => $request->leave_status_id]);
-				$sal->belongstomanyleavemc()->detach($p2->id);
+				$sal->update(['leave_status_id' => $request->leave_status_id]);
+				// $sal->belongstomanyleavemc()->detach($p2->id);
 			} elseif($saly == 7) {
 				if (!$p3) {
 					Session::flash('flash_danger', 'Please inform IT Department with this message: "No link between leave and maternity leave table (database). This is old leave created from old system."');
 					return redirect()->back()->withInput();
-				} else {
-					$sal->belongstomanyleavematernity()->detach($p3->id);
 				}
 				$pd = $sal->period_day;											// get period day
 				$sala = $sal->belongstomanyleavematernity->first();				// get maternity leave
 				$albal = $sala->maternity_leave_balance + $pd;					// maternity leave balance
 				$aluti = $sala->maternity_leave_utilize - $pd;					// maternity leave utilize
 				$sala->update(['maternity_leave_balance' => $albal, 'maternity_leave_utilize' => $aluti]);
-				$sal->update(['period_day' => 0, 'leave_status_id' => $request->leave_status_id]);
+				$sal->update(['leave_status_id' => $request->leave_status_id]);
+				// $sal->belongstomanyleavematernity()->detach($p3->id);
 			} elseif($saly == 3 || $saly == 6 || $saly == 11 || $saly == 12) {
 				$sal->update(['period_day' => 0, 'leave_status_id' => $request->leave_status_id]);
 			} elseif($saly == 9) {
