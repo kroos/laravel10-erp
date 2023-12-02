@@ -222,7 +222,7 @@ class LeaveController extends Controller
 			}
 
 			// change leave to AL/EL-AL from OTHERS (MC, ML, NRL/EL-NRL)
-			if (($hrleave->leave_type_id == 2) || ($hrleave->leave_type_id == 7) || ($hrleave->leave_type_id == 4 || $hrleave->leave_type_id == 10)) {
+			if (($hrleave->leave_type_id == 2) || ($hrleave->leave_type_id == 7) || ($hrleave->leave_type_id == 4 || $hrleave->leave_type_id == 10) || ($hrleave->leave_type_id == 3 || $hrleave->leave_type_id == 6 || $hrleave->leave_type_id == 9 || $hrleave->leave_type_id == 11 || $hrleave->leave_type_id == 12)) {
 				$r1a = $user->hasmanyleaveannual()->where('year', $t)->first();
 				if ($request->has('leave_cat')) {																										// applied for 1 full day OR half day
 					if($request->leave_cat == 2){																										// half day
@@ -291,7 +291,7 @@ class LeaveController extends Controller
 				}
 			}
 			// change leave to MC from OTHERS (AL/EL-AL, ML, NRL/EL-NRL)
-			if (($hrleave->leave_type_id == 1 || $hrleave->leave_type_id == 5) || ($hrleave->leave_type_id == 7) || ($hrleave->leave_type_id == 4 || $hrleave->leave_type_id == 10)) {
+			if (($hrleave->leave_type_id == 1 || $hrleave->leave_type_id == 5) || ($hrleave->leave_type_id == 7) || ($hrleave->leave_type_id == 4 || $hrleave->leave_type_id == 10) || ($hrleave->leave_type_id == 3 || $hrleave->leave_type_id == 6 || $hrleave->leave_type_id == 9 || $hrleave->leave_type_id == 11 || $hrleave->leave_type_id == 12)) {
 				$r2a = $user->hasmanyleavemc()->where('year', $t)->first();
 				if ($request->has('leave_cat')) {																										// applied for 1 full day OR half day
 					if($request->leave_cat == 2){																										// half day
@@ -337,7 +337,7 @@ class LeaveController extends Controller
 			}
 
 			// change leave to ML from OTHERS (AL/EL-AL, MC, NRL/EL-NRL)
-			if (($hrleave->leave_type_id == 1 || $hrleave->leave_type_id == 5) || ($hrleave->leave_type_id == 2) || ($hrleave->leave_type_id == 4 || $hrleave->leave_type_id == 10)) {
+			if (($hrleave->leave_type_id == 1 || $hrleave->leave_type_id == 5) || ($hrleave->leave_type_id == 2) || ($hrleave->leave_type_id == 4 || $hrleave->leave_type_id == 10) || ($hrleave->leave_type_id == 3 || $hrleave->leave_type_id == 6 || $hrleave->leave_type_id == 9 || $hrleave->leave_type_id == 11 || $hrleave->leave_type_id == 12)) {
 				$r3a = $user->hasmanyleavematernity()->where('year', $t)->first();
 				if(($r3a->maternity_leave_balance) < $totalday){
 					Session::flash('flash_danger', 'Please make sure applied leave does not exceed available leave balance');
@@ -424,7 +424,7 @@ class LeaveController extends Controller
 			}
 
 			// change leave to NRL/EL-NRL from OTHERS (AL/EL-AL, ML, MC)
-			if (($hrleave->leave_type_id == 1 || $hrleave->leave_type_id == 5) || ($hrleave->leave_type_id == 7) || ($hrleave->leave_type_id == 2)) {
+			if (($hrleave->leave_type_id == 1 || $hrleave->leave_type_id == 5) || ($hrleave->leave_type_id == 7) || ($hrleave->leave_type_id == 2) || ($hrleave->leave_type_id == 3 || $hrleave->leave_type_id == 6 || $hrleave->leave_type_id == 9 || $hrleave->leave_type_id == 11 || $hrleave->leave_type_id == 12)) {
 				if ($request->has('leave_cat')) {																										// applied for 1 full day OR half day
 					if($request->leave_cat == 2){																										// half day
 						if(($r4a->leave_balance) < 0.5){
@@ -474,7 +474,7 @@ class LeaveController extends Controller
 			}
 
 			// change leave to TF from OTHERS
-			if (($hrleave->leave_type_id == 1 || $hrleave->leave_type_id == 5) || $hrleave->leave_type_id == 2 || $hrleave->leave_type_id == 7 || ($hrleave->leave_type_id == 4 || $hrleave->leave_type_id == 10) || ($hrleave->leave_type_id == 3 || $hrleave->leave_type_id == 6 || $hrleave->leave_type_id == 11 || $hrleave->leave_type_id == 12))
+			if (($hrleave->leave_type_id == 1 || $hrleave->leave_type_id == 5) || $hrleave->leave_type_id == 2 || $hrleave->leave_type_id == 7 || ($hrleave->leave_type_id == 4 || $hrleave->leave_type_id == 10) || ($hrleave->leave_type_id == 3 || $hrleave->leave_type_id == 6 || $hrleave->leave_type_id == 9 || $hrleave->leave_type_id == 11 || $hrleave->leave_type_id == 12))
 			{
 				// convert $request->time_start and $request->time_end to mysql format
 				$ts = Carbon::parse($request->date_time_start.' '.$request->time_start);
@@ -662,7 +662,7 @@ class LeaveController extends Controller
 			if (($hrleave->leave_type_id == 2) || ($hrleave->leave_type_id == 7) || ($hrleave->leave_type_id == 4 || $hrleave->leave_type_id == 10) || ($hrleave->leave_type_id == 3 || $hrleave->leave_type_id == 6 || $hrleave->leave_type_id == 9 || $hrleave->leave_type_id == 11 || $hrleave->leave_type_id == 12)) {
 				// detach all entitlement especially for MC, ML, NRL/EL-NRL
 
-				// $hrleave->belongstomanyleaveannual()?->detach($r1->id);
+				// $hrleave->belongstomanyleaveannual()?->detach($r1?->id);
 				$hrleave->belongstomanyleavemc()?->detach($r2?->id);
 				$hrleave->belongstomanyleavematernity()?->detach($r3?->id);
 				$hrleave->belongstomanyleavereplacement()?->detach($r4?->id);
@@ -823,7 +823,7 @@ class LeaveController extends Controller
 			if (($hrleave->leave_type_id == 1 || $hrleave->leave_type_id == 5) || ($hrleave->leave_type_id == 7) || ($hrleave->leave_type_id == 4 || $hrleave->leave_type_id == 10) || ($hrleave->leave_type_id == 3 || $hrleave->leave_type_id == 6 || $hrleave->leave_type_id == 9 || $hrleave->leave_type_id == 11 || $hrleave->leave_type_id == 12)) {
 
 				// detach all entitlement especially for MC, ML, NRL/EL-NRL
-				$hrleave->belongstomanyleaveannual()?->detach($r1->id);
+				$hrleave->belongstomanyleaveannual()?->detach($r1?->id);
 				// $hrleave->belongstomanyleavemc()?->detach($r2?->id);
 				$hrleave->belongstomanyleavematernity()?->detach($r3?->id);
 				$hrleave->belongstomanyleavereplacement()?->detach($r4?->id);
@@ -935,7 +935,7 @@ class LeaveController extends Controller
 			if (($hrleave->leave_type_id == 1 || $hrleave->leave_type_id == 5) || ($hrleave->leave_type_id == 2) || ($hrleave->leave_type_id == 4 || $hrleave->leave_type_id == 10) || ($hrleave->leave_type_id == 3 || $hrleave->leave_type_id == 6 || $hrleave->leave_type_id == 9 || $hrleave->leave_type_id == 11 || $hrleave->leave_type_id == 12)) {
 				// detach all entitlement especially for MC, ML, NRL/EL-NRL
 
-				$hrleave->belongstomanyleaveannual()?->detach($r1->id);
+				$hrleave->belongstomanyleaveannual()?->detach($r1?->id);
 				$hrleave->belongstomanyleavemc()?->detach($r2?->id);
 				// $hrleave->belongstomanyleavematernity()?->detach($r3?->id);
 				$hrleave->belongstomanyleavereplacement()?->detach($r4?->id);
@@ -1123,7 +1123,7 @@ class LeaveController extends Controller
 			if (($hrleave->leave_type_id == 1 || $hrleave->leave_type_id == 5) || ($hrleave->leave_type_id == 7) || ($hrleave->leave_type_id == 2) || ($hrleave->leave_type_id == 3 || $hrleave->leave_type_id == 6 || $hrleave->leave_type_id == 9 || $hrleave->leave_type_id == 11 || $hrleave->leave_type_id == 12)) {
 				// detach all entitlement especially for MC, ML, NRL/EL-NRL
 
-				$hrleave->belongstomanyleaveannual()?->detach($r1->id);
+				$hrleave->belongstomanyleaveannual()?->detach($r1?->id);
 				$hrleave->belongstomanyleavemc()?->detach($r2?->id);
 				$hrleave->belongstomanyleavematernity()?->detach($r3?->id);
 				// $hrleave->belongstomanyleavereplacement()?->detach($r4?->id);
