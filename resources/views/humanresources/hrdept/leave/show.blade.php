@@ -89,6 +89,7 @@
 <?php
 use \App\Models\HumanResources\HRAttendance;
 use Illuminate\Database\Eloquent\Builder;
+use \App\Models\HumanResources\OptLeaveStatus;
 
 
 $staff = $hrleave->belongstostaff()?->first();
@@ -165,7 +166,7 @@ if ($backup) {
 
 $start = \Carbon\Carbon::parse($hrleave->date_time_start)->format('Y-m-d');
 $end = \Carbon\Carbon::parse($hrleave->date_time_end)->format('Y-m-d');
-$hr_remark = \App\Models\HumanResources\HRAttendance::where('staff_id', '=', $hrleave->staff_id)
+$hr_remark = HRAttendance::where('staff_id', '=', $hrleave->staff_id)
 ->whereBetween('attend_date', [$start, $end])
 ->where('hr_remarks', '!=', NULL)
 ->select('hr_remarks')
@@ -173,6 +174,17 @@ $hr_remark = \App\Models\HumanResources\HRAttendance::where('staff_id', '=', $hr
 
 $auth = \Auth::user()->belongstostaff?->div_id;
 $auth_admin = \Auth::user()->belongstostaff?->authorise_id;
+
+$hrremarksattendance = HRAttendance::where(function (Builder $query) use ($hrleave){
+										$query->whereDate('attend_date', '>=', $hrleave->date_time_start)
+										->whereDate('attend_date', '<=', $hrleave->date_time_end);
+									})
+						->where('staff_id', $hrleave->staff_id)
+						->where(function (Builder $query) {
+							$query->whereNotNull('remarks')->orWhereNotNull('hr_remarks');
+						})
+						// ->ddrawsql();
+						->get();
 ?>
 
 <div class="col-sm-12 row">
@@ -220,37 +232,38 @@ $auth_admin = \Auth::user()->belongstostaff?->authorise_id;
 		</div>
 
 		@if ($auth == 2 || $auth == 3 || $auth_admin == 1)
-		@if ($hr_remark?->hr_remarks != NULL && $hr_remark?->hr_remarks != '')
-		<div class="table">
-			<div class="table-row">
-				<div class="table-cell-top text-wrap" style="width: 100%;">HR REMARK : {{ @$hr_remark?->hr_remarks }}</div>
+			@if($hrremarksattendance)
+			<div class="table">
+				@foreach($hrremarksattendance as $key => $value)
+					<div class="table-row">
+						<div class="table-cell-top" style="width: 100%;">REMARKS FROM ATTENDANCE : {!! $value->remarks !!}<br/>HR REMARKS FROM ATTENDANCE : {!! $value->hr_remarks !!}</div>
+					</div>
+				@endforeach
 			</div>
-		</div>
-		@endif
+			@endif
 		@endif
 
-		<?php
-		$hrremarksattendance = HRAttendance::where(function (Builder $query) use ($hrleave){
-												$query->whereDate('attend_date', '>=', $hrleave->date_time_start)
-												->whereDate('attend_date', '<=', $hrleave->date_time_end);
-											})
-								->where('staff_id', $hrleave->staff_id)
-								->where(function (Builder $query) {
-									$query->whereNotNull('remarks')->orWhereNotNull('hr_remarks');
-								})
-								// ->ddrawsql();
-								->get();
-		?>
-		@if($hrremarksattendance)
-		<div class="table">
-			@foreach($hrremarksattendance as $key => $value)
+		@if ($auth == 2 || $auth == 3 || $auth_admin == 1)
+			@if($hrleave->remarks)
+			<div class="table">
 				<div class="table-row">
-					<div class="table-cell-top" style="width: 100%;">REMARKS FROM ATTENDANCE : {{ $value->remarks }}<br/>HR REMARKS FROM ATTENDANCE : {{ $value->hr_remarks }}</div>
+					<div class="table-cell-top" style="width: 100%;">LEAVE REMARKS : {!! $hrleave->remarks !!}</div>
 				</div>
-			@endforeach
-		</div>
+			</div>
+			@endif
 		@endif
 
+		@if ($auth == 2 || $auth == 3 || $auth_admin == 1)
+			@if($hrleave->hasmanyleaveamend()->count())
+			<div class="table">
+				@foreach($hrleave->hasmanyleaveamend()->get() as $key => $value1)
+					<div class="table-row">
+						<div class="table-cell-top" style="width: 100%;">EDIT LEAVE REMARKS : {{ $value1->amend_note }} on {{ \Carbon\Carbon::parse($value1->created_at)->format('j M Y') }}</div>
+					</div>
+				@endforeach
+			</div>
+			@endif
+		@endif
 
 		<div class="table">
 			<div class="table-row">
@@ -290,18 +303,18 @@ $auth_admin = \Auth::user()->belongstostaff?->authorise_id;
 			<div class="table-row">
 				@for ($a = 1; $a <= $count; $a++)
 					@if ($supervisor_no==$a)
-						<div class="table-cell-top1 text-center">{{ @$supervisor->updated_at }}</div>
+						<div class="table-cell-top1 text-center">{{ @$supervisor->updated_at }}<br />{{ ($supervisor->leave_status_id)?OptLeaveStatus::find(@$supervisor->leave_status_id)->status:'Pending' }}</div>
 					@elseif ($hod_no == $a)
-						<div class="table-cell-top1 text-center">{{ @$hod->updated_at }}</div>
+						<div class="table-cell-top1 text-center">{{ @$hod->updated_at }}<br />{{ ($hod->leave_status_id)?OptLeaveStatus::find(@$hod->leave_status_id)->status:'Pending' }}</div>
 					@elseif ($director_no == $a)
-						<div class="table-cell-top1 text-center">{{ @$director->updated_at }}</div>
+						<div class="table-cell-top1 text-center">{{ @$director->updated_at }}<br />{{ ($director->leave_status_id)?OptLeaveStatus::find(@$director->leave_status_id)->status:'Pending' }}</div>
 					@elseif ($hr_no == $a)
-						<div class="table-cell-top1 text-center">{{ @$hr->updated_at }}</div>
+						<div class="table-cell-top1 text-center">{{ @$hr->updated_at }}<br />{{ ($hr->leave_status_id)?OptLeaveStatus::find(@$hr->leave_status_id)->status:'Pending' }}</div>
 					@endif
 				@endfor
 			</div>
 		</div>
-		<p>&nbsp;</p>
+		<p>Supporting Document : {!! ($hrleave->softcopy)?'<a href="'.asset('storage/leaves/'.$hrleave->softcopy).'" target="_blank">Link</a>':null !!} </p>
 		<div class="col-sm-12 justify-content-center align-items-start">
 			<div class="col-auto text-center">
 				<a href="{{ url()->previous() }}"><button class="btn btn-sm btn-outline-secondary" id="back">Back</button></a>

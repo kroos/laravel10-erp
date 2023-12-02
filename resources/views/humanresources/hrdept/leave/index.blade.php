@@ -157,9 +157,9 @@ if ($me1) {																				// hod
 ?>
 					@if( $ha )
 						<tr>
-							<td><a href="{{ route('staff.show', $ul->staff_id) }}">{{ App\Models\Login::where([['staff_id', $ul->staff_id], ['active', 1]])->first()->username ?? NULL }}</a></td>
+							<td><a href="{{ route('staff.show', $ul->staff_id) }}" target="_blank">{{ App\Models\Login::where([['staff_id', $ul->staff_id], ['active', 1]])->first()->username ?? NULL }}</a></td>
 							<td>{{ $ul->belongstostaff?->name }}</td>
-							<td><a href="{{ route('hrleave.show', $ul->id) }}">HR9-{{ str_pad( $ul->leave_no, 5, "0", STR_PAD_LEFT ) }}/{{ $ul->leave_year }}</a></td>
+							<td><a href="{{ route('hrleave.show', $ul->id) }}" target="_blank">HR9-{{ str_pad( $ul->leave_no, 5, "0", STR_PAD_LEFT ) }}/{{ $ul->leave_year }}</a></td>
 							<td>{{ $ul->belongstooptleavetype?->leave_type_code }}</td>
 							<td>{{ Carbon::parse($ul->created_at)->format('j M Y') }}</td>
 							<td>{{ $dts }}</td>
@@ -312,9 +312,9 @@ if ($me1) {																				// hod
 ?>
 					@if( $ha )
 						<tr>
-							<td><a href="{{ route('staff.show', $ul->staff_id) }}">{{ App\Models\Login::where([['staff_id', $ul->staff_id], ['active', 1]])->first()->username ?? NULL }}</a></td>
+							<td><a href="{{ route('staff.show', $ul->staff_id) }}" target="_blank">{{ App\Models\Login::where([['staff_id', $ul->staff_id], ['active', 1]])->first()->username ?? NULL }}</a></td>
 							<td>{{ $ul->belongstostaff?->name }}</td>
-							<td><a href="{{ route('hrleave.show', $ul->id) }}">HR9-{{ str_pad( $ul->leave_no, 5, "0", STR_PAD_LEFT ) }}/{{ $ul->leave_year }}</a></td>
+							<td><a href="{{ route('hrleave.show', $ul->id) }}" target="_blank">HR9-{{ str_pad( $ul->leave_no, 5, "0", STR_PAD_LEFT ) }}/{{ $ul->leave_year }}</a></td>
 							<td>{{ $ul->belongstooptleavetype?->leave_type_code }}</td>
 							<td>{{ Carbon::parse($ul->created_at)->format('j M Y') }}</td>
 							<td>{{ $dts }}</td>
@@ -467,9 +467,9 @@ if ($me1) {																				// hod
 ?>
 					@if( $ha )
 						<tr>
-							<td><a href="{{ route('staff.show', $ul->staff_id) }}">{{ App\Models\Login::where([['staff_id', $ul->staff_id], ['active', 1]])->first()->username ?? NULL }}</a></td>
+							<td><a href="{{ route('staff.show', $ul->staff_id) }}" target="_blank">{{ App\Models\Login::where([['staff_id', $ul->staff_id], ['active', 1]])->first()->username ?? NULL }}</a></td>
 							<td>{{ $ul->belongstostaff?->name }}</td>
-							<td><a href="{{ route('hrleave.show', $ul->id) }}">HR9-{{ str_pad( $ul->leave_no, 5, "0", STR_PAD_LEFT ) }}/{{ $ul->leave_year }}</a></td>
+							<td><a href="{{ route('hrleave.show', $ul->id) }}" target="_blank">HR9-{{ str_pad( $ul->leave_no, 5, "0", STR_PAD_LEFT ) }}/{{ $ul->leave_year }}</a></td>
 							<td>{{ $ul->belongstooptleavetype?->leave_type_code }}</td>
 							<td>{{ Carbon::parse($ul->created_at)->format('j M Y') }}</td>
 							<td>{{ $dts }}</td>
@@ -589,7 +589,8 @@ $('#toleave').DataTable({
 );
 
 $('#paleave').DataTable({
-	"lengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "All"] ],
+	// "paging": false,
+	"lengthMenu": [ [100, 250, 500, -1], [100, 250, 500, "All"] ],
 	"columnDefs": [
 					{ type: 'date', 'targets': [4,5,6] },
 					// { type: 'time', 'targets': [6] },

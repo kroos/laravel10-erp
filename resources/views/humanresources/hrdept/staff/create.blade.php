@@ -11,36 +11,36 @@ use App\Models\HumanResources\OptCountry;
 use App\Models\HumanResources\HRLeaveApprovalFlow;
 ?>
 
-<div class="container">
+<div class="container row align-items-start justify-content-center">
 @include('humanresources.hrdept.navhr')
 	<h4>Add Staff</h4>
 	{{ Form::open(['route' => ['staff.store'], 'id' => 'form', 'class' => 'form-horizontal', 'autocomplete' => 'off', 'files' => true]) }}
 
-	<div class="row container p-0">
-		<div class="col-sm-6 container">
+	<div class="col-sm-12 row">
+		<div class="col-sm-6">
 
-			<div class="form-group row mb-3 {{ $errors->has('name') ? 'has-error' : '' }}">
+			<div class="form-group row m-2 {{ $errors->has('name') ? 'has-error' : '' }}">
 				{{ Form::label( 'nam', 'Name : ', ['class' => 'col-sm-4 col-form-label'] ) }}
 				<div class="col-sm-7">
 					{{ Form::text('name', @$value, ['class' => 'form-control form-control-sm', 'id' => 'nam', 'placeholder' => 'Name', 'autocomplete' => 'off']) }}
 				</div>
 			</div>
 
-			<div class="form-group row mb-3 {{ $errors->has('ic') ? 'has-error' : '' }}">
+			<div class="form-group row m-2 {{ $errors->has('ic') ? 'has-error' : '' }}">
 				{{ Form::label( 'ic', 'Identity Card/Passport : ', ['class' => 'col-sm-4 col-form-label'] ) }}
 				<div class="col-sm-7">
 					{{ Form::text('ic', @$value, ['class' => 'form-control form-control-sm', 'id' => 'ic', 'placeholder' => 'Identity Card/Passport', 'autocomplete' => 'off']) }}
 				</div>
 			</div>
 
-			<div class="form-group row mb-3 {{ $errors->has('email') ? 'has-error' : '' }}">
+			<div class="form-group row m-2 {{ $errors->has('email') ? 'has-error' : '' }}">
 				{{ Form::label( 'ema', 'Email : ', ['class' => 'col-sm-4 col-form-label'] ) }}
 				<div class="col-sm-7">
 					{{ Form::text('email', @$value, ['class' => 'form-control form-control-sm', 'id' => 'ema', 'placeholder' => 'Email', 'autocomplete' => 'off']) }}
 				</div>
 			</div>
 
-			<div class="form-group row mb-3 {{ $errors->has('gender_id') ? 'has-error' : '' }}">
+			<div class="form-group row m-2 {{ $errors->has('gender_id') ? 'has-error' : '' }}">
 				{{ Form::label( 'gender', 'Gender : ', ['class' => 'col-sm-4 col-form-label'] ) }}
 				<div class="col-sm-7">
 					<?php $i=0 ?>
@@ -54,112 +54,112 @@ use App\Models\HumanResources\HRLeaveApprovalFlow;
 				</div>
 			</div>
 
-			<div class="form-group row mb-3 {{ $errors->has('marital_status_id') ? 'has-error' : '' }}">
+			<div class="form-group row m-2 {{ $errors->has('marital_status_id') ? 'has-error' : '' }}">
 				{{ Form::label( 'mar', 'Marital Status : ', ['class' => 'col-sm-4 col-form-label'] ) }}
 				<div class="col-sm-7">
 					{{ Form::select('marital_status_id', OptMaritalStatus::pluck('marital_status', 'id')->toArray(), @$value, ['class' => 'form-control form-select', 'id' => 'mar', 'placeholder' => 'Marital Status', 'autocomplete' => 'off']) }}
 				</div>
 			</div>
 
-			<div class="form-group row mb-3 {{ $errors->has('dob') ? 'has-error' : '' }}" style="position: relative">
+			<div class="form-group row m-2 {{ $errors->has('dob') ? 'has-error' : '' }}" style="position: relative">
 				{{ Form::label( 'dob', 'Date Of Birth : ', ['class' => 'col-sm-4 col-form-label'] ) }}
 				<div class="col-sm-7">
 					{{ Form::text('dob', @$value, ['class' => 'form-control form-control-sm', 'id' => 'dob', 'placeholder' => 'Date Of Birth', 'autocomplete' => 'off']) }}
 				</div>
 			</div>
 
-			<div class="form-group row mb-3 {{ $errors->has('address') ? 'has-error' : '' }}">
+			<div class="form-group row m-2 {{ $errors->has('address') ? 'has-error' : '' }}">
 				{{ Form::label( 'add', 'Address : ', ['class' => 'col-sm-4 col-form-label'] ) }}
 				<div class="col-sm-7">
 					{{ Form::textarea('address', @$value, ['class' => 'form-control form-control-sm', 'id' => 'add', 'placeholder' => 'Address', 'autocomplete' => 'off']) }}
 				</div>
 			</div>
 
-			<div class="form-group row mb-3 {{ $errors->has('mobile') ? 'has-error' : '' }}">
+			<div class="form-group row m-2 {{ $errors->has('mobile') ? 'has-error' : '' }}">
 				{{ Form::label( 'mob', 'Mobile : ', ['class' => 'col-sm-4 col-form-label'] ) }}
 				<div class="col-sm-7">
 					{{ Form::text('mobile', @$value, ['class' => 'form-control form-control-sm', 'id' => 'mob', 'placeholder' => 'Mobile', 'autocomplete' => 'off']) }}
 				</div>
 			</div>
 
-			<div class="form-group row mb-3 {{ $errors->has('phone') ? 'has-error' : '' }}">
+			<div class="form-group row m-2 {{ $errors->has('phone') ? 'has-error' : '' }}">
 				{{ Form::label( 'pho', 'Phone : ', ['class' => 'col-sm-4 col-form-label'] ) }}
 				<div class="col-sm-7">
 					{{ Form::text('phone', @$value, ['class' => 'form-control form-control-sm', 'id' => 'pho', 'placeholder' => 'Phone', 'autocomplete' => 'off']) }}
 				</div>
 			</div>
 
-			<div class="form-group row mb-3 {{ $errors->has('religion_id') ? 'has-error' : '' }}">
+			<div class="form-group row m-2 {{ $errors->has('religion_id') ? 'has-error' : '' }}">
 				{{ Form::label( 'rel', 'Religion : ', ['class' => 'col-sm-4 col-form-label'] ) }}
 				<div class="col-sm-7">
 					{{ Form::select('religion_id', OptReligion::pluck('religion', 'id')->toArray(), @$value, ['class' => 'form-control form-select form-select-sm', 'id' => 'rel', 'placeholder' => 'Religion', 'autocomplete' => 'off']) }}
 				</div>
 			</div>
 
-			<div class="form-group row mb-3 {{ $errors->has('race_id') ? 'has-error' : '' }}">
+			<div class="form-group row m-2 {{ $errors->has('race_id') ? 'has-error' : '' }}">
 				{{ Form::label( 'rac', 'Race : ', ['class' => 'col-sm-4 col-form-label'] ) }}
 				<div class="col-sm-7">
 					{{ Form::select('race_id', OptRace::pluck('race', 'id')->toArray(), @$value, ['class' => 'form-control form-select', 'id' => 'rac', 'placeholder' => 'Race', 'autocomplete' => 'off']) }}
 				</div>
 			</div>
 
-			<div class="form-group row mb-3 {{ $errors->has('nationality_id') ? 'has-error' : '' }}">
+			<div class="form-group row m-2 {{ $errors->has('nationality_id') ? 'has-error' : '' }}">
 				{{ Form::label( 'nat', 'Nationality : ', ['class' => 'col-sm-4 col-form-label'] ) }}
 				<div class="col-sm-7">
 					{{ Form::select('nationality_id', OptCountry::pluck('country', 'id')->toArray(), @$value, ['class' => 'form-control form-select', 'id' => 'nat', 'placeholder' => 'Nationality', 'autocomplete' => 'off']) }}
 				</div>
 			</div>
 
-			<div class="form-group row mb-3 {{ $errors->has('cimb_account') ? 'has-error' : '' }}">
+			<div class="form-group row m-2 {{ $errors->has('cimb_account') ? 'has-error' : '' }}">
 				{{ form::label( 'cia', 'CIMB Account : ', ['class' => 'col-sm-4 col-form-label'] ) }}
 				<div class="col-sm-7">
 					{{ form::text('cimb_account', @$value, ['class' => 'form-control form-control-sm', 'id' => 'cia', 'placeholder' => 'CIMB Account', 'autocomplete' => 'off']) }}
 				</div>
 			</div>
 
-			<div class="form-group row mb-3 {{ $errors->has('epf_account') ? 'has-error' : '' }}">
+			<div class="form-group row m-2 {{ $errors->has('epf_account') ? 'has-error' : '' }}">
 				{{ form::label( 'epf', 'EPF Account : ', ['class' => 'col-sm-4 col-form-label'] ) }}
 				<div class="col-sm-7">
 					{{ form::text('epf_account', @$value, ['class' => 'form-control form-control-sm', 'id' => 'epf', 'placeholder' => 'EPF Account', 'autocomplete' => 'off']) }}
 				</div>
 			</div>
 
-			<div class="form-group row mb-3 {{ $errors->has('income_tax_no') ? 'has-error' : '' }}">
+			<div class="form-group row m-2 {{ $errors->has('income_tax_no') ? 'has-error' : '' }}">
 				{{ form::label( 'itn', 'Income Tax No : ', ['class' => 'col-sm-4 col-form-label'] ) }}
 				<div class="col-sm-7">
 					{{ form::text('income_tax_no', @$value, ['class' => 'form-control form-control-sm', 'id' => 'itn', 'placeholder' => 'Income Tax No', 'autocomplete' => 'off']) }}
 				</div>
 			</div>
 
-			<div class="form-group row mb-3 {{ $errors->has('socso_no') ? 'has-error' : '' }}">
+			<div class="form-group row m-2 {{ $errors->has('socso_no') ? 'has-error' : '' }}">
 				{{ form::label( 'son', 'SOCSO No : ', ['class' => 'col-sm-4 col-form-label'] ) }}
 				<div class="col-sm-7">
 					{{ form::text('socso_no', @$value, ['class' => 'form-control form-control-sm', 'id' => 'son', 'placeholder' => 'SOCSO No', 'autocomplete' => 'off']) }}
 				</div>
 			</div>
 
-			<div class="form-group row mb-3 {{ $errors->has('weight') ? 'has-error' : '' }}">
+			<div class="form-group row m-2 {{ $errors->has('weight') ? 'has-error' : '' }}">
 				{{ form::label( 'wei', 'Weight : ', ['class' => 'col-sm-4 col-form-label'] ) }}
 				<div class="col-sm-7">
 					{{ form::text('weight', @$value, ['class' => 'form-control form-control-sm', 'id' => 'wei', 'placeholder' => 'Weight', 'autocomplete' => 'off']) }}
 				</div>
 			</div>
 
-			<div class="form-group row mb-3 {{ $errors->has('height') ? 'has-error' : '' }}">
+			<div class="form-group row m-2 {{ $errors->has('height') ? 'has-error' : '' }}">
 				{{ form::label( 'hei', 'Height : ', ['class' => 'col-sm-4 col-form-label'] ) }}
 				<div class="col-sm-7">
 					{{ form::text('height', @$value, ['class' => 'form-control form-control-sm', 'id' => 'hei', 'placeholder' => 'Height', 'autocomplete' => 'off']) }}
 				</div>
 			</div>
 
-			<div class="form-group row mb-3 {{ $errors->has('join') ? 'has-error' : '' }}" style="position: relative">
+			<div class="form-group row m-2 {{ $errors->has('join') ? 'has-error' : '' }}" style="position: relative">
 				{{ form::label( 'jpo', 'Date Join : ', ['class' => 'col-sm-4 col-form-label'] ) }}
 				<div class="col-sm-7">
 					{{ form::text('join', @$value, ['class' => 'form-control form-control-sm', 'id' => 'jpo', 'placeholder' => 'Date Join', 'autocomplete' => 'off']) }}
 				</div>
 			</div>
 
-			<div class="form-group row mb-3 {{ $errors->has('image') ? 'has-error' : '' }}">
+			<div class="form-group row m-2 {{ $errors->has('image') ? 'has-error' : '' }}">
 				{{ Form::label( 'ima', 'Image : ', ['class' => 'col-sm-4 col-form-label'] ) }}
 				<div class="col-sm-7 supportdoc">
 					{{ Form::file( 'image', ['class' => 'form-control form-control-sm form-control-file', 'id' => 'ima', 'placeholder' => 'Image']) }}
@@ -168,36 +168,34 @@ use App\Models\HumanResources\HRLeaveApprovalFlow;
 
 			<p>&nbsp;</p>
 
-			<div>
-				<div class="row mb-1">
+			<div class="col-sm-12">
+				<div class="row m-1">
 					<div class="col-sm-4">
 						<h6>Staff Emergency Contact</h6>
 					</div>
-					<div class="col-sm-7">
+					<div class="col-sm-8">
 						<button type="button" class="col-auto btn btn-sm btn-outline-secondary emergency_add">
 							<i class="fas fa-plus" aria-hidden="true"></i>&nbsp;Add Emergency Contact
 						</button>
 					</div>
 				</div>
-				<div class="row emergency_wrap">
-					<div class="row mb-1 emergency_row">
+				<div class="row m-1 emergency_wrap">
+					<div class="row m-1 emergency_row">
 						<div class="col-sm-1">
 							<button class="btn btn-sm btn-outline-secondary emergency_remove" type="button">
 								<i class="fas fa-trash" aria-hidden="true"></i>
 							</button>
 						</div>
-						<div class="col-sm-11 form-group {{ $errors->has('staffemergency.*.contact_person') ? 'has-error' : '' }}">
+						<div class="col-sm-11 form-group m-1 {{ $errors->has('staffemergency.*.contact_person') ? 'has-error' : '' }}">
 							<input type="text" name="staffemergency[1][contact_person]" id="ecp_1" class="form-control form-control-sm" placeholder="Name">
 						</div>
-						<div class="col-sm-1"></div>
-						<div class="col-sm-5 form-group {{ $errors->has('staffemergency.*.phone') ? 'has-error' : '' }}">
+						<div class="col-sm-5 form-group m-1 {{ $errors->has('staffemergency.*.phone') ? 'has-error' : '' }}">
 							<input type="text" name="staffemergency[1][phone]" id="epp_1" class="form-control form-control-sm" placeholder="Phone">
 						</div>
-						<div class="col-sm-6 form-group {{ $errors->has('staffemergency.*.relationship_id') ? 'has-error' : '' }}">
+						<div class="col-sm-6 form-group m-1 {{ $errors->has('staffemergency.*.relationship_id') ? 'has-error' : '' }}">
 							<select name="staffemergency[1][relationship_id]" id="ere_1" class="form-select form-select-sm" placeholder="Relationship"></select>
 						</div>
-						<div class="col-sm-1"></div>
-						<div class="col-sm-11 form-group {{ $errors->has('staffemergency.*.address') ? 'has-error' : '' }}">
+						<div class="col-sm-11 form-group m-1 {{ $errors->has('staffemergency.*.address') ? 'has-error' : '' }}">
 							<input type="textarea" name="staffemergency[1][address]" id="ead_1" class="form-control form-control-sm" placeholder="Address">
 						</div>
 					</div>
