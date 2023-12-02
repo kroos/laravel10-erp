@@ -165,7 +165,9 @@ if ($me1) {																				// hod
 							<td>{{ $dts }}</td>
 							<td>{{ $dte }}</td>
 							<td>{{ $dper }}</td>
-							<td data-bs-toggle="tooltip" data-bs-custom-class="custom-tooltip" data-bs-html="true" data-bs-title="{{ $ul->reason }}">{{ Str::limit($ul->reason, 10, ' >') }}</td>
+							<td data-bs-toggle="tooltip" data-bs-custom-class="custom-tooltip" data-bs-html="true" data-bs-title="{{ $ul->reason }}">
+								{{ Str::limit($ul->reason, 10, ' >') }}
+							</td>
 							<td>
 								@if(is_null($ul->leave_status_id))
 									Pending

@@ -20,6 +20,9 @@ use App\Http\Controllers\HumanResources\HRDept\OutstationController;
 use App\Http\Controllers\HumanResources\HRDept\AnnualLeaveController;
 use App\Http\Controllers\HumanResources\HRDept\MCLeaveController;
 use App\Http\Controllers\HumanResources\HRDept\MaternityLeaveController;
+use App\Http\Controllers\HumanResources\HRDept\HRAnnualLeaveController;
+use App\Http\Controllers\HumanResources\HRDept\HRMCLeaveController;
+use App\Http\Controllers\HumanResources\HRDept\HRMaternityLeaveController;
 use App\Http\Controllers\HumanResources\HRDept\OvertimeController;
 use App\Http\Controllers\HumanResources\HRDept\AttendanceUploadController;
 use App\Http\Controllers\HumanResources\HRDept\AttendanceDailyReportController;
@@ -52,6 +55,9 @@ Route::resources([
 	'annualleave' => AnnualLeaveController::class,
 	'mcleave' => MCLeaveController::class,
 	'maternityleave' => MaternityLeaveController::class,
+	'hrannualleave' => HRAnnualLeaveController::class,
+	'hrmcleave' => HRMCLeaveController::class,
+	'hrmaternityleave' => HRMaternityLeaveController::class,
 	'overtime' => OvertimeController::class,
 	'leaveapprovalsupervisor' => HRLeaveApprovalSupervisorController::class,
 	'leaveapprovalhod' => HRLeaveApprovalHODController::class,
