@@ -44,16 +44,12 @@ class HRReplacementLeaveController extends Controller
 	 */
 	public function index(): View
 	{
-		$activestaffs = Staff::where('active', 1)->get();
-		$inactivestaffs = Staff::whereNot('active', 1)->get();
 		$replacements = HRLeaveReplacement::groupByRaw('YEAR(date_start)')
 											->selectRaw('YEAR(date_start) as ryear')
 											->orderBy('ryear', 'DESC')
 											->get();
 											// ->ddrawsql();
-		$replacementyear = HRLeaveReplacement::/*whereYear('date_start', $tp->year)->*/orderBy('date_start', 'DESC')->get();
-		$replacementsstaffs = HRLeaveReplacement::get();
-		return view('humanresources.hrdept.entitlement.replacement.index', ['replacementsstaffs' => $replacementsstaffs, 'replacements' => $replacements, 'activestaffs' => $activestaffs, 'inactivestaffs' => $inactivestaffs]);
+		return view('humanresources.hrdept.entitlement.replacement.index', ['replacements' => $replacements]);
 	}
 
 	/**
