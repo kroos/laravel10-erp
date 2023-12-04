@@ -172,8 +172,9 @@ $hr_remark = HRAttendance::where('staff_id', '=', $hrleave->staff_id)
 ->select('hr_remarks')
 ->first();
 
-$auth = \Auth::user()->belongstostaff?->div_id;
-$auth_admin = \Auth::user()->belongstostaff?->authorise_id;
+$auth = \Auth::user()->belongstostaff?->div_id; // 1/2/5
+$auth_dept = \Auth::user()->belongstostaff?->belongstomanydepartment()->first()->id; // 14/31
+$auth_admin = \Auth::user()->belongstostaff?->authorise_id; // 1
 
 $hrremarksattendance = HRAttendance::where(function (Builder $query) use ($hrleave){
 										$query->whereDate('attend_date', '>=', $hrleave->date_time_start)
@@ -231,7 +232,7 @@ $hrremarksattendance = HRAttendance::where(function (Builder $query) use ($hrlea
 			</div>
 		</div>
 
-		@if ($auth == 2 || $auth == 3 || $auth_admin == 1)
+		@if ((in_array($auth, ['1', '2', '5']) && in_array($auth_dept, ['14', '31'])) || $auth_admin == '1')
 			@if($hrremarksattendance)
 			<div class="table">
 				@foreach($hrremarksattendance as $key => $value)
@@ -243,7 +244,7 @@ $hrremarksattendance = HRAttendance::where(function (Builder $query) use ($hrlea
 			@endif
 		@endif
 
-		@if ($auth == 2 || $auth == 3 || $auth_admin == 1)
+		@if ((in_array($auth, ['1', '2', '5']) && in_array($auth_dept, ['14', '31'])) || $auth_admin == '1')
 			@if($hrleave->remarks)
 			<div class="table">
 				<div class="table-row">
@@ -253,7 +254,7 @@ $hrremarksattendance = HRAttendance::where(function (Builder $query) use ($hrlea
 			@endif
 		@endif
 
-		@if ($auth == 2 || $auth == 3 || $auth_admin == 1)
+		@if ((in_array($auth, ['1', '2', '5']) && in_array($auth_dept, ['14', '31'])) || $auth_admin == '1')
 			@if($hrleave->hasmanyleaveamend()->count())
 			<div class="table">
 				@foreach($hrleave->hasmanyleaveamend()->get() as $key => $value1)

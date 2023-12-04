@@ -170,32 +170,34 @@ use App\Models\HumanResources\HRLeaveApprovalFlow;
 
 			<div class="col-sm-12">
 				<div class="row m-1">
-					<div class="col-sm-4">
+					<div class="col-sm-5">
 						<h6>Staff Emergency Contact</h6>
 					</div>
-					<div class="col-sm-8">
+					<div class="col-sm-7">
 						<button type="button" class="col-auto btn btn-sm btn-outline-secondary emergency_add">
 							<i class="fas fa-plus" aria-hidden="true"></i>&nbsp;Add Emergency Contact
 						</button>
 					</div>
 				</div>
-				<div class="row m-1 emergency_wrap">
+				<div class="row emergency_wrap">
 					<div class="row m-1 emergency_row">
 						<div class="col-sm-1">
 							<button class="btn btn-sm btn-outline-secondary emergency_remove" type="button">
 								<i class="fas fa-trash" aria-hidden="true"></i>
 							</button>
 						</div>
-						<div class="col-sm-11 form-group m-1 {{ $errors->has('staffemergency.*.contact_person') ? 'has-error' : '' }}">
+						<div class="col-sm-11 form-group {{ $errors->has('staffemergency.*.contact_person') ? 'has-error' : '' }}">
 							<input type="text" name="staffemergency[1][contact_person]" id="ecp_1" class="form-control form-control-sm" placeholder="Name">
 						</div>
-						<div class="col-sm-5 form-group m-1 {{ $errors->has('staffemergency.*.phone') ? 'has-error' : '' }}">
+						<div class="col-sm-1"></div>
+						<div class="col-sm-5 form-group {{ $errors->has('staffemergency.*.phone') ? 'has-error' : '' }}">
 							<input type="text" name="staffemergency[1][phone]" id="epp_1" class="form-control form-control-sm" placeholder="Phone">
 						</div>
-						<div class="col-sm-6 form-group m-1 {{ $errors->has('staffemergency.*.relationship_id') ? 'has-error' : '' }}">
+						<div class="col-sm-6 form-group {{ $errors->has('staffemergency.*.relationship_id') ? 'has-error' : '' }}">
 							<select name="staffemergency[1][relationship_id]" id="ere_1" class="form-select form-select-sm" placeholder="Relationship"></select>
 						</div>
-						<div class="col-sm-11 form-group m-1 {{ $errors->has('staffemergency.*.address') ? 'has-error' : '' }}">
+						<div class="col-sm-1"></div>
+						<div class="col-sm-11 form-group {{ $errors->has('staffemergency.*.address') ? 'has-error' : '' }}">
 							<input type="textarea" name="staffemergency[1][address]" id="ead_1" class="form-control form-control-sm" placeholder="Address">
 						</div>
 					</div>
@@ -204,8 +206,8 @@ use App\Models\HumanResources\HRLeaveApprovalFlow;
 
 			<p>&nbsp;</p>
 
-			<div class="wrap_spouse">
-				<div class="row mb-1">
+			<div class="wrap_spouse col-sm-12">
+				<div class="row m-1">
 					<div class="col-sm-3">
 						<h6>Staff Spouse</h6>
 					</div>
@@ -223,7 +225,7 @@ use App\Models\HumanResources\HRLeaveApprovalFlow;
 			<p>&nbsp;</p>
 
 			<div class="wrap_children">
-				<div class="row mb-1">
+				<div class="row m-1">
 					<div class="col-sm-3">
 						<h6>Staff Children</h6>
 					</div>
@@ -328,16 +330,8 @@ use App\Models\HumanResources\HRLeaveApprovalFlow;
 				</div>
 			</div>
 
-
-
-
-
-
-
-
-
-			<div class="mb-3">
-				<div class="row">
+			<div class="form-group row mb-3">
+				<div class="row m-0 p-0">
 					<div class="col-sm-4">
 						<h6>Staff Cross Backup</h6>
 					</div>
@@ -347,41 +341,20 @@ use App\Models\HumanResources\HRLeaveApprovalFlow;
 						</button>
 					</div>
 				</div>
-				<div class="row crossbackup_wrap">
-					<div class="row mb-1 crossbackup_row">
-						<div class="form-group row mb-1 g-1 {{ $errors->has('crossbackup.*.backup_staff_id') ? 'has-error' : '' }}">
-							<div class="col-auto mb-1 g-1 ">
-								<button class="btn btn-sm btn-outline-secondary crossbackup_remove" type="button">
-									<i class="fas fa-trash" aria-hidden="true"></i>
-								</button>
-							</div>
-							<label for="sta_1" class="col-sm-4 col-form-label">Cross Backup Personnel :</label>
-							<div class="col-auto">
-								<input type="hidden" name="crossbackup[1][active]" value="1">
-								<select name="crossbackup[1][backup_staff_id]" id="sta_1" class="form-select form-select-sm" placeholder="Cross Backup Personnel"></select>
-							</div>
+				<div class="row m-0 p-0 crossbackup_wrap">
+					<div class="row m-0 p-0 crossbackup_row">
+						<div class="col-sm-1">
+							<button class="btn btn-sm btn-outline-secondary crossbackup_remove" type="button">
+								<i class="fas fa-trash" aria-hidden="true"></i>
+							</button>
+						</div>
+						<div class="col-sm-10 form-group {{ $errors->has('crossbackup.*.backup_staff_id') ? 'has-error' : '' }}">
+							<input type="hidden" name="crossbackup[1][active]" value="1">
+							<select name="crossbackup[1][backup_staff_id]" id="sta_1" class="form-select form-select-sm" placeholder="Cross Backup Personnel"></select>
 						</div>
 					</div>
 				</div>
 			</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 			<div class="form-group row mb-3 {{ $errors->has('annual_leave') ? 'has-error' : '' }}">
 				{{ Form::label( 'annu', 'Annual Leave : ', ['class' => 'col-sm-4 col-form-label'] ) }}
@@ -397,9 +370,9 @@ use App\Models\HumanResources\HRLeaveApprovalFlow;
 				</div>
 			</div>
 
-			<div id="wrapmaternity">
-				<div id="append">
-					<div class="form-group row mb-3 {{ $errors->has('maternity_leave') ? 'has-error' : '' }}">
+			<div class="form-group row mb-3" id="wrapmaternity">
+				<div class="row m-0 p-0" id="append">
+					<div class="row m-0 p-0 {{ $errors->has('maternity_leave') ? 'has-error' : '' }}">
 						<label for="matl" id="matl" class="col-sm-4 col-form-label">Maternity Leave : </label>
 						<div class="col-sm-7">
 							{{ Form::text('maternity_leave', @$value, ['class' => 'form-control form-control-sm', 'id' => 'matl', 'placeholder' => 'Maternity Leave', 'autocomplete' => 'off']) }}
@@ -777,7 +750,7 @@ $(add_buttons).click(function(){
 		xs++;
 		wrappers.append(
 
-			'<div class="row mb-1 spouse_row">' +
+			'<div class="row m-1 spouse_row">' +
 				'<div class="col-sm-1">' +
 					'<button class="btn btn-sm btn-outline-secondary spouse_remove" type="button">' +
 						'<i class="fas fa-trash" aria-hidden="true"></i>' +
@@ -835,7 +808,7 @@ $(cadd_buttons).click(function(){
 	if(xc < cmax_fields){
 		xc++;
 		cwrappers.append(
-			'<div class="row mb-1 children_row">' +
+			'<div class="row m-1 children_row">' +
 				'<div class="col-sm-1">' +
 					'<button class="btn btn-sm btn-outline-secondary children_remove" type="button">' +
 						'<i class="fas fa-trash" aria-hidden="true"></i>' +
@@ -1005,7 +978,7 @@ $(eadd_buttons).click(function(){
 	if(xe < emax_fields){
 		xe++;
 		ewrappers.append(
-			'<div class="row mb-1 emergency_row">' +
+			'<div class="row m-1 emergency_row">' +
 				'<div class="col-sm-1">' +
 					'<button class="btn btn-sm btn-outline-secondary emergency_remove" type="button">' +
 						'<i class="fas fa-trash" aria-hidden="true"></i>' +
@@ -1089,18 +1062,16 @@ $(crb_add_buttons).click(function(){
 	if(xcrb < crb_max_fields){
 		xcrb++;
 		crb_wrappers.append(
-			'<div class="row crossbackup_row">' +
-				'<div class="form-group row mb-1 g-1 {{ $errors->has('crossbackup.*.backup_staff_id') ? 'has-error' : '' }}">' +
-					'<div class="col-auto mb-1 g-1 ">' +
-						'<button class="btn btn-sm btn-outline-secondary crossbackup_remove" type="button">' +
-							'<i class="fas fa-trash" aria-hidden="true"></i>' +
-						'</button>' +
-					'</div>' +
-					'<label for="sta_1" class="col-sm-4 col-form-label">Cross Backup Personnel :</label>' +
-					'<div class="col-auto">' +
-						'<input type="hidden" name="crossbackup[' + xcrb + '][active]" value="1">' +
-						'<select name="crossbackup[' + xcrb + '][backup_staff_id]" id="sta_' + xcrb + '" class="form-select form-select-sm" placeholder="Cross Backup Personnel"></select>' +
-					'</div>' +
+			'<div class="row m-0 p-0 crossbackup_row">' +
+				'<div class="col-sm-1">' +
+					'<button class="btn btn-sm btn-outline-secondary crossbackup_remove" type="button">' +
+						'<i class="fas fa-trash" aria-hidden="true"></i>' +
+					'</button>' +
+				'</div>' +
+
+				'<div class="col-sm-10 form-group {{ $errors->has('crossbackup.*.backup_staff_id') ? 'has-error' : '' }}">' +
+					'<input type="hidden" name="crossbackup[' + xcrb + '][active]" value="1">' +
+					'<select name="crossbackup[' + xcrb + '][backup_staff_id]" id="sta_' + xcrb + '" class="form-select form-select-sm" placeholder="Cross Backup Personnel"></select>' +
 				'</div>' +
 			'</div>'
 		);
