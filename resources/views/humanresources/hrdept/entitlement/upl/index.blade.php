@@ -21,47 +21,48 @@ use \Carbon\Carbon;
 				<tr>
 					<th class="text-primary" colspan="8">Unpaid Leave Entitlement {{ $tp->ryear }}</th>
 				</tr>
-			<?php
-			$uplss = HRLeave::join('logins', 'hr_leaves.staff_id', '=', 'logins.staff_id')
-						->whereIn('leave_type_id', [3, 6, 11, 12])
-						->whereYear('date_time_start', $tp->ryear)
-						->where(function(Builder $query) {
-							$query->whereIn('leave_status_id', [5, 6])
-							->orWhereNull('leave_status_id');
-						})
-						->groupBy('hr_leaves.staff_id')
-						->orderBy('logins.username', 'ASC')
-						->get();
-						// ->ddRawSql();
-			?>
-			@foreach($uplss as $value)
-				<tr>
-					<th class="text-success" colspan="8">Unpaid Leave Entitlement {{ $tp->ryear }} For {{ $value->username }} {{ Staff::find($value->staff_id)?->name }}</th>
-				</tr>
-				<tr>
-					<th>ID</th>
-					<th>Name</th>
-					<th>Leave ID</th>
-					<th>Leave Type</th>
-					<th>Duration</th>
-					<th>From</th>
-					<th>To</th>
-					<th>Remarks</th>
-				</tr>
-			</thead>
-			<tbody>
-			<?php
-			$uplsss = HRLeave::whereIn('leave_type_id', [3, 6, 11, 12])
-						->whereYear('date_time_start', $tp->ryear)
-						->where(function(Builder $query) {
-							$query->whereIn('leave_status_id', [5, 6])->orWhereNull('leave_status_id');
-						})
-						->where('staff_id', $value->staff_id)
-						->orderBy('hr_leaves.date_time_start', 'DESC')
-						->get();
-			$dur = 0;
-			?>
-			@foreach($uplsss as $t)
+				<?php
+				$uplss = HRLeave::join('logins', 'hr_leaves.staff_id', '=', 'logins.staff_id')
+							->whereIn('leave_type_id', [3, 6, 11, 12])
+							->whereYear('date_time_start', $tp->ryear)
+							->where(function(Builder $query) {
+								$query->whereIn('leave_status_id', [5, 6])
+								->orWhereNull('leave_status_id');
+							})
+							->groupBy('hr_leaves.staff_id')
+							->orderBy('logins.username', 'ASC')
+							->get();
+							// ->ddRawSql();
+				?>
+				@foreach($uplss as $value)
+					<tr>
+						<th class="text-success" colspan="8">Unpaid Leave Entitlement {{ $tp->ryear }} For {{ $value->username }} {{ Staff::find($value->staff_id)?->name }}</th>
+					</tr>
+					<tr>
+						<th>ID</th>
+						<th>Name</th>
+						<th>Leave ID</th>
+						<th>Leave Type</th>
+						<th>Duration</th>
+						<th>From</th>
+						<th>To</th>
+						<th>Remarks</th>
+					</tr>
+				</thead>
+				<?php
+				$uplsss = HRLeave::whereIn('leave_type_id', [3, 6, 11, 12])
+							->whereYear('date_time_start', $tp->ryear)
+							->where(function(Builder $query) {
+								$query->whereIn('leave_status_id', [5, 6])->orWhereNull('leave_status_id');
+							})
+							->where('staff_id', $value->staff_id)
+							->orderBy('hr_leaves.date_time_start', 'DESC')
+							->get();
+							// ->ddrawsql();
+				$dur = 0;
+				?>
+				@foreach($uplsss as $t)
+				<tbody>
 					<tr>
 						<td>{{ $t->belongstostaff->hasmanylogin()->where('active', 1)->first()?->username }}</td>
 						<td>{{ $t->belongstostaff->name }}</td>
@@ -81,17 +82,17 @@ use \Carbon\Carbon;
 							{{  Str::limit($t->reason, 10, ' >') }}
 						</td>
 					</tr>
+				</tbody>
+				@endforeach
+				<tfoot>
+					<tr>
+						<th colspan="3"></th>
+						<th>Total</th>
+						<th>{{ $dur }} day/'s</th>
+						<th colspan="3"></th>
+					</tr>
+				</tfoot>
 			@endforeach
-			</tbody>
-			<tfoot>
-				<tr>
-					<th colspan="3"></th>
-					<th>Total</th>
-					<th>{{ $dur }} day/'s</th>
-					<th colspan="3"></th>
-				</tr>
-			</tfoot>
-		@endforeach
 		@endforeach
 		</table>
 	</div>
