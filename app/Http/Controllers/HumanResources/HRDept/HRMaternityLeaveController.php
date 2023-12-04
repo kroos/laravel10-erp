@@ -43,7 +43,7 @@ class HRMaternityLeaveController extends Controller
 	 */
 	public function index(): View
 	{
-		return view('humanresources.hrdept.setting.maternityleave.index');
+		return view('humanresources.hrdept.entitlement.maternity.index');
 	}
 
 	/**
@@ -51,7 +51,7 @@ class HRMaternityLeaveController extends Controller
 	 */
 	public function create(): View
 	{
-		return view('humanresources.hrdept.setting.maternityleave.create');
+		//
 	}
 
 	/**
@@ -75,7 +75,7 @@ class HRMaternityLeaveController extends Controller
 	 */
 	public function edit(HRLeaveMaternity $maternityleave): View
 	{
-		return view('humanresources.hrdept.setting.maternityleave.edit', ['maternityleave' => $maternityleave]);
+		//
 	}
 
 	/**
@@ -83,9 +83,7 @@ class HRMaternityLeaveController extends Controller
 	 */
 	public function update(Request $request, HRLeaveMaternity $maternityleave): RedirectResponse
 	{
-		$maternityleave->update($request->except(['_method', '_token']));
-		Session::flash('flash_message', 'Data successfully updated!');
-		return Redirect::route('maternityleave.index');
+		//
 	}
 
 	/**

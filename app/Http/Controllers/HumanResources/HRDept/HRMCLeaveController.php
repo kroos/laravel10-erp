@@ -43,7 +43,7 @@ class HRMCLeaveController extends Controller
 	 */
 	public function index(): View
 	{
-		return view('humanresources.hrdept.setting.mcleave.index');
+		return view('humanresources.hrdept.entitlement.mc.index');
 	}
 
 	/**
@@ -51,7 +51,7 @@ class HRMCLeaveController extends Controller
 	 */
 	public function create(): View
 	{
-		return view('humanresources.hrdept.setting.mcleave.create');
+		//
 	}
 
 	/**
@@ -75,7 +75,7 @@ class HRMCLeaveController extends Controller
 	 */
 	public function edit(HRLeaveMC $mcleave): View
 	{
-		return view('humanresources.hrdept.setting.mcleave.edit', ['mcleave' => $mcleave]);
+		//
 	}
 
 	/**
@@ -83,9 +83,7 @@ class HRMCLeaveController extends Controller
 	 */
 	public function update(Request $request, HRLeaveMC $mcleave): RedirectResponse
 	{
-		$mcleave->update($request->except(['_method', '_token']));
-		Session::flash('flash_message', 'Data successfully updated!');
-		return Redirect::route('mcleave.index');
+		//
 	}
 
 	/**

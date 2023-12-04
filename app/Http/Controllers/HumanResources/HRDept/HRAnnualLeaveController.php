@@ -52,7 +52,7 @@ class HRAnnualLeaveController extends Controller
 	 */
 	public function create(): View
 	{
-		return view('humanresources.hrdept.setting.annualleave.create');
+		//
 	}
 
 	/**
@@ -76,7 +76,7 @@ class HRAnnualLeaveController extends Controller
 	 */
 	public function edit(HRLeaveAnnual $annualleave): View
 	{
-		return view('humanresources.hrdept.setting.annualleave.edit', ['annualleave' => $annualleave]);
+		//
 	}
 
 	/**
@@ -84,9 +84,7 @@ class HRAnnualLeaveController extends Controller
 	 */
 	public function update(Request $request, HRLeaveAnnual $annualleave): RedirectResponse
 	{
-		$annualleave->update($request->except(['_method', '_token']));
-		Session::flash('flash_message', 'Data successfully updated!');
-		return Redirect::route('annualleave.index');
+		//
 	}
 
 	/**
