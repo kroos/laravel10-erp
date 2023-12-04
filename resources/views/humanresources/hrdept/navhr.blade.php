@@ -41,10 +41,10 @@
 			</li>
 			<li>
 				<a class="dropdown-item btn btn-sm btn-outline-secondary" href="{{ route('hrmcleave.index') }}">
-					<i class="fa-stack fa-2X">
+					<span class="fa-stack fa-2X">
 						<i class="fa-regular fa-calendar fa-beat fa-stack-1x"></i>
 						<i class="fa-regular fa-moon fa-beat fa-stack-1x"></i>
-					</i>
+					</span>
 					Medical Certificate Leave List
 				</a>
 			</li>
@@ -58,6 +58,15 @@
 				<a class="dropdown-item btn btn-sm btn-outline-secondary" href="{{ route('hrreplacementleave.index') }}">
 					<i class="fa-solid fa-arrow-rotate-right fa-rotate-270"></i>
 					Replacement Leave List
+				</a>
+			</li>
+			<li>
+				<a class="dropdown-item btn btn-sm btn-outline-secondary" href="{{ route('hruplleave.index') }}">
+					<i class="fa-stack fa-2X">
+						<i class="fa-regular fa-money-bill-1 fa-stack-1x fa-beat"></i>
+						<i class="fa-solid fa-xmark fa-stack-1x fa-beat" style="color:Tomato"></i>
+					</i>
+					Unpaid Leave List
 				</a>
 			</li>
 		</ul>
