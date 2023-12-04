@@ -57,6 +57,7 @@ use \Carbon\Carbon;
 							$query->whereIn('leave_status_id', [5, 6])->orWhereNull('leave_status_id');
 						})
 						->where('staff_id', $value->staff_id)
+						->orderBy('hr_leaves.date_time_start', 'DESC')
 						->get();
 			$dur = 0;
 			?>
@@ -109,12 +110,13 @@ $(document).ready(function(){
 $.fn.dataTable.moment( 'D MMM YYYY' );
 $.fn.dataTable.moment( 'h:mm a' );
 $('#inactive,#active').DataTable({
+	"paging": false,
 	"lengthMenu": [ [100, 250, 500, -1], [100, 250, 500, "All"] ],
-	// "columnDefs": [
-	// 				{ type: 'date', 'targets': [4,5,6] },
-	// 				// { type: 'time', 'targets': [6] },
-	// 			],
-	"order": [ 0, 'asc' ],
+	"columnDefs": [
+					{ type: 'date', 'targets': [5,6] },
+					// { type: 'time', 'targets': [6] },
+				],
+	"order": [ 5, 'desc' ],
 	responsive: true
 })
 .on( 'length.dt page.dt order.dt search.dt', function ( e, settings, len ) {
