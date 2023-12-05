@@ -342,7 +342,7 @@ use App\Models\HumanResources\HRLeaveApprovalFlow;
 					</div>
 				</div>
 				<div class="row m-0 p-0 crossbackup_wrap">
-					<div class="row m-0 p-0 crossbackup_row">
+					<div class="row m-1 p-0 crossbackup_row">
 						<div class="col-sm-1">
 							<button class="btn btn-sm btn-outline-secondary crossbackup_remove" type="button">
 								<i class="fas fa-trash" aria-hidden="true"></i>
@@ -384,7 +384,7 @@ use App\Models\HumanResources\HRLeaveApprovalFlow;
 		</div>
 	</div>
 
-	<div class="offset-5 mb-6">
+	<div class="d-flex justify-content-center m-3">
 		{!! Form::submit('Add Staff', ['class' => 'btn btn-sm btn-outline-secondary']) !!}
 	</div>
 
@@ -1062,7 +1062,7 @@ $(crb_add_buttons).click(function(){
 	if(xcrb < crb_max_fields){
 		xcrb++;
 		crb_wrappers.append(
-			'<div class="row m-0 p-0 crossbackup_row">' +
+			'<div class="row m-1 p-0 crossbackup_row">' +
 				'<div class="col-sm-1">' +
 					'<button class="btn btn-sm btn-outline-secondary crossbackup_remove" type="button">' +
 						'<i class="fas fa-trash" aria-hidden="true"></i>' +
