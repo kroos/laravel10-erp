@@ -36,6 +36,7 @@ use App\Http\Controllers\HumanResources\HRDept\HRLeaveApprovalSupervisorControll
 use App\Http\Controllers\HumanResources\HRDept\HRLeaveApprovalHODController;
 use App\Http\Controllers\HumanResources\HRDept\HRLeaveApprovalDirectorController;
 use App\Http\Controllers\HumanResources\HRDept\HRLeaveApprovalHRController;
+use App\Http\Controllers\HumanResources\HRDept\AbsentController;
 
 
 Route::resources([
@@ -69,6 +70,7 @@ Route::resources([
 	'leaveapprovalhod' => HRLeaveApprovalHODController::class,
 	'leaveapprovaldirector' => HRLeaveApprovalDirectorController::class,
 	'leaveapprovalhr' => HRLeaveApprovalHRController::class,
+	'absent' => AbsentController::class,
 ]);
 
 Route::get('/leavereject', [LeaveController::class, 'reject'])->name('hrleave.reject');
