@@ -219,7 +219,7 @@ foreach ($c as $v) {
 										<td>
 											<a href="{{ route('leave.show', $a->leave_id) }}">HR9-{{ str_pad( $leav->leave_no, 5, "0", STR_PAD_LEFT ) }}/{{ $leav->leave_year }}</a>
 										</td>
-										<td>{{ $leav->belongstostaff?->hasmanylogin()->where('active', 1)->first()->username }}</td>
+										<td>{{ $leav->belongstostaff?->hasmanylogin()?->where('active', 1)->first()?->username }}</td>
 										<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="{{ $staff->name }}">
 											{{ Str::words($leav->belongstostaff?->name, 3, ' >') }}
 										</td>
@@ -288,7 +288,7 @@ foreach ($c as $v) {
 										<td>
 											<a href="{{ route('leave.show', $a->leave_id) }}">HR9-{{ str_pad( $leav->leave_no, 5, "0", STR_PAD_LEFT ) }}/{{ $leav->leave_year }}</a>
 										</td>
-										<td>{{ $leav->belongstostaff?->hasmanylogin()->where('active', 1)->first()->username }}</td>
+										<td>{{ $leav->belongstostaff?->hasmanylogin()?->where('active', 1)->first()?->username }}</td>
 										<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="{{ $staff->name }}">
 											{{ Str::words($leav->belongstostaff?->name, 3, ' >') }}
 										</td>
@@ -357,7 +357,7 @@ foreach ($c as $v) {
 										<td>
 											<a href="{{ route('leave.show', $a->leave_id) }}">HR9-{{ str_pad( $leav->leave_no, 5, "0", STR_PAD_LEFT ) }}/{{ $leav->leave_year }}</a>
 										</td>
-										<td>{{ $leav->belongstostaff?->hasmanylogin()->where('active', 1)->first()->username }}</td>
+										<td>{{ $leav->belongstostaff?->hasmanylogin()?->where('active', 1)->first()?->username }}</td>
 										<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="{{ $staff->name }}">
 											{{ Str::words($leav->belongstostaff?->name, 3, ' >') }}
 										</td>
@@ -426,7 +426,7 @@ foreach ($c as $v) {
 										<td>
 											<a href="{{ route('leave.show', $a->leave_id) }}">HR9-{{ str_pad( $leav->leave_no, 5, "0", STR_PAD_LEFT ) }}/{{ $leav->leave_year }}</a>
 										</td>
-										<td>{{ $leav->belongstostaff?->hasmanylogin()->where('active', 1)->first()->username }}</td>
+										<td>{{ $leav->belongstostaff?->hasmanylogin()?->where('active', 1)->first()?->username }}</td>
 										<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="{{ $staff->name }}">
 											{{ Str::words($leav->belongstostaff?->name, 3, ' >') }}
 										</td>
@@ -495,7 +495,7 @@ foreach ($c as $v) {
 										<td>
 											<a href="{{ route('leave.show', $a->leave_id) }}">HR9-{{ str_pad( $leav->leave_no, 5, "0", STR_PAD_LEFT ) }}/{{ $leav->leave_year }}</a>
 										</td>
-										<td>{{ $leav->belongstostaff?->hasmanylogin()->where('active', 1)->first()->username }}</td>
+										<td>{{ $leav->belongstostaff?->hasmanylogin()?->where('active', 1)->first()?->username }}</td>
 										<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="{{ $staff->name }}">
 											{{ Str::words($leav->belongstostaff?->name, 3, ' >') }}
 										</td>
@@ -564,7 +564,7 @@ foreach ($c as $v) {
 										<td>
 											<a href="{{ route('leave.show', $a->leave_id) }}">HR9-{{ str_pad( $leav->leave_no, 5, "0", STR_PAD_LEFT ) }}/{{ $leav->leave_year }}</a>
 										</td>
-										<td>{{ $leav->belongstostaff?->hasmanylogin()->where('active', 1)->first()->username }}</td>
+										<td>{{ $leav->belongstostaff?->hasmanylogin()?->where('active', 1)->first()?->username }}</td>
 										<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="{{ $staff->name }}">
 											{{ Str::words($leav->belongstostaff?->name, 3, ' >') }}
 										</td>
@@ -633,7 +633,7 @@ foreach ($c as $v) {
 										<td>
 											<a href="{{ route('leave.show', $a->leave_id) }}">HR9-{{ str_pad( $leav->leave_no, 5, "0", STR_PAD_LEFT ) }}/{{ $leav->leave_year }}</a>
 										</td>
-										<td>{{ $leav->belongstostaff?->hasmanylogin()->where('active', 1)->first()->username }}</td>
+										<td>{{ $leav->belongstostaff?->hasmanylogin()?->where('active', 1)->first()?->username }}</td>
 										<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="{{ $staff->name }}">
 											{{ Str::words($leav->belongstostaff?->name, 3, ' >') }}
 										</td>
@@ -702,7 +702,7 @@ foreach ($c as $v) {
 										<td>
 											<a href="{{ route('leave.show', $a->leave_id) }}">HR9-{{ str_pad( $leav->leave_no, 5, "0", STR_PAD_LEFT ) }}/{{ $leav->leave_year }}</a>
 										</td>
-										<td>{{ $leav->belongstostaff?->hasmanylogin()->where('active', 1)->first()->username }}</td>
+										<td>{{ $leav->belongstostaff?->hasmanylogin()?->where('active', 1)->first()?->username }}</td>
 										<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="{{ $staff->name }}">
 											{{ Str::words($leav->belongstostaff?->name, 3, ' >') }}
 										</td>
@@ -771,7 +771,7 @@ foreach ($c as $v) {
 										<td>
 											<a href="{{ route('leave.show', $a->leave_id) }}">HR9-{{ str_pad( $leav->leave_no, 5, "0", STR_PAD_LEFT ) }}/{{ $leav->leave_year }}</a>
 										</td>
-										<td>{{ $leav->belongstostaff?->hasmanylogin()->where('active', 1)->first()->username }}</td>
+										<td>{{ $leav->belongstostaff?->hasmanylogin()?->where('active', 1)->first()?->username }}</td>
 										<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="{{ $staff->name }}">
 											{{ Str::words($leav->belongstostaff?->name, 3, ' >') }}
 										</td>
@@ -840,7 +840,7 @@ foreach ($c as $v) {
 										<td>
 											<a href="{{ route('leave.show', $a->leave_id) }}">HR9-{{ str_pad( $leav->leave_no, 5, "0", STR_PAD_LEFT ) }}/{{ $leav->leave_year }}</a>
 										</td>
-										<td>{{ $leav->belongstostaff?->hasmanylogin()->where('active', 1)->first()->username }}</td>
+										<td>{{ $leav->belongstostaff?->hasmanylogin()?->where('active', 1)->first()?->username }}</td>
 										<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="{{ $staff->name }}">
 											{{ Str::words($leav->belongstostaff?->name, 3, ' >') }}
 										</td>
