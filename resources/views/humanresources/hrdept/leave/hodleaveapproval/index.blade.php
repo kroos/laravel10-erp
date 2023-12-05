@@ -153,7 +153,7 @@ foreach ($c as $v) {
 										</td>
 										<td>{{ $leav->belongstostaff?->hasmanylogin()->where('active', 1)->first()->username }}</td>
 										<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="{{ $staff->name }}">
-											{{ str($leav->belongstostaff?->name)->words(3, ' >') }}
+											{{ Str::words($leav->belongstostaff?->name, 3, ' >') }}
 										</td>
 										<td>{{ $leav->belongstooptleavetype?->leave_type_code }}</td>
 										<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="{{ $leav->reason }}">
