@@ -54,6 +54,7 @@ class AttendanceController extends Controller
 	 */
 	public function index(Request $request): View
 	{
+		// ini_set('max_execution_time', 60000000000);
 		if ($request->date != NULL) {
 			$selected_date = $request->date;
 		} else {
@@ -64,7 +65,11 @@ class AttendanceController extends Controller
 		$attendance = HRAttendance::join('staffs', 'hr_attendances.staff_id', '=', 'staffs.id')
 			->select('hr_attendances.id as id', 'staff_id', 'daytype_id', 'attendance_type_id', 'attend_date', 'in', 'break', 'resume', 'out', 'time_work_hour', 'work_hour', 'leave_id', 'hr_attendances.remarks as remarks', 'hr_attendances.hr_remarks as hr_remarks', 'exception', 'hr_attendances.created_at as created_at', 'hr_attendances.updated_at as updated_at', 'hr_attendances.deleted_at as deleted_at', 'staffs.name as name', 'staffs.restday_group_id as restday_group_id', 'staffs.active as active')
 			->where('staffs.active', 1)
-			->where('hr_attendances.attend_date', '=', $selected_date)
+			->where('attend_date', $selected_date)
+			// ->where(function(Builder $query) {
+			// 	$query->whereDate('attend_date', '>=', '2023-01-01')
+			// 	->whereDate('attend_date', '<=', '2023-12-31');
+			// })
 			->get();
 
 		return view('humanresources.hrdept.attendance.index', ['attendance' => $attendance, 'selected_date' => $selected_date]);

@@ -35,24 +35,23 @@ $category = $dept->category_id;
 $i = 1;
 ?>
 
-<div class="container">
+<div class="container row align-items-start justify-content-center">
 @include('humanresources.hrdept.navhr')
 
 	<h4>Attendance</h4>
 
+	<div class="col-sm-12 row m-1">
 		{{ Form::open(['route' => ['attendance.index'], 'id' => 'form', 'class' => 'form-horizontal', 'autocomplete' => 'off']) }}
-
-			<div class="row g-3 mb-3">
-				<div class="col-auto">
-					{{ Form::text('date', @$selected_date, ['class' => 'form-control form-control-sm col-auto', 'id' => 'date', 'autocomplete' => 'off']) }}
-				</div>
+			<div class="col-sm-4 row">
+				{{ Form::text('date', @$selected_date, ['class' => 'form-control form-control-sm col-sm-4', 'id' => 'date', 'autocomplete' => 'off']) }}
 				<div class="col-auto">
 					{!! Form::submit('SEARCH', ['class' => 'form-control form-control-sm btn btn-sm btn-outline-secondary']) !!}
 				</div>
 			</div>
-
 		{!! Form::close() !!}
+	</div>
 
+	<div class="col-sm-12 table-responsive">
 		<table id="attendance" class="table table-hover table-sm align-middle" style="font-size:12px">
 			<thead>
 				<tr>
@@ -4052,6 +4051,7 @@ $i = 1;
 			@endforeach
 			</tbody>
 		</table>
+	</div>
 </div>
 @endsection
 
