@@ -132,7 +132,7 @@ foreach ($c as $v) {
 							}
 
 							// find leave backup if any
-							$backup = $leav->hasmanyleaveapprovalbackup()->get();
+							$backup = $leav->hasmanyleaveapprovalbackup()?->get();
 							if ($backup->count()) {
 								if (is_null($backup->first()->leave_status_id)) {
 									$bapp = '<span class="text-danger">Pending</span>';
@@ -151,7 +151,7 @@ foreach ($c as $v) {
 										<td>
 											<a href="{{ route('leave.show', $a->leave_id) }}">HR9-{{ str_pad( $leav->leave_no, 5, "0", STR_PAD_LEFT ) }}/{{ $leav->leave_year }}</a>
 										</td>
-										<td>{{ $leav->belongstostaff?->hasmanylogin()->where('active', 1)->first()->username }}</td>
+										<td>{{ $leav->belongstostaff?->hasmanylogin()?->where('active', 1)->first()?->username }}</td>
 										<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="{{ $staff->name }}">
 											{{ Str::words($leav->belongstostaff?->name, 3, ' >') }}
 										</td>
@@ -219,9 +219,9 @@ foreach ($c as $v) {
 										<td>
 											<a href="{{ route('leave.show', $a->leave_id) }}">HR9-{{ str_pad( $leav->leave_no, 5, "0", STR_PAD_LEFT ) }}/{{ $leav->leave_year }}</a>
 										</td>
-										<td>{{ $leav->belongstostaff?->hasmanylogin()->where('active', 1)->first()->username }}</td>
+										<td>{{ $leav->belongstostaff?->hasmanylogin()?->where('active', 1)->first()?->username }}</td>
 										<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="{{ $staff->name }}">
-											{{ str($leav->belongstostaff?->name)->words(3, ' >') }}
+											{{ Str::words($leav->belongstostaff?->name, 3, ' >') }}
 										</td>
 										<td>{{ $leav->belongstooptleavetype?->leave_type_code }}</td>
 										<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="{{ $leav->reason }}">
@@ -231,7 +231,7 @@ foreach ($c as $v) {
 										<td>{{ $dts }}</td>
 										<td>{{ $dte }}</td>
 										<td>{{ $dper }}</td>
-										<td>{{ $bapp }}</td>
+										<td>{!! $bapp !!}</td>
 										<td>
 											<!-- Button trigger modal -->
 											@if($backup->count())
@@ -288,9 +288,9 @@ foreach ($c as $v) {
 										<td>
 											<a href="{{ route('leave.show', $a->leave_id) }}">HR9-{{ str_pad( $leav->leave_no, 5, "0", STR_PAD_LEFT ) }}/{{ $leav->leave_year }}</a>
 										</td>
-										<td>{{ $leav->belongstostaff?->hasmanylogin()->where('active', 1)->first()->username }}</td>
+										<td>{{ $leav->belongstostaff?->hasmanylogin()?->where('active', 1)->first()?->username }}</td>
 										<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="{{ $staff->name }}">
-											{{ str($leav->belongstostaff?->name)->words(3, ' >') }}
+											{{ Str::words($leav->belongstostaff?->name, 3, ' >') }}
 										</td>
 										<td>{{ $leav->belongstooptleavetype?->leave_type_code }}</td>
 										<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="{{ $leav->reason }}">
@@ -300,7 +300,7 @@ foreach ($c as $v) {
 										<td>{{ $dts }}</td>
 										<td>{{ $dte }}</td>
 										<td>{{ $dper }}</td>
-										<td>{{ $bapp }}</td>
+										<td>{!! $bapp !!}</td>
 										<td>
 											<!-- Button trigger modal -->
 											@if($backup->count())
@@ -357,9 +357,9 @@ foreach ($c as $v) {
 										<td>
 											<a href="{{ route('leave.show', $a->leave_id) }}">HR9-{{ str_pad( $leav->leave_no, 5, "0", STR_PAD_LEFT ) }}/{{ $leav->leave_year }}</a>
 										</td>
-										<td>{{ $leav->belongstostaff?->hasmanylogin()->where('active', 1)->first()->username }}</td>
+										<td>{{ $leav->belongstostaff?->hasmanylogin()?->where('active', 1)->first()?->username }}</td>
 										<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="{{ $staff->name }}">
-											{{ str($leav->belongstostaff?->name)->words(3, ' >') }}
+											{{ Str::words($leav->belongstostaff?->name, 3, ' >') }}
 										</td>
 										<td>{{ $leav->belongstooptleavetype?->leave_type_code }}</td>
 										<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="{{ $leav->reason }}">
@@ -369,7 +369,7 @@ foreach ($c as $v) {
 										<td>{{ $dts }}</td>
 										<td>{{ $dte }}</td>
 										<td>{{ $dper }}</td>
-										<td>{{ $bapp }}</td>
+										<td>{!! $bapp !!}</td>
 										<td>
 											<!-- Button trigger modal -->
 											@if($backup->count())
@@ -426,9 +426,9 @@ foreach ($c as $v) {
 										<td>
 											<a href="{{ route('leave.show', $a->leave_id) }}">HR9-{{ str_pad( $leav->leave_no, 5, "0", STR_PAD_LEFT ) }}/{{ $leav->leave_year }}</a>
 										</td>
-										<td>{{ $leav->belongstostaff?->hasmanylogin()->where('active', 1)->first()->username }}</td>
+										<td>{{ $leav->belongstostaff?->hasmanylogin()?->where('active', 1)->first()?->username }}</td>
 										<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="{{ $staff->name }}">
-											{{ str($leav->belongstostaff?->name)->words(3, ' >') }}
+											{{ Str::words($leav->belongstostaff?->name, 3, ' >') }}
 										</td>
 										<td>{{ $leav->belongstooptleavetype?->leave_type_code }}</td>
 										<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="{{ $leav->reason }}">
@@ -438,7 +438,7 @@ foreach ($c as $v) {
 										<td>{{ $dts }}</td>
 										<td>{{ $dte }}</td>
 										<td>{{ $dper }}</td>
-										<td>{{ $bapp }}</td>
+										<td>{!! $bapp !!}</td>
 										<td>
 											<!-- Button trigger modal -->
 											@if($backup->count())
@@ -495,9 +495,9 @@ foreach ($c as $v) {
 										<td>
 											<a href="{{ route('leave.show', $a->leave_id) }}">HR9-{{ str_pad( $leav->leave_no, 5, "0", STR_PAD_LEFT ) }}/{{ $leav->leave_year }}</a>
 										</td>
-										<td>{{ $leav->belongstostaff?->hasmanylogin()->where('active', 1)->first()->username }}</td>
+										<td>{{ $leav->belongstostaff?->hasmanylogin()?->where('active', 1)->first()?->username }}</td>
 										<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="{{ $staff->name }}">
-											{{ str($leav->belongstostaff?->name)->words(3, ' >') }}
+											{{ Str::words($leav->belongstostaff?->name, 3, ' >') }}
 										</td>
 										<td>{{ $leav->belongstooptleavetype?->leave_type_code }}</td>
 										<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="{{ $leav->reason }}">
@@ -507,7 +507,7 @@ foreach ($c as $v) {
 										<td>{{ $dts }}</td>
 										<td>{{ $dte }}</td>
 										<td>{{ $dper }}</td>
-										<td>{{ $bapp }}</td>
+										<td>{!! $bapp !!}</td>
 										<td>
 											<!-- Button trigger modal -->
 											@if($backup->count())
@@ -564,9 +564,9 @@ foreach ($c as $v) {
 										<td>
 											<a href="{{ route('leave.show', $a->leave_id) }}">HR9-{{ str_pad( $leav->leave_no, 5, "0", STR_PAD_LEFT ) }}/{{ $leav->leave_year }}</a>
 										</td>
-										<td>{{ $leav->belongstostaff?->hasmanylogin()->where('active', 1)->first()->username }}</td>
+										<td>{{ $leav->belongstostaff?->hasmanylogin()?->where('active', 1)->first()?->username }}</td>
 										<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="{{ $staff->name }}">
-											{{ str($leav->belongstostaff?->name)->words(3, ' >') }}
+											{{ Str::words($leav->belongstostaff?->name, 3, ' >') }}
 										</td>
 										<td>{{ $leav->belongstooptleavetype?->leave_type_code }}</td>
 										<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="{{ $leav->reason }}">
@@ -576,7 +576,7 @@ foreach ($c as $v) {
 										<td>{{ $dts }}</td>
 										<td>{{ $dte }}</td>
 										<td>{{ $dper }}</td>
-										<td>{{ $bapp }}</td>
+										<td>{!! $bapp !!}</td>
 										<td>
 											<!-- Button trigger modal -->
 											@if($backup->count())
@@ -633,9 +633,9 @@ foreach ($c as $v) {
 										<td>
 											<a href="{{ route('leave.show', $a->leave_id) }}">HR9-{{ str_pad( $leav->leave_no, 5, "0", STR_PAD_LEFT ) }}/{{ $leav->leave_year }}</a>
 										</td>
-										<td>{{ $leav->belongstostaff?->hasmanylogin()->where('active', 1)->first()->username }}</td>
+										<td>{{ $leav->belongstostaff?->hasmanylogin()?->where('active', 1)->first()?->username }}</td>
 										<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="{{ $staff->name }}">
-											{{ str($leav->belongstostaff?->name)->words(3, ' >') }}
+											{{ Str::words($leav->belongstostaff?->name, 3, ' >') }}
 										</td>
 										<td>{{ $leav->belongstooptleavetype?->leave_type_code }}</td>
 										<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="{{ $leav->reason }}">
@@ -645,7 +645,7 @@ foreach ($c as $v) {
 										<td>{{ $dts }}</td>
 										<td>{{ $dte }}</td>
 										<td>{{ $dper }}</td>
-										<td>{{ $bapp }}</td>
+										<td>{!! $bapp !!}</td>
 										<td>
 											<!-- Button trigger modal -->
 											@if($backup->count())
@@ -702,9 +702,9 @@ foreach ($c as $v) {
 										<td>
 											<a href="{{ route('leave.show', $a->leave_id) }}">HR9-{{ str_pad( $leav->leave_no, 5, "0", STR_PAD_LEFT ) }}/{{ $leav->leave_year }}</a>
 										</td>
-										<td>{{ $leav->belongstostaff?->hasmanylogin()->where('active', 1)->first()->username }}</td>
+										<td>{{ $leav->belongstostaff?->hasmanylogin()?->where('active', 1)->first()?->username }}</td>
 										<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="{{ $staff->name }}">
-											{{ str($leav->belongstostaff?->name)->words(3, ' >') }}
+											{{ Str::words($leav->belongstostaff?->name, 3, ' >') }}
 										</td>
 										<td>{{ $leav->belongstooptleavetype?->leave_type_code }}</td>
 										<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="{{ $leav->reason }}">
@@ -714,7 +714,7 @@ foreach ($c as $v) {
 										<td>{{ $dts }}</td>
 										<td>{{ $dte }}</td>
 										<td>{{ $dper }}</td>
-										<td>{{ $bapp }}</td>
+										<td>{!! $bapp !!}</td>
 										<td>
 											<!-- Button trigger modal -->
 											@if($backup->count())
@@ -771,9 +771,9 @@ foreach ($c as $v) {
 										<td>
 											<a href="{{ route('leave.show', $a->leave_id) }}">HR9-{{ str_pad( $leav->leave_no, 5, "0", STR_PAD_LEFT ) }}/{{ $leav->leave_year }}</a>
 										</td>
-										<td>{{ $leav->belongstostaff?->hasmanylogin()->where('active', 1)->first()->username }}</td>
+										<td>{{ $leav->belongstostaff?->hasmanylogin()?->where('active', 1)->first()?->username }}</td>
 										<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="{{ $staff->name }}">
-											{{ str($leav->belongstostaff?->name)->words(3, ' >') }}
+											{{ Str::words($leav->belongstostaff?->name, 3, ' >') }}
 										</td>
 										<td>{{ $leav->belongstooptleavetype?->leave_type_code }}</td>
 										<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="{{ $leav->reason }}">
@@ -783,7 +783,7 @@ foreach ($c as $v) {
 										<td>{{ $dts }}</td>
 										<td>{{ $dte }}</td>
 										<td>{{ $dper }}</td>
-										<td>{{ $bapp }}</td>
+										<td>{!! $bapp !!}</td>
 										<td>
 											<!-- Button trigger modal -->
 											@if($backup->count())
@@ -840,9 +840,9 @@ foreach ($c as $v) {
 										<td>
 											<a href="{{ route('leave.show', $a->leave_id) }}">HR9-{{ str_pad( $leav->leave_no, 5, "0", STR_PAD_LEFT ) }}/{{ $leav->leave_year }}</a>
 										</td>
-										<td>{{ $leav->belongstostaff?->hasmanylogin()->where('active', 1)->first()->username }}</td>
+										<td>{{ $leav->belongstostaff?->hasmanylogin()?->where('active', 1)->first()?->username }}</td>
 										<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="{{ $staff->name }}">
-											{{ str($leav->belongstostaff?->name)->words(3, ' >') }}
+											{{ Str::words($leav->belongstostaff?->name, 3, ' >') }}
 										</td>
 										<td>{{ $leav->belongstooptleavetype?->leave_type_code }}</td>
 										<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="{{ $leav->reason }}">
@@ -852,7 +852,7 @@ foreach ($c as $v) {
 										<td>{{ $dts }}</td>
 										<td>{{ $dte }}</td>
 										<td>{{ $dper }}</td>
-										<td>{{ $bapp }}</td>
+										<td>{!! $bapp !!}</td>
 										<td>
 											<!-- Button trigger modal -->
 											@if($backup->count())
