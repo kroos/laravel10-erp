@@ -96,7 +96,9 @@ $category = $dept->category_id;
 					<th>Status</th>
 					<th>Supp Doc</th>
 					<th>Remarks</th>
-					<th>Remarks HR</th>
+					@if((($me1 || $me2) && $deptid == 14) || $me5)
+						<th>Remarks HR</th>
+					@endif
 				</tr>
 			</thead>
 			<tbody>
@@ -158,7 +160,9 @@ if ($me1) {																				// hod
 					@if( $ha )
 						<tr>
 							<td><a href="{{ route('staff.show', $ul->staff_id) }}" target="_blank">{{ App\Models\Login::where([['staff_id', $ul->staff_id], ['active', 1]])->first()->username ?? NULL }}</a></td>
-							<td>{{ $ul->belongstostaff?->name }}</td>
+							<td data-bs-toggle="tooltip" data-bs-custom-class="custom-tooltip" data-bs-html="true" data-bs-title="{{ $ul->belongstostaff?->name }}">
+								{{ Str::words($ul->belongstostaff?->name, 3, ' >') }}
+							</td>
 							<td><a href="{{ route('hrleave.show', $ul->id) }}" target="_blank">HR9-{{ str_pad( $ul->leave_no, 5, "0", STR_PAD_LEFT ) }}/{{ $ul->leave_year }}</a></td>
 							<td>{{ $ul->belongstooptleavetype?->leave_type_code }}</td>
 							<td>{{ Carbon::parse($ul->created_at)->format('j M Y') }}</td>
@@ -220,8 +224,14 @@ if ($me1) {																				// hod
 									</div>
 								@endif
 							</td>
-							<td data-bs-toggle="tooltip" data-bs-custom-class="custom-tooltip" data-bs-html="true" data-bs-title="{{ ($ul->remarks)??' ' }}">{{ Str::limit($ul->remarks, 10, ' >') }}</td>
-							<td data-bs-toggle="tooltip" data-bs-custom-class="custom-tooltip" data-bs-html="true" data-bs-title="{{ ($ul->hasmanyleaveamend()->first()?->amend_note)??' ' }}">{{ Str::limit($ul->hasmanyleaveamend()->first()?->amend_note, 10, ' >') }}</td>
+							<td {!! ($ul->remarks)?'data-bs-toggle="tooltip" data-bs-custom-class="custom-tooltip" data-bs-html="true" data-bs-title="'.$ul->remarks.'"':NULL !!}>
+								{{ Str::limit($ul->remarks, 10, ' >') }}
+							</td>
+							@if((($me1 || $me2) && $deptid == 14) || $me5)
+							<td {!! ($ul->hasmanyleaveamend()?->first()?->amend_note)?'data-bs-toggle="tooltip" data-bs-custom-class="custom-tooltip" data-bs-html="true" data-bs-title="'.$ul->hasmanyleaveamend()?->first()?->amend_note.'"':NULL !!}>
+								{{ Str::limit($ul->hasmanyleaveamend()?->first()?->amend_note, 10, ' >') }}
+							</td>
+							@endif
 						</tr>
 					@endif
 				@endforeach
@@ -251,7 +261,9 @@ if ($me1) {																				// hod
 					<th>Status</th>
 					<th>Supp Doc</th>
 					<th>Remarks</th>
+					@if((($me1 || $me2) && $deptid == 14) || $me5)
 					<th>Remarks HR</th>
+					@endif
 				</tr>
 			</thead>
 			<tbody>
@@ -315,7 +327,9 @@ if ($me1) {																				// hod
 					@if( $ha )
 						<tr>
 							<td><a href="{{ route('staff.show', $ul->staff_id) }}" target="_blank">{{ App\Models\Login::where([['staff_id', $ul->staff_id], ['active', 1]])->first()->username ?? NULL }}</a></td>
-							<td>{{ $ul->belongstostaff?->name }}</td>
+							<td data-bs-toggle="tooltip" data-bs-custom-class="custom-tooltip" data-bs-html="true" data-bs-title="{{ $ul->belongstostaff?->name }}">
+								{{ Str::words($ul->belongstostaff?->name, 3, ' >') }}
+							</td>
 							<td><a href="{{ route('hrleave.show', $ul->id) }}" target="_blank">HR9-{{ str_pad( $ul->leave_no, 5, "0", STR_PAD_LEFT ) }}/{{ $ul->leave_year }}</a></td>
 							<td>{{ $ul->belongstooptleavetype?->leave_type_code }}</td>
 							<td>{{ Carbon::parse($ul->created_at)->format('j M Y') }}</td>
@@ -375,8 +389,14 @@ if ($me1) {																				// hod
 									</div>
 								@endif
 							</td>
-							<td data-bs-toggle="tooltip" data-bs-custom-class="custom-tooltip" data-bs-html="true" data-bs-title="{{ ($ul->remarks)??' ' }}">{{ Str::limit($ul->remarks, 10, ' >') }}</td>
-							<td data-bs-toggle="tooltip" data-bs-custom-class="custom-tooltip" data-bs-html="true" data-bs-title="{{ ($ul->hasmanyleaveamend()->first()?->amend_note)??' ' }}">{{ Str::limit($ul->hasmanyleaveamend()->first()?->amend_note, 10, ' >') }}</td>
+							<td {!! ($ul->remarks)?'data-bs-toggle="tooltip" data-bs-custom-class="custom-tooltip" data-bs-html="true" data-bs-title="'.($ul->remarks).'"':NULL !!}>
+								{{ Str::limit($ul->remarks, 10, ' >') }}
+							</td>
+							@if((($me1 || $me2) && $deptid == 14) || $me5)
+							<td {!! ($ul->hasmanyleaveamend()?->first()?->amend_note)?'data-bs-toggle="tooltip" data-bs-custom-class="custom-tooltip" data-bs-html="true" data-bs-title="'.$ul->hasmanyleaveamend()?->first()?->amend_note.'"':NULL !!}>
+								{{ Str::limit($ul->hasmanyleaveamend()?->first()?->amend_note, 10, ' >') }}
+							</td>
+							@endif
 						</tr>
 					@endif
 				@endforeach
@@ -406,7 +426,9 @@ if ($me1) {																				// hod
 					<th>Status</th>
 					<th>Supp Doc</th>
 					<th>Remarks</th>
+					@if((($me1 || $me2) && $deptid == 14) || $me5)
 					<th>Remarks HR</th>
+					@endif
 				</tr>
 			</thead>
 			<tbody>
@@ -470,7 +492,9 @@ if ($me1) {																				// hod
 					@if( $ha )
 						<tr>
 							<td><a href="{{ route('staff.show', $ul->staff_id) }}" target="_blank">{{ App\Models\Login::where([['staff_id', $ul->staff_id], ['active', 1]])->first()->username ?? NULL }}</a></td>
-							<td>{{ $ul->belongstostaff?->name }}</td>
+							<td data-bs-toggle="tooltip" data-bs-custom-class="custom-tooltip" data-bs-html="true" data-bs-title="{{ $ul->belongstostaff?->name }}">
+								{{ Str::words($ul->belongstostaff?->name, 3, ' >') }}
+							</td>
 							<td><a href="{{ route('hrleave.show', $ul->id) }}" target="_blank">HR9-{{ str_pad( $ul->leave_no, 5, "0", STR_PAD_LEFT ) }}/{{ $ul->leave_year }}</a></td>
 							<td>{{ $ul->belongstooptleavetype?->leave_type_code }}</td>
 							<td>{{ Carbon::parse($ul->created_at)->format('j M Y') }}</td>
@@ -530,8 +554,14 @@ if ($me1) {																				// hod
 									</div>
 								@endif
 							</td>
-							<td data-bs-toggle="tooltip" data-bs-custom-class="custom-tooltip" data-bs-html="true" data-bs-title="{{ ($ul->remarks)??' ' }}">{{ Str::limit($ul->remarks, 10, ' >') }}</td>
-							<td data-bs-toggle="tooltip" data-bs-custom-class="custom-tooltip" data-bs-html="true" data-bs-title="{{ ($ul->hasmanyleaveamend()->first()?->amend_note)??' ' }}">{{ Str::limit($ul->hasmanyleaveamend()->first()?->amend_note, 10, ' >') }}</td>
+							<td {!! ($ul->remarks)?'data-bs-toggle="tooltip" data-bs-custom-class="custom-tooltip" data-bs-html="true" data-bs-title="'.$ul->remarks.'"':NULL !!}>
+								{{ Str::limit($ul->remarks, 10, ' >') }}
+							</td>
+							@if((($me1 || $me2) && $deptid == 14) || $me5)
+							<td {!! ($ul->hasmanyleaveamend()?->first()?->amend_note)?'data-bs-toggle="tooltip" data-bs-custom-class="custom-tooltip" data-bs-html="true" data-bs-title="'.$ul->hasmanyleaveamend()?->first()?->amend_note.'"':NULL !!}>
+								{{ Str::limit($ul->hasmanyleaveamend()?->first()?->amend_note, 10, ' >') }}
+							</td>
+							@endif
 						</tr>
 					@endif
 				@endforeach

@@ -26,7 +26,7 @@ use Illuminate\Support\Str;
 use Session;
 use Carbon\Carbon;
 
-class HRUPLLeaveController extends Controller
+class HRMCUPLLeaveController extends Controller
 {
 	function __construct()
 	{
@@ -42,14 +42,14 @@ class HRUPLLeaveController extends Controller
 	{
 		$upls = HRLeave::groupByRaw('YEAR(date_time_start)')
 						->selectRaw('YEAR(date_time_start) as ryear')
-						->whereIn('leave_type_id', [3, 6, 12])
+						->where('leave_type_id', 11)
 						->where(function(Builder $query) {
 							$query->whereIn('leave_status_id', [5, 6])->orWhereNull('leave_status_id');
 						})
 						->orderBy('ryear', 'DESC')
 						->get();
 						// ->ddrawsql();
-		return view('humanresources.hrdept.entitlement.upl.index', ['upls' => $upls]);
+		return view('humanresources.hrdept.entitlement.mcupl.index', ['upls' => $upls]);
 	}
 
 	/**
