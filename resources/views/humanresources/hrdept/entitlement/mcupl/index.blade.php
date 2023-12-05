@@ -13,7 +13,7 @@ use \Carbon\Carbon;
 ?>
 <div class="container row align-items-start justify-content-center">
 	@include('humanresources.hrdept.navhr')
-	<h4>Unpaid Leave</h4>
+	<h4>Unpaid Medical Certificate Leave</h4>
 	<div class="col-sm-12 table-responsive row m-3">
 		<table class="table table-hover table-sm" id="active" style="font-size:12px">
 		@foreach($upls as $tp)
@@ -23,7 +23,7 @@ use \Carbon\Carbon;
 				</tr>
 				<?php
 				$uplss = HRLeave::join('logins', 'hr_leaves.staff_id', '=', 'logins.staff_id')
-							->whereIn('leave_type_id', [3, 6, 12])
+							->where('leave_type_id', 11)
 							->whereYear('date_time_start', $tp->ryear)
 							->where(function(Builder $query) {
 								$query->whereIn('leave_status_id', [5, 6])
@@ -50,7 +50,7 @@ use \Carbon\Carbon;
 					</tr>
 				</thead>
 				<?php
-				$uplsss = HRLeave::whereIn('leave_type_id', [3, 6, 12])
+				$uplsss = HRLeave::where('leave_type_id', 11)
 							->whereYear('date_time_start', $tp->ryear)
 							->where(function(Builder $query) {
 								$query->whereIn('leave_status_id', [5, 6])->orWhereNull('leave_status_id');
@@ -90,7 +90,7 @@ use \Carbon\Carbon;
 					<tr>
 						<th colspan="3"></th>
 						<th>Total</th>
-						<th>{{ $dur }} day/s</th>
+						<th>{{ $dur }} day/'s</th>
 						<th colspan="3"></th>
 					</tr>
 				</tfoot>
@@ -113,13 +113,13 @@ $(document).ready(function(){
 $.fn.dataTable.moment( 'D MMM YYYY' );
 $.fn.dataTable.moment( 'h:mm a' );
 $('#inactive,#active').DataTable({
-	"paging": false,
-	"lengthMenu": [ [100, 250, 500, -1], [100, 250, 500, "All"] ],
-	"columnDefs": [
+	paging: false,
+	lengthMenu: [ [100, 250, 500, -1], [100, 250, 500, "All"] ],
+	columnDefs: [
 					{ type: 'date', 'targets': [5,6] },
 					// { type: 'time', 'targets': [6] },
 				],
-	"order": [ 5, 'desc' ],
+	order: [ 5, 'desc' ],
 	responsive: true
 })
 .on( 'length.dt page.dt order.dt search.dt', function ( e, settings, len ) {

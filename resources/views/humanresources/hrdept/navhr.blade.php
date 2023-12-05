@@ -69,6 +69,15 @@
 					Unpaid Leave List
 				</a>
 			</li>
+			<li>
+				<a class="dropdown-item btn btn-sm btn-outline-secondary" href="{{ route('hrmcuplleave.index') }}">
+					<i class="fa-stack fa-2X">
+						<i class="fa-regular fa-money-bill-1 fa-stack-1x fa-beat"></i>
+						<i class="fa-regular fa-moon fa-beat fa-stack-1x" style="color:Tomato"></i>
+					</i>
+					Unpaid Medical Certificate Leave List
+				</a>
+			</li>
 		</ul>
 	</li>
 	<li class="nav-item dropdown">

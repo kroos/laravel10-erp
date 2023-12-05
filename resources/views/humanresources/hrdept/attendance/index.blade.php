@@ -3942,7 +3942,7 @@ if ($os->isNotEmpty()) {																							// outstation |
 ?>
 				<tr>
 					<td>
-						<a href="{{ route('attendance.edit', $s->id) }}">{{ $s->belongstostaff?->hasmanylogin()->where('active', 1)->first()?->username }}</a>
+						<a href="{{ route('attendance.edit', $s->id) }}" target="_blank">{{ $s->belongstostaff?->hasmanylogin()->where('active', 1)->first()?->username }}</a>
 					</td>
 					<td>{{ $s->name }}</td>
 					<td>{{ $dayt }}</td>
@@ -3979,7 +3979,7 @@ if ($os->isNotEmpty()) {																							// outstation |
 						">
 							{{ ($out)?'':Carbon::parse($s->out)->format('g:i a') }}
 						</span></td>
-					<td>{{ $s->time_work_hour }}</td>
+					<td>{{ ($s->time_work_hour != '00:00:00')?$s->time_work_hour:NULL }}</td>
 					<td>
 						{{ $o?->belongstoovertimerange?->where('active', 1)->first()->total_time }}
 						<?php
@@ -3992,11 +3992,17 @@ if ($os->isNotEmpty()) {																							// outstation |
 							}
 						?>
 					</td>
-					<td data-bs-toggle="tooltip" data-bs-custom-class="custom-tooltip" data-bs-html="true" data-bs-title="{{ $os?->first()?->belongstocustomer?->customer??' ' }}">
+					<td {!! ($os?->first()?->belongstocustomer?->customer)?'data-bs-toggle="tooltip" data-bs-custom-class="custom-tooltip" data-bs-html="true" data-bs-title="'.$os?->first()?->belongstocustomer?->customer.'"':NULL !!}>
 						{{ ($os)?Str::limit($os->first()?->belongstocustomer?->customer, 8, ' >'):' ' }}
 					</td>
-					<td data-bs-toggle="tooltip" data-bs-custom-class="custom-tooltip" data-bs-html="true" data-bs-title="{{ ($s->remarks)??' ' }} | {{ ($s->hr_remarks)??' ' }}">{{ Str::limit($s->remarks, 8, ' >') }}<br /><span class="text-danger">{{ Str::limit($s->hr_remarks, 8, ' >') }}</td>
-					<td>{{ $s->exception }}</td>
+					<td {!! ($s->remarks || $s->hr_remarks)?'data-bs-toggle="tooltip" data-bs-custom-class="custom-tooltip" data-bs-html="true" data-bs-title="'.$s->remarks.'<br />'.$s->hr_remarks.'"':NULL !!}>
+						{{ Str::limit($s->remarks, 8, ' >') }}
+						<br />
+						<span class="text-danger">
+							{{ Str::limit($s->hr_remarks, 8, ' >') }}
+						</span>
+					</td>
+					<td>{{ ($s->exception == 1)??NULL }}</td>
 					<td>
 						<a href="{{ route('attendance.edit', $s->id) }}" class="btn btn-sm btn-outline-secondary">
 							<i class="bi bi-pencil-square" style="font-size: 15px;"></i>
