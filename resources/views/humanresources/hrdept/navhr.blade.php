@@ -21,11 +21,51 @@
 		</ul>
 	</li>
 	<li class="nav-item dropdown">
+		<a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Leave</a>
+		<ul class="dropdown-menu">
+			<li><a class="dropdown-item btn btn-sm btn-outline-secondary" href="{{ route('hrleave.index') }}"><i class="fa-solid fa-person-walking-arrow-right fa-beat"></i> Leave List</a></li>
+			<li><a class="dropdown-item btn btn-sm btn-outline-secondary" href="{{ route('hrleave.reject') }}"><i class="fa-solid fa-eject fa-beat"></i> Rejected Leave List</a></li>
+			<li>
+				<a class="dropdown-item btn btn-sm btn-outline-secondary" href="{{ route('hrleave.cancel') }}">
+					<i class="fa-stack fa-2X">
+						<i class="fa-solid fa-person-walking-arrow-right fa-beat fa-stack-1x"></i>
+						<i class="fa-solid fa-ban fa-stack-1x" style="color:Tomato"></i>
+					</i>
+				Cancel Leave List
+				</a>
+			</li>
+			<li><a class="dropdown-item btn btn-sm btn-outline-secondary" href="{{ route('rleave.index') }}"><i class="fa-solid fa-briefcase fa-beat"></i> Replacement Leave List</a></li>
+<!-- 			<li><a class="dropdown-item" href="#">Staff Leave</a></li>
+			<li><a class="dropdown-item" href="#">Something else here</a></li>
+			<li><hr class="dropdown-divider"></li>
+			<li><a class="dropdown-item" href="#">Separated link</a></li> -->
+		</ul>
+	</li>
+	<li class="nav-item dropdown">
+		<a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Leave Approval</a>
+		<ul class="dropdown-menu">
+			<li><a class="dropdown-item btn btn-sm btn-outline-secondary" href="{{ route('leaveapprovalsupervisor.index') }}"><span class="mdi mdi-account-supervisor-outline"></span> Supervisor Leave Approval</a></li>
+			<li><a class="dropdown-item btn btn-sm btn-outline-secondary" href="{{ route('leaveapprovalhod.index') }}"><span class="mdi mdi-human-capacity-increase"></span> Head of Department Leave Approval</a></li>
+			<li><a class="dropdown-item btn btn-sm btn-outline-secondary" href="{{ route('leaveapprovaldirector.index') }}"><span class="mdi mdi-human-male-board-poll"></span> Director Leave Approval</a></li>
+			<li><a class="dropdown-item btn btn-sm btn-outline-secondary" href="{{ route('leaveapprovalhr.index') }}"><i class="fa-solid fa-users-viewfinder fa-beat"></i> Human Resource Leave Approval</a></li>
+		</ul>
+	</li>
+	<li class="nav-item dropdown">
 		<a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Overtime</a>
 		<ul class="dropdown-menu">
 			<li><a class="dropdown-item btn btn-sm btn-outline-secondary" href="{{ route('overtime.index') }}"><i class="fa-solid fa-cloud-moon fa-beat"></i> Overtime List</a></li>
 			<li><a class="dropdown-item btn btn-sm btn-outline-secondary" href="{{ route('overtimereport.index') }}"><i class="fa-solid fa-cloud-moon fa-beat"></i> Overtime Report</a></li>
 <!-- 		<li><a class="dropdown-item" href="#">Something else here</a></li>
+			<li><hr class="dropdown-divider"></li>
+			<li><a class="dropdown-item" href="#">Separated link</a></li> -->
+		</ul>
+	</li>
+	<li class="nav-item dropdown">
+		<a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Outstation</a>
+		<ul class="dropdown-menu">
+			<li><a class="dropdown-item btn btn-sm btn-outline-secondary" href="{{ route('outstation.index') }}"><i class="fa-solid fa-person-walking-luggage fa-beat"></i> Outstation List</a></li>
+<!-- 			<li><a class="dropdown-item" href="#">Staff Leave</a></li>
+			<li><a class="dropdown-item" href="#">Something else here</a></li>
 			<li><hr class="dropdown-divider"></li>
 			<li><a class="dropdown-item" href="#">Separated link</a></li> -->
 		</ul>
@@ -81,44 +121,10 @@
 		</ul>
 	</li>
 	<li class="nav-item dropdown">
-		<a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Leave</a>
-		<ul class="dropdown-menu">
-			<li><a class="dropdown-item btn btn-sm btn-outline-secondary" href="{{ route('hrleave.index') }}"><i class="fa-solid fa-person-walking-arrow-right fa-beat"></i> Leave List</a></li>
-			<li><a class="dropdown-item btn btn-sm btn-outline-secondary" href="{{ route('hrleave.reject') }}"><i class="fa-solid fa-eject fa-beat"></i> Rejected Leave List</a></li>
-			<li>
-				<a class="dropdown-item btn btn-sm btn-outline-secondary" href="{{ route('hrleave.cancel') }}">
-					<i class="fa-stack fa-2X">
-						<i class="fa-solid fa-person-walking-arrow-right fa-beat fa-stack-1x"></i>
-						<i class="fa-solid fa-ban fa-stack-1x" style="color:Tomato"></i>
-					</i>
-				Cancel Leave List
-				</a>
-			</li>
-			<li><a class="dropdown-item btn btn-sm btn-outline-secondary" href="{{ route('leaveapprovalsupervisor.index') }}"><span class="mdi mdi-account-supervisor-outline"></span> Supervisor Leave Approval</a></li>
-			<li><a class="dropdown-item btn btn-sm btn-outline-secondary" href="{{ route('leaveapprovalhod.index') }}"><span class="mdi mdi-human-capacity-increase"></span> Head of Department Leave Approval</a></li>
-			<li><a class="dropdown-item btn btn-sm btn-outline-secondary" href="{{ route('leaveapprovaldirector.index') }}"><span class="mdi mdi-human-male-board-poll"></span> Director Leave Approval</a></li>
-			<li><a class="dropdown-item btn btn-sm btn-outline-secondary" href="{{ route('leaveapprovalhr.index') }}"><i class="fa-solid fa-users-viewfinder fa-beat"></i> Human Resource Leave Approval</a></li>
-			<li><a class="dropdown-item btn btn-sm btn-outline-secondary" href="{{ route('rleave.index') }}"><i class="fa-solid fa-briefcase fa-beat"></i> Replacement Leave List</a></li>
-<!-- 			<li><a class="dropdown-item" href="#">Staff Leave</a></li>
-			<li><a class="dropdown-item" href="#">Something else here</a></li>
-			<li><hr class="dropdown-divider"></li>
-			<li><a class="dropdown-item" href="#">Separated link</a></li> -->
-		</ul>
-	</li>
-	<li class="nav-item dropdown">
-		<a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Outstation</a>
-		<ul class="dropdown-menu">
-			<li><a class="dropdown-item btn btn-sm btn-outline-secondary" href="{{ route('outstation.index') }}"><i class="fa-solid fa-person-walking-luggage fa-beat"></i> Outstation List</a></li>
-<!-- 			<li><a class="dropdown-item" href="#">Staff Leave</a></li>
-			<li><a class="dropdown-item" href="#">Something else here</a></li>
-			<li><hr class="dropdown-divider"></li>
-			<li><a class="dropdown-item" href="#">Separated link</a></li> -->
-		</ul>
-	</li>
-	<li class="nav-item dropdown">
 		<a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Discipline</a>
 		<ul class="dropdown-menu">
 			<li><a class="dropdown-item btn btn-sm btn-outline-secondary" href="{{ route('discipline.index') }}"><i class="fa-solid fa-user-xmark"></i> Discipline List</a></li>
+			<li><a class="dropdown-item btn btn-sm btn-outline-secondary" href="{{ route('absent.index') }}"><i class="fa-solid fa-person-circle-exclamation fa-beat"></i> Absent List</a></li>
 <!-- 			<li><a class="dropdown-item" href="#">Staff Leave</a></li>
 			<li><a class="dropdown-item" href="#">Something else here</a></li>
 			<li><hr class="dropdown-divider"></li>
