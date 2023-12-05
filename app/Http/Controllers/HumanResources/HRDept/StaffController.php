@@ -102,11 +102,13 @@ class StaffController extends Controller
 																					'mc_leave' => $request->mc_leave,
 																					'mc_leave_balance' => $request->mc_leave,
 																				]);
-		$s->hasmanyleavematernity()->whereYear('year', now())->updateOrCreate([
-																					'year' => Carbon::now()->format('Y'),
-																					'maternity_leave' => $request->maternity_leave,
-																					'maternity_leave_balance' => $request->maternity_leave,
-																				]);
+		if ($request->gender_id == 2) {
+			$s->hasmanyleavematernity()->whereYear('year', now())->updateOrCreate([
+																						'year' => Carbon::now()->format('Y'),
+																						'maternity_leave' => $request->maternity_leave,
+																						'maternity_leave_balance' => $request->maternity_leave,
+																					]);
+		}
 		if ($request->has('crossbackup')) {
 			foreach ($request->crossbackup as $k => $v) {
 				$s->crossbackupto()->attach([
