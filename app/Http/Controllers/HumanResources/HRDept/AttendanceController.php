@@ -52,30 +52,22 @@ class AttendanceController extends Controller
 	/**
 	 * Display a listing of the resource.
 	 */
-	public function index(): View
+	public function index(Request $request): View
 	{
-		Paginator::useBootstrapFive();
-		$sa = HRAttendance::SelectRaw('COUNT(hr_attendances.staff_id) as totalactivestaff,  hr_attendances.attend_date')
-			->join('staffs', 'hr_attendances.staff_id', '=', 'staffs.id')
-			->where('staffs.active', 1)
-			->groupBy('hr_attendances.attend_date')
-			->orderBy('hr_attendances.attend_date', 'DESC')
-			// ->ddRawSql();
-			->cursorPaginate(1);
-
-		if($sa->count()) {
-			$attendance = HRAttendance::join('staffs', 'hr_attendances.staff_id', '=', 'staffs.id')
-				->select('hr_attendances.id as id', 'staff_id', 'daytype_id', 'attendance_type_id', 'attend_date', 'in', 'break', 'resume', 'out', 'time_work_hour', 'work_hour', 'leave_id', 'hr_attendances.remarks as remarks', 'hr_attendances.hr_remarks as hr_remarks', 'exception', 'hr_attendances.created_at as created_at', 'hr_attendances.updated_at as updated_at', 'hr_attendances.deleted_at as deleted_at', 'staffs.name as name', 'staffs.restday_group_id as restday_group_id', 'staffs.active as active')
-				->where('staffs.active', 1)
-				->whereDate('hr_attendances.attend_date', $sa->first()->attend_date)
-				->orderBy('hr_attendances.attend_date', 'DESC')
-				/*->ddRawSql();*/
-				->cursorPaginate($sa->first()->totalactivestaff);
+		if ($request->date != NULL) {
+			$selected_date = $request->date;
 		} else {
-			$attendance = collect();
+			$current_time = now();
+			$selected_date = $current_time->format('Y-m-d');
 		}
 
-		return view('humanresources.hrdept.attendance.index', ['attendance' => $attendance, 'sa' => $sa]);
+		$attendance = HRAttendance::join('staffs', 'hr_attendances.staff_id', '=', 'staffs.id')
+			->select('hr_attendances.id as id', 'staff_id', 'daytype_id', 'attendance_type_id', 'attend_date', 'in', 'break', 'resume', 'out', 'time_work_hour', 'work_hour', 'leave_id', 'hr_attendances.remarks as remarks', 'hr_attendances.hr_remarks as hr_remarks', 'exception', 'hr_attendances.created_at as created_at', 'hr_attendances.updated_at as updated_at', 'hr_attendances.deleted_at as deleted_at', 'staffs.name as name', 'staffs.restday_group_id as restday_group_id', 'staffs.active as active')
+			->where('staffs.active', 1)
+			->where('hr_attendances.attend_date', '=', $selected_date)
+			->get();
+
+		return view('humanresources.hrdept.attendance.index', ['attendance' => $attendance, 'selected_date' => $selected_date]);
 	}
 
 	/**
