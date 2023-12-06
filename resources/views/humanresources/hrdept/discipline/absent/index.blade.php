@@ -34,7 +34,7 @@ use \Carbon\Carbon;
 				?>
 				@foreach($absentss as $value)
 					<tr>
-						<th class="text-success" colspan="8">Unpaid Leave Entitlement {{ $tp->ryear }} For {{ $value->username }} {{ Staff::find($value->staff_id)?->name }}</th>
+						<th class="text-success" colspan="8">Absent Staff on {{ $tp->ayear }} For {{ $value->username }} {{ Staff::find($value->staff_id)?->name }}</th>
 					</tr>
 					<tr>
 						<th>ID</th>

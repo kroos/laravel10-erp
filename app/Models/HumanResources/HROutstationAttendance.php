@@ -32,4 +32,9 @@ class HROutstationAttendance extends Model
 	{
 		return $this->belongsTo(\App\Models\HumanResources\HROutstation::class, 'outstation_id');
 	}
+
+	public function belongstostaff(): BelongsTo
+	{
+		return $this->belongsTo(\App\Models\Staff::class, 'staff_id');
+	}
 }

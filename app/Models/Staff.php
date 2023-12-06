@@ -129,6 +129,11 @@ class Staff extends Authenticatable
 		return $this->hasMany(\App\Models\HumanResources\HROutstation::class, 'staff_id');
 	}
 
+	public function hasmanyoutstationattendance(): HasMany
+	{
+		return $this->hasMany(\App\Models\HumanResources\HROutstationAttendance::class, 'staff_id');
+	}
+
 	public function hasmanyhrdisciplinary(): HasMany
 	{
 		return $this->hasMany(\App\Models\HumanResources\HRDisciplinary::class, 'staff_id');
