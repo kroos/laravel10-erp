@@ -70,6 +70,16 @@ class OutstationAttendanceController extends Controller
 	 */
 	public function store(Request $request): RedirectResponse
 	{
+		$validated = $request->validate([
+				'outstation_id' => 'required',
+			],
+			[
+				'outstation_id.required' => 'Please choose your location',
+			],
+			[
+				'outstation_id' => 'Location',
+			]
+		);
 		$ip = file_get_contents('https://api.ipify.org');
 		// $ip = request()->ip();
 		$data = \Location::get($ip);
