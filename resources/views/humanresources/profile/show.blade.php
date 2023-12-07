@@ -165,6 +165,27 @@ $childrens = $profile->hasmanychildren()->get();
 
 			$date_name = Carbon::parse($attend->attend_date)->format('l');
 
+			if ($wh_group == '0' && $date_name == 'Friday') {
+				$company_hour = \App\Models\HumanResources\OptWorkingHour::where('option_working_hours.group', '=', $wh_group)
+					->where('option_working_hours.effective_date_start', '<=', $attend->attend_date)
+					->where('option_working_hours.effective_date_end', '>=', $attend->attend_date)
+					->where('option_working_hours.category', '=', 3)
+					->first();
+			} elseif ($wh_group == '0') {
+				$company_hour = \App\Models\HumanResources\OptWorkingHour::where('option_working_hours.group', '=', $wh_group)
+					->where('option_working_hours.effective_date_start', '<=', $attend->attend_date)
+					->where('option_working_hours.effective_date_end', '>=', $attend->attend_date)
+					->where('option_working_hours.category', '!=', 3)
+					->first();
+			} else {
+				$company_hour = \App\Models\HumanResources\OptWorkingHour::where('option_working_hours.group', '=', $wh_group)
+					->where('option_working_hours.effective_date_start', '<=', $attend->attend_date)
+					->where('option_working_hours.effective_date_end', '>=', $attend->attend_date)
+					->where('option_working_hours.category', '=', 8)
+					->select('time_start_am', 'time_end_am', 'time_start_pm', 'time_end_pm')
+					->first();
+			}
+
 			$daytype = $attend->belongstodaytype()->first();
 			$outstation = $attend->belongstooutstation?->belongstocustomer?->customer;
 			$overtime = $attend->belongstoovertime?->belongstoovertimerange?->total_time;
@@ -173,16 +194,40 @@ $childrens = $profile->hasmanychildren()->get();
 				$in = Carbon::parse($attend->in)->format('h:i a');
 			}
 
+			if ($attend->in > $company_hour->time_start_am) {
+				$color_in = "color:red";
+			} else {
+				$color_in = NULL;
+			}
+
 			if ($attend->break != NULL && $attend->break != '00:00:00') {
 				$break = Carbon::parse($attend->break)->format('h:i a');
+			}
+
+			if ($attend->break < $company_hour->time_end_am) {
+				$color_break = "color:red";
+			} else {
+				$color_break = NULL;
 			}
 
 			if ($attend->resume != NULL && $attend->resume != '00:00:00') {
 				$resume = Carbon::parse($attend->resume)->format('h:i a');
 			}
 
+			if ($attend->resume > $company_hour->time_start_pm) {
+				$color_resume = "color:red";
+			} else {
+				$color_resume = NULL;
+			}
+
 			if ($attend->out != NULL && $attend->out != '00:00:00') {
 				$out = Carbon::parse($attend->out)->format('h:i a');
+			}
+
+			if ($attend->out < $company_hour->time_end_pm) {
+				$color_out = "color:red";
+			} else {
+				$color_out = NULL;
 			}
 
 			if ($attend->time_work_hour != NULL && $attend->time_work_hour != '00:00:00') {
@@ -199,13 +244,6 @@ $childrens = $profile->hasmanychildren()->get();
 
 				$leave_type = $leave_temp2->leave_type_code;
 			}
-
-			$work_hour = \App\Models\HumanResources\OptWorkingHour::where('option_working_hours.group', '=', $wh_group)
-			->where('option_working_hours.effective_date_start', '<=', $attend->attend_date)
-			->where('option_working_hours.effective_date_end', '>=', $attend->attend_date)
-			->where('option_working_hours.category', '=', 3);
-
-			dd($work_hour);
 			?>
 
 			<tr>
@@ -216,16 +254,16 @@ $childrens = $profile->hasmanychildren()->get();
 					{{ $daytype->daytype }}
 				</td>
 				<td class="text-center">
-					{{ $in }}
+					<span style="{{ $color_in }}">{{ $in }}</span>
 				</td>
 				<td class="text-center">
-					{{ $break }}
+				<span style="{{ $color_break }}">{{ $break }}</span>
 				</td>
 				<td class="text-center">
-					{{ $resume }}
+				<span style="{{ $color_resume }}">{{ $resume }}</span>
 				</td>
 				<td class="text-center">
-					{{ $out }}
+				<span style="{{ $color_out }}">{{ $out }}</span>
 				</td>
 				<td class="text-center">
 					{{ $work_hour }}
