@@ -4,10 +4,10 @@
 
 
 <?php
-// load facade
+// load db facade
 use Illuminate\Database\Eloquent\Builder;
 
-// load helper
+// load model
 use App\Models\HumanResources\HRHolidayCalendar;
 use App\Models\HumanResources\HRLeave;
 use App\Models\HumanResources\OptDayType;

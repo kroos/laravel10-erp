@@ -40,7 +40,7 @@ foreach ($c as $v) {
 ?>
 <div class="container row align-items-start justify-content-center">
 	<div class="col-sm-12 table-responsive">
-		<table class="table table-hover table-sm">
+		<table class="table table-hover table-sm" style="font-size:12px;">
 			<tr>
 				<th>Attention</th>
 				<td colspan="2">
