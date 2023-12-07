@@ -7,7 +7,8 @@
       visibility: hidden;
     }
 
-    #printPageButton, #back {
+    #printPageButton,
+    #back {
       display: none;
     }
 
@@ -87,6 +88,11 @@
 </style>
 
 <?php
+
+use \App\Models\HumanResources\HRAttendance;
+use Illuminate\Database\Eloquent\Builder;
+use \App\Models\HumanResources\OptLeaveStatus;
+
 $staff = $leave->belongstostaff()?->first();
 $login = \App\Models\Login::where([['staff_id', $leave->staff_id], ['active', 1]])->first();
 
@@ -161,135 +167,258 @@ if ($backup) {
 
 $start = \Carbon\Carbon::parse($leave->date_time_start)->format('Y-m-d');
 $end = \Carbon\Carbon::parse($leave->date_time_end)->format('Y-m-d');
-$hr_remark = \App\Models\HumanResources\HRAttendance::where('staff_id', '=', $leave->staff_id)
-->whereBetween('attend_date', [$start, $end])
-->where('hr_remarks', '!=', NULL)
-->select('hr_remarks')
-->first();
+$hr_remark = HRAttendance::where('staff_id', '=', $leave->staff_id)
+  ->whereBetween('attend_date', [$start, $end])
+  ->where('hr_remarks', '!=', NULL)
+  ->select('hr_remarks')
+  ->first();
 
-$auth = \Auth::user()->belongstostaff?->div_id;
-$auth_admin = \Auth::user()->belongstostaff?->authorise_id;
+$auth = \Auth::user()->belongstostaff?->div_id; // 1/2/5
+$auth_dept = \Auth::user()->belongstostaff?->belongstomanydepartment()->first()->id; // 14/31
+$auth_admin = \Auth::user()->belongstostaff?->authorise_id; // 1
+
+$hrremarksattendance = HRAttendance::where(function (Builder $query) use ($leave) {
+  $query->whereDate('attend_date', '>=', $leave->date_time_start)
+    ->whereDate('attend_date', '<=', $leave->date_time_end);
+})
+  ->where('staff_id', $leave->staff_id)
+  ->where(function (Builder $query) {
+    $query->whereNotNull('remarks')->orWhereNotNull('hr_remarks');
+  })
+  ->get();
+
+$leave_status_temp = $leave?->belongstooptleavestatus?->status;
+
+if ($leave_status_temp == 'Approved' || $leave_status_temp == 'Waived') {
+  $leave_status = $leave_status_temp;
+  $leave_color = "width: 20%; background-color: #e6e6e6; color: green";
+} elseif ($leave_status_temp == 'Rejected' || $leave_status_temp == 'Cancelled') {
+  $leave_status = $leave_status_temp;
+  $leave_color = "width: 20%; background-color: #e6e6e6; color: red";
+} else {
+  $leave_status = "Pending";
+  $leave_color = "width: 20%; background-color: #e6e6e6; color: #999900";
+}
 ?>
 
-<div class="table-container">
-  <div class="table">
-    <div class="table-row header">
-      <div class="table-cell" style="width: 40%; background-color: #99ff99;">IPMA INDUSTRY SDN.BHD.</div>
-      <div class="table-cell" style="width: 60%; background-color: #e6e6e6;">LEAVE APPLICATION FORM</div>
+<div class="col-sm-12 row">
+  @include('humanresources.hrdept.navhr')
+  <h4>Leave Application</h4>
+
+  <div class="table-container">
+    <div class="table">
+      <div class="table-row header">
+        <div class="table-cell" style="width: 40%; background-color: #99ff99;">IPMA INDUSTRY SDN.BHD.</div>
+        <div class="table-cell" style="width: 40%; background-color: #e6e6e6;">LEAVE APPLICATION FORM</div>
+        <div class="table-cell" style="{{ $leave_color }}">{{ $leave_status }}</div>
+      </div>
     </div>
-  </div>
 
-  <div class="table">
-    <div class="table-row">
-      <div class="table-cell-top" style="width: 25%;">STAFF ID : {{ @$login->username }}</div>
-      <div class="table-cell-top" style="width: 75%;">NAME : {{ @$staff->name }}</div>
+    <div class="table">
+      <div class="table-row">
+        <div class="table-cell-top" style="width: 25%;">STAFF ID : {{ @$login->username }}</div>
+        <div class="table-cell-top" style="width: 75%;">NAME : {{ @$staff->name }}</div>
+      </div>
     </div>
-  </div>
 
-  <div class="table">
-    <div class="table-row">
-      <div class="table-cell-top" style="width: 25%;">LEAVE NO : HR9-{{ @str_pad($leave->leave_no,5,'0',STR_PAD_LEFT) }}/{{ @$leave->leave_year }}</div>
-      <div class="table-cell-top" style="width: 60%;">DATE : {{ @$date_start }} - {{ @$date_end }} </div>
-      <div class="table-cell-top" style="width: 25%;">TOTAL : {{ @$total_leave }} </div>
+    <div class="table">
+      <div class="table-row">
+        <div class="table-cell-top" style="width: 25%;">LEAVE NO : HR9-{{ @str_pad($leave->leave_no,5,'0',STR_PAD_LEFT) }}/{{ @$leave->leave_year }}</div>
+        <div class="table-cell-top" style="width: 60%;">DATE : {{ @$date_start }} - {{ @$date_end }} </div>
+        <div class="table-cell-top" style="width: 25%;">TOTAL : {{ @$total_leave }} </div>
+      </div>
     </div>
-  </div>
 
-  <div class="table">
-    <div class="table-row">
-      <div class="table-cell-top text-wrap" style="width: 45%;">LEAVE TYPE : {{ @$leave->belongstooptleavetype->leave_type_code }} ({{ @$leave->belongstooptleavetype->leave_type }})</div>
-      <div class="table-cell-top text-wrap" style="width: 55%;">REASON : {{ @$leave->reason }} </div>
+    <div class="table">
+      <div class="table-row">
+        <div class="table-cell-top text-wrap" style="width: 45%;">LEAVE TYPE : {{ @$leave->belongstooptleavetype->leave_type_code }} ({{ @$leave->belongstooptleavetype->leave_type }})</div>
+        <div class="table-cell-top text-wrap" style="width: 55%;">REASON : {{ @$leave->reason }} </div>
+      </div>
     </div>
-  </div>
 
-  <div class="table">
-    <div class="table-row">
-      <div class="table-cell-top text-wrap" style="width: 60%;">BACKUP : {{ @$backup_name }}</div>
-      <div class="table-cell-top" style="width: 40%;">DATE APPROVED : {{ @$approved_date }} </div>
+    <div class="table">
+      <div class="table-row">
+        <div class="table-cell-top text-wrap" style="width: 60%;">BACKUP : {{ @$backup_name }}</div>
+        <div class="table-cell-top" style="width: 40%;">BACKUP APPROVED : {{ @$approved_date }} </div>
+      </div>
     </div>
-  </div>
 
-  @if ($auth == 2 || $auth == 3 || $auth_admin == 1)
-	@if ($hr_remark?->hr_remarks != NULL && $hr_remark?->hr_remarks != '')
-	<div class="table">
-		<div class="table-row">
-			<div class="table-cell-top text-wrap" style="width: 100%;">HR REMARK : {{ @$hr_remark?->hr_remarks }}</div>
-		</div>
-	</div>
-	@endif
-	@endif
-
-  <div class="table">
-    <div class="table-row">
-      <div class="table-cell-top text-center" style="width: 100%; background-color: #ffcc99; font-size: 18px;">SIGNATURE / APPROVALS</div>
+    @if ((in_array($auth, ['1', '2', '5']) && in_array($auth_dept, ['14', '31'])) || $auth_admin == '1')
+    @if($hrremarksattendance)
+    <div class="table">
+      @foreach($hrremarksattendance as $key => $value)
+      <div class="table-row">
+        <div class="table-cell-top" style="width: 100%;">ATTENDANCE REMARK : {!! $value->remarks !!}<br />HR ATTENDANCE REMARK : {!! $value->hr_remarks !!}</div>
+      </div>
+      @endforeach
     </div>
-  </div>
-
-  <div class="table">
-    <div class="table-row">
-      @for ($a = 1; $a <= $count; $a++) @if ($supervisor_no==$a) <div class="table-cell-top text-center" style="width: {{ $width }}%; background-color: #f2f2f2; font-size: 18px;">SUPERVISOR</div>
-    @elseif ($hod_no == $a)
-    <div class="table-cell-top text-center" style="width: {{ $width }}%; background-color: #f2f2f2; font-size: 18px;">HOD</div>
-    @elseif ($director_no == $a)
-    <div class="table-cell-top text-center" style="width: {{ $width }}%; background-color: #f2f2f2; font-size: 18px;">DIRECTOR</div>
-    @elseif ($hr_no == $a)
-    <div class="table-cell-top text-center" style="width: {{ $width }}%; background-color: #f2f2f2; font-size: 18px;">HR</div>
     @endif
-    @endfor
-  </div>
-</div>
+    @endif
 
-<div class="table">
-  <div class="table-row" style="height: 50px;">
-    @for ($a = 1; $a <= $count; $a++) 
-      @if ($supervisor_no==$a) 
-        <div class="table-cell-top-bottom text-center text-decoration-underline text-wrap" style="width: {{ $width }}%; vertical-align: bottom;">{{ @$supervisor->belongstostaff->name }}</div>
+    @if ((in_array($auth, ['1', '2', '5']) && in_array($auth_dept, ['14', '31'])) || $auth_admin == '1')
+    @if($leave->remarks)
+    <div class="table">
+      <div class="table-row">
+        <div class="table-cell-top" style="width: 100%;">LEAVE REMARK : {!! $leave->remarks !!}</div>
+      </div>
+    </div>
+    @endif
+    @endif
+
+    @if ((in_array($auth, ['1', '2', '5']) && in_array($auth_dept, ['14', '31'])) || $auth_admin == '1')
+    @if($leave->hasmanyleaveamend()->count())
+    <div class="table">
+      @foreach($leave->hasmanyleaveamend()->get() as $key => $value1)
+      <div class="table-row">
+        <div class="table-cell-top" style="width: 100%;">EDIT REMARK : {{ $value1->amend_note }} on {{ \Carbon\Carbon::parse($value1->created_at)->format('j M Y') }}</div>
+      </div>
+      @endforeach
+    </div>
+    @endif
+    @endif
+
+    <div class="table">
+      <div class="table-row">
+        <div class="table-cell-top text-center" style="width: 100%; background-color: #ffcc99; font-size: 18px;">SIGNATURE / APPROVAL</div>
+      </div>
+    </div>
+
+    <div class="table">
+      <div class="table-row">
+        @for ($a = 1; $a <= $count; $a++) @if ($supervisor_no==$a) <div class="table-cell-top text-center" style="width: {{ $width }}%; background-color: #f2f2f2; font-size: 18px;">SUPERVISOR</div>
       @elseif ($hod_no == $a)
-        <div class="table-cell-top-bottom text-center text-decoration-underline text-wrap" style="width: {{ $width }}%; vertical-align: bottom;">{{ @$hod->belongstostaff->name }}</div>
+      <div class="table-cell-top text-center" style="width: {{ $width }}%; background-color: #f2f2f2; font-size: 18px;">HOD</div>
       @elseif ($director_no == $a)
-        <div class="table-cell-top-bottom text-center text-decoration-underline text-wrap" style="width: {{ $width }}%; vertical-align: bottom;">{{ @$director->belongstostaff->name }}</div>
+      <div class="table-cell-top text-center" style="width: {{ $width }}%; background-color: #f2f2f2; font-size: 18px;">DIRECTOR</div>
       @elseif ($hr_no == $a)
-        <div class="table-cell-top-bottom text-center text-decoration-underline text-wrap" style="width: {{ $width }}%; vertical-align: bottom;">{{ @$hr->belongstostaff->name }}</div>
+      <div class="table-cell-top text-center" style="width: {{ $width }}%; background-color: #f2f2f2; font-size: 18px;">HR</div>
       @endif
-    @endfor
-</div>
-<div class="table-row">
-    @for ($a = 1; $a <= $count; $a++) 
-      @if ($supervisor_no==$a) 
-        <div class="table-cell-top1 text-center">{{ @$supervisor->updated_at }}</div>
-      @elseif ($hod_no == $a)
-        <div class="table-cell-top1 text-center">{{ @$hod->updated_at }}</div>
-      @elseif ($director_no == $a)
-        <div class="table-cell-top1 text-center">{{ @$director->updated_at }}</div>
-      @elseif ($hr_no == $a)
-        <div class="table-cell-top1 text-center">{{ @$hr->updated_at }}</div>
-      @endif
-    @endfor
-</div>
-</div>
-
-<div class="table" style="height: 10px;">
-  <div class="table-row"></div>
-</div>
-
-<div class="table">
-  <div class="table-row">
-    <div class="table-cell-hidden text-center" style="width: 100%;">
-      <a href="{{ url()->previous() }}"><button class="btn btn-sm btn-outline-secondary" id="back">Back</button></a>
-      <a href=""><button onclick="printPage()" class="btn btn-sm btn-outline-secondary" id="printPageButton">Print</button></a>
+      @endfor
     </div>
   </div>
-</div>
+
+  <div class="table">
+    <div class="table-row" style="height: 40px;">
+      @for ($a = 1; $a <= $count; $a++) 
+        @if ($supervisor_no==$a) 
+          <div class="table-cell-top-bottom text-center text-decoration-underline text-wrap text-uppercase" style="width: {{ $width }}%; vertical-align: bottom;">
+            {{ @$supervisor->belongstostaff->name }}
+          </div>
+        @elseif ($hod_no == $a)
+          <div class="table-cell-top-bottom text-center text-decoration-underline text-wrap text-uppercase" style="width: {{ $width }}%; vertical-align: bottom;">
+            {{ @$hod->belongstostaff->name }}
+          </div>
+        @elseif ($director_no == $a)
+          <div class="table-cell-top-bottom text-center text-decoration-underline text-wrap text-uppercase" style="width: {{ $width }}%; vertical-align: bottom;">
+            {{ @$director->belongstostaff->name }}
+          </div>
+        @elseif ($hr_no == $a)
+          <div class="table-cell-top-bottom text-center text-decoration-underline text-wrap text-uppercase" style="width: {{ $width }}%; vertical-align: bottom;">
+            {{ @$hr->belongstostaff->name }}
+          </div>
+        @endif
+      @endfor
+    </div>
+  
+    <div class="table-row">
+      @for ($a = 1; $a <= $count; $a++) 
+        @if ($supervisor_no==$a)
+          <?php
+          $status = ($supervisor->leave_status_id)?OptLeaveStatus::find(@$supervisor->leave_status_id)->status:'Pending';
+
+          if ($status == 'Approved' || $status == 'Waived') {
+            $color = "background-color:transparent; color:green";
+          } elseif ($status == 'Rejected' || $status == 'Cancelled') {
+            $color = "background-color:transparent; color:red";
+          } else {
+            $color = "background-color:transparent; color:#999900";
+          }
+          ?> 
+          <div class="table-cell-top1 text-center">
+            {{ @$supervisor->updated_at }}<br />
+            <span style="{{ $color }}">{{ @$status }}</span>
+          </div>
+        @elseif ($hod_no == $a)
+          <?php
+          $status = ($hod->leave_status_id)?OptLeaveStatus::find(@$hod->leave_status_id)->status:'Pending';
+
+          if ($status == 'Approved' || $status == 'Waived') {
+            $color = "background-color:transparent; color:green";
+          } elseif ($status == 'Rejected' || $status == 'Cancelled') {
+            $color = "background-color:transparent; color:red";
+          } else {
+            $color = "background-color:transparent; color:#999900";
+          }
+          ?> 
+          <div class="table-cell-top1 text-center">
+            {{ @$hod->updated_at }}<br />
+            <span style="{{ $color }}">{{ @$status }}</span>
+          </div>
+        @elseif ($director_no == $a)
+          <?php
+          $status = ($director->leave_status_id)?OptLeaveStatus::find(@$director->leave_status_id)->status:'Pending';
+
+          if ($status == 'Approved' || $status == 'Waived') {
+            $color = "background-color:transparent; color:green";
+          } elseif ($status == 'Rejected' || $status == 'Cancelled') {
+            $color = "background-color:transparent; color:red";
+          } else {
+            $color = "background-color:transparent; color:#999900";
+          }
+          ?>
+          <div class="table-cell-top1 text-center">
+            {{ @$director->updated_at }}<br />
+            <span style="{{ $color }}">{{ @$status }}</span>
+          </div>
+        @elseif ($hr_no == $a)
+          <?php
+          $status = ($hr->leave_status_id)?OptLeaveStatus::find(@$hr->leave_status_id)->status:'Pending';
+
+          if ($status == 'Approved' || $status == 'Waived') {
+            $color = "background-color:transparent; color:green";
+          } elseif ($status == 'Rejected' || $status == 'Cancelled') {
+            $color = "background-color:transparent; color:red";
+          } else {
+            $color = "background-color:transparent; color:#999900";
+          }
+          ?>
+          <div class="table-cell-top1 text-center">
+            {{ @$hr->updated_at }}<br />
+            <span style="{{ $color }}">{{ @$status }}</span>
+          </div>
+        @endif
+      @endfor
+    </div>
+  </div>
+
+  <div class="table">
+    <div class="table-row">
+      Supporting Document : {!! ($leave->softcopy)?'<a href="'.asset('storage/leaves/'.$leave->softcopy).'" target="_blank">Link</a>':null !!}
+    </div>
+  </div>
+
+  <div class="table" style="height: 10px;">
+    <div class="table-row"></div>
+  </div>
+
+  <div class="table">
+    <div class="table-row">
+      <div class="table-cell-hidden text-center" style="width: 100%;">
+        <a href="{{ url()->previous() }}"><button class="btn btn-sm btn-outline-secondary" id="back">Back</button></a>
+        <a href=""><button onclick="printPage()" class="btn btn-sm btn-outline-secondary" id="printPageButton">Print</button></a>
+      </div>
+    </div>
+  </div>
 
 </div>
-
 @endsection
 
 @section('js')
-  function printPage() {
-    window.print();
-  }
+function printPage() {
+window.print();
+}
 
-  function back() {
-    window.history.back();
-  }
+function back() {
+window.history.back();
+}
 @endsection
