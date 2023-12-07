@@ -12,6 +12,7 @@ use Illuminate\View\View;
 
 // load models
 use App\Models\Staff;
+use App\Models\HumanResources\HRAttendance;
 
 // load validation
 use App\Http\Requests\HumanResources\Leave\HRLeaveRequestStore;
@@ -146,7 +147,19 @@ class StaffController extends Controller
 	 */
 	public function show(Staff $staff): View
 	{
-		return view('humanresources.hrdept.staff.show', compact(['staff']));
+		$current_time = now();
+		$year = $current_time->format('Y');
+
+		$attendance = HRAttendance::join('staffs', 'hr_attendances.staff_id', '=', 'staffs.id')
+			->where('hr_attendances.staff_id', $staff->id)
+			->whereYear('hr_attendances.attend_date', '=', $year)
+			->select('hr_attendances.remarks as attend_remark', 'hr_attendances.*', 'staffs.*')
+			->get();
+
+		$wh_group = $staff->belongstomanydepartment()->wherePivot('main', 1)->first();
+
+
+		return view('humanresources.hrdept.staff.show', ['staff' => $staff, 'attendance' => $attendance, 'wh_group' => $wh_group->wh_group_id]);
 	}
 
 	/**

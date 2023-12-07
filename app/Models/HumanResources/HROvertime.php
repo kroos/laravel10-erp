@@ -28,7 +28,7 @@ class HROvertime extends Model
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
 	// db relation belongsToMany
 
-  /////////////////////////////////////////////////////////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////////////////////////////////////////
 	//belongsto relationship
 	public function belongstostaff(): BelongsTo
 	{
@@ -44,11 +44,4 @@ class HROvertime extends Model
 	{
 		return $this->belongsTo(\App\Models\HumanResources\HROvertimeRange::class, 'overtime_range_id');
 	}
-
-	// public function belongstoattendance(): BelongsTo
-	// {
-	// 	return $this->belongsTo(\App\Models\HumanResources\HRAttendance::class, 'attendance_id');
-	// }
 }
-
-

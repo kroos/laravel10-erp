@@ -1,6 +1,10 @@
 @extends('layouts.app')
 
 @section('content')
+<?php
+use \Carbon\Carbon;
+?>
+
 <div class="col-sm-12 row justify-content-center align-items-start">
 @include('humanresources.hrdept.navhr')
 	<h4 class="align-items-center">Profile {{ $staff->name }}
@@ -20,48 +24,48 @@
 	</div>
 	<div class="row align-items-start justify-content-center">
 		<div class="col-sm-6 row gy-1 gx-1 align-items-start">
-			<div class="col-5">Name :</div>
-			<div class="col-7">{{ $staff->name }}</div>
+			<div class="col-5" style="background-color: #f2f2f2;">Name :</div>
+			<div class="col-7" style="background-color: #f2f2f2;">{{ $staff->name }}</div>
 			<div class="col-5">Identity Card/Passport :</div>
 			<div class="col-7">{{ $staff->ic }}</div>
-			<div class="col-5">Religion :</div>
-			<div class="col-7">{{ $staff->belongstoreligion?->religion }}</div>
+			<div class="col-5" style="background-color: #f2f2f2;">Religion :</div>
+			<div class="col-7" style="background-color: #f2f2f2;">{{ $staff->belongstoreligion?->religion }}</div>
 			<div class="col-5">Gender :</div>
 			<div class="col-7">{{ $staff->belongstogender?->gender }}</div>
-			<div class="col-5">Race :</div>
-			<div class="col-7">{{ $staff->belongstorace?->race }}</div>
+			<div class="col-5" style="background-color: #f2f2f2;">Race :</div>
+			<div class="col-7" style="background-color: #f2f2f2;">{{ $staff->belongstorace?->race }}</div>
 			<div class="col-5">Nationality :</div>
 			<div class="col-7">{{ $staff->belongstonationality?->country }}</div>
-			<div class="col-5">Marital Status :</div>
-			<div class="col-7">{{ $staff->belongstomaritalstatus?->marital_status }}</div>
+			<div class="col-5" style="background-color: #f2f2f2;">Marital Status :</div>
+			<div class="col-7" style="background-color: #f2f2f2;">{{ $staff->belongstomaritalstatus?->marital_status }}</div>
 			<div class="col-5">Email :</div>
 			<div class="col-7">{{ $staff->email }}</div>
-			<div class="col-5">Address :</div>
-			<div class="col-7">{{ $staff->address }}</div>
+			<div class="col-5" style="background-color: #f2f2f2;">Address :</div>
+			<div class="col-7" style="background-color: #f2f2f2;">{{ $staff->address }}</div>
 			<div class="col-5">Place of Birth :</div>
 			<div class="col-7">{{ $staff->place_of_birth }}</div>
-			<div class="col-5">Mobile :</div>
-			<div class="col-7">{{ $staff->mobile }}</div>
+			<div class="col-5" style="background-color: #f2f2f2;">Mobile :</div>
+			<div class="col-7" style="background-color: #f2f2f2;">{{ $staff->mobile }}</div>
 			<div class="col-5">Phone :</div>
 			<div class="col-7">{{ $staff->phone }}</div>
-			<div class="col-5">Date of Birth :</div>
-			<div class="col-7">{{ \Carbon\Carbon::parse($staff->dob)->format('j M Y') }}</div>
+			<div class="col-5" style="background-color: #f2f2f2;">Date of Birth :</div>
+			<div class="col-7" style="background-color: #f2f2f2;">{{ \Carbon\Carbon::parse($staff->dob)->format('j M Y') }}</div>
 			<div class="col-5">CIMB Account :</div>
 			<div class="col-7">{{ $staff->cimb_account }}</div>
-			<div class="col-5">EPF Account :</div>
-			<div class="col-7">{{ $staff->epf_account }}</div>
+			<div class="col-5" style="background-color: #f2f2f2;">EPF Account :</div>
+			<div class="col-7" style="background-color: #f2f2f2;">{{ $staff->epf_account }}</div>
 			<div class="col-5">Income Tax No :</div>
 			<div class="col-7">{{ $staff->income_tax_no }}</div>
-			<div class="col-5">SOCSO No :</div>
-			<div class="col-7">{{ $staff->socso_no }}</div>
+			<div class="col-5" style="background-color: #f2f2f2;">SOCSO No :</div>
+			<div class="col-7" style="background-color: #f2f2f2;">{{ $staff->socso_no }}</div>
 			<div class="col-5">Weight :</div>
 			<div class="col-7">{{ $staff->weight }} kg</div>
-			<div class="col-5">Height :</div>
-			<div class="col-7">{{ $staff->height }} cm</div>
+			<div class="col-5" style="background-color: #f2f2f2;">Height :</div>
+			<div class="col-7" style="background-color: #f2f2f2;">{{ $staff->height }} cm</div>
 			<div class="col-5">Date Join :</div>
 			<div class="col-7">{{ \Carbon\Carbon::parse($staff->join)->format('j M Y') }}</div>
-			<div class="col-5">Date Confirmed :</div>
-			<div class="col-7">{{ \Carbon\Carbon::parse($staff->confirmed)->format('j M Y') }}</div>
+			<div class="col-5" style="background-color: #f2f2f2;">Date Confirmed :</div>
+			<div class="col-7" style="background-color: #f2f2f2;">{{ \Carbon\Carbon::parse($staff->confirmed)->format('j M Y') }}</div>
 			<div class="col-5">Spouse :</div>
 			<div class="col-7">
 				@if($staff->hasmanyspouse()?->get()->count())
@@ -83,7 +87,7 @@
 				</table>
 				@endif
 			</div>
-			<div class="col-5">Children :</div>
+			<div class="col-5" style="background-color: #f2f2f2;">Children :</div>
 			<div class="col-7">
 				@if($staff->hasmanychildren()?->get()->count())
 				<table class="table table-sm table-hover" style="font-size:12px;">
@@ -129,25 +133,25 @@
 			</div>
 		</div>
 		<div class="col-sm-6 row gy-1 gx-1 align-items-start">
-			<div class="col-5">System Administrator :</div>
-			<div class="col-7">{{ $staff->belongstoauthorised?->authorise }}</div>
-			<div class="col-5">Staff Status :</div>
-			<div class="col-7">{{ $staff->belongstostatus?->status }}</div>
-			<div class="col-5">Category :</div>
-			<div class="col-7">{{ $staff->belongstomanydepartment()?->wherePivot('main', 1)->first()->belongstocategory?->category }}</div>
-			<div class="col-5">Branch :</div>
-			<div class="col-7">{{ $staff->belongstomanydepartment()?->wherePivot('main', 1)->first()->belongstobranch?->location }}</div>
-			<div class="col-5">Department :</div>
-			<div class="col-7">{{ $staff->belongstomanydepartment()?->wherePivot('main', 1)->first()->department }}</div>
-			<div class="col-5">Leave Approval Flow :</div>
-			<div class="col-7">{{ $staff->belongstoleaveapprovalflow?->description }}</div>
-			<div class="col-5">RestDay Group :</div>
-			<div class="col-7">{{ $staff->belongstorestdaygroup?->group }}</div>
-			<div class="col-5">Cross Backup To :</div>
+			<div class="col-4" style="background-color: #f2f2f2;">System Administrator :</div>
+			<div class="col-8" style="background-color: #f2f2f2;">{{ $staff->belongstoauthorised?->authorise }}</div>
+			<div class="col-4">Staff Status :</div>
+			<div class="col-8">{{ $staff->belongstostatus?->status }}</div>
+			<div class="col-4" style="background-color: #f2f2f2;">Category :</div>
+			<div class="col-8" style="background-color: #f2f2f2;">{{ $staff->belongstomanydepartment()?->wherePivot('main', 1)->first()->belongstocategory?->category }}</div>
+			<div class="col-4">Branch :</div>
+			<div class="col-8">{{ $staff->belongstomanydepartment()?->wherePivot('main', 1)->first()->belongstobranch?->location }}</div>
+			<div class="col-4" style="background-color: #f2f2f2;">Department :</div>
+			<div class="col-8" style="background-color: #f2f2f2;">{{ $staff->belongstomanydepartment()?->wherePivot('main', 1)->first()->department }}</div>
+			<div class="col-4">Leave Approval Flow :</div>
+			<div class="col-8">{{ $staff->belongstoleaveapprovalflow?->description }}</div>
+			<div class="col-4" style="background-color: #f2f2f2;">RestDay Group :</div>
+			<div class="col-8" style="background-color: #f2f2f2;">{{ $staff->belongstorestdaygroup?->group }}</div>
+			<div class="col-4">Cross Backup To :</div>
 			<?php
 			$cb = $staff->crossbackupto()->get();
 			?>
-			<div class="col-7">
+			<div class="col-8">
 				@if($cb->count())
 				<ul>
 					@foreach($cb as $r)
@@ -156,11 +160,11 @@
 				</ul>
 				@endif
 			</div>
-			<div class="col-5">Cross Backup For :</div>
+			<div class="col-4" style="background-color: #f2f2f2;">Cross Backup For :</div>
 			<?php
 			$cbf = $staff->crossbackupfrom()->get();
 			?>
-			<div class="col-7">
+			<div class="col-8">
 				@if($cbf->count())
 				<ul>
 					@foreach($cbf as $rf)
@@ -170,28 +174,28 @@
 				@endif
 			</div>
 			@if($staff->hasmanyleaveannual()?->get()->count())
-			<div class="col-5">Annual Leave :</div>
-			<div class="col-7">
+			<div class="col-4">Annual Leave :</div>
+			<div class="col-8">
 				<table class="table table-sm table-hover" style="font-size:12px;">
 					<thead>
 						<tr>
-							<th>Year</th>
-							<th>Annual Leave</th>
-							<th>Annual Leave Adjustment</th>
-							<th>Annual Leave Utilize</th>
-							<th>Annual Leave Balance</th>
-							<th>&nbsp;</th>
+							<th class="text-center align-middle" width="35px;">Year</th>
+							<th class="text-center align-middle" width="98px;">AL Entitlement</th>
+							<th class="text-center align-middle" width="95px;">AL Adjustment</th>
+							<th class="text-center align-middle" width="68px;">AL Utilize</th>
+							<th class="text-center align-middle">AL Balance</th>
+							<th class="text-center align-middle" width="40px;">&nbsp;</th>
 						</tr>
 					</thead>
 					<tbody>
 					@foreach($staff->hasmanyleaveannual()->orderBy('year', 'DESC')->get() as $al)
 						<tr>
-							<td>{{ $al->year }}</td>
-							<td>{{ $al->annual_leave }}</td>
-							<td>{{ $al->annual_leave_adjustment }}</td>
-							<td>{{ $al->annual_leave_utilize }}</td>
-							<td>{{ $al->annual_leave_balance }}</td>
-							<td>
+							<td class="text-center align-middle">{{ $al->year }}</td>
+							<td class="text-center align-middle">{{ $al->annual_leave }}</td>
+							<td class="text-center align-middle">{{ $al->annual_leave_adjustment }}</td>
+							<td class="text-center align-middle">{{ $al->annual_leave_utilize }}</td>
+							<td class="text-center align-middle">{{ $al->annual_leave_balance }}</td>
+							<td class="text-center align-middle">
 								<a href="{{ route('annualleave.edit', $al->id) }}" class="btn btn-sm btn-outline-secondary"><i class="fa-regular fa-pen-to-square"></i></a>
 							</td>
 						</tr>
@@ -201,28 +205,28 @@
 			</div>
 			@endif
 			@if($staff->hasmanyleavemc()?->get()->count())
-			<div class="col-5">MC Leave :</div>
-			<div class="col-7">
+			<div class="col-4" style="background-color: #f2f2f2;">MC Leave :</div>
+			<div class="col-8">
 				<table class="table table-sm table-hover" style="font-size:12px;">
 					<thead>
 						<tr>
-							<th>Year</th>
-							<th>MC Leave</th>
-							<th>MC Leave Adjustment</th>
-							<th>MC Leave Utilize</th>
-							<th>MC Leave Balance</th>
-							<th>&nbsp;</th>
+							<th class="text-center align-middle" width="35px;">Year</th>
+							<th class="text-center align-middle" width="98px;">MC Entitlement</th>
+							<th class="text-center align-middle" width="95px;">MC Adjustment</th>
+							<th class="text-center align-middle" width="68px;">MC Utilize</th>
+							<th class="text-center align-middle">MC Balance</th>
+							<th class="text-center align-middle" width="40px;">&nbsp;</th>
 						</tr>
 					</thead>
 					<tbody>
 					@foreach($staff->hasmanyleavemc()->orderBy('year', 'DESC')->get() as $al)
 						<tr>
-							<td>{{ $al->year }}</td>
-							<td>{{ $al->mc_leave }}</td>
-							<td>{{ $al->mc_leave_adjustment }}</td>
-							<td>{{ $al->mc_leave_utilize }}</td>
-							<td>{{ $al->mc_leave_balance }}</td>
-							<td>
+							<td class="text-center align-middle">{{ $al->year }}</td>
+							<td class="text-center align-middle">{{ $al->mc_leave }}</td>
+							<td class="text-center align-middle">{{ $al->mc_leave_adjustment }}</td>
+							<td class="text-center align-middle">{{ $al->mc_leave_utilize }}</td>
+							<td class="text-center align-middle">{{ $al->mc_leave_balance }}</td>
+							<td class="text-center align-middle">
 								<a href="{{ route('mcleave.edit', $al->id) }}" class="btn btn-sm btn-outline-secondary"><i class="fa-regular fa-pen-to-square"></i></a>
 							</td>
 						</tr>
@@ -233,28 +237,28 @@
 			@endif
 			@if($staff->gender_id == 2)
 				@if($staff->hasmanyleavematernity()?->get()->count())
-				<div class="col-5">Maternity Leave :</div>
-				<div class="col-7">
+				<div class="col-4">Maternity Leave :</div>
+				<div class="col-8">
 					<table class="table table-sm table-hover" style="font-size:12px;">
 						<thead>
 							<tr>
-								<th>Year</th>
-								<th>Maternity Leave</th>
-								<th>Maternity Leave Adjustment</th>
-								<th>Maternity Leave Utilize</th>
-								<th>Maternity Leave Balance</th>
-								<th>&nbsp;</th>
+								<th class="text-center align-middle" width="35px;">Year</th>
+								<th class="text-center align-middle" width="98px;">Maternity Entitlement</th>
+								<th class="text-center align-middle" width="95px;">Maternity Adjustment</th>
+								<th class="text-center align-middle" width="68px;">Maternity Utilize</th>
+								<th class="text-center align-middle">Maternity Balance</th>
+								<th class="text-center align-middle" width="40px;">&nbsp;</th>
 							</tr>
 						</thead>
 						<tbody>
 						@foreach($staff->hasmanyleavematernity()->orderBy('year', 'DESC')->get() as $al)
 							<tr>
-								<td>{{ $al->year }}</td>
-								<td>{{ $al->maternity_leave }}</td>
-								<td>{{ $al->maternity_leave_adjustment }}</td>
-								<td>{{ $al->maternity_leave_utilize }}</td>
-								<td>{{ $al->maternity_leave_balance }}</td>
-								<td>
+								<td class="text-center align-middle">{{ $al->year }}</td>
+								<td class="text-center align-middle">{{ $al->maternity_leave }}</td>
+								<td class="text-center align-middle">{{ $al->maternity_leave_adjustment }}</td>
+								<td class="text-center align-middle">{{ $al->maternity_leave_utilize }}</td>
+								<td class="text-center align-middle">{{ $al->maternity_leave_balance }}</td>
+								<td class="text-center align-middle">
 									<a href="{{ route('maternityleave.edit', $al->id) }}" class="btn btn-sm btn-outline-secondary"><i class="fa-regular fa-pen-to-square"></i></a>
 								</td>
 							</tr>
@@ -278,6 +282,169 @@
 	<p>&nbsp;</p>
 	<div class="row justify-content-center">
 		<div id="calendar"></div>
+	</div>
+
+	<p>&nbsp;</p>
+	<div class="container row align-items-start justify-content-center">
+		<h4 class="align-items-center">Attendance</h4>
+		<table id="attendance" class="table table-hover table-sm align-middle" style="font-size:13px">
+			<thead>
+				<tr>
+					<th class="text-center" width="60px">Date</th>
+					<th class="text-center" width="60px">Day Type</th>
+					<th class="text-center" width="45px">In</th>
+					<th class="text-center" width="45px">Break</th>
+					<th class="text-center" width="45px">Resume</th>
+					<th class="text-center" width="45px">Out</th>
+					<th class="text-center" width="55px">W/Hour</th>
+					<th class="text-center" width="60px">Overtime</th>
+					<th class="text-center" width="75px">Leave Form</th>
+					<th class="text-center" width="70px">Leave Type</th>
+					<th class="text-center">Remark</th>
+					<th class="text-center" width="120px">Outstation</th>
+				</tr>
+			</thead>
+			<tbody>
+				@foreach ($attendance as $attend)
+
+				<?php
+				$in = NULL;
+				$break = NULL;
+				$resume = NULL;
+				$out = NULL;
+				$work_hour = NULL;
+				$leave_id = NULL;
+				$leave_form = NULL;
+				$leave_type = NULL;
+
+				$date_name = Carbon::parse($attend->attend_date)->format('l');
+
+				if ($wh_group == '0' && $date_name == 'Friday') {
+					$company_hour = \App\Models\HumanResources\OptWorkingHour::where('option_working_hours.group', '=', $wh_group)
+						->where('option_working_hours.effective_date_start', '<=', $attend->attend_date)
+						->where('option_working_hours.effective_date_end', '>=', $attend->attend_date)
+						->where('option_working_hours.category', '=', 3)
+						->first();
+				} elseif ($wh_group == '0') {
+					$company_hour = \App\Models\HumanResources\OptWorkingHour::where('option_working_hours.group', '=', $wh_group)
+						->where('option_working_hours.effective_date_start', '<=', $attend->attend_date)
+						->where('option_working_hours.effective_date_end', '>=', $attend->attend_date)
+						->where('option_working_hours.category', '!=', 3)
+						->first();
+				} else {
+					$company_hour = \App\Models\HumanResources\OptWorkingHour::where('option_working_hours.group', '=', $wh_group)
+						->where('option_working_hours.effective_date_start', '<=', $attend->attend_date)
+						->where('option_working_hours.effective_date_end', '>=', $attend->attend_date)
+						->where('option_working_hours.category', '=', 8)
+						->select('time_start_am', 'time_end_am', 'time_start_pm', 'time_end_pm')
+						->first();
+				}
+
+				$daytype = $attend->belongstodaytype()->first();
+				$outstation = $attend->belongstooutstation?->belongstocustomer?->customer;
+				$overtime = $attend->belongstoovertime?->belongstoovertimerange?->total_time;
+
+				if ($attend->in != NULL && $attend->in != '00:00:00') {
+					$in = Carbon::parse($attend->in)->format('h:i a');
+				}
+
+				if ($attend->in > $company_hour->time_start_am) {
+					$color_in = "color:red";
+				} else {
+					$color_in = NULL;
+				}
+
+				if ($attend->break != NULL && $attend->break != '00:00:00') {
+					$break = Carbon::parse($attend->break)->format('h:i a');
+				}
+
+				if ($attend->break < $company_hour->time_end_am) {
+					$color_break = "color:red";
+				} else {
+					$color_break = NULL;
+				}
+
+				if ($attend->resume != NULL && $attend->resume != '00:00:00') {
+					$resume = Carbon::parse($attend->resume)->format('h:i a');
+				}
+
+				if ($attend->resume > $company_hour->time_start_pm) {
+					$color_resume = "color:red";
+				} else {
+					$color_resume = NULL;
+				}
+
+				if ($attend->out != NULL && $attend->out != '00:00:00') {
+					$out = Carbon::parse($attend->out)->format('h:i a');
+				}
+
+				if ($attend->out < $company_hour->time_end_pm) {
+					$color_out = "color:red";
+				} else {
+					$color_out = NULL;
+				}
+
+				if ($attend->time_work_hour != NULL && $attend->time_work_hour != '00:00:00') {
+					$work_hour = Carbon::parse($attend->time_work_hour)->format('H:i');
+				}
+
+				if ($attend->leave_id != NULL && $attend->leave_id != '') {
+					$leave_temp1 = $attend->belongstoleave()->first();
+					$leave_temp2 = $attend->belongstoleave->belongstooptleavetype()->first();
+
+					$leave_id = $leave_temp1->id;
+
+					$leave_form = "HR9-" . str_pad($leave_temp1->leave_no, 5, '0', STR_PAD_LEFT) . "/" . $leave_temp1->leave_year;
+
+					$leave_type = $leave_temp2->leave_type_code;
+				}
+				?>
+
+				<tr>
+					<td class="text-center">
+						{{ $attend->attend_date }}
+					</td>
+					<td class="text-center">
+						{{ $daytype->daytype }}
+					</td>
+					<td class="text-center">
+						<span style="{{ $color_in }}">{{ $in }}</span>
+					</td>
+					<td class="text-center">
+					<span style="{{ $color_break }}">{{ $break }}</span>
+					</td>
+					<td class="text-center">
+					<span style="{{ $color_resume }}">{{ $resume }}</span>
+					</td>
+					<td class="text-center">
+					<span style="{{ $color_out }}">{{ $out }}</span>
+					</td>
+					<td class="text-center">
+						{{ $work_hour }}
+					</td>
+					<td class="text-center" data-bs-toggle="tooltip" data-bs-html="true" title="{{ $overtime }}">
+						{{ $overtime }}
+					</td>
+					<td class="text-center">
+						@if ($leave_id != NULL)
+						<a href="{{ route('leave.show', $leave_id) }}" target="_blank">
+							{{ $leave_form }}
+						</a>
+						@endif
+					</td>
+					<td class="text-center">
+						{{ $leave_type }}
+					</td>
+					<td class="text-truncate" style="max-width: 1px;" data-bs-toggle="tooltip" data-bs-html="true" title="{{ $attend->attend_remark }}">
+						{{ $attend->attend_remark }}
+					</td>
+					<td class="text-truncate" style="max-width: 120px;" data-bs-toggle="tooltip" data-bs-html="true" title="{{ $outstation }}">
+						{{ $outstation }}
+					</td>
+				</tr>
+				@endforeach
+			</tbody>
+		</table>
 	</div>
 
 	<p>&nbsp;</p>
@@ -502,11 +669,38 @@ function DeactivateStaff(staffId){
 	});
 }
 
+
 /////////////////////////////////////////////////////////////////////////////////////////
 // tooltip on reason
 $(document).ready(function(){
 	$('[data-bs-toggle="tooltip"]').tooltip();
 });
+
+
+/////////////////////////////////////////////////////////////////////////////////////////
+// datatables
+$.fn.dataTable.moment( 'D MMM YYYY' );
+$.fn.dataTable.moment( 'h:mm a' );
+$('#attendance').DataTable({
+	"paging": true,
+	"lengthMenu": [ [30, 60, 100, -1], [30, 60, 100, "All"] ],
+	"columnDefs": [
+		{ type: 'date', 'targets': [0] },
+		{ type: 'time', 'targets': [2] },
+		{ type: 'time', 'targets': [3] },
+		{ type: 'time', 'targets': [4] },
+		{ type: 'time', 'targets': [5] },
+		{ type: 'time', 'targets': [6] },
+	],
+	"order": [[ 0, 'asc' ]], // sorting the 6th column descending
+	responsive: true
+})
+.on( 'length.dt page.dt order.dt search.dt', function ( e, settings, len ) {
+	$(document).ready(function(){
+		$('[data-bs-toggle="tooltip"]').tooltip();
+	});
+});
+
 
 /////////////////////////////////////////////////////////////////////////////////////////
 // datatables
@@ -651,6 +845,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	calendar.render();
 });
 
+
 /////////////////////////////////////////////////////////////////////////////////////////
 // chartjs also dont use jquery
 
@@ -733,5 +928,4 @@ xmlhttp.onload = function() {
 	});
 };
 
-/////////////////////////////////////////////////////////////////////////////////////////
 @endsection

@@ -14,9 +14,8 @@ use Illuminate\View\View;
 // load models
 use App\Models\Login;
 use App\Models\Staff;
-use App\Models\HumanResources\HRStaffEmergency;
-use App\Models\HumanResources\HRStaffSpouse;
-use App\Models\HumanResources\HRStaffChildren;
+use App\Models\HumanResources\HRAttendance;
+use App\Models\HumanResources\DepartmentPivot;
 
 // load validation
 use App\Http\Requests\HumanResources\Profile\ProfileRequestUpdate;
@@ -61,7 +60,18 @@ class ProfileController extends Controller
 	 */
 	public function show(Staff $profile): View
 	{
-		return view('humanresources.profile.show', compact('profile'));
+		$current_time = now();
+		$year = $current_time->format('Y');
+
+		$attendance = HRAttendance::join('staffs', 'hr_attendances.staff_id', '=', 'staffs.id')
+			->where('hr_attendances.staff_id', $profile->id)
+			->whereYear('hr_attendances.attend_date', '=', $year)
+			->select('hr_attendances.remarks as attend_remark', 'hr_attendances.*', 'staffs.*')
+			->get();
+
+		$wh_group = $profile->belongstomanydepartment()->wherePivot('main', 1)->first();
+
+		return view('humanresources.profile.show', ['profile' => $profile, 'attendance' => $attendance, 'wh_group' => $wh_group->wh_group_id]);
 	}
 
 	/**
