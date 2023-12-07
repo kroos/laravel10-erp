@@ -22,17 +22,8 @@ class HRAttendance extends Model
 
 	// protected $connection = 'mysql';
 	protected $table = 'hr_attendances';
-	/////////////////////////////////////////////////////////////////////////////////////////
-	// hasmany relationship
-	public function hasmanyovertime(): HasMany
-	{
-		return $this->hasMany(\App\Models\HumanResources\HROvertime::class, 'attendance_id');
-	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
-	// db relation belongsToMany
-
-  /////////////////////////////////////////////////////////////////////////////////////////////////////
 	//belongsto relationship
 	public function belongstostaff(): BelongsTo
 	{
@@ -53,6 +44,14 @@ class HRAttendance extends Model
 	{
 		return $this->belongsTo(\App\Models\HumanResources\OptDayType::class, 'daytype_id');
 	}
+
+	public function belongstooutstation(): BelongsTo
+	{
+		return $this->belongsTo(\App\Models\HumanResources\HROutstation::class, 'outstation_id');
+	}
+
+	public function belongstoovertime(): BelongsTo
+	{
+		return $this->belongsTo(\App\Models\HumanResources\HROvertime::class, 'overtime_id');
+	}
 }
-
-
