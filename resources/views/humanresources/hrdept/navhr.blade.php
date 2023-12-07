@@ -64,10 +64,7 @@
 		<a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Outstation</a>
 		<ul class="dropdown-menu">
 			<li><a class="dropdown-item btn btn-sm btn-outline-secondary" href="{{ route('outstation.index') }}"><i class="fa-solid fa-person-walking-luggage fa-beat"></i> Outstation List</a></li>
-<!-- 			<li><a class="dropdown-item" href="#">Staff Leave</a></li>
-			<li><a class="dropdown-item" href="#">Something else here</a></li>
-			<li><hr class="dropdown-divider"></li>
-			<li><a class="dropdown-item" href="#">Separated link</a></li> -->
+			<li><a class="dropdown-item btn btn-sm btn-outline-secondary" href="{{ route('hroutstationattendance.index') }}"><i class="fa-solid fa-person-circle-plus"></i> Outstation Attendance List</a></li>
 		</ul>
 	</li>
 	<li class="nav-item dropdown">
