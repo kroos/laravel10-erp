@@ -324,12 +324,14 @@ use \Carbon\Carbon;
 						->where('option_working_hours.effective_date_start', '<=', $attend->attend_date)
 						->where('option_working_hours.effective_date_end', '>=', $attend->attend_date)
 						->where('option_working_hours.category', '=', 3)
+						->select('time_start_am', 'time_end_am', 'time_start_pm', 'time_end_pm')
 						->first();
 				} elseif ($wh_group == '0') {
 					$company_hour = \App\Models\HumanResources\OptWorkingHour::where('option_working_hours.group', '=', $wh_group)
 						->where('option_working_hours.effective_date_start', '<=', $attend->attend_date)
 						->where('option_working_hours.effective_date_end', '>=', $attend->attend_date)
 						->where('option_working_hours.category', '!=', 3)
+						->select('time_start_am', 'time_end_am', 'time_start_pm', 'time_end_pm')
 						->first();
 				} else {
 					$company_hour = \App\Models\HumanResources\OptWorkingHour::where('option_working_hours.group', '=', $wh_group)
