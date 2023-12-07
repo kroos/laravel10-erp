@@ -298,7 +298,7 @@ $childrens = $profile->hasmanychildren()->get();
 /////////////////////////////////////////////////////////////////////////////////////////
 // tooltip
 $(document).ready(function(){
-$('[data-bs-toggle="tooltip"]').tooltip();
+	$('[data-bs-toggle="tooltip"]').tooltip();
 });
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -306,23 +306,23 @@ $('[data-bs-toggle="tooltip"]').tooltip();
 $.fn.dataTable.moment( 'D MMM YYYY' );
 $.fn.dataTable.moment( 'h:mm a' );
 $('#attendance').DataTable({
-"paging": true,
-"lengthMenu": [ [30, 60, 100, -1], [30, 60, 100, "All"] ],
-"columnDefs": [
-{ type: 'date', 'targets': [0] },
-{ type: 'time', 'targets': [2] },
-{ type: 'time', 'targets': [3] },
-{ type: 'time', 'targets': [4] },
-{ type: 'time', 'targets': [5] },
-{ type: 'time', 'targets': [6] },
-],
-"order": [[ 0, 'asc' ]], // sorting the 6th column descending
-responsive: true
+	"paging": true,
+	"lengthMenu": [ [30, 60, 100, -1], [30, 60, 100, "All"] ],
+	"columnDefs": [
+		{ type: 'date', 'targets': [0] },
+		{ type: 'time', 'targets': [2] },
+		{ type: 'time', 'targets': [3] },
+		{ type: 'time', 'targets': [4] },
+		{ type: 'time', 'targets': [5] },
+		{ type: 'time', 'targets': [6] },
+	],
+	"order": [[ 0, 'asc' ]], // sorting the 6th column descending
+	responsive: true
 })
 .on( 'length.dt page.dt order.dt search.dt', function ( e, settings, len ) {
-$(document).ready(function(){
-$('[data-bs-toggle="tooltip"]').tooltip();
-});}
-);
+	$(document).ready(function(){
+		$('[data-bs-toggle="tooltip"]').tooltip();
+	});
+});
 
 @endsection
