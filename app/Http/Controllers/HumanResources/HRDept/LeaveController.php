@@ -356,7 +356,7 @@ class LeaveController extends Controller
 		// change leave to NRL/EL-NRL
 		if ($request->leave_type_id == 4 || $request->leave_type_id == 10) {
 			// change leave to NRL/EL-NRL from NRL/EL-NRL
-
+// dd($request->all());
 			// using new replacement leave
 			$r4a = HRLeaveReplacement::find($request->id);
 
@@ -365,7 +365,7 @@ class LeaveController extends Controller
 				// 1. using old nrl entitlement
 				// 2. using new nrl entitlement
 				// so if using old entitlement
-				if ($request->id == $r4->id) {
+				if (!$request->has('id')) {
 					if ($request->has('leave_cat')) {																										// applied for 1 full day OR half day
 						if($request->leave_cat == 2){																										// half day
 							if((($r4->leave_balance) + $hrleave->period_day) < 0.5){
@@ -982,7 +982,7 @@ class LeaveController extends Controller
 				// 1. using old nrl entitlement
 				// 2. using new nrl entitlement
 				// so if using old entitlement
-				if ($request->id == $r4->id) {
+				if (!$request->has('id')) {
 					if ($request->has('leave_cat')) {																										// applied for 1 full day OR half day
 						if($request->leave_cat == 2){																										// half day
 							if((($r4->leave_balance) + $hrleave->period_day) >= 0.5){
