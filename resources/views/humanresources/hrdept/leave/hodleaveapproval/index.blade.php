@@ -4,6 +4,7 @@
 <?php
 // load models
 use App\Models\Staff;
+use App\Models\Login;
 use App\Models\HumanResources\HRLeave;
 use App\Models\HumanResources\HRLeaveAnnual;
 use App\Models\HumanResources\HRLeaveMC;
@@ -15,6 +16,7 @@ use App\Models\HumanResources\HRLeaveApprovalHOD;
 use App\Models\HumanResources\HRLeaveApprovalDirector;
 use App\Models\HumanResources\HRLeaveApprovalHR;
 use App\Models\HumanResources\OptLeaveStatus;
+use App\Models\HumanResources\HRAttendance;
 
 // load array helper
 use Illuminate\Support\Arr;
@@ -30,6 +32,7 @@ use \App\Helpers\UnavailableDateTime;
 
 // who am i?
 $user = \Auth::user()->belongstostaff;
+$auth = $user->div_id; // 1/2/5
 $me1 = $user->div_id == 1;		// hod
 $me2 = $user->div_id == 5;		// hod assistant
 $me3 = $user->div_id == 4;		// supervisor
@@ -58,6 +61,90 @@ foreach ($c as $v) {
 	$ls[] = ['id' => $v->id, 'text' => $v->status];
 }
 ?>
+<style>
+	@media print {
+		body {
+			visibility: hidden;
+		}
+
+		#printPageButton, #back {
+			display: none;
+		}
+
+		.table-container {
+			visibility: visible;
+			position: absolute;
+			left: 0;
+			top: 0;
+		}
+	}
+
+	.table-container {
+		display: table;
+		width: 100%;
+		border-collapse: collapse;
+	}
+
+	.table {
+		display: table;
+		width: 100%;
+		border-collapse: collapse;
+		margin-top: 0;
+		padding-top: 0;
+		margin-bottom: 0;
+		padding-bottom: 0;
+	}
+
+	.table-row {
+		display: table-row;
+	}
+
+	.table-cell {
+		display: table-cell;
+		border: 1px solid #b3b3b3;
+		padding: 4px;
+		box-sizing: border-box;
+	}
+
+	.table-cell-top {
+		display: table-cell;
+		border: 1px solid #b3b3b3;
+		border-top: none;
+		padding: 4px;
+		box-sizing: border-box;
+	}
+
+	.table-cell-top-bottom {
+		display: table-cell;
+		border: 1px solid #b3b3b3;
+		border-top: none;
+		border-bottom: none;
+		padding: 0px;
+		box-sizing: border-box;
+	}
+
+	.table-cell-hidden {
+		display: table-cell;
+		border: none;
+	}
+
+	.header {
+		font-size: 22px;
+		text-align: center;
+	}
+
+	.theme {
+		background-color: #e6e6e6;
+	}
+
+	.table-cell-top1 {
+		display: table-cell;
+		border: 1px solid #b3b3b3;
+		border-top: none;
+		padding: 0px;
+		box-sizing: border-box;
+	}
+</style>
 <div class="container row align-items-start justify-content-center">
 	@include('humanresources.hrdept.navhr')
 	@if($h1)
@@ -94,6 +181,10 @@ foreach ($c as $v) {
 						?>
 						@foreach(HRLeaveApprovalHOD::whereNull('leave_status_id')->get() as $a)
 							<?php
+							$count = 0;
+							$supervisor_no = 0;
+							$hod_no = 0;
+							$director_no = 0;
 							$leav = HRLeave::find($a->leave_id);
 							$staff = Staff::find($leav->staff_id);
 							// dump($staff);
@@ -145,15 +236,59 @@ foreach ($c as $v) {
 								$bapp = '<span class="text-success">No Backup</span>';
 									$bappb = true;
 							}
+
+							$hrremarksattendance = HRAttendance::where(function (Builder $query) use ($leav){
+																	$query->whereDate('attend_date', '>=', $leav->date_time_start)
+																	->whereDate('attend_date', '<=', $leav->date_time_end);
+																})
+													->where('staff_id', $leav->staff_id)
+													->where(function (Builder $query) {
+														$query->whereNotNull('remarks')->orWhereNotNull('hr_remarks');
+													})
+													// ->ddrawsql();
+													->get();
+							$supervisor = $leav->hasmanyleaveapprovalsupervisor?->first();
+							$hod = $leav->hasmanyleaveapprovalhod?->first();
+							$director = $leav->hasmanyleaveapprovaldir?->first();
+							$hr = $leav->hasmanyleaveapprovalhr?->first();
+							// entitlement
+							$annl = $staff->hasmanyleaveannual()?->where('year', now()->format('Y'))->first();
+							$mcel = $staff->hasmanyleavemc()?->where('year', now()->format('Y'))->first();
+							$matl = $staff->hasmanyleavematernity()?->where('year', now()->format('Y'))->first();
+							$replt = $staff->hasmanyleavereplacement()?->selectRaw('SUM(leave_total) as total')->where(function(Builder $query){$query->whereDate('date_start', '>=', now()->startOfYear())->whereDate('date_end', '<=', now()->endOfYear());})->get();
+							$replb = $staff->hasmanyleavereplacement()?->selectRaw('SUM(leave_balance) as total')->where(function(Builder $query){$query->whereDate('date_start', '>=', now()->startOfYear())->whereDate('date_end', '<=', now()->endOfYear());})->get();
+							$upal = $staff->hasmanyleave()?->selectRaw('SUM(period_day) as total')
+															->where(function(Builder $query){
+																$query->whereDate('date_time_start', '>=', now()->startOfYear())
+																	->whereDate('date_time_end', '<=', now()->endOfYear());
+																})
+															->where(function(Builder $query) {
+																$query->whereIn('leave_status_id', [5,6])
+																	->orWhereNull('leave_status_id');
+															})
+															->whereIn('leave_type_id', [3, 6])
+															->get();
+							$mcupl = $staff->hasmanyleave()?->selectRaw('SUM(period_day) as total')
+															->where(function(Builder $query){
+																$query->whereDate('date_time_start', '>=', now()->startOfYear())
+																	->whereDate('date_time_end', '<=', now()->endOfYear());
+																})
+															->where(function(Builder $query) {
+																$query->whereIn('leave_status_id', [5,6])
+																	->orWhereNull('leave_status_id');
+															})
+															->where('leave_type_id', 11)
+															->get();
+							$mcupl = $staff->hasmanyleave()?->get();
 							?>
 							@if($me5)
 									<tr class="{{ $u }}" >
 										<td>
 											<a href="{{ route('leave.show', $a->leave_id) }}">HR9-{{ str_pad( $leav->leave_no, 5, "0", STR_PAD_LEFT ) }}/{{ $leav->leave_year }}</a>
 										</td>
-										<td>{{ $leav->belongstostaff?->hasmanylogin()?->where('active', 1)->first()?->username }}</td>
+										<td>{{ $staff?->hasmanylogin()?->where('active', 1)->first()?->username }}</td>
 										<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="{{ $staff->name }}">
-											{{ Str::words($leav->belongstostaff?->name, 3, ' >') }}
+											{{ Str::words($staff?->name, 3, ' >') }}
 										</td>
 										<td>{{ $leav->belongstooptleavetype?->leave_type_code }}</td>
 										<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="{{ $leav->reason }}">
@@ -177,27 +312,125 @@ foreach ($c as $v) {
 											<!-- Modal for supervisor approval-->
 											<div class="modal fade" id="hodapproval{{ $a->id }}" aria-labelledby="hodlabel{{ $a->id }}" aria-hidden="true">
 											<!-- <div class="modal fade" id="hodapproval{{ $a->id }}" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false"> -->
-												<div class="modal-dialog modal-dialog-centered">
+												<div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
 													<div class="modal-content">
 														<div class="modal-header">
 															<h1 class="modal-title fs-5" id="hodlabel{{ $a->id }}">Head of Department Approval</h1>
 															<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 														</div>
-														<div class="modal-body">
+														<div class="modal-body align-items-start justify-content-center">
+
+<!-- LEAVE SHOW START -->
+															<div class="col-sm-12 row">
+																<div class="table-container">
+																	<div class="table">
+																		<div class="table-row header">
+																			<div class="table-cell" style="width: 40%; background-color: #99ff99;">IPMA INDUSTRY SDN.BHD.</div>
+																			<div class="table-cell" style="width: 60%; background-color: #e6e6e6;">LEAVE APPLICATION FORM</div>
+																		</div>
+																	</div>
+
+																	<div class="table">
+																		<div class="table-row">
+																			<div class="table-cell-top" style="width: 25%;">STAFF ID : {{ $staff?->hasmanylogin()?->where('active', 1)->first()?->username }}</div>
+																			<div class="table-cell-top" style="width: 75%;">NAME : {{ $staff?->name }}</div>
+																		</div>
+																	</div>
+
+																	<div class="table">
+																		<div class="table-row">
+																			<div class="table-cell-top" style="width: 25%;">LEAVE NO : HR9-{{ @str_pad($leav->leave_no,5,'0',STR_PAD_LEFT) }}/{{ $leav->leave_year }}</div>
+																			<div class="table-cell-top" style="width: 60%;">DATE : {{ $dts }} - {{ $dte }} </div>
+																			<div class="table-cell-top" style="width: 25%;">TOTAL : {{ $dper }} </div>
+																		</div>
+																	</div>
+
+																	<div class="table">
+																		<div class="table-row">
+																			<div class="table-cell-top text-wrap" style="width: 45%;">LEAVE TYPE : {{ $leav->belongstooptleavetype->leave_type_code }} ({{ $leav->belongstooptleavetype->leave_type }})</div>
+																			<div class="table-cell-top text-wrap" style="width: 55%;">REASON : {{ $leav->reason }} </div>
+																		</div>
+																	</div>
+
+																	<div class="table">
+																		<div class="table-row">
+																			<div class="table-cell-top text-wrap" style="width: 60%;">BACKUP : {!! $bapp !!}</div>
+																			<div class="table-cell-top" style="width: 40%;">
+																				BACKUP DATE APPROVED : {{ ($backup->first()?->created_at)?Carbon::parse($backup->first()?->created_at)->format('j M Y'):null }}
+																			</div>
+																		</div>
+																	</div>
+
+																	@if ((in_array($auth, ['1', '2', '5']) && in_array($deptid, ['14', '31'])) || $me5)
+																		@if($hrremarksattendance)
+																		<div class="table">
+																			@foreach($hrremarksattendance as $key => $value)
+																			<div class="table-row">
+																				<div class="table-cell-top" style="width: 100%;">REMARKS FROM ATTENDANCE : {!! $value->remarks !!}<br/>HR REMARKS FROM ATTENDANCE : {!! $value->hr_remarks !!}</div>
+																			</div>
+																			@endforeach
+																		</div>
+																		@endif
+																	@endif
+
+																	@if ((in_array($auth, ['1', '2', '5']) && in_array($deptid, ['14', '31'])) || $me5)
+																		@if($leav->remarks)
+																		<div class="table">
+																			<div class="table-row">
+																				<div class="table-cell-top" style="width: 100%;">LEAVE REMARKS : {!! $leav->remarks !!}</div>
+																			</div>
+																		</div>
+																		@endif
+																	@endif
+
+																	@if ((in_array($auth, ['1', '2', '5']) && in_array($deptid, ['14', '31'])) || $me5)
+																		@if($leav->hasmanyleaveamend()->count())
+																		<div class="table">
+																			@foreach($leav->hasmanyleaveamend()->get() as $key => $value1)
+																			<div class="table-row">
+																				<div class="table-cell-top" style="width: 100%;">EDIT LEAVE REMARKS : {{ $value1->amend_note }} on {{ \Carbon\Carbon::parse($value1->created_at)->format('j M Y') }}</div>
+																			</div>
+																			@endforeach
+																		</div>
+																		@endif
+																	@endif
+
+																	<div class="table">
+																		<div class="table-row">
+																			<div class="table-cell-top text-wrap" style="width: 17%;">AL : {{ $annl?->annual_leave_balance }}/{{ $annl?->annual_leave }}</div>
+																			<div class="table-cell-top text-wrap" style="width: 17%;">MC : {{ $mcel?->mc_leave_balance }}/{{ $mcel?->mc_leave }}</div>
+																			<div class="table-cell-top text-wrap" style="width: 17%;">Maternity : {{ $matl?->maternity_leave_balance }}/{{ $matl?->maternity_leave }}</div>
+																			<div class="table-cell-top text-wrap" style="width: 17%;">Replacement : {{ $replb?->first()?->total }}/{{ $replt?->first()?->total }}</div>
+																			<div class="table-cell-top text-wrap" style="width: 17%;">UPL : {{ $upal?->first()?->total }}</div>
+																			<div class="table-cell-top text-wrap" style="width: 15%;">MC-UPL : {{ $mcupl?->first()?->total }}</div>
+																		</div>
+																	</div>
+
+																	<p>Supporting Document : {!! ($leav->softcopy)?'<a href="'.asset('storage/leaves/'.$leav->softcopy).'" target="_blank">Link</a>':null !!} </p>
+																</div>
+															</div>
+
+<!-- LEAVE SHOW END -->
 															{{ Form::open(['route' => ['leavestatus.hodstatus'], 'method' => 'patch', 'id' => 'form', 'autocomplete' => 'off', 'files' => true, 'data-toggle' => 'validator']) }}
 															{{ Form::hidden('id', $a->id) }}
-															@foreach($ls as $k => $val)
-															<div class="form-check form-check-inline {{ $errors->has('leave_status_id') ? 'has-error' : '' }}">
-																<input type="radio" name="leave_status_id" value="{{ $val['id'] }}" id="hodstatus{{ $a->id.$val['id'] }}" class="form-check-input">
-																<label class="form-check-label" for="hodstatus{{ $a->id.$val['id'] }}">{{ $val['text'] }}</label>
+															<div class="offset-sm-4 col-sm-6">
+																@foreach($ls as $k => $val)
+																<div class="form-check form-check-inline {{ $errors->has('leave_status_id') ? 'has-error' : '' }}">
+																	<input type="radio" name="leave_status_id" value="{{ $val['id'] }}" id="hodstatus{{ $a->id.$val['id'] }}" class="form-check-input">
+																	<label class="form-check-label" for="hodstatus{{ $a->id.$val['id'] }}">{{ $val['text'] }}</label>
+																</div>
+																@endforeach
 															</div>
-															@endforeach
-															<div class="mb-3 row">
-																<div class="form-group row {{ $errors->has('verify_code') ? 'has-error' : '' }}">
-																	<label for="hodcode{{ $a->id }}" class="col-auto col-form-label col-form-label-sm">Verify Code :</label>
-																	<div class="col-auto">
-																		<input type="text" name="verify_code" value="{{ (($user->div_id == 1 && $user->belongstomanydepartment->first()->id == 14) || $user->authorise_id == 1)?$leav->verify_code:@$value }}" id="hodcode{{ $a->id }}" class="form-control form-control-sm" placeholder="Verify Code">
-																	</div>
+															<div class="form-group mb-3 row {{ $errors->has('verify_code') ? 'has-error' : '' }}">
+																<label for="hodcode{{ $a->id }}" class="col-sm-4 col-form-label col-form-label-sm">Verify Code :</label>
+																<div class="col-sm-8">
+																	<input type="text" name="verify_code" value="{{ (($user->div_id == 1 && $user->belongstomanydepartment->first()->id == 14) || $user->authorise_id == 1)?$leav->verify_code:@$value }}" id="hodcode{{ $a->id }}" class="form-control form-control-sm" placeholder="Verify Code">
+																</div>
+															</div>
+															<div class="form-group row mb-3 {{ $errors->has('remarks') ? 'has-error' : '' }}">
+																<label for="remarks{{ $a->id }}" class="col-sm-4 col-form-label col-form-label-sm">Remarks :</label>
+																<div class="col-sm-8">
+																	<textarea name="remarks" value="{{ $a->remarks }}" id="remarks{{ $a->id }}" class="form-control form-control-sm" rows="3" placeholder="Remarks"></textarea>
 																</div>
 															</div>
 														</div>
@@ -219,9 +452,9 @@ foreach ($c as $v) {
 										<td>
 											<a href="{{ route('leave.show', $a->leave_id) }}">HR9-{{ str_pad( $leav->leave_no, 5, "0", STR_PAD_LEFT ) }}/{{ $leav->leave_year }}</a>
 										</td>
-										<td>{{ $leav->belongstostaff?->hasmanylogin()?->where('active', 1)->first()?->username }}</td>
+										<td>{{ $staff?->hasmanylogin()?->where('active', 1)->first()?->username }}</td>
 										<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="{{ $staff->name }}">
-											{{ Str::words($leav->belongstostaff?->name, 3, ' >') }}
+											{{ Str::words($staff?->name, 3, ' >') }}
 										</td>
 										<td>{{ $leav->belongstooptleavetype?->leave_type_code }}</td>
 										<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="{{ $leav->reason }}">
@@ -245,27 +478,124 @@ foreach ($c as $v) {
 											<!-- Modal for supervisor approval-->
 											<div class="modal fade" id="hodapproval{{ $a->id }}" aria-labelledby="hodlabel{{ $a->id }}" aria-hidden="true">
 											<!-- <div class="modal fade" id="hodapproval{{ $a->id }}" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false"> -->
-												<div class="modal-dialog modal-dialog-centered">
+												<div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
 													<div class="modal-content">
 														<div class="modal-header">
 															<h1 class="modal-title fs-5" id="hodlabel{{ $a->id }}">Head of Department Approval</h1>
 															<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 														</div>
-														<div class="modal-body">
+														<div class="modal-body align-items-start justify-content-center">
+<!-- LEAVE SHOW START -->
+															<div class="col-sm-12 row">
+																<div class="table-container">
+																	<div class="table">
+																		<div class="table-row header">
+																			<div class="table-cell" style="width: 40%; background-color: #99ff99;">IPMA INDUSTRY SDN.BHD.</div>
+																			<div class="table-cell" style="width: 60%; background-color: #e6e6e6;">LEAVE APPLICATION FORM</div>
+																		</div>
+																	</div>
+
+																	<div class="table">
+																		<div class="table-row">
+																			<div class="table-cell-top" style="width: 25%;">STAFF ID : {{ $staff?->hasmanylogin()?->where('active', 1)->first()?->username }}</div>
+																			<div class="table-cell-top" style="width: 75%;">NAME : {{ $staff?->name }}</div>
+																		</div>
+																	</div>
+
+																	<div class="table">
+																		<div class="table-row">
+																			<div class="table-cell-top" style="width: 25%;">LEAVE NO : HR9-{{ @str_pad($leav->leave_no,5,'0',STR_PAD_LEFT) }}/{{ $leav->leave_year }}</div>
+																			<div class="table-cell-top" style="width: 60%;">DATE : {{ $dts }} - {{ $dte }} </div>
+																			<div class="table-cell-top" style="width: 25%;">TOTAL : {{ $dper }} </div>
+																		</div>
+																	</div>
+
+																	<div class="table">
+																		<div class="table-row">
+																			<div class="table-cell-top text-wrap" style="width: 45%;">LEAVE TYPE : {{ $leav->belongstooptleavetype->leave_type_code }} ({{ $leav->belongstooptleavetype->leave_type }})</div>
+																			<div class="table-cell-top text-wrap" style="width: 55%;">REASON : {{ $leav->reason }} </div>
+																		</div>
+																	</div>
+
+																	<div class="table">
+																		<div class="table-row">
+																			<div class="table-cell-top text-wrap" style="width: 60%;">BACKUP : {!! $bapp !!}</div>
+																			<div class="table-cell-top" style="width: 40%;">
+																				BACKUP DATE APPROVED : {{ ($backup->first()?->created_at)?Carbon::parse($backup->first()?->created_at)->format('j M Y'):null }}
+																			</div>
+																		</div>
+																	</div>
+
+																	@if ((in_array($auth, ['1', '2', '5']) && in_array($deptid, ['14', '31'])) || $me5)
+																		@if($hrremarksattendance)
+																		<div class="table">
+																			@foreach($hrremarksattendance as $key => $value)
+																			<div class="table-row">
+																				<div class="table-cell-top" style="width: 100%;">REMARKS FROM ATTENDANCE : {!! $value->remarks !!}<br/>HR REMARKS FROM ATTENDANCE : {!! $value->hr_remarks !!}</div>
+																			</div>
+																			@endforeach
+																		</div>
+																		@endif
+																	@endif
+
+																	@if ((in_array($auth, ['1', '2', '5']) && in_array($deptid, ['14', '31'])) || $me5)
+																		@if($leav->remarks)
+																		<div class="table">
+																			<div class="table-row">
+																				<div class="table-cell-top" style="width: 100%;">LEAVE REMARKS : {!! $leav->remarks !!}</div>
+																			</div>
+																		</div>
+																		@endif
+																	@endif
+
+																	@if ((in_array($auth, ['1', '2', '5']) && in_array($deptid, ['14', '31'])) || $me5)
+																		@if($leav->hasmanyleaveamend()->count())
+																		<div class="table">
+																			@foreach($leav->hasmanyleaveamend()->get() as $key => $value1)
+																			<div class="table-row">
+																				<div class="table-cell-top" style="width: 100%;">EDIT LEAVE REMARKS : {{ $value1->amend_note }} on {{ \Carbon\Carbon::parse($value1->created_at)->format('j M Y') }}</div>
+																			</div>
+																			@endforeach
+																		</div>
+																		@endif
+																	@endif
+
+																	<div class="table">
+																		<div class="table-row">
+																			<div class="table-cell-top text-wrap" style="width: 17%;">AL : {{ $annl?->annual_leave_balance }}/{{ $annl?->annual_leave }}</div>
+																			<div class="table-cell-top text-wrap" style="width: 17%;">MC : {{ $mcel?->mc_leave_balance }}/{{ $mcel?->mc_leave }}</div>
+																			<div class="table-cell-top text-wrap" style="width: 17%;">Maternity : {{ $matl?->maternity_leave_balance }}/{{ $matl?->maternity_leave }}</div>
+																			<div class="table-cell-top text-wrap" style="width: 17%;">Replacement : {{ $replb?->first()?->total }}/{{ $replt?->first()?->total }}</div>
+																			<div class="table-cell-top text-wrap" style="width: 17%;">UPL : {{ $upal?->first()?->total }}</div>
+																			<div class="table-cell-top text-wrap" style="width: 15%;">MC-UPL : {{ $mcupl?->first()?->total }}</div>
+																		</div>
+																	</div>
+
+																	<p>Supporting Document : {!! ($leav->softcopy)?'<a href="'.asset('storage/leaves/'.$leav->softcopy).'" target="_blank">Link</a>':null !!} </p>
+																</div>
+															</div>
+
+<!-- LEAVE SHOW END -->
 															{{ Form::open(['route' => ['leavestatus.hodstatus'], 'method' => 'patch', 'id' => 'form', 'autocomplete' => 'off', 'files' => true, 'data-toggle' => 'validator']) }}
 															{{ Form::hidden('id', $a->id) }}
-															@foreach($ls as $k => $val)
-															<div class="form-check form-check-inline {{ $errors->has('leave_status_id') ? 'has-error' : '' }}">
-																<input type="radio" name="leave_status_id" value="{{ $val['id'] }}" id="hodstatus{{ $a->id.$val['id'] }}" class="form-check-input">
-																<label class="form-check-label" for="hodstatus{{ $a->id.$val['id'] }}">{{ $val['text'] }}</label>
+															<div class="offset-sm-4 col-sm-6">
+																@foreach($ls as $k => $val)
+																<div class="form-check form-check-inline {{ $errors->has('leave_status_id') ? 'has-error' : '' }}">
+																	<input type="radio" name="leave_status_id" value="{{ $val['id'] }}" id="hodstatus{{ $a->id.$val['id'] }}" class="form-check-input">
+																	<label class="form-check-label" for="hodstatus{{ $a->id.$val['id'] }}">{{ $val['text'] }}</label>
+																</div>
+																@endforeach
 															</div>
-															@endforeach
-															<div class="mb-3 row">
-																<div class="form-group row {{ $errors->has('verify_code') ? 'has-error' : '' }}">
-																	<label for="hodcode{{ $a->id }}" class="col-auto col-form-label col-form-label-sm">Verify Code :</label>
-																	<div class="col-auto">
-																		<input type="text" name="verify_code" value="{{ (($user->div_id == 1 && $user->belongstomanydepartment->first()->id == 14) || $user->authorise_id == 1)?$leav->verify_code:@$value }}" id="hodcode{{ $a->id }}" class="form-control form-control-sm" placeholder="Verify Code">
-																	</div>
+															<div class="form-group mb-3 row {{ $errors->has('verify_code') ? 'has-error' : '' }}">
+																<label for="hodcode{{ $a->id }}" class="col-sm-4 col-form-label col-form-label-sm">Verify Code :</label>
+																<div class="col-sm-8">
+																	<input type="text" name="verify_code" value="{{ (($user->div_id == 1 && $user->belongstomanydepartment->first()->id == 14) || $user->authorise_id == 1)?$leav->verify_code:@$value }}" id="hodcode{{ $a->id }}" class="form-control form-control-sm" placeholder="Verify Code">
+																</div>
+															</div>
+															<div class="form-group row mb-3 {{ $errors->has('remarks') ? 'has-error' : '' }}">
+																<label for="remarks{{ $a->id }}" class="col-sm-4 col-form-label col-form-label-sm">Remarks :</label>
+																<div class="col-sm-8">
+																	<textarea name="remarks" value="{{ $a->remarks }}" id="remarks{{ $a->id }}" class="form-control form-control-sm" rows="3" placeholder="Remarks"></textarea>
 																</div>
 															</div>
 														</div>
@@ -288,9 +618,9 @@ foreach ($c as $v) {
 										<td>
 											<a href="{{ route('leave.show', $a->leave_id) }}">HR9-{{ str_pad( $leav->leave_no, 5, "0", STR_PAD_LEFT ) }}/{{ $leav->leave_year }}</a>
 										</td>
-										<td>{{ $leav->belongstostaff?->hasmanylogin()?->where('active', 1)->first()?->username }}</td>
+										<td>{{ $staff?->hasmanylogin()?->where('active', 1)->first()?->username }}</td>
 										<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="{{ $staff->name }}">
-											{{ Str::words($leav->belongstostaff?->name, 3, ' >') }}
+											{{ Str::words($staff?->name, 3, ' >') }}
 										</td>
 										<td>{{ $leav->belongstooptleavetype?->leave_type_code }}</td>
 										<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="{{ $leav->reason }}">
@@ -314,27 +644,124 @@ foreach ($c as $v) {
 											<!-- Modal for supervisor approval-->
 											<div class="modal fade" id="hodapproval{{ $a->id }}" aria-labelledby="hodlabel{{ $a->id }}" aria-hidden="true">
 											<!-- <div class="modal fade" id="hodapproval{{ $a->id }}" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false"> -->
-												<div class="modal-dialog modal-dialog-centered">
+												<div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
 													<div class="modal-content">
 														<div class="modal-header">
 															<h1 class="modal-title fs-5" id="hodlabel{{ $a->id }}">Head of Department Approval</h1>
 															<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 														</div>
-														<div class="modal-body">
+														<div class="modal-body align-items-start justify-content-center">
+<!-- LEAVE SHOW START -->
+															<div class="col-sm-12 row">
+																<div class="table-container">
+																	<div class="table">
+																		<div class="table-row header">
+																			<div class="table-cell" style="width: 40%; background-color: #99ff99;">IPMA INDUSTRY SDN.BHD.</div>
+																			<div class="table-cell" style="width: 60%; background-color: #e6e6e6;">LEAVE APPLICATION FORM</div>
+																		</div>
+																	</div>
+
+																	<div class="table">
+																		<div class="table-row">
+																			<div class="table-cell-top" style="width: 25%;">STAFF ID : {{ $staff?->hasmanylogin()?->where('active', 1)->first()?->username }}</div>
+																			<div class="table-cell-top" style="width: 75%;">NAME : {{ $staff?->name }}</div>
+																		</div>
+																	</div>
+
+																	<div class="table">
+																		<div class="table-row">
+																			<div class="table-cell-top" style="width: 25%;">LEAVE NO : HR9-{{ @str_pad($leav->leave_no,5,'0',STR_PAD_LEFT) }}/{{ $leav->leave_year }}</div>
+																			<div class="table-cell-top" style="width: 60%;">DATE : {{ $dts }} - {{ $dte }} </div>
+																			<div class="table-cell-top" style="width: 25%;">TOTAL : {{ $dper }} </div>
+																		</div>
+																	</div>
+
+																	<div class="table">
+																		<div class="table-row">
+																			<div class="table-cell-top text-wrap" style="width: 45%;">LEAVE TYPE : {{ $leav->belongstooptleavetype->leave_type_code }} ({{ $leav->belongstooptleavetype->leave_type }})</div>
+																			<div class="table-cell-top text-wrap" style="width: 55%;">REASON : {{ $leav->reason }} </div>
+																		</div>
+																	</div>
+
+																	<div class="table">
+																		<div class="table-row">
+																			<div class="table-cell-top text-wrap" style="width: 60%;">BACKUP : {!! $bapp !!}</div>
+																			<div class="table-cell-top" style="width: 40%;">
+																				BACKUP DATE APPROVED : {{ ($backup->first()?->created_at)?Carbon::parse($backup->first()?->created_at)->format('j M Y'):null }}
+																			</div>
+																		</div>
+																	</div>
+
+																	@if ((in_array($auth, ['1', '2', '5']) && in_array($deptid, ['14', '31'])) || $me5)
+																		@if($hrremarksattendance)
+																		<div class="table">
+																			@foreach($hrremarksattendance as $key => $value)
+																			<div class="table-row">
+																				<div class="table-cell-top" style="width: 100%;">REMARKS FROM ATTENDANCE : {!! $value->remarks !!}<br/>HR REMARKS FROM ATTENDANCE : {!! $value->hr_remarks !!}</div>
+																			</div>
+																			@endforeach
+																		</div>
+																		@endif
+																	@endif
+
+																	@if ((in_array($auth, ['1', '2', '5']) && in_array($deptid, ['14', '31'])) || $me5)
+																		@if($leav->remarks)
+																		<div class="table">
+																			<div class="table-row">
+																				<div class="table-cell-top" style="width: 100%;">LEAVE REMARKS : {!! $leav->remarks !!}</div>
+																			</div>
+																		</div>
+																		@endif
+																	@endif
+
+																	@if ((in_array($auth, ['1', '2', '5']) && in_array($deptid, ['14', '31'])) || $me5)
+																		@if($leav->hasmanyleaveamend()->count())
+																		<div class="table">
+																			@foreach($leav->hasmanyleaveamend()->get() as $key => $value1)
+																			<div class="table-row">
+																				<div class="table-cell-top" style="width: 100%;">EDIT LEAVE REMARKS : {{ $value1->amend_note }} on {{ \Carbon\Carbon::parse($value1->created_at)->format('j M Y') }}</div>
+																			</div>
+																			@endforeach
+																		</div>
+																		@endif
+																	@endif
+
+																	<div class="table">
+																		<div class="table-row">
+																			<div class="table-cell-top text-wrap" style="width: 17%;">AL : {{ $annl?->annual_leave_balance }}/{{ $annl?->annual_leave }}</div>
+																			<div class="table-cell-top text-wrap" style="width: 17%;">MC : {{ $mcel?->mc_leave_balance }}/{{ $mcel?->mc_leave }}</div>
+																			<div class="table-cell-top text-wrap" style="width: 17%;">Maternity : {{ $matl?->maternity_leave_balance }}/{{ $matl?->maternity_leave }}</div>
+																			<div class="table-cell-top text-wrap" style="width: 17%;">Replacement : {{ $replb?->first()?->total }}/{{ $replt?->first()?->total }}</div>
+																			<div class="table-cell-top text-wrap" style="width: 17%;">UPL : {{ $upal?->first()?->total }}</div>
+																			<div class="table-cell-top text-wrap" style="width: 15%;">MC-UPL : {{ $mcupl?->first()?->total }}</div>
+																		</div>
+																	</div>
+
+																	<p>Supporting Document : {!! ($leav->softcopy)?'<a href="'.asset('storage/leaves/'.$leav->softcopy).'" target="_blank">Link</a>':null !!} </p>
+																</div>
+															</div>
+
+<!-- LEAVE SHOW END -->
 															{{ Form::open(['route' => ['leavestatus.hodstatus'], 'method' => 'patch', 'id' => 'form', 'autocomplete' => 'off', 'files' => true, 'data-toggle' => 'validator']) }}
 															{{ Form::hidden('id', $a->id) }}
-															@foreach($ls as $k => $val)
-															<div class="form-check form-check-inline {{ $errors->has('leave_status_id') ? 'has-error' : '' }}">
-																<input type="radio" name="leave_status_id" value="{{ $val['id'] }}" id="hodstatus{{ $a->id.$val['id'] }}" class="form-check-input">
-																<label class="form-check-label" for="hodstatus{{ $a->id.$val['id'] }}">{{ $val['text'] }}</label>
+															<div class="offset-sm-4 col-sm-6">
+																@foreach($ls as $k => $val)
+																<div class="form-check form-check-inline {{ $errors->has('leave_status_id') ? 'has-error' : '' }}">
+																	<input type="radio" name="leave_status_id" value="{{ $val['id'] }}" id="hodstatus{{ $a->id.$val['id'] }}" class="form-check-input">
+																	<label class="form-check-label" for="hodstatus{{ $a->id.$val['id'] }}">{{ $val['text'] }}</label>
+																</div>
+																@endforeach
 															</div>
-															@endforeach
-															<div class="mb-3 row">
-																<div class="form-group row {{ $errors->has('verify_code') ? 'has-error' : '' }}">
-																	<label for="hodcode{{ $a->id }}" class="col-auto col-form-label col-form-label-sm">Verify Code :</label>
-																	<div class="col-auto">
-																		<input type="text" name="verify_code" value="{{ (($user->div_id == 1 && $user->belongstomanydepartment->first()->id == 14) || $user->authorise_id == 1)?$leav->verify_code:@$value }}" id="hodcode{{ $a->id }}" class="form-control form-control-sm" placeholder="Verify Code">
-																	</div>
+															<div class="form-group mb-3 row {{ $errors->has('verify_code') ? 'has-error' : '' }}">
+																<label for="hodcode{{ $a->id }}" class="col-sm-4 col-form-label col-form-label-sm">Verify Code :</label>
+																<div class="col-sm-8">
+																	<input type="text" name="verify_code" value="{{ (($user->div_id == 1 && $user->belongstomanydepartment->first()->id == 14) || $user->authorise_id == 1)?$leav->verify_code:@$value }}" id="hodcode{{ $a->id }}" class="form-control form-control-sm" placeholder="Verify Code">
+																</div>
+															</div>
+															<div class="form-group row mb-3 {{ $errors->has('remarks') ? 'has-error' : '' }}">
+																<label for="remarks{{ $a->id }}" class="col-sm-4 col-form-label col-form-label-sm">Remarks :</label>
+																<div class="col-sm-8">
+																	<textarea name="remarks" value="{{ $a->remarks }}" id="remarks{{ $a->id }}" class="form-control form-control-sm" rows="3" placeholder="Remarks"></textarea>
 																</div>
 															</div>
 														</div>
@@ -357,9 +784,9 @@ foreach ($c as $v) {
 										<td>
 											<a href="{{ route('leave.show', $a->leave_id) }}">HR9-{{ str_pad( $leav->leave_no, 5, "0", STR_PAD_LEFT ) }}/{{ $leav->leave_year }}</a>
 										</td>
-										<td>{{ $leav->belongstostaff?->hasmanylogin()?->where('active', 1)->first()?->username }}</td>
+										<td>{{ $staff?->hasmanylogin()?->where('active', 1)->first()?->username }}</td>
 										<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="{{ $staff->name }}">
-											{{ Str::words($leav->belongstostaff?->name, 3, ' >') }}
+											{{ Str::words($staff?->name, 3, ' >') }}
 										</td>
 										<td>{{ $leav->belongstooptleavetype?->leave_type_code }}</td>
 										<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="{{ $leav->reason }}">
@@ -383,27 +810,124 @@ foreach ($c as $v) {
 											<!-- Modal for supervisor approval-->
 											<div class="modal fade" id="hodapproval{{ $a->id }}" aria-labelledby="hodlabel{{ $a->id }}" aria-hidden="true">
 											<!-- <div class="modal fade" id="hodapproval{{ $a->id }}" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false"> -->
-												<div class="modal-dialog modal-dialog-centered">
+												<div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
 													<div class="modal-content">
 														<div class="modal-header">
 															<h1 class="modal-title fs-5" id="hodlabel{{ $a->id }}">Head of Department Approval</h1>
 															<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 														</div>
-														<div class="modal-body">
+														<div class="modal-body align-items-start justify-content-center">
+<!-- LEAVE SHOW START -->
+															<div class="col-sm-12 row">
+																<div class="table-container">
+																	<div class="table">
+																		<div class="table-row header">
+																			<div class="table-cell" style="width: 40%; background-color: #99ff99;">IPMA INDUSTRY SDN.BHD.</div>
+																			<div class="table-cell" style="width: 60%; background-color: #e6e6e6;">LEAVE APPLICATION FORM</div>
+																		</div>
+																	</div>
+
+																	<div class="table">
+																		<div class="table-row">
+																			<div class="table-cell-top" style="width: 25%;">STAFF ID : {{ $staff?->hasmanylogin()?->where('active', 1)->first()?->username }}</div>
+																			<div class="table-cell-top" style="width: 75%;">NAME : {{ $staff?->name }}</div>
+																		</div>
+																	</div>
+
+																	<div class="table">
+																		<div class="table-row">
+																			<div class="table-cell-top" style="width: 25%;">LEAVE NO : HR9-{{ @str_pad($leav->leave_no,5,'0',STR_PAD_LEFT) }}/{{ $leav->leave_year }}</div>
+																			<div class="table-cell-top" style="width: 60%;">DATE : {{ $dts }} - {{ $dte }} </div>
+																			<div class="table-cell-top" style="width: 25%;">TOTAL : {{ $dper }} </div>
+																		</div>
+																	</div>
+
+																	<div class="table">
+																		<div class="table-row">
+																			<div class="table-cell-top text-wrap" style="width: 45%;">LEAVE TYPE : {{ $leav->belongstooptleavetype->leave_type_code }} ({{ $leav->belongstooptleavetype->leave_type }})</div>
+																			<div class="table-cell-top text-wrap" style="width: 55%;">REASON : {{ $leav->reason }} </div>
+																		</div>
+																	</div>
+
+																	<div class="table">
+																		<div class="table-row">
+																			<div class="table-cell-top text-wrap" style="width: 60%;">BACKUP : {!! $bapp !!}</div>
+																			<div class="table-cell-top" style="width: 40%;">
+																				BACKUP DATE APPROVED : {{ ($backup->first()?->created_at)?Carbon::parse($backup->first()?->created_at)->format('j M Y'):null }}
+																			</div>
+																		</div>
+																	</div>
+
+																	@if ((in_array($auth, ['1', '2', '5']) && in_array($deptid, ['14', '31'])) || $me5)
+																		@if($hrremarksattendance)
+																		<div class="table">
+																			@foreach($hrremarksattendance as $key => $value)
+																			<div class="table-row">
+																				<div class="table-cell-top" style="width: 100%;">REMARKS FROM ATTENDANCE : {!! $value->remarks !!}<br/>HR REMARKS FROM ATTENDANCE : {!! $value->hr_remarks !!}</div>
+																			</div>
+																			@endforeach
+																		</div>
+																		@endif
+																	@endif
+
+																	@if ((in_array($auth, ['1', '2', '5']) && in_array($deptid, ['14', '31'])) || $me5)
+																		@if($leav->remarks)
+																		<div class="table">
+																			<div class="table-row">
+																				<div class="table-cell-top" style="width: 100%;">LEAVE REMARKS : {!! $leav->remarks !!}</div>
+																			</div>
+																		</div>
+																		@endif
+																	@endif
+
+																	@if ((in_array($auth, ['1', '2', '5']) && in_array($deptid, ['14', '31'])) || $me5)
+																		@if($leav->hasmanyleaveamend()->count())
+																		<div class="table">
+																			@foreach($leav->hasmanyleaveamend()->get() as $key => $value1)
+																			<div class="table-row">
+																				<div class="table-cell-top" style="width: 100%;">EDIT LEAVE REMARKS : {{ $value1->amend_note }} on {{ \Carbon\Carbon::parse($value1->created_at)->format('j M Y') }}</div>
+																			</div>
+																			@endforeach
+																		</div>
+																		@endif
+																	@endif
+
+																	<div class="table">
+																		<div class="table-row">
+																			<div class="table-cell-top text-wrap" style="width: 17%;">AL : {{ $annl?->annual_leave_balance }}/{{ $annl?->annual_leave }}</div>
+																			<div class="table-cell-top text-wrap" style="width: 17%;">MC : {{ $mcel?->mc_leave_balance }}/{{ $mcel?->mc_leave }}</div>
+																			<div class="table-cell-top text-wrap" style="width: 17%;">Maternity : {{ $matl?->maternity_leave_balance }}/{{ $matl?->maternity_leave }}</div>
+																			<div class="table-cell-top text-wrap" style="width: 17%;">Replacement : {{ $replb?->first()?->total }}/{{ $replt?->first()?->total }}</div>
+																			<div class="table-cell-top text-wrap" style="width: 17%;">UPL : {{ $upal?->first()?->total }}</div>
+																			<div class="table-cell-top text-wrap" style="width: 15%;">MC-UPL : {{ $mcupl?->first()?->total }}</div>
+																		</div>
+																	</div>
+
+																	<p>Supporting Document : {!! ($leav->softcopy)?'<a href="'.asset('storage/leaves/'.$leav->softcopy).'" target="_blank">Link</a>':null !!} </p>
+																</div>
+															</div>
+
+<!-- LEAVE SHOW END -->
 															{{ Form::open(['route' => ['leavestatus.hodstatus'], 'method' => 'patch', 'id' => 'form', 'autocomplete' => 'off', 'files' => true, 'data-toggle' => 'validator']) }}
 															{{ Form::hidden('id', $a->id) }}
-															@foreach($ls as $k => $val)
-															<div class="form-check form-check-inline {{ $errors->has('leave_status_id') ? 'has-error' : '' }}">
-																<input type="radio" name="leave_status_id" value="{{ $val['id'] }}" id="hodstatus{{ $a->id.$val['id'] }}" class="form-check-input">
-																<label class="form-check-label" for="hodstatus{{ $a->id.$val['id'] }}">{{ $val['text'] }}</label>
+															<div class="offset-sm-4 col-sm-6">
+																@foreach($ls as $k => $val)
+																<div class="form-check form-check-inline {{ $errors->has('leave_status_id') ? 'has-error' : '' }}">
+																	<input type="radio" name="leave_status_id" value="{{ $val['id'] }}" id="hodstatus{{ $a->id.$val['id'] }}" class="form-check-input">
+																	<label class="form-check-label" for="hodstatus{{ $a->id.$val['id'] }}">{{ $val['text'] }}</label>
+																</div>
+																@endforeach
 															</div>
-															@endforeach
-															<div class="mb-3 row">
-																<div class="form-group row {{ $errors->has('verify_code') ? 'has-error' : '' }}">
-																	<label for="hodcode{{ $a->id }}" class="col-auto col-form-label col-form-label-sm">Verify Code :</label>
-																	<div class="col-auto">
-																		<input type="text" name="verify_code" value="{{ (($user->div_id == 1 && $user->belongstomanydepartment->first()->id == 14) || $user->authorise_id == 1)?$leav->verify_code:@$value }}" id="hodcode{{ $a->id }}" class="form-control form-control-sm" placeholder="Verify Code">
-																	</div>
+															<div class="form-group mb-3 row {{ $errors->has('verify_code') ? 'has-error' : '' }}">
+																<label for="hodcode{{ $a->id }}" class="col-sm-4 col-form-label col-form-label-sm">Verify Code :</label>
+																<div class="col-sm-8">
+																	<input type="text" name="verify_code" value="{{ (($user->div_id == 1 && $user->belongstomanydepartment->first()->id == 14) || $user->authorise_id == 1)?$leav->verify_code:@$value }}" id="hodcode{{ $a->id }}" class="form-control form-control-sm" placeholder="Verify Code">
+																</div>
+															</div>
+															<div class="form-group row mb-3 {{ $errors->has('remarks') ? 'has-error' : '' }}">
+																<label for="remarks{{ $a->id }}" class="col-sm-4 col-form-label col-form-label-sm">Remarks :</label>
+																<div class="col-sm-8">
+																	<textarea name="remarks" value="{{ $a->remarks }}" id="remarks{{ $a->id }}" class="form-control form-control-sm" rows="3" placeholder="Remarks"></textarea>
 																</div>
 															</div>
 														</div>
@@ -426,9 +950,9 @@ foreach ($c as $v) {
 										<td>
 											<a href="{{ route('leave.show', $a->leave_id) }}">HR9-{{ str_pad( $leav->leave_no, 5, "0", STR_PAD_LEFT ) }}/{{ $leav->leave_year }}</a>
 										</td>
-										<td>{{ $leav->belongstostaff?->hasmanylogin()?->where('active', 1)->first()?->username }}</td>
+										<td>{{ $staff?->hasmanylogin()?->where('active', 1)->first()?->username }}</td>
 										<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="{{ $staff->name }}">
-											{{ Str::words($leav->belongstostaff?->name, 3, ' >') }}
+											{{ Str::words($staff?->name, 3, ' >') }}
 										</td>
 										<td>{{ $leav->belongstooptleavetype?->leave_type_code }}</td>
 										<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="{{ $leav->reason }}">
@@ -452,27 +976,124 @@ foreach ($c as $v) {
 											<!-- Modal for supervisor approval-->
 											<div class="modal fade" id="hodapproval{{ $a->id }}" aria-labelledby="hodlabel{{ $a->id }}" aria-hidden="true">
 											<!-- <div class="modal fade" id="hodapproval{{ $a->id }}" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false"> -->
-												<div class="modal-dialog modal-dialog-centered">
+												<div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
 													<div class="modal-content">
 														<div class="modal-header">
 															<h1 class="modal-title fs-5" id="hodlabel{{ $a->id }}">Head of Department Approval</h1>
 															<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 														</div>
-														<div class="modal-body">
+														<div class="modal-body align-items-start justify-content-center">
+<!-- LEAVE SHOW START -->
+															<div class="col-sm-12 row">
+																<div class="table-container">
+																	<div class="table">
+																		<div class="table-row header">
+																			<div class="table-cell" style="width: 40%; background-color: #99ff99;">IPMA INDUSTRY SDN.BHD.</div>
+																			<div class="table-cell" style="width: 60%; background-color: #e6e6e6;">LEAVE APPLICATION FORM</div>
+																		</div>
+																	</div>
+
+																	<div class="table">
+																		<div class="table-row">
+																			<div class="table-cell-top" style="width: 25%;">STAFF ID : {{ $staff?->hasmanylogin()?->where('active', 1)->first()?->username }}</div>
+																			<div class="table-cell-top" style="width: 75%;">NAME : {{ $staff?->name }}</div>
+																		</div>
+																	</div>
+
+																	<div class="table">
+																		<div class="table-row">
+																			<div class="table-cell-top" style="width: 25%;">LEAVE NO : HR9-{{ @str_pad($leav->leave_no,5,'0',STR_PAD_LEFT) }}/{{ $leav->leave_year }}</div>
+																			<div class="table-cell-top" style="width: 60%;">DATE : {{ $dts }} - {{ $dte }} </div>
+																			<div class="table-cell-top" style="width: 25%;">TOTAL : {{ $dper }} </div>
+																		</div>
+																	</div>
+
+																	<div class="table">
+																		<div class="table-row">
+																			<div class="table-cell-top text-wrap" style="width: 45%;">LEAVE TYPE : {{ $leav->belongstooptleavetype->leave_type_code }} ({{ $leav->belongstooptleavetype->leave_type }})</div>
+																			<div class="table-cell-top text-wrap" style="width: 55%;">REASON : {{ $leav->reason }} </div>
+																		</div>
+																	</div>
+
+																	<div class="table">
+																		<div class="table-row">
+																			<div class="table-cell-top text-wrap" style="width: 60%;">BACKUP : {!! $bapp !!}</div>
+																			<div class="table-cell-top" style="width: 40%;">
+																				BACKUP DATE APPROVED : {{ ($backup->first()?->created_at)?Carbon::parse($backup->first()?->created_at)->format('j M Y'):null }}
+																			</div>
+																		</div>
+																	</div>
+
+																	@if ((in_array($auth, ['1', '2', '5']) && in_array($deptid, ['14', '31'])) || $me5)
+																		@if($hrremarksattendance)
+																		<div class="table">
+																			@foreach($hrremarksattendance as $key => $value)
+																			<div class="table-row">
+																				<div class="table-cell-top" style="width: 100%;">REMARKS FROM ATTENDANCE : {!! $value->remarks !!}<br/>HR REMARKS FROM ATTENDANCE : {!! $value->hr_remarks !!}</div>
+																			</div>
+																			@endforeach
+																		</div>
+																		@endif
+																	@endif
+
+																	@if ((in_array($auth, ['1', '2', '5']) && in_array($deptid, ['14', '31'])) || $me5)
+																		@if($leav->remarks)
+																		<div class="table">
+																			<div class="table-row">
+																				<div class="table-cell-top" style="width: 100%;">LEAVE REMARKS : {!! $leav->remarks !!}</div>
+																			</div>
+																		</div>
+																		@endif
+																	@endif
+
+																	@if ((in_array($auth, ['1', '2', '5']) && in_array($deptid, ['14', '31'])) || $me5)
+																		@if($leav->hasmanyleaveamend()->count())
+																		<div class="table">
+																			@foreach($leav->hasmanyleaveamend()->get() as $key => $value1)
+																			<div class="table-row">
+																				<div class="table-cell-top" style="width: 100%;">EDIT LEAVE REMARKS : {{ $value1->amend_note }} on {{ \Carbon\Carbon::parse($value1->created_at)->format('j M Y') }}</div>
+																			</div>
+																			@endforeach
+																		</div>
+																		@endif
+																	@endif
+
+																	<div class="table">
+																		<div class="table-row">
+																			<div class="table-cell-top text-wrap" style="width: 17%;">AL : {{ $annl?->annual_leave_balance }}/{{ $annl?->annual_leave }}</div>
+																			<div class="table-cell-top text-wrap" style="width: 17%;">MC : {{ $mcel?->mc_leave_balance }}/{{ $mcel?->mc_leave }}</div>
+																			<div class="table-cell-top text-wrap" style="width: 17%;">Maternity : {{ $matl?->maternity_leave_balance }}/{{ $matl?->maternity_leave }}</div>
+																			<div class="table-cell-top text-wrap" style="width: 17%;">Replacement : {{ $replb?->first()?->total }}/{{ $replt?->first()?->total }}</div>
+																			<div class="table-cell-top text-wrap" style="width: 17%;">UPL : {{ $upal?->first()?->total }}</div>
+																			<div class="table-cell-top text-wrap" style="width: 15%;">MC-UPL : {{ $mcupl?->first()?->total }}</div>
+																		</div>
+																	</div>
+
+																	<p>Supporting Document : {!! ($leav->softcopy)?'<a href="'.asset('storage/leaves/'.$leav->softcopy).'" target="_blank">Link</a>':null !!} </p>
+																</div>
+															</div>
+
+<!-- LEAVE SHOW END -->
 															{{ Form::open(['route' => ['leavestatus.hodstatus'], 'method' => 'patch', 'id' => 'form', 'autocomplete' => 'off', 'files' => true, 'data-toggle' => 'validator']) }}
 															{{ Form::hidden('id', $a->id) }}
-															@foreach($ls as $k => $val)
-															<div class="form-check form-check-inline {{ $errors->has('leave_status_id') ? 'has-error' : '' }}">
-																<input type="radio" name="leave_status_id" value="{{ $val['id'] }}" id="hodstatus{{ $a->id.$val['id'] }}" class="form-check-input">
-																<label class="form-check-label" for="hodstatus{{ $a->id.$val['id'] }}">{{ $val['text'] }}</label>
+															<div class="offset-sm-4 col-sm-6">
+																@foreach($ls as $k => $val)
+																<div class="form-check form-check-inline {{ $errors->has('leave_status_id') ? 'has-error' : '' }}">
+																	<input type="radio" name="leave_status_id" value="{{ $val['id'] }}" id="hodstatus{{ $a->id.$val['id'] }}" class="form-check-input">
+																	<label class="form-check-label" for="hodstatus{{ $a->id.$val['id'] }}">{{ $val['text'] }}</label>
+																</div>
+																@endforeach
 															</div>
-															@endforeach
-															<div class="mb-3 row">
-																<div class="form-group row {{ $errors->has('verify_code') ? 'has-error' : '' }}">
-																	<label for="hodcode{{ $a->id }}" class="col-auto col-form-label col-form-label-sm">Verify Code :</label>
-																	<div class="col-auto">
-																		<input type="text" name="verify_code" value="{{ (($user->div_id == 1 && $user->belongstomanydepartment->first()->id == 14) || $user->authorise_id == 1)?$leav->verify_code:@$value }}" id="hodcode{{ $a->id }}" class="form-control form-control-sm" placeholder="Verify Code">
-																	</div>
+															<div class="form-group mb-3 row {{ $errors->has('verify_code') ? 'has-error' : '' }}">
+																<label for="hodcode{{ $a->id }}" class="col-sm-4 col-form-label col-form-label-sm">Verify Code :</label>
+																<div class="col-sm-8">
+																	<input type="text" name="verify_code" value="{{ (($user->div_id == 1 && $user->belongstomanydepartment->first()->id == 14) || $user->authorise_id == 1)?$leav->verify_code:@$value }}" id="hodcode{{ $a->id }}" class="form-control form-control-sm" placeholder="Verify Code">
+																</div>
+															</div>
+															<div class="form-group row mb-3 {{ $errors->has('remarks') ? 'has-error' : '' }}">
+																<label for="remarks{{ $a->id }}" class="col-sm-4 col-form-label col-form-label-sm">Remarks :</label>
+																<div class="col-sm-8">
+																	<textarea name="remarks" value="{{ $a->remarks }}" id="remarks{{ $a->id }}" class="form-control form-control-sm" rows="3" placeholder="Remarks"></textarea>
 																</div>
 															</div>
 														</div>
@@ -495,9 +1116,9 @@ foreach ($c as $v) {
 										<td>
 											<a href="{{ route('leave.show', $a->leave_id) }}">HR9-{{ str_pad( $leav->leave_no, 5, "0", STR_PAD_LEFT ) }}/{{ $leav->leave_year }}</a>
 										</td>
-										<td>{{ $leav->belongstostaff?->hasmanylogin()?->where('active', 1)->first()?->username }}</td>
+										<td>{{ $staff?->hasmanylogin()?->where('active', 1)->first()?->username }}</td>
 										<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="{{ $staff->name }}">
-											{{ Str::words($leav->belongstostaff?->name, 3, ' >') }}
+											{{ Str::words($staff?->name, 3, ' >') }}
 										</td>
 										<td>{{ $leav->belongstooptleavetype?->leave_type_code }}</td>
 										<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="{{ $leav->reason }}">
@@ -521,27 +1142,124 @@ foreach ($c as $v) {
 											<!-- Modal for supervisor approval-->
 											<div class="modal fade" id="hodapproval{{ $a->id }}" aria-labelledby="hodlabel{{ $a->id }}" aria-hidden="true">
 											<!-- <div class="modal fade" id="hodapproval{{ $a->id }}" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false"> -->
-												<div class="modal-dialog modal-dialog-centered">
+												<div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
 													<div class="modal-content">
 														<div class="modal-header">
 															<h1 class="modal-title fs-5" id="hodlabel{{ $a->id }}">Head of Department Approval</h1>
 															<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 														</div>
-														<div class="modal-body">
+														<div class="modal-body align-items-start justify-content-center">
+<!-- LEAVE SHOW START -->
+															<div class="col-sm-12 row">
+																<div class="table-container">
+																	<div class="table">
+																		<div class="table-row header">
+																			<div class="table-cell" style="width: 40%; background-color: #99ff99;">IPMA INDUSTRY SDN.BHD.</div>
+																			<div class="table-cell" style="width: 60%; background-color: #e6e6e6;">LEAVE APPLICATION FORM</div>
+																		</div>
+																	</div>
+
+																	<div class="table">
+																		<div class="table-row">
+																			<div class="table-cell-top" style="width: 25%;">STAFF ID : {{ $staff?->hasmanylogin()?->where('active', 1)->first()?->username }}</div>
+																			<div class="table-cell-top" style="width: 75%;">NAME : {{ $staff?->name }}</div>
+																		</div>
+																	</div>
+
+																	<div class="table">
+																		<div class="table-row">
+																			<div class="table-cell-top" style="width: 25%;">LEAVE NO : HR9-{{ @str_pad($leav->leave_no,5,'0',STR_PAD_LEFT) }}/{{ $leav->leave_year }}</div>
+																			<div class="table-cell-top" style="width: 60%;">DATE : {{ $dts }} - {{ $dte }} </div>
+																			<div class="table-cell-top" style="width: 25%;">TOTAL : {{ $dper }} </div>
+																		</div>
+																	</div>
+
+																	<div class="table">
+																		<div class="table-row">
+																			<div class="table-cell-top text-wrap" style="width: 45%;">LEAVE TYPE : {{ $leav->belongstooptleavetype->leave_type_code }} ({{ $leav->belongstooptleavetype->leave_type }})</div>
+																			<div class="table-cell-top text-wrap" style="width: 55%;">REASON : {{ $leav->reason }} </div>
+																		</div>
+																	</div>
+
+																	<div class="table">
+																		<div class="table-row">
+																			<div class="table-cell-top text-wrap" style="width: 60%;">BACKUP : {!! $bapp !!}</div>
+																			<div class="table-cell-top" style="width: 40%;">
+																				BACKUP DATE APPROVED : {{ ($backup->first()?->created_at)?Carbon::parse($backup->first()?->created_at)->format('j M Y'):null }}
+																			</div>
+																		</div>
+																	</div>
+
+																	@if ((in_array($auth, ['1', '2', '5']) && in_array($deptid, ['14', '31'])) || $me5)
+																		@if($hrremarksattendance)
+																		<div class="table">
+																			@foreach($hrremarksattendance as $key => $value)
+																			<div class="table-row">
+																				<div class="table-cell-top" style="width: 100%;">REMARKS FROM ATTENDANCE : {!! $value->remarks !!}<br/>HR REMARKS FROM ATTENDANCE : {!! $value->hr_remarks !!}</div>
+																			</div>
+																			@endforeach
+																		</div>
+																		@endif
+																	@endif
+
+																	@if ((in_array($auth, ['1', '2', '5']) && in_array($deptid, ['14', '31'])) || $me5)
+																		@if($leav->remarks)
+																		<div class="table">
+																			<div class="table-row">
+																				<div class="table-cell-top" style="width: 100%;">LEAVE REMARKS : {!! $leav->remarks !!}</div>
+																			</div>
+																		</div>
+																		@endif
+																	@endif
+
+																	@if ((in_array($auth, ['1', '2', '5']) && in_array($deptid, ['14', '31'])) || $me5)
+																		@if($leav->hasmanyleaveamend()->count())
+																		<div class="table">
+																			@foreach($leav->hasmanyleaveamend()->get() as $key => $value1)
+																			<div class="table-row">
+																				<div class="table-cell-top" style="width: 100%;">EDIT LEAVE REMARKS : {{ $value1->amend_note }} on {{ \Carbon\Carbon::parse($value1->created_at)->format('j M Y') }}</div>
+																			</div>
+																			@endforeach
+																		</div>
+																		@endif
+																	@endif
+
+																	<div class="table">
+																		<div class="table-row">
+																			<div class="table-cell-top text-wrap" style="width: 17%;">AL : {{ $annl?->annual_leave_balance }}/{{ $annl?->annual_leave }}</div>
+																			<div class="table-cell-top text-wrap" style="width: 17%;">MC : {{ $mcel?->mc_leave_balance }}/{{ $mcel?->mc_leave }}</div>
+																			<div class="table-cell-top text-wrap" style="width: 17%;">Maternity : {{ $matl?->maternity_leave_balance }}/{{ $matl?->maternity_leave }}</div>
+																			<div class="table-cell-top text-wrap" style="width: 17%;">Replacement : {{ $replb?->first()?->total }}/{{ $replt?->first()?->total }}</div>
+																			<div class="table-cell-top text-wrap" style="width: 17%;">UPL : {{ $upal?->first()?->total }}</div>
+																			<div class="table-cell-top text-wrap" style="width: 15%;">MC-UPL : {{ $mcupl?->first()?->total }}</div>
+																		</div>
+																	</div>
+
+																	<p>Supporting Document : {!! ($leav->softcopy)?'<a href="'.asset('storage/leaves/'.$leav->softcopy).'" target="_blank">Link</a>':null !!} </p>
+																</div>
+															</div>
+
+<!-- LEAVE SHOW END -->
 															{{ Form::open(['route' => ['leavestatus.hodstatus'], 'method' => 'patch', 'id' => 'form', 'autocomplete' => 'off', 'files' => true, 'data-toggle' => 'validator']) }}
 															{{ Form::hidden('id', $a->id) }}
-															@foreach($ls as $k => $val)
-															<div class="form-check form-check-inline {{ $errors->has('leave_status_id') ? 'has-error' : '' }}">
-																<input type="radio" name="leave_status_id" value="{{ $val['id'] }}" id="hodstatus{{ $a->id.$val['id'] }}" class="form-check-input">
-																<label class="form-check-label" for="hodstatus{{ $a->id.$val['id'] }}">{{ $val['text'] }}</label>
+															<div class="offset-sm-4 col-sm-6">
+																@foreach($ls as $k => $val)
+																<div class="form-check form-check-inline {{ $errors->has('leave_status_id') ? 'has-error' : '' }}">
+																	<input type="radio" name="leave_status_id" value="{{ $val['id'] }}" id="hodstatus{{ $a->id.$val['id'] }}" class="form-check-input">
+																	<label class="form-check-label" for="hodstatus{{ $a->id.$val['id'] }}">{{ $val['text'] }}</label>
+																</div>
+																@endforeach
 															</div>
-															@endforeach
-															<div class="mb-3 row">
-																<div class="form-group row {{ $errors->has('verify_code') ? 'has-error' : '' }}">
-																	<label for="hodcode{{ $a->id }}" class="col-auto col-form-label col-form-label-sm">Verify Code :</label>
-																	<div class="col-auto">
-																		<input type="text" name="verify_code" value="{{ (($user->div_id == 1 && $user->belongstomanydepartment->first()->id == 14) || $user->authorise_id == 1)?$leav->verify_code:@$value }}" id="hodcode{{ $a->id }}" class="form-control form-control-sm" placeholder="Verify Code">
-																	</div>
+															<div class="form-group mb-3 row {{ $errors->has('verify_code') ? 'has-error' : '' }}">
+																<label for="hodcode{{ $a->id }}" class="col-sm-4 col-form-label col-form-label-sm">Verify Code :</label>
+																<div class="col-sm-8">
+																	<input type="text" name="verify_code" value="{{ (($user->div_id == 1 && $user->belongstomanydepartment->first()->id == 14) || $user->authorise_id == 1)?$leav->verify_code:@$value }}" id="hodcode{{ $a->id }}" class="form-control form-control-sm" placeholder="Verify Code">
+																</div>
+															</div>
+															<div class="form-group row mb-3 {{ $errors->has('remarks') ? 'has-error' : '' }}">
+																<label for="remarks{{ $a->id }}" class="col-sm-4 col-form-label col-form-label-sm">Remarks :</label>
+																<div class="col-sm-8">
+																	<textarea name="remarks" value="{{ $a->remarks }}" id="remarks{{ $a->id }}" class="form-control form-control-sm" rows="3" placeholder="Remarks"></textarea>
 																</div>
 															</div>
 														</div>
@@ -564,9 +1282,9 @@ foreach ($c as $v) {
 										<td>
 											<a href="{{ route('leave.show', $a->leave_id) }}">HR9-{{ str_pad( $leav->leave_no, 5, "0", STR_PAD_LEFT ) }}/{{ $leav->leave_year }}</a>
 										</td>
-										<td>{{ $leav->belongstostaff?->hasmanylogin()?->where('active', 1)->first()?->username }}</td>
+										<td>{{ $staff?->hasmanylogin()?->where('active', 1)->first()?->username }}</td>
 										<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="{{ $staff->name }}">
-											{{ Str::words($leav->belongstostaff?->name, 3, ' >') }}
+											{{ Str::words($staff?->name, 3, ' >') }}
 										</td>
 										<td>{{ $leav->belongstooptleavetype?->leave_type_code }}</td>
 										<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="{{ $leav->reason }}">
@@ -590,27 +1308,124 @@ foreach ($c as $v) {
 											<!-- Modal for supervisor approval-->
 											<div class="modal fade" id="hodapproval{{ $a->id }}" aria-labelledby="hodlabel{{ $a->id }}" aria-hidden="true">
 											<!-- <div class="modal fade" id="hodapproval{{ $a->id }}" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false"> -->
-												<div class="modal-dialog modal-dialog-centered">
+												<div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
 													<div class="modal-content">
 														<div class="modal-header">
 															<h1 class="modal-title fs-5" id="hodlabel{{ $a->id }}">Head of Department Approval</h1>
 															<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 														</div>
-														<div class="modal-body">
+														<div class="modal-body align-items-start justify-content-center">
+<!-- LEAVE SHOW START -->
+															<div class="col-sm-12 row">
+																<div class="table-container">
+																	<div class="table">
+																		<div class="table-row header">
+																			<div class="table-cell" style="width: 40%; background-color: #99ff99;">IPMA INDUSTRY SDN.BHD.</div>
+																			<div class="table-cell" style="width: 60%; background-color: #e6e6e6;">LEAVE APPLICATION FORM</div>
+																		</div>
+																	</div>
+
+																	<div class="table">
+																		<div class="table-row">
+																			<div class="table-cell-top" style="width: 25%;">STAFF ID : {{ $staff?->hasmanylogin()?->where('active', 1)->first()?->username }}</div>
+																			<div class="table-cell-top" style="width: 75%;">NAME : {{ $staff?->name }}</div>
+																		</div>
+																	</div>
+
+																	<div class="table">
+																		<div class="table-row">
+																			<div class="table-cell-top" style="width: 25%;">LEAVE NO : HR9-{{ @str_pad($leav->leave_no,5,'0',STR_PAD_LEFT) }}/{{ $leav->leave_year }}</div>
+																			<div class="table-cell-top" style="width: 60%;">DATE : {{ $dts }} - {{ $dte }} </div>
+																			<div class="table-cell-top" style="width: 25%;">TOTAL : {{ $dper }} </div>
+																		</div>
+																	</div>
+
+																	<div class="table">
+																		<div class="table-row">
+																			<div class="table-cell-top text-wrap" style="width: 45%;">LEAVE TYPE : {{ $leav->belongstooptleavetype->leave_type_code }} ({{ $leav->belongstooptleavetype->leave_type }})</div>
+																			<div class="table-cell-top text-wrap" style="width: 55%;">REASON : {{ $leav->reason }} </div>
+																		</div>
+																	</div>
+
+																	<div class="table">
+																		<div class="table-row">
+																			<div class="table-cell-top text-wrap" style="width: 60%;">BACKUP : {!! $bapp !!}</div>
+																			<div class="table-cell-top" style="width: 40%;">
+																				BACKUP DATE APPROVED : {{ ($backup->first()?->created_at)?Carbon::parse($backup->first()?->created_at)->format('j M Y'):null }}
+																			</div>
+																		</div>
+																	</div>
+
+																	@if ((in_array($auth, ['1', '2', '5']) && in_array($deptid, ['14', '31'])) || $me5)
+																		@if($hrremarksattendance)
+																		<div class="table">
+																			@foreach($hrremarksattendance as $key => $value)
+																			<div class="table-row">
+																				<div class="table-cell-top" style="width: 100%;">REMARKS FROM ATTENDANCE : {!! $value->remarks !!}<br/>HR REMARKS FROM ATTENDANCE : {!! $value->hr_remarks !!}</div>
+																			</div>
+																			@endforeach
+																		</div>
+																		@endif
+																	@endif
+
+																	@if ((in_array($auth, ['1', '2', '5']) && in_array($deptid, ['14', '31'])) || $me5)
+																		@if($leav->remarks)
+																		<div class="table">
+																			<div class="table-row">
+																				<div class="table-cell-top" style="width: 100%;">LEAVE REMARKS : {!! $leav->remarks !!}</div>
+																			</div>
+																		</div>
+																		@endif
+																	@endif
+
+																	@if ((in_array($auth, ['1', '2', '5']) && in_array($deptid, ['14', '31'])) || $me5)
+																		@if($leav->hasmanyleaveamend()->count())
+																		<div class="table">
+																			@foreach($leav->hasmanyleaveamend()->get() as $key => $value1)
+																			<div class="table-row">
+																				<div class="table-cell-top" style="width: 100%;">EDIT LEAVE REMARKS : {{ $value1->amend_note }} on {{ \Carbon\Carbon::parse($value1->created_at)->format('j M Y') }}</div>
+																			</div>
+																			@endforeach
+																		</div>
+																		@endif
+																	@endif
+
+																	<div class="table">
+																		<div class="table-row">
+																			<div class="table-cell-top text-wrap" style="width: 17%;">AL : {{ $annl?->annual_leave_balance }}/{{ $annl?->annual_leave }}</div>
+																			<div class="table-cell-top text-wrap" style="width: 17%;">MC : {{ $mcel?->mc_leave_balance }}/{{ $mcel?->mc_leave }}</div>
+																			<div class="table-cell-top text-wrap" style="width: 17%;">Maternity : {{ $matl?->maternity_leave_balance }}/{{ $matl?->maternity_leave }}</div>
+																			<div class="table-cell-top text-wrap" style="width: 17%;">Replacement : {{ $replb?->first()?->total }}/{{ $replt?->first()?->total }}</div>
+																			<div class="table-cell-top text-wrap" style="width: 17%;">UPL : {{ $upal?->first()?->total }}</div>
+																			<div class="table-cell-top text-wrap" style="width: 15%;">MC-UPL : {{ $mcupl?->first()?->total }}</div>
+																		</div>
+																	</div>
+
+																	<p>Supporting Document : {!! ($leav->softcopy)?'<a href="'.asset('storage/leaves/'.$leav->softcopy).'" target="_blank">Link</a>':null !!} </p>
+																</div>
+															</div>
+
+<!-- LEAVE SHOW END -->
 															{{ Form::open(['route' => ['leavestatus.hodstatus'], 'method' => 'patch', 'id' => 'form', 'autocomplete' => 'off', 'files' => true, 'data-toggle' => 'validator']) }}
 															{{ Form::hidden('id', $a->id) }}
-															@foreach($ls as $k => $val)
-															<div class="form-check form-check-inline {{ $errors->has('leave_status_id') ? 'has-error' : '' }}">
-																<input type="radio" name="leave_status_id" value="{{ $val['id'] }}" id="hodstatus{{ $a->id.$val['id'] }}" class="form-check-input">
-																<label class="form-check-label" for="hodstatus{{ $a->id.$val['id'] }}">{{ $val['text'] }}</label>
+															<div class="offset-sm-4 col-sm-6">
+																@foreach($ls as $k => $val)
+																<div class="form-check form-check-inline {{ $errors->has('leave_status_id') ? 'has-error' : '' }}">
+																	<input type="radio" name="leave_status_id" value="{{ $val['id'] }}" id="hodstatus{{ $a->id.$val['id'] }}" class="form-check-input">
+																	<label class="form-check-label" for="hodstatus{{ $a->id.$val['id'] }}">{{ $val['text'] }}</label>
+																</div>
+																@endforeach
 															</div>
-															@endforeach
-															<div class="mb-3 row">
-																<div class="form-group row {{ $errors->has('verify_code') ? 'has-error' : '' }}">
-																	<label for="hodcode{{ $a->id }}" class="col-auto col-form-label col-form-label-sm">Verify Code :</label>
-																	<div class="col-auto">
-																		<input type="text" name="verify_code" value="{{ (($user->div_id == 1 && $user->belongstomanydepartment->first()->id == 14) || $user->authorise_id == 1)?$leav->verify_code:@$value }}" id="hodcode{{ $a->id }}" class="form-control form-control-sm" placeholder="Verify Code">
-																	</div>
+															<div class="form-group mb-3 row {{ $errors->has('verify_code') ? 'has-error' : '' }}">
+																<label for="hodcode{{ $a->id }}" class="col-sm-4 col-form-label col-form-label-sm">Verify Code :</label>
+																<div class="col-sm-8">
+																	<input type="text" name="verify_code" value="{{ (($user->div_id == 1 && $user->belongstomanydepartment->first()->id == 14) || $user->authorise_id == 1)?$leav->verify_code:@$value }}" id="hodcode{{ $a->id }}" class="form-control form-control-sm" placeholder="Verify Code">
+																</div>
+															</div>
+															<div class="form-group row mb-3 {{ $errors->has('remarks') ? 'has-error' : '' }}">
+																<label for="remarks{{ $a->id }}" class="col-sm-4 col-form-label col-form-label-sm">Remarks :</label>
+																<div class="col-sm-8">
+																	<textarea name="remarks" value="{{ $a->remarks }}" id="remarks{{ $a->id }}" class="form-control form-control-sm" rows="3" placeholder="Remarks"></textarea>
 																</div>
 															</div>
 														</div>
@@ -633,9 +1448,9 @@ foreach ($c as $v) {
 										<td>
 											<a href="{{ route('leave.show', $a->leave_id) }}">HR9-{{ str_pad( $leav->leave_no, 5, "0", STR_PAD_LEFT ) }}/{{ $leav->leave_year }}</a>
 										</td>
-										<td>{{ $leav->belongstostaff?->hasmanylogin()?->where('active', 1)->first()?->username }}</td>
+										<td>{{ $staff?->hasmanylogin()?->where('active', 1)->first()?->username }}</td>
 										<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="{{ $staff->name }}">
-											{{ Str::words($leav->belongstostaff?->name, 3, ' >') }}
+											{{ Str::words($staff?->name, 3, ' >') }}
 										</td>
 										<td>{{ $leav->belongstooptleavetype?->leave_type_code }}</td>
 										<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="{{ $leav->reason }}">
@@ -659,27 +1474,124 @@ foreach ($c as $v) {
 											<!-- Modal for supervisor approval-->
 											<div class="modal fade" id="hodapproval{{ $a->id }}" aria-labelledby="hodlabel{{ $a->id }}" aria-hidden="true">
 											<!-- <div class="modal fade" id="hodapproval{{ $a->id }}" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false"> -->
-												<div class="modal-dialog modal-dialog-centered">
+												<div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
 													<div class="modal-content">
 														<div class="modal-header">
 															<h1 class="modal-title fs-5" id="hodlabel{{ $a->id }}">Head of Department Approval</h1>
 															<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 														</div>
-														<div class="modal-body">
+														<div class="modal-body align-items-start justify-content-center">
+<!-- LEAVE SHOW START -->
+															<div class="col-sm-12 row">
+																<div class="table-container">
+																	<div class="table">
+																		<div class="table-row header">
+																			<div class="table-cell" style="width: 40%; background-color: #99ff99;">IPMA INDUSTRY SDN.BHD.</div>
+																			<div class="table-cell" style="width: 60%; background-color: #e6e6e6;">LEAVE APPLICATION FORM</div>
+																		</div>
+																	</div>
+
+																	<div class="table">
+																		<div class="table-row">
+																			<div class="table-cell-top" style="width: 25%;">STAFF ID : {{ $staff?->hasmanylogin()?->where('active', 1)->first()?->username }}</div>
+																			<div class="table-cell-top" style="width: 75%;">NAME : {{ $staff?->name }}</div>
+																		</div>
+																	</div>
+
+																	<div class="table">
+																		<div class="table-row">
+																			<div class="table-cell-top" style="width: 25%;">LEAVE NO : HR9-{{ @str_pad($leav->leave_no,5,'0',STR_PAD_LEFT) }}/{{ $leav->leave_year }}</div>
+																			<div class="table-cell-top" style="width: 60%;">DATE : {{ $dts }} - {{ $dte }} </div>
+																			<div class="table-cell-top" style="width: 25%;">TOTAL : {{ $dper }} </div>
+																		</div>
+																	</div>
+
+																	<div class="table">
+																		<div class="table-row">
+																			<div class="table-cell-top text-wrap" style="width: 45%;">LEAVE TYPE : {{ $leav->belongstooptleavetype->leave_type_code }} ({{ $leav->belongstooptleavetype->leave_type }})</div>
+																			<div class="table-cell-top text-wrap" style="width: 55%;">REASON : {{ $leav->reason }} </div>
+																		</div>
+																	</div>
+
+																	<div class="table">
+																		<div class="table-row">
+																			<div class="table-cell-top text-wrap" style="width: 60%;">BACKUP : {!! $bapp !!}</div>
+																			<div class="table-cell-top" style="width: 40%;">
+																				BACKUP DATE APPROVED : {{ ($backup->first()?->created_at)?Carbon::parse($backup->first()?->created_at)->format('j M Y'):null }}
+																			</div>
+																		</div>
+																	</div>
+
+																	@if ((in_array($auth, ['1', '2', '5']) && in_array($deptid, ['14', '31'])) || $me5)
+																		@if($hrremarksattendance)
+																		<div class="table">
+																			@foreach($hrremarksattendance as $key => $value)
+																			<div class="table-row">
+																				<div class="table-cell-top" style="width: 100%;">REMARKS FROM ATTENDANCE : {!! $value->remarks !!}<br/>HR REMARKS FROM ATTENDANCE : {!! $value->hr_remarks !!}</div>
+																			</div>
+																			@endforeach
+																		</div>
+																		@endif
+																	@endif
+
+																	@if ((in_array($auth, ['1', '2', '5']) && in_array($deptid, ['14', '31'])) || $me5)
+																		@if($leav->remarks)
+																		<div class="table">
+																			<div class="table-row">
+																				<div class="table-cell-top" style="width: 100%;">LEAVE REMARKS : {!! $leav->remarks !!}</div>
+																			</div>
+																		</div>
+																		@endif
+																	@endif
+
+																	@if ((in_array($auth, ['1', '2', '5']) && in_array($deptid, ['14', '31'])) || $me5)
+																		@if($leav->hasmanyleaveamend()->count())
+																		<div class="table">
+																			@foreach($leav->hasmanyleaveamend()->get() as $key => $value1)
+																			<div class="table-row">
+																				<div class="table-cell-top" style="width: 100%;">EDIT LEAVE REMARKS : {{ $value1->amend_note }} on {{ \Carbon\Carbon::parse($value1->created_at)->format('j M Y') }}</div>
+																			</div>
+																			@endforeach
+																		</div>
+																		@endif
+																	@endif
+
+																	<div class="table">
+																		<div class="table-row">
+																			<div class="table-cell-top text-wrap" style="width: 17%;">AL : {{ $annl?->annual_leave_balance }}/{{ $annl?->annual_leave }}</div>
+																			<div class="table-cell-top text-wrap" style="width: 17%;">MC : {{ $mcel?->mc_leave_balance }}/{{ $mcel?->mc_leave }}</div>
+																			<div class="table-cell-top text-wrap" style="width: 17%;">Maternity : {{ $matl?->maternity_leave_balance }}/{{ $matl?->maternity_leave }}</div>
+																			<div class="table-cell-top text-wrap" style="width: 17%;">Replacement : {{ $replb?->first()?->total }}/{{ $replt?->first()?->total }}</div>
+																			<div class="table-cell-top text-wrap" style="width: 17%;">UPL : {{ $upal?->first()?->total }}</div>
+																			<div class="table-cell-top text-wrap" style="width: 15%;">MC-UPL : {{ $mcupl?->first()?->total }}</div>
+																		</div>
+																	</div>
+
+																	<p>Supporting Document : {!! ($leav->softcopy)?'<a href="'.asset('storage/leaves/'.$leav->softcopy).'" target="_blank">Link</a>':null !!} </p>
+																</div>
+															</div>
+
+<!-- LEAVE SHOW END -->
 															{{ Form::open(['route' => ['leavestatus.hodstatus'], 'method' => 'patch', 'id' => 'form', 'autocomplete' => 'off', 'files' => true, 'data-toggle' => 'validator']) }}
 															{{ Form::hidden('id', $a->id) }}
-															@foreach($ls as $k => $val)
-															<div class="form-check form-check-inline {{ $errors->has('leave_status_id') ? 'has-error' : '' }}">
-																<input type="radio" name="leave_status_id" value="{{ $val['id'] }}" id="hodstatus{{ $a->id.$val['id'] }}" class="form-check-input">
-																<label class="form-check-label" for="hodstatus{{ $a->id.$val['id'] }}">{{ $val['text'] }}</label>
+															<div class="offset-sm-4 col-sm-6">
+																@foreach($ls as $k => $val)
+																<div class="form-check form-check-inline {{ $errors->has('leave_status_id') ? 'has-error' : '' }}">
+																	<input type="radio" name="leave_status_id" value="{{ $val['id'] }}" id="hodstatus{{ $a->id.$val['id'] }}" class="form-check-input">
+																	<label class="form-check-label" for="hodstatus{{ $a->id.$val['id'] }}">{{ $val['text'] }}</label>
+																</div>
+																@endforeach
 															</div>
-															@endforeach
-															<div class="mb-3 row">
-																<div class="form-group row {{ $errors->has('verify_code') ? 'has-error' : '' }}">
-																	<label for="hodcode{{ $a->id }}" class="col-auto col-form-label col-form-label-sm">Verify Code :</label>
-																	<div class="col-auto">
-																		<input type="text" name="verify_code" value="{{ (($user->div_id == 1 && $user->belongstomanydepartment->first()->id == 14) || $user->authorise_id == 1)?$leav->verify_code:@$value }}" id="hodcode{{ $a->id }}" class="form-control form-control-sm" placeholder="Verify Code">
-																	</div>
+															<div class="form-group mb-3 row {{ $errors->has('verify_code') ? 'has-error' : '' }}">
+																<label for="hodcode{{ $a->id }}" class="col-sm-4 col-form-label col-form-label-sm">Verify Code :</label>
+																<div class="col-sm-8">
+																	<input type="text" name="verify_code" value="{{ (($user->div_id == 1 && $user->belongstomanydepartment->first()->id == 14) || $user->authorise_id == 1)?$leav->verify_code:@$value }}" id="hodcode{{ $a->id }}" class="form-control form-control-sm" placeholder="Verify Code">
+																</div>
+															</div>
+															<div class="form-group row mb-3 {{ $errors->has('remarks') ? 'has-error' : '' }}">
+																<label for="remarks{{ $a->id }}" class="col-sm-4 col-form-label col-form-label-sm">Remarks :</label>
+																<div class="col-sm-8">
+																	<textarea name="remarks" value="{{ $a->remarks }}" id="remarks{{ $a->id }}" class="form-control form-control-sm" rows="3" placeholder="Remarks"></textarea>
 																</div>
 															</div>
 														</div>
@@ -702,9 +1614,9 @@ foreach ($c as $v) {
 										<td>
 											<a href="{{ route('leave.show', $a->leave_id) }}">HR9-{{ str_pad( $leav->leave_no, 5, "0", STR_PAD_LEFT ) }}/{{ $leav->leave_year }}</a>
 										</td>
-										<td>{{ $leav->belongstostaff?->hasmanylogin()?->where('active', 1)->first()?->username }}</td>
+										<td>{{ $staff?->hasmanylogin()?->where('active', 1)->first()?->username }}</td>
 										<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="{{ $staff->name }}">
-											{{ Str::words($leav->belongstostaff?->name, 3, ' >') }}
+											{{ Str::words($staff?->name, 3, ' >') }}
 										</td>
 										<td>{{ $leav->belongstooptleavetype?->leave_type_code }}</td>
 										<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="{{ $leav->reason }}">
@@ -728,27 +1640,124 @@ foreach ($c as $v) {
 											<!-- Modal for supervisor approval-->
 											<div class="modal fade" id="hodapproval{{ $a->id }}" aria-labelledby="hodlabel{{ $a->id }}" aria-hidden="true">
 											<!-- <div class="modal fade" id="hodapproval{{ $a->id }}" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false"> -->
-												<div class="modal-dialog modal-dialog-centered">
+												<div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
 													<div class="modal-content">
 														<div class="modal-header">
 															<h1 class="modal-title fs-5" id="hodlabel{{ $a->id }}">Head of Department Approval</h1>
 															<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 														</div>
-														<div class="modal-body">
+														<div class="modal-body align-items-start justify-content-center">
+<!-- LEAVE SHOW START -->
+															<div class="col-sm-12 row">
+																<div class="table-container">
+																	<div class="table">
+																		<div class="table-row header">
+																			<div class="table-cell" style="width: 40%; background-color: #99ff99;">IPMA INDUSTRY SDN.BHD.</div>
+																			<div class="table-cell" style="width: 60%; background-color: #e6e6e6;">LEAVE APPLICATION FORM</div>
+																		</div>
+																	</div>
+
+																	<div class="table">
+																		<div class="table-row">
+																			<div class="table-cell-top" style="width: 25%;">STAFF ID : {{ $staff?->hasmanylogin()?->where('active', 1)->first()?->username }}</div>
+																			<div class="table-cell-top" style="width: 75%;">NAME : {{ $staff?->name }}</div>
+																		</div>
+																	</div>
+
+																	<div class="table">
+																		<div class="table-row">
+																			<div class="table-cell-top" style="width: 25%;">LEAVE NO : HR9-{{ @str_pad($leav->leave_no,5,'0',STR_PAD_LEFT) }}/{{ $leav->leave_year }}</div>
+																			<div class="table-cell-top" style="width: 60%;">DATE : {{ $dts }} - {{ $dte }} </div>
+																			<div class="table-cell-top" style="width: 25%;">TOTAL : {{ $dper }} </div>
+																		</div>
+																	</div>
+
+																	<div class="table">
+																		<div class="table-row">
+																			<div class="table-cell-top text-wrap" style="width: 45%;">LEAVE TYPE : {{ $leav->belongstooptleavetype->leave_type_code }} ({{ $leav->belongstooptleavetype->leave_type }})</div>
+																			<div class="table-cell-top text-wrap" style="width: 55%;">REASON : {{ $leav->reason }} </div>
+																		</div>
+																	</div>
+
+																	<div class="table">
+																		<div class="table-row">
+																			<div class="table-cell-top text-wrap" style="width: 60%;">BACKUP : {!! $bapp !!}</div>
+																			<div class="table-cell-top" style="width: 40%;">
+																				BACKUP DATE APPROVED : {{ ($backup->first()?->created_at)?Carbon::parse($backup->first()?->created_at)->format('j M Y'):null }}
+																			</div>
+																		</div>
+																	</div>
+
+																	@if ((in_array($auth, ['1', '2', '5']) && in_array($deptid, ['14', '31'])) || $me5)
+																		@if($hrremarksattendance)
+																		<div class="table">
+																			@foreach($hrremarksattendance as $key => $value)
+																			<div class="table-row">
+																				<div class="table-cell-top" style="width: 100%;">REMARKS FROM ATTENDANCE : {!! $value->remarks !!}<br/>HR REMARKS FROM ATTENDANCE : {!! $value->hr_remarks !!}</div>
+																			</div>
+																			@endforeach
+																		</div>
+																		@endif
+																	@endif
+
+																	@if ((in_array($auth, ['1', '2', '5']) && in_array($deptid, ['14', '31'])) || $me5)
+																		@if($leav->remarks)
+																		<div class="table">
+																			<div class="table-row">
+																				<div class="table-cell-top" style="width: 100%;">LEAVE REMARKS : {!! $leav->remarks !!}</div>
+																			</div>
+																		</div>
+																		@endif
+																	@endif
+
+																	@if ((in_array($auth, ['1', '2', '5']) && in_array($deptid, ['14', '31'])) || $me5)
+																		@if($leav->hasmanyleaveamend()->count())
+																		<div class="table">
+																			@foreach($leav->hasmanyleaveamend()->get() as $key => $value1)
+																			<div class="table-row">
+																				<div class="table-cell-top" style="width: 100%;">EDIT LEAVE REMARKS : {{ $value1->amend_note }} on {{ \Carbon\Carbon::parse($value1->created_at)->format('j M Y') }}</div>
+																			</div>
+																			@endforeach
+																		</div>
+																		@endif
+																	@endif
+
+																	<div class="table">
+																		<div class="table-row">
+																			<div class="table-cell-top text-wrap" style="width: 17%;">AL : {{ $annl?->annual_leave_balance }}/{{ $annl?->annual_leave }}</div>
+																			<div class="table-cell-top text-wrap" style="width: 17%;">MC : {{ $mcel?->mc_leave_balance }}/{{ $mcel?->mc_leave }}</div>
+																			<div class="table-cell-top text-wrap" style="width: 17%;">Maternity : {{ $matl?->maternity_leave_balance }}/{{ $matl?->maternity_leave }}</div>
+																			<div class="table-cell-top text-wrap" style="width: 17%;">Replacement : {{ $replb?->first()?->total }}/{{ $replt?->first()?->total }}</div>
+																			<div class="table-cell-top text-wrap" style="width: 17%;">UPL : {{ $upal?->first()?->total }}</div>
+																			<div class="table-cell-top text-wrap" style="width: 15%;">MC-UPL : {{ $mcupl?->first()?->total }}</div>
+																		</div>
+																	</div>
+
+																	<p>Supporting Document : {!! ($leav->softcopy)?'<a href="'.asset('storage/leaves/'.$leav->softcopy).'" target="_blank">Link</a>':null !!} </p>
+																</div>
+															</div>
+
+<!-- LEAVE SHOW END -->
 															{{ Form::open(['route' => ['leavestatus.hodstatus'], 'method' => 'patch', 'id' => 'form', 'autocomplete' => 'off', 'files' => true, 'data-toggle' => 'validator']) }}
 															{{ Form::hidden('id', $a->id) }}
-															@foreach($ls as $k => $val)
-															<div class="form-check form-check-inline {{ $errors->has('leave_status_id') ? 'has-error' : '' }}">
-																<input type="radio" name="leave_status_id" value="{{ $val['id'] }}" id="hodstatus{{ $a->id.$val['id'] }}" class="form-check-input">
-																<label class="form-check-label" for="hodstatus{{ $a->id.$val['id'] }}">{{ $val['text'] }}</label>
+															<div class="offset-sm-4 col-sm-6">
+																@foreach($ls as $k => $val)
+																<div class="form-check form-check-inline {{ $errors->has('leave_status_id') ? 'has-error' : '' }}">
+																	<input type="radio" name="leave_status_id" value="{{ $val['id'] }}" id="hodstatus{{ $a->id.$val['id'] }}" class="form-check-input">
+																	<label class="form-check-label" for="hodstatus{{ $a->id.$val['id'] }}">{{ $val['text'] }}</label>
+																</div>
+																@endforeach
 															</div>
-															@endforeach
-															<div class="mb-3 row">
-																<div class="form-group row {{ $errors->has('verify_code') ? 'has-error' : '' }}">
-																	<label for="hodcode{{ $a->id }}" class="col-auto col-form-label col-form-label-sm">Verify Code :</label>
-																	<div class="col-auto">
-																		<input type="text" name="verify_code" value="{{ (($user->div_id == 1 && $user->belongstomanydepartment->first()->id == 14) || $user->authorise_id == 1)?$leav->verify_code:@$value }}" id="hodcode{{ $a->id }}" class="form-control form-control-sm" placeholder="Verify Code">
-																	</div>
+															<div class="form-group mb-3 row {{ $errors->has('verify_code') ? 'has-error' : '' }}">
+																<label for="hodcode{{ $a->id }}" class="col-sm-4 col-form-label col-form-label-sm">Verify Code :</label>
+																<div class="col-sm-8">
+																	<input type="text" name="verify_code" value="{{ (($user->div_id == 1 && $user->belongstomanydepartment->first()->id == 14) || $user->authorise_id == 1)?$leav->verify_code:@$value }}" id="hodcode{{ $a->id }}" class="form-control form-control-sm" placeholder="Verify Code">
+																</div>
+															</div>
+															<div class="form-group row mb-3 {{ $errors->has('remarks') ? 'has-error' : '' }}">
+																<label for="remarks{{ $a->id }}" class="col-sm-4 col-form-label col-form-label-sm">Remarks :</label>
+																<div class="col-sm-8">
+																	<textarea name="remarks" value="{{ $a->remarks }}" id="remarks{{ $a->id }}" class="form-control form-control-sm" rows="3" placeholder="Remarks"></textarea>
 																</div>
 															</div>
 														</div>
@@ -771,9 +1780,9 @@ foreach ($c as $v) {
 										<td>
 											<a href="{{ route('leave.show', $a->leave_id) }}">HR9-{{ str_pad( $leav->leave_no, 5, "0", STR_PAD_LEFT ) }}/{{ $leav->leave_year }}</a>
 										</td>
-										<td>{{ $leav->belongstostaff?->hasmanylogin()?->where('active', 1)->first()?->username }}</td>
+										<td>{{ $staff?->hasmanylogin()?->where('active', 1)->first()?->username }}</td>
 										<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="{{ $staff->name }}">
-											{{ Str::words($leav->belongstostaff?->name, 3, ' >') }}
+											{{ Str::words($staff?->name, 3, ' >') }}
 										</td>
 										<td>{{ $leav->belongstooptleavetype?->leave_type_code }}</td>
 										<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="{{ $leav->reason }}">
@@ -797,27 +1806,124 @@ foreach ($c as $v) {
 											<!-- Modal for supervisor approval-->
 											<div class="modal fade" id="hodapproval{{ $a->id }}" aria-labelledby="hodlabel{{ $a->id }}" aria-hidden="true">
 											<!-- <div class="modal fade" id="hodapproval{{ $a->id }}" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false"> -->
-												<div class="modal-dialog modal-dialog-centered">
+												<div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
 													<div class="modal-content">
 														<div class="modal-header">
 															<h1 class="modal-title fs-5" id="hodlabel{{ $a->id }}">Head of Department Approval</h1>
 															<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 														</div>
-														<div class="modal-body">
+														<div class="modal-body align-items-start justify-content-center">
+<!-- LEAVE SHOW START -->
+															<div class="col-sm-12 row">
+																<div class="table-container">
+																	<div class="table">
+																		<div class="table-row header">
+																			<div class="table-cell" style="width: 40%; background-color: #99ff99;">IPMA INDUSTRY SDN.BHD.</div>
+																			<div class="table-cell" style="width: 60%; background-color: #e6e6e6;">LEAVE APPLICATION FORM</div>
+																		</div>
+																	</div>
+
+																	<div class="table">
+																		<div class="table-row">
+																			<div class="table-cell-top" style="width: 25%;">STAFF ID : {{ $staff?->hasmanylogin()?->where('active', 1)->first()?->username }}</div>
+																			<div class="table-cell-top" style="width: 75%;">NAME : {{ $staff?->name }}</div>
+																		</div>
+																	</div>
+
+																	<div class="table">
+																		<div class="table-row">
+																			<div class="table-cell-top" style="width: 25%;">LEAVE NO : HR9-{{ @str_pad($leav->leave_no,5,'0',STR_PAD_LEFT) }}/{{ $leav->leave_year }}</div>
+																			<div class="table-cell-top" style="width: 60%;">DATE : {{ $dts }} - {{ $dte }} </div>
+																			<div class="table-cell-top" style="width: 25%;">TOTAL : {{ $dper }} </div>
+																		</div>
+																	</div>
+
+																	<div class="table">
+																		<div class="table-row">
+																			<div class="table-cell-top text-wrap" style="width: 45%;">LEAVE TYPE : {{ $leav->belongstooptleavetype->leave_type_code }} ({{ $leav->belongstooptleavetype->leave_type }})</div>
+																			<div class="table-cell-top text-wrap" style="width: 55%;">REASON : {{ $leav->reason }} </div>
+																		</div>
+																	</div>
+
+																	<div class="table">
+																		<div class="table-row">
+																			<div class="table-cell-top text-wrap" style="width: 60%;">BACKUP : {!! $bapp !!}</div>
+																			<div class="table-cell-top" style="width: 40%;">
+																				BACKUP DATE APPROVED : {{ ($backup->first()?->created_at)?Carbon::parse($backup->first()?->created_at)->format('j M Y'):null }}
+																			</div>
+																		</div>
+																	</div>
+
+																	@if ((in_array($auth, ['1', '2', '5']) && in_array($deptid, ['14', '31'])) || $me5)
+																		@if($hrremarksattendance)
+																		<div class="table">
+																			@foreach($hrremarksattendance as $key => $value)
+																			<div class="table-row">
+																				<div class="table-cell-top" style="width: 100%;">REMARKS FROM ATTENDANCE : {!! $value->remarks !!}<br/>HR REMARKS FROM ATTENDANCE : {!! $value->hr_remarks !!}</div>
+																			</div>
+																			@endforeach
+																		</div>
+																		@endif
+																	@endif
+
+																	@if ((in_array($auth, ['1', '2', '5']) && in_array($deptid, ['14', '31'])) || $me5)
+																		@if($leav->remarks)
+																		<div class="table">
+																			<div class="table-row">
+																				<div class="table-cell-top" style="width: 100%;">LEAVE REMARKS : {!! $leav->remarks !!}</div>
+																			</div>
+																		</div>
+																		@endif
+																	@endif
+
+																	@if ((in_array($auth, ['1', '2', '5']) && in_array($deptid, ['14', '31'])) || $me5)
+																		@if($leav->hasmanyleaveamend()->count())
+																		<div class="table">
+																			@foreach($leav->hasmanyleaveamend()->get() as $key => $value1)
+																			<div class="table-row">
+																				<div class="table-cell-top" style="width: 100%;">EDIT LEAVE REMARKS : {{ $value1->amend_note }} on {{ \Carbon\Carbon::parse($value1->created_at)->format('j M Y') }}</div>
+																			</div>
+																			@endforeach
+																		</div>
+																		@endif
+																	@endif
+
+																	<div class="table">
+																		<div class="table-row">
+																			<div class="table-cell-top text-wrap" style="width: 17%;">AL : {{ $annl?->annual_leave_balance }}/{{ $annl?->annual_leave }}</div>
+																			<div class="table-cell-top text-wrap" style="width: 17%;">MC : {{ $mcel?->mc_leave_balance }}/{{ $mcel?->mc_leave }}</div>
+																			<div class="table-cell-top text-wrap" style="width: 17%;">Maternity : {{ $matl?->maternity_leave_balance }}/{{ $matl?->maternity_leave }}</div>
+																			<div class="table-cell-top text-wrap" style="width: 17%;">Replacement : {{ $replb?->first()?->total }}/{{ $replt?->first()?->total }}</div>
+																			<div class="table-cell-top text-wrap" style="width: 17%;">UPL : {{ $upal?->first()?->total }}</div>
+																			<div class="table-cell-top text-wrap" style="width: 15%;">MC-UPL : {{ $mcupl?->first()?->total }}</div>
+																		</div>
+																	</div>
+
+																	<p>Supporting Document : {!! ($leav->softcopy)?'<a href="'.asset('storage/leaves/'.$leav->softcopy).'" target="_blank">Link</a>':null !!} </p>
+																</div>
+															</div>
+
+<!-- LEAVE SHOW END -->
 															{{ Form::open(['route' => ['leavestatus.hodstatus'], 'method' => 'patch', 'id' => 'form', 'autocomplete' => 'off', 'files' => true, 'data-toggle' => 'validator']) }}
 															{{ Form::hidden('id', $a->id) }}
-															@foreach($ls as $k => $val)
-															<div class="form-check form-check-inline {{ $errors->has('leave_status_id') ? 'has-error' : '' }}">
-																<input type="radio" name="leave_status_id" value="{{ $val['id'] }}" id="hodstatus{{ $a->id.$val['id'] }}" class="form-check-input">
-																<label class="form-check-label" for="hodstatus{{ $a->id.$val['id'] }}">{{ $val['text'] }}</label>
+															<div class="offset-sm-4 col-sm-6">
+																@foreach($ls as $k => $val)
+																<div class="form-check form-check-inline {{ $errors->has('leave_status_id') ? 'has-error' : '' }}">
+																	<input type="radio" name="leave_status_id" value="{{ $val['id'] }}" id="hodstatus{{ $a->id.$val['id'] }}" class="form-check-input">
+																	<label class="form-check-label" for="hodstatus{{ $a->id.$val['id'] }}">{{ $val['text'] }}</label>
+																</div>
+																@endforeach
 															</div>
-															@endforeach
-															<div class="mb-3 row">
-																<div class="form-group row {{ $errors->has('verify_code') ? 'has-error' : '' }}">
-																	<label for="hodcode{{ $a->id }}" class="col-auto col-form-label col-form-label-sm">Verify Code :</label>
-																	<div class="col-auto">
-																		<input type="text" name="verify_code" value="{{ (($user->div_id == 1 && $user->belongstomanydepartment->first()->id == 14) || $user->authorise_id == 1)?$leav->verify_code:@$value }}" id="hodcode{{ $a->id }}" class="form-control form-control-sm" placeholder="Verify Code">
-																	</div>
+															<div class="form-group mb-3 row {{ $errors->has('verify_code') ? 'has-error' : '' }}">
+																<label for="hodcode{{ $a->id }}" class="col-sm-4 col-form-label col-form-label-sm">Verify Code :</label>
+																<div class="col-sm-8">
+																	<input type="text" name="verify_code" value="{{ (($user->div_id == 1 && $user->belongstomanydepartment->first()->id == 14) || $user->authorise_id == 1)?$leav->verify_code:@$value }}" id="hodcode{{ $a->id }}" class="form-control form-control-sm" placeholder="Verify Code">
+																</div>
+															</div>
+															<div class="form-group row mb-3 {{ $errors->has('remarks') ? 'has-error' : '' }}">
+																<label for="remarks{{ $a->id }}" class="col-sm-4 col-form-label col-form-label-sm">Remarks :</label>
+																<div class="col-sm-8">
+																	<textarea name="remarks" value="{{ $a->remarks }}" id="remarks{{ $a->id }}" class="form-control form-control-sm" rows="3" placeholder="Remarks"></textarea>
 																</div>
 															</div>
 														</div>
@@ -840,9 +1946,9 @@ foreach ($c as $v) {
 										<td>
 											<a href="{{ route('leave.show', $a->leave_id) }}">HR9-{{ str_pad( $leav->leave_no, 5, "0", STR_PAD_LEFT ) }}/{{ $leav->leave_year }}</a>
 										</td>
-										<td>{{ $leav->belongstostaff?->hasmanylogin()?->where('active', 1)->first()?->username }}</td>
+										<td>{{ $staff?->hasmanylogin()?->where('active', 1)->first()?->username }}</td>
 										<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="{{ $staff->name }}">
-											{{ Str::words($leav->belongstostaff?->name, 3, ' >') }}
+											{{ Str::words($staff?->name, 3, ' >') }}
 										</td>
 										<td>{{ $leav->belongstooptleavetype?->leave_type_code }}</td>
 										<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="{{ $leav->reason }}">
@@ -866,27 +1972,124 @@ foreach ($c as $v) {
 											<!-- Modal for supervisor approval-->
 											<div class="modal fade" id="hodapproval{{ $a->id }}" aria-labelledby="hodlabel{{ $a->id }}" aria-hidden="true">
 											<!-- <div class="modal fade" id="hodapproval{{ $a->id }}" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false"> -->
-												<div class="modal-dialog modal-dialog-centered">
+												<div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
 													<div class="modal-content">
 														<div class="modal-header">
 															<h1 class="modal-title fs-5" id="hodlabel{{ $a->id }}">Head of Department Approval</h1>
 															<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 														</div>
-														<div class="modal-body">
+														<div class="modal-body align-items-start justify-content-center">
+<!-- LEAVE SHOW START -->
+															<div class="col-sm-12 row">
+																<div class="table-container">
+																	<div class="table">
+																		<div class="table-row header">
+																			<div class="table-cell" style="width: 40%; background-color: #99ff99;">IPMA INDUSTRY SDN.BHD.</div>
+																			<div class="table-cell" style="width: 60%; background-color: #e6e6e6;">LEAVE APPLICATION FORM</div>
+																		</div>
+																	</div>
+
+																	<div class="table">
+																		<div class="table-row">
+																			<div class="table-cell-top" style="width: 25%;">STAFF ID : {{ $staff?->hasmanylogin()?->where('active', 1)->first()?->username }}</div>
+																			<div class="table-cell-top" style="width: 75%;">NAME : {{ $staff?->name }}</div>
+																		</div>
+																	</div>
+
+																	<div class="table">
+																		<div class="table-row">
+																			<div class="table-cell-top" style="width: 25%;">LEAVE NO : HR9-{{ @str_pad($leav->leave_no,5,'0',STR_PAD_LEFT) }}/{{ $leav->leave_year }}</div>
+																			<div class="table-cell-top" style="width: 60%;">DATE : {{ $dts }} - {{ $dte }} </div>
+																			<div class="table-cell-top" style="width: 25%;">TOTAL : {{ $dper }} </div>
+																		</div>
+																	</div>
+
+																	<div class="table">
+																		<div class="table-row">
+																			<div class="table-cell-top text-wrap" style="width: 45%;">LEAVE TYPE : {{ $leav->belongstooptleavetype->leave_type_code }} ({{ $leav->belongstooptleavetype->leave_type }})</div>
+																			<div class="table-cell-top text-wrap" style="width: 55%;">REASON : {{ $leav->reason }} </div>
+																		</div>
+																	</div>
+
+																	<div class="table">
+																		<div class="table-row">
+																			<div class="table-cell-top text-wrap" style="width: 60%;">BACKUP : {!! $bapp !!}</div>
+																			<div class="table-cell-top" style="width: 40%;">
+																				BACKUP DATE APPROVED : {{ ($backup->first()?->created_at)?Carbon::parse($backup->first()?->created_at)->format('j M Y'):null }}
+																			</div>
+																		</div>
+																	</div>
+
+																	@if ((in_array($auth, ['1', '2', '5']) && in_array($deptid, ['14', '31'])) || $me5)
+																		@if($hrremarksattendance)
+																		<div class="table">
+																			@foreach($hrremarksattendance as $key => $value)
+																			<div class="table-row">
+																				<div class="table-cell-top" style="width: 100%;">REMARKS FROM ATTENDANCE : {!! $value->remarks !!}<br/>HR REMARKS FROM ATTENDANCE : {!! $value->hr_remarks !!}</div>
+																			</div>
+																			@endforeach
+																		</div>
+																		@endif
+																	@endif
+
+																	@if ((in_array($auth, ['1', '2', '5']) && in_array($deptid, ['14', '31'])) || $me5)
+																		@if($leav->remarks)
+																		<div class="table">
+																			<div class="table-row">
+																				<div class="table-cell-top" style="width: 100%;">LEAVE REMARKS : {!! $leav->remarks !!}</div>
+																			</div>
+																		</div>
+																		@endif
+																	@endif
+
+																	@if ((in_array($auth, ['1', '2', '5']) && in_array($deptid, ['14', '31'])) || $me5)
+																		@if($leav->hasmanyleaveamend()->count())
+																		<div class="table">
+																			@foreach($leav->hasmanyleaveamend()->get() as $key => $value1)
+																			<div class="table-row">
+																				<div class="table-cell-top" style="width: 100%;">EDIT LEAVE REMARKS : {{ $value1->amend_note }} on {{ \Carbon\Carbon::parse($value1->created_at)->format('j M Y') }}</div>
+																			</div>
+																			@endforeach
+																		</div>
+																		@endif
+																	@endif
+
+																	<div class="table">
+																		<div class="table-row">
+																			<div class="table-cell-top text-wrap" style="width: 17%;">AL : {{ $annl?->annual_leave_balance }}/{{ $annl?->annual_leave }}</div>
+																			<div class="table-cell-top text-wrap" style="width: 17%;">MC : {{ $mcel?->mc_leave_balance }}/{{ $mcel?->mc_leave }}</div>
+																			<div class="table-cell-top text-wrap" style="width: 17%;">Maternity : {{ $matl?->maternity_leave_balance }}/{{ $matl?->maternity_leave }}</div>
+																			<div class="table-cell-top text-wrap" style="width: 17%;">Replacement : {{ $replb?->first()?->total }}/{{ $replt?->first()?->total }}</div>
+																			<div class="table-cell-top text-wrap" style="width: 17%;">UPL : {{ $upal?->first()?->total }}</div>
+																			<div class="table-cell-top text-wrap" style="width: 15%;">MC-UPL : {{ $mcupl?->first()?->total }}</div>
+																		</div>
+																	</div>
+
+																	<p>Supporting Document : {!! ($leav->softcopy)?'<a href="'.asset('storage/leaves/'.$leav->softcopy).'" target="_blank">Link</a>':null !!} </p>
+																</div>
+															</div>
+
+<!-- LEAVE SHOW END -->
 															{{ Form::open(['route' => ['leavestatus.hodstatus'], 'method' => 'patch', 'id' => 'form', 'autocomplete' => 'off', 'files' => true, 'data-toggle' => 'validator']) }}
 															{{ Form::hidden('id', $a->id) }}
-															@foreach($ls as $k => $val)
-															<div class="form-check form-check-inline {{ $errors->has('leave_status_id') ? 'has-error' : '' }}">
-																<input type="radio" name="leave_status_id" value="{{ $val['id'] }}" id="hodstatus{{ $a->id.$val['id'] }}" class="form-check-input">
-																<label class="form-check-label" for="hodstatus{{ $a->id.$val['id'] }}">{{ $val['text'] }}</label>
+															<div class="offset-sm-4 col-sm-6">
+																@foreach($ls as $k => $val)
+																<div class="form-check form-check-inline {{ $errors->has('leave_status_id') ? 'has-error' : '' }}">
+																	<input type="radio" name="leave_status_id" value="{{ $val['id'] }}" id="hodstatus{{ $a->id.$val['id'] }}" class="form-check-input">
+																	<label class="form-check-label" for="hodstatus{{ $a->id.$val['id'] }}">{{ $val['text'] }}</label>
+																</div>
+																@endforeach
 															</div>
-															@endforeach
-															<div class="mb-3 row">
-																<div class="form-group row {{ $errors->has('verify_code') ? 'has-error' : '' }}">
-																	<label for="hodcode{{ $a->id }}" class="col-auto col-form-label col-form-label-sm">Verify Code :</label>
-																	<div class="col-auto">
-																		<input type="text" name="verify_code" value="{{ (($user->div_id == 1 && $user->belongstomanydepartment->first()->id == 14) || $user->authorise_id == 1)?$leav->verify_code:@$value }}" id="hodcode{{ $a->id }}" class="form-control form-control-sm" placeholder="Verify Code">
-																	</div>
+															<div class="form-group mb-3 row {{ $errors->has('verify_code') ? 'has-error' : '' }}">
+																<label for="hodcode{{ $a->id }}" class="col-sm-4 col-form-label col-form-label-sm">Verify Code :</label>
+																<div class="col-sm-8">
+																	<input type="text" name="verify_code" value="{{ (($user->div_id == 1 && $user->belongstomanydepartment->first()->id == 14) || $user->authorise_id == 1)?$leav->verify_code:@$value }}" id="hodcode{{ $a->id }}" class="form-control form-control-sm" placeholder="Verify Code">
+																</div>
+															</div>
+															<div class="form-group row mb-3 {{ $errors->has('remarks') ? 'has-error' : '' }}">
+																<label for="remarks{{ $a->id }}" class="col-sm-4 col-form-label col-form-label-sm">Remarks :</label>
+																<div class="col-sm-8">
+																	<textarea name="remarks" value="{{ $a->remarks }}" id="remarks{{ $a->id }}" class="form-control form-control-sm" rows="3" placeholder="Remarks"></textarea>
 																</div>
 															</div>
 														</div>

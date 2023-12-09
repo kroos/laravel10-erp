@@ -201,7 +201,8 @@ if ($leave_status_temp == 'Approved' || $leave_status_temp == 'Waived') {
 } 
 ?>
 
-<div class="col-sm-12 row">
+
+<div class="col-sm-12 row align-items-start justify-content-center">
   @include('humanresources.hrdept.navhr')
   <h4>Leave Application &nbsp;
     <a href="{{ route('hrleave.edit', $hrleave->id) }}" class="btn btn-sm btn-outline-secondary">
@@ -414,7 +415,6 @@ if ($leave_status_temp == 'Approved' || $leave_status_temp == 'Waived') {
       </div>
     </div>
   </div>
-
 </div>
 @endsection
 

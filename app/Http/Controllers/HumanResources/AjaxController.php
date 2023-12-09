@@ -310,14 +310,17 @@ class AjaxController extends Controller
 		$validated = $request->validate([
 				'leave_status_id' => 'required',
 				'verify_code' => 'required_if:leave_status_id,5|numeric|nullable',		// required if only leave_status_id is 5 (Approved)
+				'remarks' => 'required_if:leave_status_id,4|nullable',
 			],
 			[
 				'leave_status_id.required' => 'Please choose your approval',
 				'verify_code.required_if' => 'Please insert :attribute to approve leave, otherwise it wont be necessary for leave application reject',
+				'remarks' => 'Please insert :attribute to reject leave, otherwise it wont be necessary for leave application approve',
 			],
 			[
 				'leave_status_id' => 'Approval Status',
-				'verify_code' => 'Verification Code'
+				'verify_code' => 'Verification Code',
+				'remarks' => 'Remarks',
 			]
 		);
 
@@ -339,7 +342,8 @@ class AjaxController extends Controller
 			if($vc == $request->verify_code) {
 				$sa->update([
 					'staff_id' => \Auth::user()->belongstostaff->id,
-					'leave_status_id' => $request->leave_status_id
+					'leave_status_id' => $request->leave_status_id,
+					'remarks' => ucwords(Str::lower($request->remarks)),
 				]);
 			} else {
 				Session::flash('flash_message', 'Verification Code was incorrect');
@@ -402,19 +406,19 @@ class AjaxController extends Controller
 			}
 
 			if($sauser->belongstoleaveapprovalflow->backup_approval == 1){																// update on backup
-				$sal->hasmanyleaveapprovalbackup()->update([/*'staff_id' => \Auth::user()->belongstostaff->id,*/ 'leave_status_id' => $request->leave_status_id, 'remarks' => 'Rejected by Supervisor ('.\Auth::user()->belongstostaff->name.') on '.\Carbon\Carbon::now()->format('j M Y g:i a')]);
+				$sal->hasmanyleaveapprovalbackup()->update([/*'staff_id' => \Auth::user()->belongstostaff->id,*/ 'leave_status_id' => $request->leave_status_id, 'remarks' => 'Rejected by Supervisor ('.\Auth::user()->belongstostaff->name.') on '.\Carbon\Carbon::now()->format('j M Y g:i a').' | '.ucwords(Str::lower($request->remarks))]);
 			}
 			if($sauser->belongstoleaveapprovalflow->supervisor_approval == 1){															// update on supervisor
-				$sal->hasmanyleaveapprovalsupervisor()->update(['staff_id' => \Auth::user()->belongstostaff->id, 'leave_status_id' => $request->leave_status_id, 'remarks' => 'Rejected by Supervisor ('.\Auth::user()->belongstostaff->name.') on '.\Carbon\Carbon::now()->format('j M Y g:i a')]);
+				$sal->hasmanyleaveapprovalsupervisor()->update(['staff_id' => \Auth::user()->belongstostaff->id, 'leave_status_id' => $request->leave_status_id, 'remarks' => 'Rejected by Supervisor ('.\Auth::user()->belongstostaff->name.') on '.\Carbon\Carbon::now()->format('j M Y g:i a').' | '.ucwords(Str::lower($request->remarks))]);
 			}
 			if($sauser->belongstoleaveapprovalflow->hod_approval == 1){																	// update on hod
-				$sal->hasmanyleaveapprovalhod()->update([/*'staff_id' => \Auth::user()->belongstostaff->id,*/ 'leave_status_id' => $request->leave_status_id, 'remarks' => 'Rejected by Supervisor ('.\Auth::user()->belongstostaff->name.') on '.\Carbon\Carbon::now()->format('j M Y g:i a')]);
+				$sal->hasmanyleaveapprovalhod()->update([/*'staff_id' => \Auth::user()->belongstostaff->id,*/ 'leave_status_id' => $request->leave_status_id, 'remarks' => 'Rejected by Supervisor ('.\Auth::user()->belongstostaff->name.') on '.\Carbon\Carbon::now()->format('j M Y g:i a').' | '.ucwords(Str::lower($request->remarks))]);
 			}
 			if($sauser->belongstoleaveapprovalflow->director_approval == 1){															// update on director
-				$sal->hasmanyleaveapprovaldir()->update([/*'staff_id' => \Auth::user()->belongstostaff->id,*/ 'leave_status_id' => $request->leave_status_id, 'remarks' => 'Rejected by Supervisor ('.\Auth::user()->belongstostaff->name.') on '.\Carbon\Carbon::now()->format('j M Y g:i a')]);
+				$sal->hasmanyleaveapprovaldir()->update([/*'staff_id' => \Auth::user()->belongstostaff->id,*/ 'leave_status_id' => $request->leave_status_id, 'remarks' => 'Rejected by Supervisor ('.\Auth::user()->belongstostaff->name.') on '.\Carbon\Carbon::now()->format('j M Y g:i a').' | '.ucwords(Str::lower($request->remarks))]);
 			}
 			if($sauser->belongstoleaveapprovalflow->hr_approval == 1){																	// update on hr
-				$sal->hasmanyleaveapprovalhr()->update([/*'staff_id' => \Auth::user()->belongstostaff->id,*/ 'leave_status_id' => $request->leave_status_id, 'remarks' => 'Rejected by Supervisor ('.\Auth::user()->belongstostaff->name.') on '.\Carbon\Carbon::now()->format('j M Y g:i a')]);
+				$sal->hasmanyleaveapprovalhr()->update([/*'staff_id' => \Auth::user()->belongstostaff->id,*/ 'leave_status_id' => $request->leave_status_id, 'remarks' => 'Rejected by Supervisor ('.\Auth::user()->belongstostaff->name.') on '.\Carbon\Carbon::now()->format('j M Y g:i a').' | '.ucwords(Str::lower($request->remarks))]);
 			}
 			// remove leave_id from attendance
 			$z = HRAttendance::where('leave_id', $sal->id)->get();
@@ -433,14 +437,17 @@ class AjaxController extends Controller
 		$validated = $request->validate([
 				'leave_status_id' => 'required',
 				'verify_code' => 'required_if:leave_status_id,5|numeric|nullable',		// required if only leave_status_id is 5 (Approved)
+				'remarks' => 'required_if:leave_status_id,4|nullable',
 			],
 			[
 				'leave_status_id.required' => 'Please choose your approval',
 				'verify_code.required_if' => 'Please insert :attribute to approve leave, otherwise it wont be necessary for leave application reject',
+				'remarks' => 'Please insert :attribute to reject leave, otherwise it wont be necessary for leave application approve',
 			],
 			[
 				'leave_status_id' => 'Approval Status',
-				'verify_code' => 'Verification Code'
+				'verify_code' => 'Verification Code',
+				'remarks' => 'Remarks',
 			]
 		);
 
@@ -462,7 +469,8 @@ class AjaxController extends Controller
 			if($vc == $request->verify_code) {
 				$sa->update([
 					'staff_id' => \Auth::user()->belongstostaff->id,
-					'leave_status_id' => $request->leave_status_id
+					'leave_status_id' => $request->leave_status_id,
+					'remarks' => ucwords(Str::lower($request->remarks)),
 				]);
 			} else {
 				Session::flash('flash_message', 'Verification Code was incorrect');
@@ -525,19 +533,19 @@ class AjaxController extends Controller
 			}
 
 			if($sauser->belongstoleaveapprovalflow->backup_approval == 1){																// update on backup
-				$sal->hasmanyleaveapprovalbackup()->update([/*'staff_id' => \Auth::user()->belongstostaff->id,*/ 'leave_status_id' => $request->leave_status_id, 'remarks' => 'Rejected by HOD ('.\Auth::user()->belongstostaff->name.') on '.\Carbon\Carbon::now()->format('j M Y g:i a')]);
+				$sal->hasmanyleaveapprovalbackup()->update([/*'staff_id' => \Auth::user()->belongstostaff->id,*/ 'leave_status_id' => $request->leave_status_id, 'remarks' => 'Rejected by HOD ('.\Auth::user()->belongstostaff->name.') on '.\Carbon\Carbon::now()->format('j M Y g:i a').' | '.ucwords(Str::lower($request->remarks))]);
 			}
 			if($sauser->belongstoleaveapprovalflow->supervisor_approval == 1){															// update on supervisor
-				$sal->hasmanyleaveapprovalsupervisor()->update(['staff_id' => \Auth::user()->belongstostaff->id, 'leave_status_id' => $request->leave_status_id, 'remarks' => 'Rejected by HOD ('.\Auth::user()->belongstostaff->name.') on '.\Carbon\Carbon::now()->format('j M Y g:i a')]);
+				$sal->hasmanyleaveapprovalsupervisor()->update([/*'staff_id' => \Auth::user()->belongstostaff->id,*/ 'leave_status_id' => $request->leave_status_id, 'remarks' => 'Rejected by HOD ('.\Auth::user()->belongstostaff->name.') on '.\Carbon\Carbon::now()->format('j M Y g:i a').' | '.ucwords(Str::lower($request->remarks))]);
 			}
 			if($sauser->belongstoleaveapprovalflow->hod_approval == 1){																	// update on hod
-				$sal->hasmanyleaveapprovalhod()->update([/*'staff_id' => \Auth::user()->belongstostaff->id,*/ 'leave_status_id' => $request->leave_status_id, 'remarks' => 'Rejected by HOD ('.\Auth::user()->belongstostaff->name.') on '.\Carbon\Carbon::now()->format('j M Y g:i a')]);
+				$sal->hasmanyleaveapprovalhod()->update(['staff_id' => \Auth::user()->belongstostaff->id, 'leave_status_id' => $request->leave_status_id, 'remarks' => 'Rejected by HOD ('.\Auth::user()->belongstostaff->name.') on '.\Carbon\Carbon::now()->format('j M Y g:i a').' | '.ucwords(Str::lower($request->remarks))]);
 			}
 			if($sauser->belongstoleaveapprovalflow->director_approval == 1){															// update on director
-				$sal->hasmanyleaveapprovaldir()->update([/*'staff_id' => \Auth::user()->belongstostaff->id,*/ 'leave_status_id' => $request->leave_status_id, 'remarks' => 'Rejected by HOD ('.\Auth::user()->belongstostaff->name.') on '.\Carbon\Carbon::now()->format('j M Y g:i a')]);
+				$sal->hasmanyleaveapprovaldir()->update([/*'staff_id' => \Auth::user()->belongstostaff->id,*/ 'leave_status_id' => $request->leave_status_id, 'remarks' => 'Rejected by HOD ('.\Auth::user()->belongstostaff->name.') on '.\Carbon\Carbon::now()->format('j M Y g:i a').' | '.ucwords(Str::lower($request->remarks))]);
 			}
 			if($sauser->belongstoleaveapprovalflow->hr_approval == 1){																	// update on hr
-				$sal->hasmanyleaveapprovalhr()->update([/*'staff_id' => \Auth::user()->belongstostaff->id,*/ 'leave_status_id' => $request->leave_status_id, 'remarks' => 'Rejected by HOD ('.\Auth::user()->belongstostaff->name.') on '.\Carbon\Carbon::now()->format('j M Y g:i a')]);
+				$sal->hasmanyleaveapprovalhr()->update([/*'staff_id' => \Auth::user()->belongstostaff->id,*/ 'leave_status_id' => $request->leave_status_id, 'remarks' => 'Rejected by HOD ('.\Auth::user()->belongstostaff->name.') on '.\Carbon\Carbon::now()->format('j M Y g:i a').' | '.ucwords(Str::lower($request->remarks))]);
 			}
 			// remove leave_id from attendance
 			$z = HRAttendance::where('leave_id', $sal->id)->get();
@@ -556,14 +564,17 @@ class AjaxController extends Controller
 		$validated = $request->validate([
 				'leave_status_id' => 'required',
 				'verify_code' => 'required_if:leave_status_id,5|numeric|nullable',		// required if only leave_status_id is 5 (Approved)
+				'remarks' => 'required_if:leave_status_id,4|nullable',
 			],
 			[
 				'leave_status_id.required' => 'Please choose your approval',
 				'verify_code.required_if' => 'Please insert :attribute to approve leave, otherwise it wont be necessary for leave application reject',
+				'remarks' => 'Please insert :attribute to reject leave, otherwise it wont be necessary for leave application approve',
 			],
 			[
 				'leave_status_id' => 'Approval Status',
-				'verify_code' => 'Verification Code'
+				'verify_code' => 'Verification Code',
+				'remarks' => 'Remarks',
 			]
 		);
 
@@ -585,7 +596,8 @@ class AjaxController extends Controller
 			if($vc == $request->verify_code) {
 				$sa->update([
 					'staff_id' => \Auth::user()->belongstostaff->id,
-					'leave_status_id' => $request->leave_status_id
+					'leave_status_id' => $request->leave_status_id,
+					'remarks' => ucwords(Str::lower($request->remarks)),
 				]);
 			} else {
 				Session::flash('flash_message', 'Verification Code was incorrect');
@@ -648,16 +660,16 @@ class AjaxController extends Controller
 			}
 
 			if($sauser->belongstoleaveapprovalflow->backup_approval == 1){																// update on backup
-				$sal->hasmanyleaveapprovalbackup()->update([/*'staff_id' => \Auth::user()->belongstostaff->id,*/ 'leave_status_id' => $request->leave_status_id, 'remarks' => 'Rejected by Director ('.\Auth::user()->belongstostaff->name.') on '.\Carbon\Carbon::now()->format('j M Y g:i a')]);
+				$sal->hasmanyleaveapprovalbackup()->update([/*'staff_id' => \Auth::user()->belongstostaff->id,*/ 'leave_status_id' => $request->leave_status_id, 'remarks' => 'Rejected by Director ('.\Auth::user()->belongstostaff->name.') on '.\Carbon\Carbon::now()->format('j M Y g:i a').' | '.ucwords(Str::lower($request->remarks))]);
 			}
 			if($sauser->belongstoleaveapprovalflow->supervisor_approval == 1){															// update on supervisor
-				$sal->hasmanyleaveapprovalsupervisor()->update(['staff_id' => \Auth::user()->belongstostaff->id, 'leave_status_id' => $request->leave_status_id, 'remarks' => 'Rejected by Director ('.\Auth::user()->belongstostaff->name.') on '.\Carbon\Carbon::now()->format('j M Y g:i a')]);
+				$sal->hasmanyleaveapprovalsupervisor()->update([/*'staff_id' => \Auth::user()->belongstostaff->id,*/ 'leave_status_id' => $request->leave_status_id, 'remarks' => 'Rejected by Director ('.\Auth::user()->belongstostaff->name.') on '.\Carbon\Carbon::now()->format('j M Y g:i a').' | '.ucwords(Str::lower($request->remarks))]);
 			}
 			if($sauser->belongstoleaveapprovalflow->hod_approval == 1){																	// update on hod
-				$sal->hasmanyleaveapprovalhod()->update([/*'staff_id' => \Auth::user()->belongstostaff->id,*/ 'leave_status_id' => $request->leave_status_id, 'remarks' => 'Rejected by Director ('.\Auth::user()->belongstostaff->name.') on '.\Carbon\Carbon::now()->format('j M Y g:i a')]);
+				$sal->hasmanyleaveapprovalhod()->update([/*'staff_id' => \Auth::user()->belongstostaff->id,*/ 'leave_status_id' => $request->leave_status_id, 'remarks' => 'Rejected by Director ('.\Auth::user()->belongstostaff->name.') on '.\Carbon\Carbon::now()->format('j M Y g:i a').' | '.ucwords(Str::lower($request->remarks))]);
 			}
 			if($sauser->belongstoleaveapprovalflow->director_approval == 1){															// update on director
-				$sal->hasmanyleaveapprovaldir()->update([/*'staff_id' => \Auth::user()->belongstostaff->id,*/ 'leave_status_id' => $request->leave_status_id, 'remarks' => 'Rejected by Director ('.\Auth::user()->belongstostaff->name.') on '.\Carbon\Carbon::now()->format('j M Y g:i a')]);
+				$sal->hasmanyleaveapprovaldir()->update(['staff_id' => \Auth::user()->belongstostaff->id, 'leave_status_id' => $request->leave_status_id, 'remarks' => 'Rejected by Director ('.\Auth::user()->belongstostaff->name.') on '.\Carbon\Carbon::now()->format('j M Y g:i a').' | '.ucwords(Str::lower($request->remarks))]);
 			}
 			if($sauser->belongstoleaveapprovalflow->hr_approval == 1){																	// update on hr
 				$sal->hasmanyleaveapprovalhr()->update([/*'staff_id' => \Auth::user()->belongstostaff->id,*/ 'leave_status_id' => $request->leave_status_id, 'remarks' => 'Rejected by Director ('.\Auth::user()->belongstostaff->name.') on '.\Carbon\Carbon::now()->format('j M Y g:i a')]);
@@ -704,19 +716,19 @@ class AjaxController extends Controller
 			}
 
 			if($sauser->belongstoleaveapprovalflow->backup_approval == 1){																// update on backup
-				$sal->hasmanyleaveapprovalbackup()->update([/*'staff_id' => \Auth::user()->belongstostaff->id,*/ 'leave_status_id' => $request->leave_status_id, 'remarks' => 'Rejected by Director ('.\Auth::user()->belongstostaff->name.') on '.\Carbon\Carbon::now()->format('j M Y g:i a')]);
+				$sal->hasmanyleaveapprovalbackup()->update([/*'staff_id' => \Auth::user()->belongstostaff->id,*/ 'leave_status_id' => $request->leave_status_id, 'remarks' => ucwords(Str::lower($request->remarks))]);
 			}
 			if($sauser->belongstoleaveapprovalflow->supervisor_approval == 1){															// update on supervisor
-				$sal->hasmanyleaveapprovalsupervisor()->update(['staff_id' => \Auth::user()->belongstostaff->id, 'leave_status_id' => $request->leave_status_id, 'remarks' => 'Rejected by Director ('.\Auth::user()->belongstostaff->name.') on '.\Carbon\Carbon::now()->format('j M Y g:i a')]);
+				$sal->hasmanyleaveapprovalsupervisor()->update([/*'staff_id' => \Auth::user()->belongstostaff->id, */'leave_status_id' => $request->leave_status_id, 'remarks' => ucwords(Str::lower($request->remarks))]);
 			}
 			if($sauser->belongstoleaveapprovalflow->hod_approval == 1){																	// update on hod
-				$sal->hasmanyleaveapprovalhod()->update([/*'staff_id' => \Auth::user()->belongstostaff->id,*/ 'leave_status_id' => $request->leave_status_id, 'remarks' => 'Rejected by Director ('.\Auth::user()->belongstostaff->name.') on '.\Carbon\Carbon::now()->format('j M Y g:i a')]);
+				$sal->hasmanyleaveapprovalhod()->update([/*'staff_id' => \Auth::user()->belongstostaff->id,*/ 'leave_status_id' => $request->leave_status_id, 'remarks' => ucwords(Str::lower($request->remarks))]);
 			}
 			if($sauser->belongstoleaveapprovalflow->director_approval == 1){															// update on director
-				$sal->hasmanyleaveapprovaldir()->update([/*'staff_id' => \Auth::user()->belongstostaff->id,*/ 'leave_status_id' => $request->leave_status_id, 'remarks' => 'Rejected by Director ('.\Auth::user()->belongstostaff->name.') on '.\Carbon\Carbon::now()->format('j M Y g:i a')]);
+				$sal->hasmanyleaveapprovaldir()->update(['staff_id' => \Auth::user()->belongstostaff->id, 'leave_status_id' => $request->leave_status_id, 'remarks' => ucwords(Str::lower($request->remarks))]);
 			}
 			if($sauser->belongstoleaveapprovalflow->hr_approval == 1){																	// update on hr
-				$sal->hasmanyleaveapprovalhr()->update([/*'staff_id' => \Auth::user()->belongstostaff->id,*/ 'leave_status_id' => $request->leave_status_id, 'remarks' => 'Rejected by Director ('.\Auth::user()->belongstostaff->name.') on '.\Carbon\Carbon::now()->format('j M Y g:i a')]);
+				$sal->hasmanyleaveapprovalhr()->update([/*'staff_id' => \Auth::user()->belongstostaff->id,*/ 'leave_status_id' => $request->leave_status_id, 'remarks' => ucwords(Str::lower($request->remarks))]);
 			}
 		}
 		Session::flash('flash_message', 'Successfully make an approval for user.');
@@ -730,14 +742,17 @@ class AjaxController extends Controller
 		$validated = $request->validate([
 				'leave_status_id' => 'required',
 				'verify_code' => 'required_if:leave_status_id,5|numeric|nullable',		// required if only leave_status_id is 5 (Approved)
+				'remarks' => 'required_if:leave_status_id,4|nullable',
 			],
 			[
 				'leave_status_id.required' => 'Please choose your approval',
 				'verify_code.required_if' => 'Please insert :attribute to approve leave, otherwise it wont be necessary for leave application reject',
+				'remarks' => 'Please insert :attribute to reject leave, otherwise it wont be necessary for leave application approve',
 			],
 			[
 				'leave_status_id' => 'Approval Status',
-				'verify_code' => 'Verification Code'
+				'verify_code' => 'Verification Code',
+				'remarks' => 'Remarks',
 			]
 		);
 
@@ -759,7 +774,8 @@ class AjaxController extends Controller
 			if($vc == $request->verify_code) {
 				$sa->update([
 					'staff_id' => \Auth::user()->belongstostaff->id,
-					'leave_status_id' => $request->leave_status_id
+					'leave_status_id' => $request->leave_status_id,
+					'remarks' => ucwords(Str::lower($request->remarks)),
 				]);
 				$sal->update(['leave_status_id' => $request->leave_status_id]);
 			} else {
@@ -826,7 +842,7 @@ class AjaxController extends Controller
 				$sal->hasmanyleaveapprovalbackup()->update([/*'staff_id' => \Auth::user()->belongstostaff->id,*/ 'leave_status_id' => $request->leave_status_id, 'remarks' => 'Rejected by Director ('.\Auth::user()->belongstostaff->name.') on '.\Carbon\Carbon::now()->format('j M Y g:i a')]);
 			}
 			if($sauser->belongstoleaveapprovalflow->supervisor_approval == 1){															// update on supervisor
-				$sal->hasmanyleaveapprovalsupervisor()->update(['staff_id' => \Auth::user()->belongstostaff->id, 'leave_status_id' => $request->leave_status_id, 'remarks' => 'Rejected by Director ('.\Auth::user()->belongstostaff->name.') on '.\Carbon\Carbon::now()->format('j M Y g:i a')]);
+				$sal->hasmanyleaveapprovalsupervisor()->update([/*'staff_id' => \Auth::user()->belongstostaff->id,*/ 'leave_status_id' => $request->leave_status_id, 'remarks' => 'Rejected by Director ('.\Auth::user()->belongstostaff->name.') on '.\Carbon\Carbon::now()->format('j M Y g:i a')]);
 			}
 			if($sauser->belongstoleaveapprovalflow->hod_approval == 1){																	// update on hod
 				$sal->hasmanyleaveapprovalhod()->update([/*'staff_id' => \Auth::user()->belongstostaff->id,*/ 'leave_status_id' => $request->leave_status_id, 'remarks' => 'Rejected by Director ('.\Auth::user()->belongstostaff->name.') on '.\Carbon\Carbon::now()->format('j M Y g:i a')]);
@@ -835,7 +851,7 @@ class AjaxController extends Controller
 				$sal->hasmanyleaveapprovaldir()->update([/*'staff_id' => \Auth::user()->belongstostaff->id,*/ 'leave_status_id' => $request->leave_status_id, 'remarks' => 'Rejected by Director ('.\Auth::user()->belongstostaff->name.') on '.\Carbon\Carbon::now()->format('j M Y g:i a')]);
 			}
 			if($sauser->belongstoleaveapprovalflow->hr_approval == 1){																	// update on hr
-				$sal->hasmanyleaveapprovalhr()->update([/*'staff_id' => \Auth::user()->belongstostaff->id,*/ 'leave_status_id' => $request->leave_status_id, 'remarks' => 'Rejected by Director ('.\Auth::user()->belongstostaff->name.') on '.\Carbon\Carbon::now()->format('j M Y g:i a')]);
+				$sal->hasmanyleaveapprovalhr()->update(['staff_id' => \Auth::user()->belongstostaff->id, 'leave_status_id' => $request->leave_status_id, 'remarks' => 'Rejected by Director ('.\Auth::user()->belongstostaff->name.') on '.\Carbon\Carbon::now()->format('j M Y g:i a')]);
 			}
 			// remove leave_id from attendance
 			$z = HRAttendance::where('leave_id', $sal->id)->get();
