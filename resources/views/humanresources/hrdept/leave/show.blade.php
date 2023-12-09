@@ -198,7 +198,7 @@ if ($leave_status_temp == 'Approved' || $leave_status_temp == 'Waived') {
 } else {
   $leave_status = "Pending";
   $leave_color = "width: 20%; background-color: #e6e6e6; color: #999900";
-} 
+}
 ?>
 
 
@@ -275,7 +275,7 @@ if ($leave_status_temp == 'Approved' || $leave_status_temp == 'Waived') {
     <div class="table">
       @foreach($hrleave->hasmanyleaveamend()->get() as $key => $value1)
       <div class="table-row">
-        <div class="table-cell-top" style="width: 100%;">EDIT REMARK : {{ $value1->amend_note }} on {{ \Carbon\Carbon::parse($value1->created_at)->format('j M Y') }}</div>
+        <div class="table-cell-top" style="width: 100%;">EDIT REMARK : {!! $value1->amend_note !!} on {!! \Carbon\Carbon::parse($value1->created_at)->format('j M Y') !!}</div>
       </div>
       @endforeach
     </div>
@@ -304,8 +304,8 @@ if ($leave_status_temp == 'Approved' || $leave_status_temp == 'Waived') {
 
   <div class="table">
     <div class="table-row" style="height: 40px;">
-      @for ($a = 1; $a <= $count; $a++) 
-        @if ($supervisor_no==$a) 
+      @for ($a = 1; $a <= $count; $a++)
+        @if ($supervisor_no==$a)
           <div class="table-cell-top-bottom text-center text-decoration-underline text-wrap text-uppercase" style="width: {{ $width }}%; vertical-align: bottom;">
             {{ @$supervisor->belongstostaff->name }}
           </div>
@@ -326,7 +326,7 @@ if ($leave_status_temp == 'Approved' || $leave_status_temp == 'Waived') {
     </div>
 
     <div class="table-row">
-      @for ($a = 1; $a <= $count; $a++) 
+      @for ($a = 1; $a <= $count; $a++)
         @if ($supervisor_no==$a)
           <?php
           $status = ($supervisor->leave_status_id)?OptLeaveStatus::find(@$supervisor->leave_status_id)->status:'Pending';
@@ -338,7 +338,7 @@ if ($leave_status_temp == 'Approved' || $leave_status_temp == 'Waived') {
           } else {
             $color = "background-color:transparent; color:#999900";
           }
-          ?> 
+          ?>
           <div class="table-cell-top1 text-center">
             {{ @$supervisor->updated_at }}<br />
             <span style="{{ $color }}">{{ @$status }}</span>
@@ -354,7 +354,7 @@ if ($leave_status_temp == 'Approved' || $leave_status_temp == 'Waived') {
           } else {
             $color = "background-color:transparent; color:#999900";
           }
-          ?> 
+          ?>
           <div class="table-cell-top1 text-center">
             {{ @$hod->updated_at }}<br />
             <span style="{{ $color }}">{{ @$status }}</span>
