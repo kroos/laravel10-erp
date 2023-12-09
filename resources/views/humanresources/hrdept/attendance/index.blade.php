@@ -4039,7 +4039,7 @@ $i = 1;
 						</span>
 					</td>
 					<td>
-						{{ ($s->exception == 1)??NULL }}
+						{{ ($s->exception == 1)?'Yes':NULL }}
 					</td>
 					<td>
 						<a href="{{ route('attendance.edit', $s->id) }}" class="btn btn-sm btn-outline-secondary">

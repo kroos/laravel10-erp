@@ -188,7 +188,7 @@ $hrremarksattendance = HRAttendance::where(function (Builder $query) use ($hrlea
 						->get();
 ?>
 
-<div class="col-sm-12 row">
+<div class="col-sm-12 row align-items-start justify-content-center">
 	@include('humanresources.hrdept.navhr')
 	<h4>Leave Application &nbsp;
 		<a href="{{ route('hrleave.edit', $hrleave->id) }}" class="btn btn-sm btn-outline-secondary">

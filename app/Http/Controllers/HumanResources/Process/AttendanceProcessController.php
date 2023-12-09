@@ -31,8 +31,12 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 
+// load Carbon
+use \Carbon\Carbon;
+use \Carbon\CarbonPeriod;
+use \Carbon\CarbonInterval;
+
 use Session;
-use Carbon\Carbon;
 use Throwable;
 use Exception;
 use Log;

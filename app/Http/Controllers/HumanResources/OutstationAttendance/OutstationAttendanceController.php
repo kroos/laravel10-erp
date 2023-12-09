@@ -45,12 +45,17 @@ use Log;
 
 class OutstationAttendanceController extends Controller
 {
+	function __construct()
+	{
+		$this->middleware(['auth']);
+	}
+
 	/**
 	 * Display a listing of the resource.
 	 */
 	public function index(): View
 	{
-			$ip = file_get_contents('https://api.ipify.org');
+			$ip = file_get_contents(env('API_IP_ADDRESS'));
 			// $ip = request()->ip();
 			$data = \Location::get($ip);
 			// dd($ip, $data);
@@ -80,7 +85,7 @@ class OutstationAttendanceController extends Controller
 				'outstation_id' => 'Location',
 			]
 		);
-		$ip = file_get_contents('https://api.ipify.org');
+		$ip = file_get_contents(env('API_IP_ADDRESS'));
 		// $ip = request()->ip();
 		$data = \Location::get($ip);
 		if (now()->gt(Carbon::parse(now()->format('Y-m-d').' '.'13:00:00'))) {		// PM
