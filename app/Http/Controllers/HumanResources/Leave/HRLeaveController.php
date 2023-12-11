@@ -1160,6 +1160,7 @@ class HRLeaveController extends Controller
 			$totalwh = Arr::collapse([$timeawh1, $timeawh2]);
 			$totalwhmins = count($totalwh);
 
+			// need to check on maintenance team
 			foreach($totalwh as $k1){
 				foreach($timeuser as $k2){
 					if ( Carbon::parse($k1)->EqualTo(Carbon::parse($k2)) ) {
@@ -1167,7 +1168,6 @@ class HRLeaveController extends Controller
 					}
 				}
 			}
-			$timeoverlapcount = count($timeoverlap);
 			// return [$timeoverlap, $timeoverlapcount];
 
 			if ( $timeoverlapcount > 125 ) { // minutes over than 2 hours with contingency
