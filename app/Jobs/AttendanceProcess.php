@@ -135,7 +135,7 @@ class AttendanceProcess implements ShouldQueue
 									if ($resume) {																					// outstation | working | leave | no in | no break | no resume
 										if ($out) {																					// outstation | working | leave | no in | no break | no resume | no out
 											if (is_null($s->attendance_type_id)) {
-												$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
+												// $ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
 											} else {
 												$ll = $s->belongstoopttcms->leave;
 											}
@@ -153,11 +153,11 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													$s->update(['leave_id' => $l->id]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -165,7 +165,7 @@ class AttendanceProcess implements ShouldQueue
 											}
 										} else {																					// outstation | working | leave | no in | no break | no resume | out
 											if (is_null($s->attendance_type_id)) {
-												$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
+												// $ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
 											} else {
 												$ll = $s->belongstoopttcms->leave;
 											}
@@ -183,11 +183,11 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													$s->update(['leave_id' => $l->id]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -197,7 +197,7 @@ class AttendanceProcess implements ShouldQueue
 									} else {																						// outstation | working | leave | no in | no break | resume
 										if ($out) {																					// outstation | working | leave | no in | no break | resume | no out
 											if (is_null($s->attendance_type_id)) {
-												$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
+												// $ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
 											} else {
 												$ll = $s->belongstoopttcms->leave;
 											}
@@ -215,11 +215,11 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													$s->update(['leave_id' => $l->id]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -227,7 +227,7 @@ class AttendanceProcess implements ShouldQueue
 											}
 										} else {																					// outstation | working | leave | no in | no break | resume | out
 											if (is_null($s->attendance_type_id)) {
-												$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
+												// $ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
 											} else {
 												$ll = $s->belongstoopttcms->leave;
 											}
@@ -245,11 +245,11 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													$s->update(['leave_id' => $l->id]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -261,7 +261,7 @@ class AttendanceProcess implements ShouldQueue
 									if ($resume) {																					// outstation | working | leave | no in | break | no resume
 										if ($out) {																					// outstation | working | leave | no in | break | no resume | no out
 											if (is_null($s->attendance_type_id)) {
-												$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
+												// $ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
 											} else {
 												$ll = $s->belongstoopttcms->leave;
 											}
@@ -279,11 +279,11 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													$s->update(['leave_id' => $l->id]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -291,7 +291,7 @@ class AttendanceProcess implements ShouldQueue
 											}
 										} else {																					// outstation | working | leave | no in | break | no resume | out
 											if (is_null($s->attendance_type_id)) {
-												$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
+												// $ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
 											} else {
 												$ll = $s->belongstoopttcms->leave;
 											}
@@ -309,11 +309,11 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													$s->update(['leave_id' => $l->id]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -323,7 +323,7 @@ class AttendanceProcess implements ShouldQueue
 									} else {																						// outstation | working | leave | no in | break | resume
 										if ($out) {																					// outstation | working | leave | no in | break | resume | no out
 											if (is_null($s->attendance_type_id)) {
-												$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
+												// $ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
 											} else {
 												$ll = $s->belongstoopttcms->leave;
 											}
@@ -341,11 +341,11 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													$s->update(['leave_id' => $l->id]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -353,7 +353,7 @@ class AttendanceProcess implements ShouldQueue
 											}
 										} else {																					// outstation | working | leave | no in | break | resume | out
 											if (is_null($s->attendance_type_id)) {
-												$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
+												// $ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
 											} else {
 												$ll = $s->belongstoopttcms->leave;
 											}
@@ -371,11 +371,11 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													$s->update(['leave_id' => $l->id]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -389,7 +389,7 @@ class AttendanceProcess implements ShouldQueue
 									if ($resume) {																					// outstation | working | leave | in | no break | no resume
 										if ($out) {																					// outstation | working | leave | in | no break | no resume | no out
 											if (is_null($s->attendance_type_id)) {
-												$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
+												// $ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
 											} else {
 												$ll = $s->belongstoopttcms->leave;
 											}
@@ -407,11 +407,11 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													$s->update(['leave_id' => $l->id]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -419,7 +419,7 @@ class AttendanceProcess implements ShouldQueue
 											}
 										} else {																					// outstation | working | leave | in | no break | no resume | out
 											if (is_null($s->attendance_type_id)) {
-												$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
+												// $ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
 											} else {
 												$ll = $s->belongstoopttcms->leave;
 											}
@@ -437,11 +437,11 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													$s->update(['leave_id' => $l->id]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -451,7 +451,7 @@ class AttendanceProcess implements ShouldQueue
 									} else {																						// outstation | working | leave | in | no break | resume
 										if ($out) {																					// outstation | working | leave | in | no break | resume | no out
 											if (is_null($s->attendance_type_id)) {
-												$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
+												// $ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
 											} else {
 												$ll = $s->belongstoopttcms->leave;
 											}
@@ -469,11 +469,11 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													$s->update(['leave_id' => $l->id]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -481,7 +481,7 @@ class AttendanceProcess implements ShouldQueue
 											}
 										} else {																					// outstation | working | leave | in | no break | resume | out
 											if (is_null($s->attendance_type_id)) {
-												$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
+												// $ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
 											} else {
 												$ll = $s->belongstoopttcms->leave;
 											}
@@ -499,11 +499,11 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													$s->update(['leave_id' => $l->id]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -515,7 +515,7 @@ class AttendanceProcess implements ShouldQueue
 									if ($resume) {																					// outstation | working | leave | in | break | no resume
 										if ($out) {																					// outstation | working | leave | in | break | no resume | no out
 											if (is_null($s->attendance_type_id)) {
-												$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
+												// $ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
 											} else {
 												$ll = $s->belongstoopttcms->leave;
 											}
@@ -533,11 +533,11 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													$s->update(['leave_id' => $l->id]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -545,7 +545,7 @@ class AttendanceProcess implements ShouldQueue
 											}
 										} else {																					// outstation | working | leave | in | break | no resume | out
 											if (is_null($s->attendance_type_id)) {
-												$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
+												// $ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
 											} else {
 												$ll = $s->belongstoopttcms->leave;
 											}
@@ -563,11 +563,11 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													$s->update(['leave_id' => $l->id]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -577,7 +577,7 @@ class AttendanceProcess implements ShouldQueue
 									} else {																						// outstation | working | leave | in | break | resume
 										if ($out) {																					// outstation | working | leave | in | break | resume | no out
 											if (is_null($s->attendance_type_id)) {
-												$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
+												// $ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
 											} else {
 												$ll = $s->belongstoopttcms->leave;
 											}
@@ -595,11 +595,11 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													$s->update(['leave_id' => $l->id]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -607,7 +607,7 @@ class AttendanceProcess implements ShouldQueue
 											}
 										} else {																					// outstation | working | leave | in | break | resume | out
 											if (is_null($s->attendance_type_id)) {
-												$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
+												// $ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
 											} else {
 												$ll = $s->belongstoopttcms->leave;
 											}
@@ -625,11 +625,11 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													$s->update(['leave_id' => $l->id]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -645,7 +645,7 @@ class AttendanceProcess implements ShouldQueue
 									if ($resume) {																					// outstation | working | no leave | no in | no break | no resume
 										if ($out) {																					// outstation | working | no leave | no in | no break | no resume | no out
 											if (is_null($s->attendance_type_id)) {
-												$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
+												// $ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
 											} else {
 												$ll = $s->belongstoopttcms->leave;
 											}
@@ -663,11 +663,11 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													$s->update(['leave_id' => $l->id]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -675,7 +675,7 @@ class AttendanceProcess implements ShouldQueue
 											}
 										} else {																					// outstation | working | no leave | no in | no break | no resume | out
 											if (is_null($s->attendance_type_id)) {
-												$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
+												// $ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
 											} else {
 												$ll = $s->belongstoopttcms->leave;
 											}
@@ -693,11 +693,11 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													$s->update(['leave_id' => $l->id]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -707,7 +707,7 @@ class AttendanceProcess implements ShouldQueue
 									} else {																						// outstation | working | no leave | no in | no break | resume
 										if ($out) {																					// outstation | working | no leave | no in | no break | resume | no out
 											if (is_null($s->attendance_type_id)) {
-												$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
+												// $ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
 											} else {
 												$ll = $s->belongstoopttcms->leave;
 											}
@@ -725,11 +725,11 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													$s->update(['leave_id' => $l->id]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -737,7 +737,7 @@ class AttendanceProcess implements ShouldQueue
 											}
 										} else {																					// outstation | working | no leave | no in | no break | resume | out
 											if (is_null($s->attendance_type_id)) {
-												$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
+												// $ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
 											} else {
 												$ll = $s->belongstoopttcms->leave;
 											}
@@ -755,11 +755,11 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													$s->update(['leave_id' => $l->id]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -771,7 +771,7 @@ class AttendanceProcess implements ShouldQueue
 									if ($resume) {																					// outstation | working | no leave | no in | break | no resume
 										if ($out) {																					// outstation | working | no leave | no in | break | no resume | no out
 											if (is_null($s->attendance_type_id)) {
-												$ll = '<a href="'.route('attendance.edit', $s->id).'">Check</a>';					// pls check
+												// $ll = '<a href="'.route('attendance.edit', $s->id).'">Check</a>';					// pls check
 											} else {
 												$ll = $s->belongstoopttcms->leave;
 											}
@@ -789,11 +789,11 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													$s->update(['leave_id' => $l->id]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -801,7 +801,7 @@ class AttendanceProcess implements ShouldQueue
 											}
 										} else {																					// outstation | working | no leave | no in | break | no resume | out
 											if (is_null($s->attendance_type_id)) {
-												$ll = '<a href="'.route('attendance.edit', $s->id).'">Check</a>';					// pls check
+												// $ll = '<a href="'.route('attendance.edit', $s->id).'">Check</a>';					// pls check
 											} else {
 												$ll = $s->belongstoopttcms->leave;
 											}
@@ -819,11 +819,11 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													$s->update(['leave_id' => $l->id]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -833,7 +833,7 @@ class AttendanceProcess implements ShouldQueue
 									} else {																						// outstation | working | no leave | no in | break | resume
 										if ($out) {																					// outstation | working | no leave | no in | break | resume | no out
 											if (is_null($s->attendance_type_id)) {
-												$ll = '<a href="'.route('attendance.edit', $s->id).'">Check</a>';					// pls check
+												// $ll = '<a href="'.route('attendance.edit', $s->id).'">Check</a>';					// pls check
 											} else {
 												$ll = $s->belongstoopttcms->leave;
 											}
@@ -851,11 +851,11 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													$s->update(['leave_id' => $l->id]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -864,9 +864,9 @@ class AttendanceProcess implements ShouldQueue
 										} else {																					// outstation | working | no leave | no in | break | resume | out
 											if (is_null($s->attendance_type_id)) {
 												if ($break == $resume) {															// check for break and resume is the same value
-													$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
+													// $ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
 													} else {
-													$ll = '<a href="'.route('attendance.edit', $s->id).'">Check</a>';					// pls check
+													// $ll = '<a href="'.route('attendance.edit', $s->id).'">Check</a>';					// pls check
 												}
 											} else {
 												$ll = $s->belongstoopttcms->leave;
@@ -885,11 +885,11 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													$s->update(['leave_id' => $l->id]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -904,13 +904,13 @@ class AttendanceProcess implements ShouldQueue
 										if ($out) {																					// outstation | working | no leave | in | no break | no resume | no out
 											if (Carbon::parse(now())->gt($s->attend_date)) {
 												if (is_null($s->attendance_type_id)) {
-													$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
+													// $ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
 												} else {
 													$ll = $s->belongstoopttcms->leave;
 												}
 											} else {
 												if (is_null($s->attendance_type_id)) {
-													$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
+													// $ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
 												} else {
 													$ll = $s->belongstoopttcms->leave;
 												}
@@ -929,11 +929,11 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													$s->update(['leave_id' => $l->id]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -941,7 +941,7 @@ class AttendanceProcess implements ShouldQueue
 											}
 										} else {																					// outstation | working | no leave | in | no break | no resume | out
 											if (is_null($s->attendance_type_id)) {
-												$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
+												// $ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
 											} else {
 												$ll = $s->belongstoopttcms->leave;
 											}
@@ -959,11 +959,11 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													$s->update(['leave_id' => $l->id]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -973,7 +973,7 @@ class AttendanceProcess implements ShouldQueue
 									} else {																						// outstation | working | no leave | in | no break | resume
 										if ($out) {																					// outstation | working | no leave | in | no break | resume | no out
 											if (is_null($s->attendance_type_id)) {
-												$ll = '<a href="'.route('attendance.edit', $s->id).'">Check</a>';					// pls check
+												// $ll = '<a href="'.route('attendance.edit', $s->id).'">Check</a>';					// pls check
 											} else {
 												$ll = $s->belongstoopttcms->leave;
 											}
@@ -991,11 +991,11 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													$s->update(['leave_id' => $l->id]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -1003,7 +1003,7 @@ class AttendanceProcess implements ShouldQueue
 											}
 										} else {																					// outstation | working | no leave | in | no break | resume | out
 											if (is_null($s->attendance_type_id)) {
-												$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
+												// $ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
 											} else {
 												$ll = $s->belongstoopttcms->leave;
 											}
@@ -1021,11 +1021,11 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													$s->update(['leave_id' => $l->id]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -1037,7 +1037,7 @@ class AttendanceProcess implements ShouldQueue
 									if ($resume) {																					// outstation | working | no leave | in | break | no resume
 										if ($out) {																					// outstation | working | no leave | in | break | no resume | no out
 											if (is_null($s->attendance_type_id)) {
-												$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
+												// $ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
 											} else {
 												$ll = $s->belongstoopttcms->leave;
 											}
@@ -1055,11 +1055,11 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													$s->update(['leave_id' => $l->id]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -1067,7 +1067,7 @@ class AttendanceProcess implements ShouldQueue
 											}
 										} else {																					// outstation | working | no leave | in | break | no resume | out
 											if (is_null($s->attendance_type_id)) {
-												$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
+												// $ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
 											} else {
 												$ll = $s->belongstoopttcms->leave;
 											}
@@ -1085,11 +1085,11 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													$s->update(['leave_id' => $l->id]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -1100,9 +1100,9 @@ class AttendanceProcess implements ShouldQueue
 										if ($out) {																					// outstation | working | no leave | in | break | resume | no out
 											if (is_null($s->attendance_type_id)) {
 												if ($break == $resume) {															// check for break and resume is the same value
-													$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
+													// $ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
 													} else {
-													$ll = '<a href="'.route('attendance.edit', $s->id).'">Check</a>';					// pls check
+													// $ll = '<a href="'.route('attendance.edit', $s->id).'">Check</a>';					// pls check
 												}
 											} else {
 												$ll = $s->belongstoopttcms->leave;
@@ -1121,11 +1121,11 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													$s->update(['leave_id' => $l->id]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -1133,7 +1133,7 @@ class AttendanceProcess implements ShouldQueue
 											}
 										} else {																					// outstation | working | no leave | in | break | resume | out
 											if (is_null($s->attendance_type_id)) {
-												$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
+												// $ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
 											} else {
 												$ll = $s->belongstoopttcms->leave;
 											}
@@ -1151,11 +1151,11 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													$s->update(['leave_id' => $l->id]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -1173,7 +1173,7 @@ class AttendanceProcess implements ShouldQueue
 									if ($resume) {																					// outstation | no working | leave | no in | no break | no resume
 										if ($out) {																					// outstation | no working | leave | no in | no break | no resume | no out
 											if (is_null($s->attendance_type_id)) {
-												$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
+												// $ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
 											} else {
 												$ll = $s->belongstoopttcms->leave;
 											}
@@ -1191,12 +1191,12 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													// $s->update(['leave_id' => $l->id]);
 													$s->update(['leave_id' => NULL]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -1204,7 +1204,7 @@ class AttendanceProcess implements ShouldQueue
 											}
 										} else {																					// outstation | no working | leave | no in | no break | no resume | out
 											if (is_null($s->attendance_type_id)) {
-												$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
+												// $ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
 											} else {
 												$ll = $s->belongstoopttcms->leave;
 											}
@@ -1222,12 +1222,12 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													// $s->update(['leave_id' => $l->id]);
 													$s->update(['leave_id' => NULL]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -1237,7 +1237,7 @@ class AttendanceProcess implements ShouldQueue
 									} else {																						// outstation | no working | leave | no in | no break | resume
 										if ($out) {																					// outstation | no working | leave | no in | no break | resume | no out
 											if (is_null($s->attendance_type_id)) {
-												$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
+												// $ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
 											} else {
 												$ll = $s->belongstoopttcms->leave;
 											}
@@ -1255,12 +1255,12 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													// $s->update(['leave_id' => $l->id]);
 													$s->update(['leave_id' => NULL]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -1268,7 +1268,7 @@ class AttendanceProcess implements ShouldQueue
 											}
 										} else {																					// outstation | no working | leave | no in | no break | resume | out
 											if (is_null($s->attendance_type_id)) {
-												$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
+												// $ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
 											} else {
 												$ll = $s->belongstoopttcms->leave;
 											}
@@ -1286,12 +1286,12 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													// $s->update(['leave_id' => $l->id]);
 													$s->update(['leave_id' => NULL]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -1303,7 +1303,7 @@ class AttendanceProcess implements ShouldQueue
 									if ($resume) {																					// outstation | no working | leave | no in | break | no resume
 										if ($out) {																					// outstation | no working | leave | no in | break | no resume | no out
 											if (is_null($s->attendance_type_id)) {
-												$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
+												// $ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
 											} else {
 												$ll = $s->belongstoopttcms->leave;
 											}
@@ -1321,12 +1321,12 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													// $s->update(['leave_id' => $l->id]);
 													$s->update(['leave_id' => NULL]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -1334,7 +1334,7 @@ class AttendanceProcess implements ShouldQueue
 											}
 										} else {																					// outstation | no working | leave | no in | break | no resume | out
 											if (is_null($s->attendance_type_id)) {
-												$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
+												// $ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
 											} else {
 												$ll = $s->belongstoopttcms->leave;
 											}
@@ -1352,12 +1352,12 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													// $s->update(['leave_id' => $l->id]);
 													$s->update(['leave_id' => NULL]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -1367,7 +1367,7 @@ class AttendanceProcess implements ShouldQueue
 									} else {																						// outstation | no working | leave | no in | break | resume
 										if ($out) {																					// outstation | no working | leave | no in | break | resume | no out
 											if (is_null($s->attendance_type_id)) {
-												$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
+												// $ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
 											} else {
 												$ll = $s->belongstoopttcms->leave;
 											}
@@ -1385,12 +1385,12 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													// $s->update(['leave_id' => $l->id]);
 													$s->update(['leave_id' => NULL]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -1398,7 +1398,7 @@ class AttendanceProcess implements ShouldQueue
 											}
 										} else {																					// outstation | no working | leave | no in | break | resume | out
 											if (is_null($s->attendance_type_id)) {
-												$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
+												// $ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
 											} else {
 												$ll = $s->belongstoopttcms->leave;
 											}
@@ -1416,12 +1416,12 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													// $s->update(['leave_id' => $l->id]);
 													$s->update(['leave_id' => NULL]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -1435,7 +1435,7 @@ class AttendanceProcess implements ShouldQueue
 									if ($resume) {																					// outstation | no working | leave | in | no break | no resume
 										if ($out) {																					// outstation | no working | leave | in | no break | no resume | no out
 											if (is_null($s->attendance_type_id)) {
-												$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
+												// $ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
 											} else {
 												$ll = $s->belongstoopttcms->leave;
 											}
@@ -1453,12 +1453,12 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													// $s->update(['leave_id' => $l->id]);
 													$s->update(['leave_id' => NULL]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -1466,7 +1466,7 @@ class AttendanceProcess implements ShouldQueue
 											}
 										} else {																					// outstation | no working | leave | in | no break | no resume | out
 											if (is_null($s->attendance_type_id)) {
-												$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
+												// $ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
 											} else {
 												$ll = $s->belongstoopttcms->leave;
 											}
@@ -1484,12 +1484,12 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													// $s->update(['leave_id' => $l->id]);
 													$s->update(['leave_id' => NULL]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -1499,7 +1499,7 @@ class AttendanceProcess implements ShouldQueue
 									} else {																						// outstation | no working | leave | in | no break | resume
 										if ($out) {																					// outstation | no working | leave | in | no break | resume | no out
 											if (is_null($s->attendance_type_id)) {
-												$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
+												// $ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
 											} else {
 												$ll = $s->belongstoopttcms->leave;
 											}
@@ -1517,12 +1517,12 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													// $s->update(['leave_id' => $l->id]);
 													$s->update(['leave_id' => NULL]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -1530,7 +1530,7 @@ class AttendanceProcess implements ShouldQueue
 											}
 										} else {																					// outstation | no working | leave | in | no break | resume | out
 											if (is_null($s->attendance_type_id)) {
-												$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
+												// $ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
 											} else {
 												$ll = $s->belongstoopttcms->leave;
 											}
@@ -1548,12 +1548,12 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													// $s->update(['leave_id' => $l->id]);
 													$s->update(['leave_id' => NULL]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -1565,7 +1565,7 @@ class AttendanceProcess implements ShouldQueue
 									if ($resume) {																					// outstation | no working | leave | in | break | no resume
 										if ($out) {																					// outstation | no working | leave | in | break | no resume | no out
 											if (is_null($s->attendance_type_id)) {
-												$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
+												// $ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
 											} else {
 												$ll = $s->belongstoopttcms->leave;
 											}
@@ -1583,12 +1583,12 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													// $s->update(['leave_id' => $l->id]);
 													$s->update(['leave_id' => NULL]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -1596,7 +1596,7 @@ class AttendanceProcess implements ShouldQueue
 											}
 										} else {																					// outstation | no working | leave | in | break | no resume | out
 											if (is_null($s->attendance_type_id)) {
-												$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
+												// $ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
 											} else {
 												$ll = $s->belongstoopttcms->leave;
 											}
@@ -1614,12 +1614,12 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													// $s->update(['leave_id' => $l->id]);
 													$s->update(['leave_id' => NULL]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -1629,7 +1629,7 @@ class AttendanceProcess implements ShouldQueue
 									} else {																						// outstation | no working | leave | in | break | resume
 										if ($out) {																					// outstation | no working | leave | in | break | resume | no out
 											if (is_null($s->attendance_type_id)) {
-												$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
+												// $ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
 											} else {
 												$ll = $s->belongstoopttcms->leave;
 											}
@@ -1647,12 +1647,12 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													// $s->update(['leave_id' => $l->id]);
 													$s->update(['leave_id' => NULL]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -1660,7 +1660,7 @@ class AttendanceProcess implements ShouldQueue
 											}
 										} else {																					// outstation | no working | leave | in | break | resume | out
 											if (is_null($s->attendance_type_id)) {
-												$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
+												// $ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
 											} else {
 												$ll = $s->belongstoopttcms->leave;
 											}
@@ -1678,12 +1678,12 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													// $s->update(['leave_id' => $l->id]);
 													$s->update(['leave_id' => NULL]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -1699,7 +1699,7 @@ class AttendanceProcess implements ShouldQueue
 									if ($resume) {																					// outstation | no working | no leave | no in | no break | no resume
 										if ($out) {																					// outstation | no working | no leave | no in | no break | no resume | no out
 											if (is_null($s->attendance_type_id)) {
-												$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
+												// $ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
 											} else {
 												$ll = $s->belongstoopttcms->leave;
 											}
@@ -1717,12 +1717,12 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													// $s->update(['leave_id' => $l->id]);
 													$s->update(['leave_id' => NULL]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -1730,7 +1730,7 @@ class AttendanceProcess implements ShouldQueue
 											}
 										} else {																					// outstation | no working | no leave | no in | no break | no resume | out
 											if (is_null($s->attendance_type_id)) {
-												$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
+												// $ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
 											} else {
 												$ll = $s->belongstoopttcms->leave;
 											}
@@ -1748,12 +1748,12 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													// $s->update(['leave_id' => $l->id]);
 													$s->update(['leave_id' => NULL]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -1763,7 +1763,7 @@ class AttendanceProcess implements ShouldQueue
 									} else {																						// outstation | no working | no leave | no in | no break | resume
 										if ($out) {																					// outstation | no working | no leave | no in | no break | resume | no out
 											if (is_null($s->attendance_type_id)) {
-												$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
+												// $ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
 											} else {
 												$ll = $s->belongstoopttcms->leave;
 											}
@@ -1781,12 +1781,12 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													// $s->update(['leave_id' => $l->id]);
 													$s->update(['leave_id' => NULL]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -1794,7 +1794,7 @@ class AttendanceProcess implements ShouldQueue
 											}
 										} else {																					// outstation | no working | no leave | no in | no break | resume | out
 											if (is_null($s->attendance_type_id)) {
-												$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
+												// $ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
 											} else {
 												$ll = $s->belongstoopttcms->leave;
 											}
@@ -1812,12 +1812,12 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													// $s->update(['leave_id' => $l->id]);
 													$s->update(['leave_id' => NULL]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -1829,7 +1829,7 @@ class AttendanceProcess implements ShouldQueue
 									if ($resume) {																					// outstation | no working | no leave | no in | break | no resume
 										if ($out) {																					// outstation | no working | no leave | no in | break | no resume | no out
 											if (is_null($s->attendance_type_id)) {
-												$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
+												// $ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
 											} else {
 												$ll = $s->belongstoopttcms->leave;
 											}
@@ -1847,12 +1847,12 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													// $s->update(['leave_id' => $l->id]);
 													$s->update(['leave_id' => NULL]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -1860,7 +1860,7 @@ class AttendanceProcess implements ShouldQueue
 											}
 										} else {																					// outstation | no working | no leave | no in | break | no resume | out
 											if (is_null($s->attendance_type_id)) {
-												$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
+												// $ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
 											} else {
 												$ll = $s->belongstoopttcms->leave;
 											}
@@ -1878,12 +1878,12 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													// $s->update(['leave_id' => $l->id]);
 													$s->update(['leave_id' => NULL]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -1893,7 +1893,7 @@ class AttendanceProcess implements ShouldQueue
 									} else {																						// outstation | no working | no leave | no in | break | resume
 										if ($out) {																					// outstation | no working | no leave | no in | break | resume | no out
 											if (is_null($s->attendance_type_id)) {
-												$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
+												// $ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
 											} else {
 												$ll = $s->belongstoopttcms->leave;
 											}
@@ -1911,12 +1911,12 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													// $s->update(['leave_id' => $l->id]);
 													$s->update(['leave_id' => NULL]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -1924,7 +1924,7 @@ class AttendanceProcess implements ShouldQueue
 											}
 										} else {																					// outstation | no working | no leave | no in | break | resume | out
 											if (is_null($s->attendance_type_id)) {
-												$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
+												// $ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
 											} else {
 												$ll = $s->belongstoopttcms->leave;
 											}
@@ -1942,12 +1942,12 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													// $s->update(['leave_id' => $l->id]);
 													$s->update(['leave_id' => NULL]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -1961,7 +1961,7 @@ class AttendanceProcess implements ShouldQueue
 									if ($resume) {																					// outstation | no working | no leave | in | no break | no resume
 										if ($out) {																					// outstation | no working | no leave | in | no break | no resume | no out
 											if (is_null($s->attendance_type_id)) {
-												$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
+												// $ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
 											} else {
 												$ll = $s->belongstoopttcms->leave;
 											}
@@ -1979,12 +1979,12 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													// $s->update(['leave_id' => $l->id]);
 													$s->update(['leave_id' => NULL]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -1992,7 +1992,7 @@ class AttendanceProcess implements ShouldQueue
 											}
 										} else {																					// outstation | no working | no leave | in | no break | no resume | out
 											if (is_null($s->attendance_type_id)) {
-												$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
+												// $ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
 											} else {
 												$ll = $s->belongstoopttcms->leave;
 											}
@@ -2010,12 +2010,12 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													// $s->update(['leave_id' => $l->id]);
 													$s->update(['leave_id' => NULL]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -2025,7 +2025,7 @@ class AttendanceProcess implements ShouldQueue
 									} else {																						// outstation | no working | no leave | in | no break | resume
 										if ($out) {																					// outstation | no working | no leave | in | no break | resume | no out
 											if (is_null($s->attendance_type_id)) {
-												$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
+												// $ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
 											} else {
 												$ll = $s->belongstoopttcms->leave;
 											}
@@ -2043,12 +2043,12 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													// $s->update(['leave_id' => $l->id]);
 													$s->update(['leave_id' => NULL]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -2056,7 +2056,7 @@ class AttendanceProcess implements ShouldQueue
 											}
 										} else {																					// outstation | no working | no leave | in | no break | resume | out
 											if (is_null($s->attendance_type_id)) {
-												$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
+												// $ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
 											} else {
 												$ll = $s->belongstoopttcms->leave;
 											}
@@ -2074,12 +2074,12 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													// $s->update(['leave_id' => $l->id]);
 													$s->update(['leave_id' => NULL]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -2091,7 +2091,7 @@ class AttendanceProcess implements ShouldQueue
 									if ($resume) {																					// outstation | no working | no leave | in | break | no resume
 										if ($out) {																					// outstation | no working | no leave | in | break | no resume | no out
 											if (is_null($s->attendance_type_id)) {
-												$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
+												// $ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
 											} else {
 												$ll = $s->belongstoopttcms->leave;
 											}
@@ -2109,12 +2109,12 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													// $s->update(['leave_id' => $l->id]);
 													$s->update(['leave_id' => NULL]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -2122,7 +2122,7 @@ class AttendanceProcess implements ShouldQueue
 											}
 										} else {																					// outstation | no working | no leave | in | break | no resume | out
 											if (is_null($s->attendance_type_id)) {
-												$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
+												// $ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
 											} else {
 												$ll = $s->belongstoopttcms->leave;
 											}
@@ -2140,12 +2140,12 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													// $s->update(['leave_id' => $l->id]);
 													$s->update(['leave_id' => NULL]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -2155,7 +2155,7 @@ class AttendanceProcess implements ShouldQueue
 									} else {																						// outstation | no working | no leave | in | break | resume
 										if ($out) {																					// outstation | no working | no leave | in | break | resume | no out
 											if (is_null($s->attendance_type_id)) {
-												$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
+												// $ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
 											} else {
 												$ll = $s->belongstoopttcms->leave;
 											}
@@ -2173,12 +2173,12 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													// $s->update(['leave_id' => $l->id]);
 													$s->update(['leave_id' => NULL]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -2186,7 +2186,7 @@ class AttendanceProcess implements ShouldQueue
 											}
 										} else {																					// outstation | no working | no leave | in | break | resume | out
 											if (is_null($s->attendance_type_id)) {
-												$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
+												// $ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(4)->leave.'</a>';					// outstation
 											} else {
 												$ll = $s->belongstoopttcms->leave;
 											}
@@ -2204,12 +2204,12 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													// $s->update(['leave_id' => $l->id]);
 													$s->update(['leave_id' => NULL]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -2242,12 +2242,12 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													$s->update(['leave_id' => $l->id]);
 													// $s->update(['leave_id' => NULL]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -2268,12 +2268,12 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													$s->update(['leave_id' => $l->id]);
 													// $s->update(['leave_id' => NULL]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -2296,12 +2296,12 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													$s->update(['leave_id' => $l->id]);
 													// $s->update(['leave_id' => NULL]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -2322,12 +2322,12 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													$s->update(['leave_id' => $l->id]);
 													// $s->update(['leave_id' => NULL]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -2352,12 +2352,12 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													$s->update(['leave_id' => $l->id]);
 													// $s->update(['leave_id' => NULL]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -2378,12 +2378,12 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													$s->update(['leave_id' => $l->id]);
 													// $s->update(['leave_id' => NULL]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -2406,12 +2406,12 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													$s->update(['leave_id' => $l->id]);
 													// $s->update(['leave_id' => NULL]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -2432,12 +2432,12 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													$s->update(['leave_id' => $l->id]);
 													// $s->update(['leave_id' => NULL]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -2464,12 +2464,12 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													$s->update(['leave_id' => $l->id]);
 													// $s->update(['leave_id' => NULL]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -2490,12 +2490,12 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													$s->update(['leave_id' => $l->id]);
 													// $s->update(['leave_id' => NULL]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -2518,12 +2518,12 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													$s->update(['leave_id' => $l->id]);
 													// $s->update(['leave_id' => NULL]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -2544,12 +2544,12 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													$s->update(['leave_id' => $l->id]);
 													// $s->update(['leave_id' => NULL]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -2574,12 +2574,12 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													$s->update(['leave_id' => $l->id]);
 													// $s->update(['leave_id' => NULL]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -2600,12 +2600,12 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													$s->update(['leave_id' => $l->id]);
 													// $s->update(['leave_id' => NULL]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -2628,12 +2628,12 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													$s->update(['leave_id' => $l->id]);
 													// $s->update(['leave_id' => NULL]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -2654,12 +2654,12 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													$s->update(['leave_id' => $l->id]);
 													// $s->update(['leave_id' => NULL]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -2675,7 +2675,7 @@ class AttendanceProcess implements ShouldQueue
 									if ($resume) {																					// no outstation | working | no leave | no in | no break | no resume
 										if ($out) {																					// no outstation | working | no leave | no in | no break | no resume | no out
 											if (is_null($s->attendance_type_id)) {
-												$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(1)->leave.'</a>';					// absent
+												// $ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(1)->leave.'</a>';					// absent
 											} else {
 												$ll = $s->belongstoopttcms->leave;
 											}
@@ -2688,12 +2688,12 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													$s->update(['leave_id' => $l->id]);
 													// $s->update(['leave_id' => NULL]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -2701,7 +2701,7 @@ class AttendanceProcess implements ShouldQueue
 											}
 										} else {																					// no outstation | working | no leave | no in | no break | no resume | out
 											if (is_null($s->attendance_type_id)) {
-												$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(2)->leave.'</a>';					// half absent
+												// $ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(2)->leave.'</a>';					// half absent
 											} else {
 												$ll = $s->belongstoopttcms->leave;
 											}
@@ -2714,12 +2714,12 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													$s->update(['leave_id' => $l->id]);
 													// $s->update(['leave_id' => NULL]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -2729,7 +2729,7 @@ class AttendanceProcess implements ShouldQueue
 									} else {																						// no outstation | working | no leave | no in | no break | resume
 										if ($out) {																					// no outstation | working | no leave | no in | no break | resume | no out
 											if (is_null($s->attendance_type_id)) {
-												$ll = '<a href="'.route('attendance.edit', $s->id).'">Check</a>';					//  pls check
+												// $ll = '<a href="'.route('attendance.edit', $s->id).'">Check</a>';					//  pls check
 											} else {
 												$ll = $s->belongstoopttcms->leave;
 											}
@@ -2742,12 +2742,12 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													$s->update(['leave_id' => $l->id]);
 													// $s->update(['leave_id' => NULL]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -2755,7 +2755,7 @@ class AttendanceProcess implements ShouldQueue
 											}
 										} else {																					// no outstation | working | no leave | no in | no break | resume | out
 											if (is_null($s->attendance_type_id)) {
-												$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(2)->leave.'</a>';					// half absent
+												// $ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(2)->leave.'</a>';					// half absent
 											} else {
 												$ll = $s->belongstoopttcms->leave;
 											}
@@ -2768,12 +2768,12 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													$s->update(['leave_id' => $l->id]);
 													// $s->update(['leave_id' => NULL]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -2785,7 +2785,7 @@ class AttendanceProcess implements ShouldQueue
 									if ($resume) {																					// no outstation | working | no leave | no in | break | no resume
 										if ($out) {																					// no outstation | working | no leave | no in | break | no resume | no out
 											if (is_null($s->attendance_type_id)) {
-												$ll = '<a href="'.route('attendance.edit', $s->id).'">Check</a>';					// pls check
+												// $ll = '<a href="'.route('attendance.edit', $s->id).'">Check</a>';					// pls check
 											} else {
 												$ll = $s->belongstoopttcms->leave;
 											}
@@ -2798,12 +2798,12 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													$s->update(['leave_id' => $l->id]);
 													// $s->update(['leave_id' => NULL]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -2811,7 +2811,7 @@ class AttendanceProcess implements ShouldQueue
 											}
 										} else {																					// no outstation |  outstation | working | no leave | no in | break | no resume | out
 											if (is_null($s->attendance_type_id)) {
-												$ll = '<a href="'.route('attendance.edit', $s->id).'">Check</a>';					// pls check
+												// $ll = '<a href="'.route('attendance.edit', $s->id).'">Check</a>';					// pls check
 											} else {
 												$ll = $s->belongstoopttcms->leave;
 											}
@@ -2824,12 +2824,12 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													$s->update(['leave_id' => $l->id]);
 													// $s->update(['leave_id' => NULL]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -2839,7 +2839,7 @@ class AttendanceProcess implements ShouldQueue
 									} else {																						// no outstation |  outstation | working | no leave | no in | break | resume
 										if ($out) {																					// no outstation |  outstation | working | no leave | no in | break | resume | no out
 											if (is_null($s->attendance_type_id)) {
-												$ll = '<a href="'.route('attendance.edit', $s->id).'">Check</a>';					// pls check
+												// $ll = '<a href="'.route('attendance.edit', $s->id).'">Check</a>';					// pls check
 											} else {
 												$ll = $s->belongstoopttcms->leave;
 											}
@@ -2852,12 +2852,12 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													$s->update(['leave_id' => $l->id]);
 													// $s->update(['leave_id' => NULL]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -2866,9 +2866,9 @@ class AttendanceProcess implements ShouldQueue
 										} else {																					// no outstation |  outstation | working | no leave | no in | break | resume | out
 											if (is_null($s->attendance_type_id)) {
 												if ($break == $resume) {															// check for break and resume is the same value
-													$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(2)->leave.'</a>';					// half absent
+													// $ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(2)->leave.'</a>';					// half absent
 												} else {
-													$ll = '<a href="'.route('attendance.edit', $s->id).'">Check</a>';					// pls check
+													// $ll = '<a href="'.route('attendance.edit', $s->id).'">Check</a>';					// pls check
 												}
 											} else {
 												$ll = $s->belongstoopttcms->leave;
@@ -2882,12 +2882,12 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													$s->update(['leave_id' => $l->id]);
 													// $s->update(['leave_id' => NULL]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -2902,7 +2902,7 @@ class AttendanceProcess implements ShouldQueue
 										if ($out) {																					// no outstation |  outstation | working | no leave | in | no break | no resume | no out
 											if (Carbon::parse(now())->gt($s->attend_date)) {
 												if (is_null($s->attendance_type_id)) {
-													$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(2)->leave.'</a>';					// half absent
+													// $ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(2)->leave.'</a>';					// half absent
 												} else {
 													$ll = $s->belongstoopttcms->leave;
 												}
@@ -2918,12 +2918,12 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													$s->update(['leave_id' => $l->id]);
 													// $s->update(['leave_id' => NULL]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -2940,12 +2940,12 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													$s->update(['leave_id' => $l->id]);
 													// $s->update(['leave_id' => NULL]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -2955,7 +2955,7 @@ class AttendanceProcess implements ShouldQueue
 									} else {																						// no outstation |  outstation | working | no leave | in | no break | resume
 										if ($out) {																					// no outstation |  outstation | working | no leave | in | no break | resume | no out
 											if (is_null($s->attendance_type_id)) {
-												$ll = '<a href="'.route('attendance.edit', $s->id).'">Check</a>';					// pls check
+												// $ll = '<a href="'.route('attendance.edit', $s->id).'">Check</a>';					// pls check
 											} else {
 												$ll = $s->belongstoopttcms->leave;
 											}
@@ -2968,12 +2968,12 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													$s->update(['leave_id' => $l->id]);
 													// $s->update(['leave_id' => NULL]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -2990,12 +2990,12 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													$s->update(['leave_id' => $l->id]);
 													// $s->update(['leave_id' => NULL]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -3007,7 +3007,7 @@ class AttendanceProcess implements ShouldQueue
 									if ($resume) {																					// no outstation |  outstation | working | no leave | in | break | no resume
 										if ($out) {																					// no outstation |  outstation | working | no leave | in | break | no resume | no out
 											if (is_null($s->attendance_type_id)) {
-												$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(2)->leave.'</a>';					// half absent
+												// $ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(2)->leave.'</a>';					// half absent
 											} else {
 												$ll = $s->belongstoopttcms->leave;
 											}
@@ -3020,12 +3020,12 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													$s->update(['leave_id' => $l->id]);
 													// $s->update(['leave_id' => NULL]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -3042,12 +3042,12 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													$s->update(['leave_id' => $l->id]);
 													// $s->update(['leave_id' => NULL]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -3058,9 +3058,9 @@ class AttendanceProcess implements ShouldQueue
 										if ($out) {																					// no outstation | working | no leave | in | break | resume | no out
 											if (is_null($s->attendance_type_id)) {
 												if ($break == $resume) {															// check for break and resume is the same value
-													$ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(2)->leave.'</a>';					// half absent
+													// $ll = '<a href="'.route('attendance.edit', $s->id).'">'.OptTcms::find(2)->leave.'</a>';					// half absent
 												} else {
-													$ll = '<a href="'.route('attendance.edit', $s->id).'">Check</a>';					// pls check
+													// $ll = '<a href="'.route('attendance.edit', $s->id).'">Check</a>';					// pls check
 												}
 											} else {
 												$ll = $s->belongstoopttcms->leave;
@@ -3074,12 +3074,12 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													$s->update(['leave_id' => $l->id]);
 													// $s->update(['leave_id' => NULL]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -3096,12 +3096,12 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													$s->update(['leave_id' => $l->id]);
 													// $s->update(['leave_id' => NULL]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -3128,12 +3128,12 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													// $s->update(['leave_id' => $l->id]);
 													$s->update(['leave_id' => NULL]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -3150,12 +3150,12 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													// $s->update(['leave_id' => $l->id]);
 													$s->update(['leave_id' => NULL]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -3174,12 +3174,12 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													// $s->update(['leave_id' => $l->id]);
 													$s->update(['leave_id' => NULL]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -3196,12 +3196,12 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													// $s->update(['leave_id' => $l->id]);
 													$s->update(['leave_id' => NULL]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -3222,12 +3222,12 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													// $s->update(['leave_id' => $l->id]);
 													$s->update(['leave_id' => NULL]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -3244,12 +3244,12 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													// $s->update(['leave_id' => $l->id]);
 													$s->update(['leave_id' => NULL]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -3268,12 +3268,12 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													// $s->update(['leave_id' => $l->id]);
 													$s->update(['leave_id' => NULL]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -3290,12 +3290,12 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													// $s->update(['leave_id' => $l->id]);
 													$s->update(['leave_id' => NULL]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -3318,12 +3318,12 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													// $s->update(['leave_id' => $l->id]);
 													$s->update(['leave_id' => NULL]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -3340,12 +3340,12 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													// $s->update(['leave_id' => $l->id]);
 													$s->update(['leave_id' => NULL]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -3364,12 +3364,12 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													// $s->update(['leave_id' => $l->id]);
 													$s->update(['leave_id' => NULL]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -3386,12 +3386,12 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													// $s->update(['leave_id' => $l->id]);
 													$s->update(['leave_id' => NULL]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -3412,12 +3412,12 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													// $s->update(['leave_id' => $l->id]);
 													$s->update(['leave_id' => NULL]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -3434,12 +3434,12 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													// $s->update(['leave_id' => $l->id]);
 													$s->update(['leave_id' => NULL]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -3458,12 +3458,12 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													// $s->update(['leave_id' => $l->id]);
 													$s->update(['leave_id' => NULL]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -3480,12 +3480,12 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													// $s->update(['leave_id' => $l->id]);
 													$s->update(['leave_id' => NULL]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -3510,12 +3510,12 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													// $s->update(['leave_id' => $l->id]);
 													$s->update(['leave_id' => NULL]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -3532,12 +3532,12 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													// $s->update(['leave_id' => $l->id]);
 													$s->update(['leave_id' => NULL]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -3556,12 +3556,12 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													// $s->update(['leave_id' => $l->id]);
 													$s->update(['leave_id' => NULL]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -3578,12 +3578,12 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													// $s->update(['leave_id' => $l->id]);
 													$s->update(['leave_id' => NULL]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -3604,12 +3604,12 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													// $s->update(['leave_id' => $l->id]);
 													$s->update(['leave_id' => NULL]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -3626,12 +3626,12 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													// $s->update(['leave_id' => $l->id]);
 													$s->update(['leave_id' => NULL]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -3650,12 +3650,12 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													// $s->update(['leave_id' => $l->id]);
 													$s->update(['leave_id' => NULL]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -3672,12 +3672,12 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													// $s->update(['leave_id' => $l->id]);
 													$s->update(['leave_id' => NULL]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -3700,12 +3700,12 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													// $s->update(['leave_id' => $l->id]);
 													$s->update(['leave_id' => NULL]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -3722,12 +3722,12 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													// $s->update(['leave_id' => $l->id]);
 													$s->update(['leave_id' => NULL]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -3746,12 +3746,12 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													// $s->update(['leave_id' => $l->id]);
 													$s->update(['leave_id' => NULL]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -3768,12 +3768,12 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													// $s->update(['leave_id' => $l->id]);
 													$s->update(['leave_id' => NULL]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -3794,12 +3794,12 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													// $s->update(['leave_id' => $l->id]);
 													$s->update(['leave_id' => NULL]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -3816,12 +3816,12 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													// $s->update(['leave_id' => $l->id]);
 													$s->update(['leave_id' => NULL]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -3840,12 +3840,12 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													// $s->update(['leave_id' => $l->id]);
 													$s->update(['leave_id' => NULL]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -3862,12 +3862,12 @@ class AttendanceProcess implements ShouldQueue
 											}
 											if($l) {																									// leave
 												if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-													$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 													// $s->update(['leave_id' => $l->id]);
 													$s->update(['leave_id' => NULL]);
 												} else {															// otherwise just show the leave
 													// $lea = $s->belongstoleave->id;
-													$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+													// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 												}
 											} else {
 												$lea = NULL;
@@ -3883,11 +3883,11 @@ class AttendanceProcess implements ShouldQueue
 
 				// if($l) {
 				// 	if (is_null($s->leave_id)) {										// update this row if leave_id is null with leave id
-				// 		$lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
+						// $lea = '<a href="'.route('hrleave.show', $l->id).'">'.'HR9-'.str_pad($l->leave_no,5,'0',STR_PAD_LEFT).'/'.$l->leave_year.'</a>';
 				// 		$s->update(['leave_id' => $l->id]);
 				// 	} else {															// otherwise just show the leave
 				// 		// $lea = $s->belongstoleave->id;
-				// 		$lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
+						// $lea = '<a href="'.route('hrleave.show', $s->leave_id).'">'.'HR9-'.str_pad($s->belongstoleave->leave_no,5,'0',STR_PAD_LEFT).'/'.$s->belongstoleave->leave_year.'</a>';
 				// 	}
 				// } else {
 				// 	$lea = NULL;
