@@ -52,10 +52,21 @@ use App\Models\HumanResources\OptWorkingHour;
 
 // load helper
 use App\Helpers\UnavailableDateTime;
+
+// load helper
+use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
+use Illuminate\Support\Collection;
+
+// load Carbon
 use \Carbon\Carbon;
 use \Carbon\CarbonPeriod;
-use Illuminate\Support\Arr;
+use \Carbon\CarbonInterval;
+
 use Session;
+use Throwable;
+use Exception;
+use Log;
 
 class AjaxController extends Controller
 {
