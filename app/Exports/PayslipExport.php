@@ -58,7 +58,7 @@ class PayslipExport implements FromCollection
 				// ->ddrawsql();
 				->get();
 
-		$header[0] = ['Emp No', 'Name', 'AL', 'NRL', 'MC', 'UPL', 'Absent', 'UPMC', 'Lateness(minute)', 'Early Out(minute)', 'No Pay Hour', 'Maternity', 'Hospitalization', 'Other Leave', 'Compassionate Leave', 'Marriage Leave', 'Day Work', '1.0 OT', '1.5 OT', 'OT', 'TF'];
+		$header[-1] = ['Emp No', 'Name', 'AL', 'NRL', 'MC', 'UPL', 'Absent', 'UPMC', 'Lateness(minute)', 'Early Out(minute)', 'No Pay Hour', 'Maternity', 'Hospitalization', 'Other Leave', 'Compassionate Leave', 'Marriage Leave', 'Day Work', '1.0 OT', '1.5 OT', 'OT', 'TF'];
 		// $records = [];
 
 		// loop staff from attendance => total staff
