@@ -117,15 +117,18 @@
 			</li>
 		</ul>
 	</li>
-	<li class="nav-item dropdown">
+<!-- 	<li class="nav-item dropdown">
+		<a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Appraisal</a>
+		<ul class="dropdown-menu">
+			<li><a class="dropdown-item btn btn-sm btn-outline-secondary" href="{{ route('discipline.index') }}"><i class="fa-solid fa-user-xmark"></i> Appraisal Questionnaire</a></li>
+			<li><a class="dropdown-item btn btn-sm btn-outline-secondary" href="{{ route('discipline.index') }}"><i class="fa-solid fa-user-xmark"></i> Appraisal Point</a></li>
+		</ul>
+	</li>
+ -->	<li class="nav-item dropdown">
 		<a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Discipline</a>
 		<ul class="dropdown-menu">
 			<li><a class="dropdown-item btn btn-sm btn-outline-secondary" href="{{ route('discipline.index') }}"><i class="fa-solid fa-user-xmark"></i> Discipline List</a></li>
 			<li><a class="dropdown-item btn btn-sm btn-outline-secondary" href="{{ route('absent.index') }}"><i class="fa-solid fa-person-circle-exclamation fa-beat"></i> Absent List</a></li>
-<!-- 			<li><a class="dropdown-item" href="#">Staff Leave</a></li>
-			<li><a class="dropdown-item" href="#">Something else here</a></li>
-			<li><hr class="dropdown-divider"></li>
-			<li><a class="dropdown-item" href="#">Separated link</a></li> -->
 		</ul>
 	</li>
 	<li class="nav-item dropdown">
