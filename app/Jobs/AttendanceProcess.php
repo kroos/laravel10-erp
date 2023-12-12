@@ -56,7 +56,7 @@ class AttendanceProcess implements ShouldQueue
 		$i = 1;
 		if($this->dataprocess) {
 			foreach ($this->dataprocess as $s) {
-
+				dd($s);
 				/////////////////////////////
 				// to determine working hour of each user
 				$wh = UnavailableDateTime::workinghourtime($s->attend_date, $s->belongstostaff->id)->first();
