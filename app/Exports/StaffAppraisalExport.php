@@ -201,7 +201,7 @@ class StaffAppraisalExport implements FromCollection
 			$mcfrequency += HRLeave::where('staff_id', $v->id)->where(function(Builder $query){ $query->where('leave_status_id', 5)->orWhereNull('leave_status_id'); })->where('leave_type_id', 2)->count();
 
 			// EL w/o Supporting Doc
-			$elwosupportingdoc = HRLeave::where('staff_id', $v->id)->where(function(Builder $query){ $query->where('leave_status_id', 5)->orWhereNull('leave_status_id'); })->whereIn('leave_type_id', [5, 6, 10])->where(function(Builder $query){ $query->whereNull('softcopy')->WhereNull('hardcopy'); })->get()->count();
+			$elwosupportingdoc = HRLeave::where('staff_id', $v->id)->where(function(Builder $query){ $query->where('leave_status_id', 5)->orWhereNull('leave_status_id'); })->whereIn('leave_type_id', [5, 6])->where(function(Builder $query){ $query->whereNull('softcopy')->WhereNull('hardcopy'); })->get()->count();
 
 
 			// Absent w/o Notice or didn\'t Refill Form
@@ -222,7 +222,7 @@ class StaffAppraisalExport implements FromCollection
 			}
 
 			// Apply Leave 3 Days Not In Advance
-			$notapplyleave3 = HRLeave::where('staff_id', $v->id)->where(function(Builder $query){ $query->where('leave_status_id', 5)->orWhereNull('leave_status_id'); })->whereIn('leave_type_id', [5, 6, 10])->get()->count();
+			$notapplyleave3 = HRLeave::where('staff_id', $v->id)->where(function(Builder $query){ $query->where('leave_status_id', 5)->orWhereNull('leave_status_id'); })->whereIn('leave_type_id', [5, 6])->get()->count();
 
 			// UPL (Quarantine)
 			$supl = HRLeave::where('staff_id', $v->id)->where(function(Builder $query){ $query->where('leave_status_id', 5)->orWhereNull('leave_status_id'); })->where('leave_type_id', 12)->get()->count();
