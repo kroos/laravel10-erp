@@ -58,7 +58,7 @@ class PayslipExport implements FromCollection
 				// ->ddrawsql();
 				->get();
 
-		$header[0] = ['Emp No', 'Name', 'AL', 'NRL', 'MC', 'UPL', 'Absent', 'UPMC', 'Lateness(minute)', 'Early Out(minute)', 'No Pay Hour', 'Maternity', 'Hospitalization', 'Other Leave', 'Compassionate Leave', 'Marriage Leave', 'Day Work', '1.0 OT', '1.5 OT', 'OT', 'TF'];
+		$header[-1] = ['Emp No', 'Name', 'AL', 'NRL', 'MC', 'UPL', 'Absent', 'UPMC', 'Lateness(minute)', 'Early Out(minute)', 'No Pay Hour', 'Maternity', 'Hospitalization', 'Other Leave', 'Compassionate Leave', 'Marriage Leave', 'Day Work', '1.0 OT', '1.5 OT', 'OT', 'TF'];
 		// $records = [];
 
 		// loop staff from attendance => total staff
@@ -193,13 +193,13 @@ class PayslipExport implements FromCollection
 							// no overtime
 							if (is_null($sattendance->overtime_id)) {
 								if (($sattendance->in != '00:00:00') && (Carbon::parse($sattendance->in)->gt($wh->time_start_am))) {
-									$late = Carbon::parse($wh->time_start_am)->toPeriod($sattendance->in, 1, 'minute');
+									$late = Carbon::parse($wh->time_start_am)->addMinute()->toPeriod($sattendance->in, 1, 'minute');
 									// $lateness += $late->count() - 1;
 									$lateness += $late->count();
 								}
 								// early out with no overtime
 								if ((Carbon::parse($sattendance->out)->lt($wh->time_end_pm)) && ($sattendance->out != '00:00:00')) {
-									$early = Carbon::parse($sattendance->out)->toPeriod($wh->time_end_pm, 1, 'minute');
+									$early = Carbon::parse($sattendance->out)->addMinute()->toPeriod($wh->time_end_pm, 1, 'minute');
 									// $earlyout += $early->count() - 1;
 									$earlyout += $early->count();
 								}
@@ -209,11 +209,11 @@ class PayslipExport implements FromCollection
 							if(!is_null($sattendance->overtime_id)) {
 								// lateness with overtime with exception of morning overtime
 								if (($sattendance->in != '00:00:00') && (Carbon::parse($sattendance->in)->gt($wh->time_start_am)) && (HROvertime::find($sattendance->overtime_id)->belongstoovertimerange->id == 26)) {
-									$late = Carbon::parse(HROvertime::find($sattendance->overtime_id)->belongstoovertimerange->start)->toPeriod($sattendance->in, 1, 'minute');
+									$late = Carbon::parse(HROvertime::find($sattendance->overtime_id)->belongstoovertimerange->start)->addMinute()->toPeriod($sattendance->in, 1, 'minute');
 									// $lateness += $late->count() - 1;
 									$lateness += $late->count();
 								} else {
-									$late = Carbon::parse($wh->time_start_am)->toPeriod($sattendance->in, 1, 'minute');
+									$late = Carbon::parse($wh->time_start_am)->addMinute()->toPeriod($sattendance->in, 1, 'minute');
 									// $lateness += $late->count() - 1;
 									$lateness += $late->count();
 								}
@@ -222,7 +222,7 @@ class PayslipExport implements FromCollection
 								$ota = HROvertime::find($sattendance->overtime_id);
 								$endottime = $ota->belongstoovertimerange->end;
 								if (($sattendance->out != '00:00:00') && (Carbon::parse($sattendance->out)->lt($endottime)) && ($sattendance->out != '00:00:00')) {
-									$early = Carbon::parse($sattendance->out)->toPeriod($endottime, 1, 'minute');
+									$early = Carbon::parse($sattendance->out)->addMinute()->toPeriod($endottime, 1, 'minute');
 									// $earlyout += $early->count() - 1;
 									$earlyout += $early->count();
 								}
