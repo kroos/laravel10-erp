@@ -40,7 +40,8 @@ use App\Http\Controllers\HumanResources\HRDept\AbsentController;
 use App\Http\Controllers\HumanResources\Process\AttendanceProcessController;
 use App\Http\Controllers\HumanResources\OutstationAttendance\OutstationAttendanceController;
 use App\Http\Controllers\HumanResources\HRDept\HROutstationAttendanceController;
-use App\Http\Controllers\HumanResources\HRDept\AppraisalController;
+use App\Http\Controllers\HumanResources\HRDept\AppraisalExcelReportController;
+// use App\Http\Controllers\HumanResources\HRDept\AppraisalReportController;
 
 
 Route::resources([
@@ -77,7 +78,7 @@ Route::resources([
 	'absent' => AbsentController::class,
 	'outstationattendance' => OutstationAttendanceController::class,
 	'hroutstationattendance' => HROutstationAttendanceController::class,
-	'appraisal' => AppraisalController::class,
+	'appraisalexcelreport' => AppraisalExcelReportController::class,
 ]);
 
 Route::get('/leavereject', [LeaveController::class, 'reject'])->name('hrleave.reject');
