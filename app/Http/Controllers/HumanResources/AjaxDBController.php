@@ -1299,4 +1299,18 @@ class AjaxDBController extends Controller
 		}
 		return response()->json($l);
 	}
+
+	public function progress(Request $request): JsonResponse
+	{
+		try {
+			$batchId = $request->id ?? session()->get('lastBatchId');
+
+			if (JobBatch::where('id', $batchId)->count()) {
+				$response = JobBatch::where('id', $batchId)->first();
+				return response()->json($response);
+			}
+		} catch (Exception $e) {
+			Log::error($e);
+		}
+	}
 }

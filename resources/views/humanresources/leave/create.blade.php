@@ -2326,7 +2326,7 @@ if(obj.time_start_pm == itime_start) {
 				close: 'fas fas-regular fa-rectangle-xmark fa-beat'
 			},
 			format: 'h:mm A',
-			enabledHours: [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18],
+			// enabledHours: [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18],
 		})
 		.on('dp.change dp.update', function(e){
 			$('#form').bootstrapValidator('revalidateField', 'time_start');
@@ -2346,7 +2346,7 @@ if(obj.time_start_pm == itime_start) {
 				close: 'fas fas-regular fa-rectangle-xmark fa-beat'
 			},
 			format: 'h:mm A',
-			enabledHours: [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18],
+			// enabledHours: [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18],
 		})
 		.on('dp.change dp.update', function(e){
 			$('#form').bootstrapValidator('revalidateField', 'time_end');

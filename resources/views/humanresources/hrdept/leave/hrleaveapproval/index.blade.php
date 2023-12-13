@@ -435,7 +435,7 @@ foreach ($c as $v) {
 															</div>
 
 <!-- LEAVE SHOW END -->
-													{{ Form::open(['route' => ['leavestatus.hrstatus'], 'method' => 'patch', 'id' => 'form', 'autocomplete' => 'off', 'files' => true, 'data-toggle' => 'validator']) }}
+													{{ Form::open(['route' => ['leavestatus.hrstatus'], 'method' => 'patch', 'id' => 'form', 'autocomplete' => 'off', 'files' => true, 'class' => 'form', 'data-id' => $a->id, 'data-toggle' => 'validator']) }}
 													{{ Form::hidden('id', $a->id) }}
 													<div class="offset-sm-4 col-sm-6">
 														@foreach($ls as $k => $val)
@@ -479,6 +479,39 @@ foreach ($c as $v) {
 
 @section('js')
 /////////////////////////////////////////////////////////////////////////////////////////
+// form submit via ajax
+$(".form").on('submit', function(e){
+	var ids = $(this).data('id');
+	e.preventDefault();
+	$.ajax({
+		url: '{{ route('leavestatus.hrstatus') }}',
+		type: 'PATCH',
+		data: {
+				_token: '{!! csrf_token() !!}',
+				id: ids,
+				leave_status_id: $(':input[name="leave_status_id"]:checked').val(),
+				verify_code: $('#hrcode' + ids).val(),
+				remarks: $('#remarks' + ids).val()
+		},
+		dataType: 'json',
+		global: false,
+		async:false,
+		success: function (response) {
+			$('#hrapproval' + ids).modal('hide');
+			var row = $('#hrapproval' + ids).parent().parent();
+			// row.css('border', '5px solid red');
+			row.remove();
+			swal.fire('Success!', response.message, response.status);
+		},
+		error: function(resp) {
+			const res = resp.responseJSON;
+			$('#hrapproval' + ids).modal('hide');
+			swal.fire('Error!', res.message,'error');
+		}
+	});
+});
+
+/////////////////////////////////////////////////////////////////////////////////////////
 // tooltip
 $(document).ready(function(){
 	$('[data-bs-toggle="tooltip"]').tooltip();
@@ -489,7 +522,8 @@ $(document).ready(function(){
 $.fn.dataTable.moment( 'D MMM YYYY' );
 $.fn.dataTable.moment( 'h:mm a' );
 $('#bapprover, #sapprover, #hodapprover, #dirapprover, #hrapprover').DataTable({
-	"lengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "All"] ],
+	paging: false,
+	// "lengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "All"] ],
 	"columnDefs": [ { type: 'date', 'targets': [5,6,7] } ],
 	"order": [[6, "desc" ]],	// sorting the 4th column descending
 	responsive: true
