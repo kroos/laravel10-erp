@@ -64,6 +64,21 @@ Route::post('/samelocationstaff', [AjaxDBController::class, 'samelocationstaff']
 Route::post('/overtimerange', [AjaxDBController::class, 'overtimerange'])->name('overtimerange');
 Route::post('/branchattendancelist', [AjaxDBController::class, 'branchattendancelist'])->name('branchattendancelist');
 
+
+
+
+
+
+
+
+
+
+
+
+
+// progress for excel generate
+Route::get('/progress', [AjaxDBController::class, 'progress'])->name('progress');
+
 // Route::get('/login/{login}', [
 // 	'as' => 'login.edit',
 // 	'uses' => 'Profile\LoginController@edit'

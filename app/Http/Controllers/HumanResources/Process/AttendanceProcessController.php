@@ -79,7 +79,6 @@ class AttendanceProcessController extends Controller
 		}
 		Session(['lastBatchId' => $batch->id]);
 		return response()->json(route('attendanceprocess.index', ['id' => $batch->id]));
-
 	}
 
 	/**

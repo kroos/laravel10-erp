@@ -437,8 +437,12 @@ class AjaxController extends Controller
 				HRAttendance::where('id', $s->id)->update(['leave_id' => null]);
 			}
 		}
-		Session::flash('flash_message', 'Successfully make an approval.');
-		return redirect()->back();
+		// Session::flash('flash_message', 'Successfully make an approval.');
+		// return redirect()->back();
+		return response()->json([
+				'status' => 'success',
+				'message' => 'Successfully make an approval.',
+			]);
 	}
 
 	public function hodstatus(Request $request)
@@ -564,8 +568,12 @@ class AjaxController extends Controller
 				HRAttendance::where('id', $s->id)->update(['leave_id' => null]);
 			}
 		}
-		Session::flash('flash_message', 'Successfully make an approval for user.');
-		return redirect()->back();
+		// Session::flash('flash_message', 'Successfully make an approval.');
+		// return redirect()->back();
+		return response()->json([
+				'status' => 'success',
+				'message' => 'Successfully make an approval.',
+			]);
 	}
 
 	public function dirstatus(Request $request)
@@ -742,8 +750,12 @@ class AjaxController extends Controller
 				$sal->hasmanyleaveapprovalhr()->update([/*'staff_id' => \Auth::user()->belongstostaff->id,*/ 'leave_status_id' => $request->leave_status_id, 'remarks' => ucwords(Str::lower($request->remarks))]);
 			}
 		}
-		Session::flash('flash_message', 'Successfully make an approval for user.');
-		return redirect()->back();
+		// Session::flash('flash_message', 'Successfully make an approval.');
+		// return redirect()->back();
+		return response()->json([
+				'status' => 'success',
+				'message' => 'Successfully make an approval.',
+			]);
 	}
 
 	public function hrstatus(Request $request)
@@ -872,8 +884,12 @@ class AjaxController extends Controller
 		} elseif($request->leave_status_id == 6) {								// leave waived, so need to put back all leave period.
 
 		}
-		Session::flash('flash_message', 'Successfully make an approval for user.');
-		return redirect()->back();
+		// Session::flash('flash_message', 'Successfully make an approval.');
+		// return redirect()->back();
+		return response()->json([
+				'status' => 'success',
+				'message' => 'Successfully make an approval.',
+			]);
 	}
 
 	public function deactivatestaff(Request $request, Staff $staff): JsonResponse
