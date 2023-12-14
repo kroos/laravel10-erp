@@ -24,5 +24,37 @@
 @endsection
 @section('js')
 /////////////////////////////////////////////////////////////////////////////////////////
+@if( request()->id && session()->exists('lastBatchId') )
+	<?php $batchId = $request->id ?? session()->get('lastBatchId'); ?>
+	setInterval(percent, 5);
+	function percent() {
+		$.ajax({
+			url: '{{ route('progress', ['id' => $batchId]) }}',
+			type: "GET",
+			data: { _token: '{{ csrf_token() }}'},
+			dataType: 'json',
+			success: function (response) {
+				// var resp = response.responseJSON;
+				// return resp;
+				var total = parseInt(response.total_jobs);
+				var pending = parseInt(response.pending_jobs);
+				var job_done = parseInt(total - pending);
+				window.percentbar = ((job_done / total) * 100);
+				$('.progress').attr('aria-valuenow', percentbar).css('width', percentbar + '%');
+				$(".csvprogress").width(percentbar.toPrecision(4) + '%');
+				$(".csvprogress").html(percentbar.toPrecision(4) +'%');
+				console.log(percentbar);
+				if (percentbar == 100) {
+					clearInterval(percent);
+					window.location.replace('{{ url('/') }}');
+					<?php session()->forget('lastBatchId') ?>
+				}
+			},
+			error: function(jqXHR, textStatus, errorThrown) {
+				// console.log(textStatus, errorThrown);
+			}
+		})
+	}
+@endif
 @endsection
 

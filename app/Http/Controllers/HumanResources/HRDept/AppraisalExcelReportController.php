@@ -80,7 +80,12 @@ class AppraisalExcelReportController extends Controller
 				'year' => 'Apraisal Staff Year',
 			]
 		);
+
+		$staffs = Staff::where('active', 1)->get();
+
 		return Excel::download(new StaffAppraisalExport($request->year), 'Staff Appraisal '.$request->year.'.xlsx');
+		// Session(['lastBatchId' => $batch->id]);
+		// return response()->json(route('interview.index', ['id' => $batch->id]));
 	}
 
 	/**
