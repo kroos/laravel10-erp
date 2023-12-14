@@ -1,4 +1,13 @@
 <style>
+  .theme,
+  .theme tr,
+  .theme td {
+    border-collapse: collapse;
+    width: 100%;
+    font-size: 20px;
+    font-family: 'Arial', sans-serif;
+  }
+
   .table,
   .table tr,
   .table td {
@@ -16,8 +25,15 @@
     background-color: #cccccc;
   }
 
+  .overflow {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: clip;
+  }
+
   @page {
-    margin: 0.30cm;
+    margin: 0.7cm;
+    size: A4 landscape;
   }
 </style>
 <?php
@@ -36,22 +52,32 @@ if ($date_start != NULL && $date_end != NULL) {
 }
 ?>
 
+<table class="theme">
+  <tr>
+    <td align="center">
+      Overtime {{Carbon::parse($date_start)->format('j')}} - {{Carbon::parse($date_end)->format('j')}} {{Carbon::parse($date_end)->format('F')}} {{Carbon::parse($date_end)->format('Y') }}
+    </td>
+  </tr>
+</table>
+
+<table height="15px"></table>
+
 <table class="table">
   <tr class="top-row">
-    <td align="center" style="width: 17px;">
+    <td align="center" style="width: 20px;">
       NO
     </td>
     <td align="center" style="width: 40px;">
       ID
     </td>
-    <td align="center" style="max-width: 100px;">
+    <td align="center">
       NAME
     </td>
-    <td align="center" style="max-width: 50px;">
+    <td align="center" style="width: 70px;">
       DEPT
     </td>
     @for ($date = $startDate; $date->lte($endDate); $date->addDay())
-    <td style="width: 24px;">
+    <td align="center" style="width: 30px;">
       <?php
       $total_col++;
       $rows[] = $date->format('Y-m-d');
@@ -59,7 +85,7 @@ if ($date_start != NULL && $date_end != NULL) {
       ?>
     </td>
     @endfor
-    <td align="center" style="width: 40px;">
+    <td align="center" style="width: 50px;">
       TOTAL<br />HOURS
     </td>
     <td align="center" style="width: 60px;">
@@ -76,14 +102,18 @@ if ($date_start != NULL && $date_end != NULL) {
     <td align="center">
       {{ $overtime->username }}
     </td>
-    <td style="max-width: 100px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">
-      &nbsp;{{ $overtime->name }}
+    <td>
+      <div class="overflow" style="max-width: 150px;">
+        &nbsp;{{ $overtime->name }}
+      </div>
     </td>
-    <td style="max-width: 50px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">
-      &nbsp;{{ $overtime->department }}
+    <td>
+      <div class="overflow" style="width: 65px">
+        &nbsp;{{ $overtime->department }}
+      </div>
     </td>
     @foreach ($rows as $row)
-    <td style="width: 24px;">
+    <td align="center">
       <?php
       $ot = HROvertime::join('hr_overtime_ranges', 'hr_overtime_ranges.id', '=', 'hr_overtimes.overtime_range_id')
         ->where('hr_overtimes.ot_date', '=', $row)
