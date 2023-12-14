@@ -31,6 +31,14 @@
     text-overflow: clip;
   }
 
+  .footer,
+  .footer tr,
+  .footer td {
+    font-size: 11px;
+    border-collapse: collapse;
+    width: 100%;
+  }
+
   @page {
     margin: 0.7cm;
     size: A4 landscape;
@@ -103,7 +111,7 @@ if ($date_start != NULL && $date_end != NULL) {
       {{ $overtime->username }}
     </td>
     <td>
-      <div class="overflow" style="max-width: 150px;">
+      <div class="overflow" style="max-width: 250px;">
         &nbsp;{{ $overtime->name }}
       </div>
     </td>
@@ -158,5 +166,21 @@ if ($date_start != NULL && $date_end != NULL) {
       &nbsp;
     </td>
     <td></td>
+  </tr>
+</table>
+
+<table style="height: 30px;"></table>
+
+<table class="footer">
+  <tr>
+    <td align="center" style="width: 33%">
+      ____________________________________________<br />SUBMITTED BY
+    </td>
+    <td align="center" style="width: 33%">
+      ____________________________________________<br />CHECKED BY PRODUCTION SUPERVISOR
+    </td>
+    <td align="center" style="width: 33%">
+      ____________________________________________<br />APPROVED BY
+    </td>
   </tr>
 </table>
