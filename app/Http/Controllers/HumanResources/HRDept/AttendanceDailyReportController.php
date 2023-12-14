@@ -337,7 +337,7 @@ class AttendanceDailyReportController extends Controller
       ->orderBy('logins.username', 'ASC')
       ->get();
 
-    return view('humanresources.hrdept.attendance.attendancedailyreport.index', ['dailyreport_absent' => $dailyreport_absent, /*'dailyreport_late' => $dailyreport_late,*/ 'dailyreport_outstation' => $dailyreport_outstation, 'selected_date' => $selected_date]);
+    return view('humanresources.hrdept.attendance.attendancedailyreport.index', ['dailyreport_absent' => $dailyreport_absent, 'dailyreport_late' => $dailyreport_late, 'dailyreport_outstation' => $dailyreport_outstation, 'selected_date' => $selected_date]);
   }
 
   /**
