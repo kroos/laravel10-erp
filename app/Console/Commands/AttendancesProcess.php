@@ -1,13 +1,8 @@
 <?php
-namespace App\Http\Controllers\HumanResources\Process;
 
-use App\Http\Controllers\Controller;
+namespace App\Console\Commands;
 
-// for controller output
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\Redirect;
-use Illuminate\View\View;
-use Illuminate\Http\JsonResponse;
+use Illuminate\Console\Command;
 
 // models
 use App\Models\Staff;
@@ -18,7 +13,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 
 // load queues
-use App\Jobs\AttendanceProcess;
+use App\Jobs\AttendanceProcessJob;
 
 // load batch and queue
 use Illuminate\Bus\Batch;
@@ -41,12 +36,26 @@ use Throwable;
 use Exception;
 use Log;
 
-class AttendanceProcessController extends Controller
+class AttendancesProcess extends Command
 {
 	/**
-	 * Display a listing of the resource.
+	 * The name and signature of the console command.
+	 *
+	 * @var string
 	 */
-	public function index()
+	protected $signature = 'attendancesprocess';
+
+	/**
+	 * The console command description.
+	 *
+	 * @var string
+	 */
+	protected $description = 'Update attendances with leave, outstation and overtime.';
+
+	/**
+	 * Execute the console command.
+	 */
+	public function handle()
 	{
 		$attendance = HRAttendance::whereYear('attend_date', now()->format('Y'))
 									->get();				// collection
@@ -62,7 +71,7 @@ class AttendanceProcessController extends Controller
 		// dd($dataprocess);
 
 		// $batch = Bus::batch( new AttendanceProcess($dataprocess) )->name('Process on -> '.now())->dispatch();
-		$batch = Bus::batch([])->name('Process on -> '.now())->dispatch();
+		$batch = Bus::batch([])->name('Attendance Process on -> '.now())->dispatch();
 		// process collection
 		foreach ($dataprocess as $index => $values) {
 			// $data[$index][] = $values;
@@ -75,57 +84,7 @@ class AttendanceProcessController extends Controller
 			// AttendanceProcess::dispatch($dataprocess[$index]);
 
 			// we need a progress so we use batch n comment out the queue above
-			$batch->add(new AttendanceProcess($data[$index]));
+			$batch->add(new AttendanceProcessJob($data[$index]));
 		}
-		Session(['lastBatchId' => $batch->id]);
-		return response()->json(route('attendanceprocess.index', ['id' => $batch->id]));
-	}
-
-	/**
-	 * Show the form for creating a new resource.
-	 */
-	public function create()
-	{
-		//
-	}
-
-	/**
-	 * Store a newly created resource in storage.
-	 */
-	public function store(Request $request)
-	{
-		//
-	}
-
-	/**
-	 * Display the specified resource.
-	 */
-	public function show(HRAttendance $hRAttendance)
-	{
-		//
-	}
-
-	/**
-	 * Show the form for editing the specified resource.
-	 */
-	public function edit(HRAttendance $hRAttendance)
-	{
-		//
-	}
-
-	/**
-	 * Update the specified resource in storage.
-	 */
-	public function update(Request $request, HRAttendance $hRAttendance)
-	{
-		//
-	}
-
-	/**
-	 * Remove the specified resource from storage.
-	 */
-	public function destroy(HRAttendance $hRAttendance)
-	{
-		//
 	}
 }

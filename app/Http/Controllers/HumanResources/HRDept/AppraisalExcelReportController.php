@@ -11,23 +11,31 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
 
-// load facade
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Facades\DB;
-
 // load laravel-Excel
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\StaffAppraisalExport;
+
+// load facade
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\DB;
 
 // load models
 use App\Models\Staff;
 use App\Models\HumanResources\HRAttendance;
 use App\Models\HumanResources\HRLeave;
 
+// load queues
+// use App\Jobs\StaffAppraisalJob;
+
+// load batch and queue
+// use Illuminate\Bus\Batch;
+// use Illuminate\Support\Facades\Bus;
+
 // load helper
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Storage;
 
 // load Carbon
 use \Carbon\Carbon;
@@ -71,7 +79,7 @@ class AppraisalExcelReportController extends Controller
 	{
 		$validated = $request->validate(
 			[
-				'year' => 'required|integer',
+				'year' => 'required|integer|gte:2023',
 			],
 			[
 				'year.required' => 'Please insert year',
@@ -82,10 +90,15 @@ class AppraisalExcelReportController extends Controller
 		);
 
 		$staffs = Staff::where('active', 1)->get();
+		$year = $request->year;
 
-		return Excel::download(new StaffAppraisalExport($request->year), 'Staff Appraisal '.$request->year.'.xlsx');
-		// Session(['lastBatchId' => $batch->id]);
-		// return response()->json(route('interview.index', ['id' => $batch->id]));
+
+
+		// $st = (new StaffAppraisalExport($staffs, $year))
+		// 			->queue('public/excel/Staff_Appraisal_'.$year.'.xlsx')
+		// 			->chain(response()->download('public/excel/Staff_Appraisal_'.$year.'.xlsx'));
+		return Excel::download(new StaffAppraisalExport($staffs, $year), 'Staff_Appraisal_'.$year.'.xlsx');
+		// return redirect()->back();
 	}
 
 	/**

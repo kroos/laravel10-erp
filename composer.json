@@ -26,6 +26,7 @@
         "mockery/mockery": "^1.4.4",
         "nunomaduro/collision": "^7.0",
         "phpunit/phpunit": "^10.1",
+        "rap2hpoutre/fast-excel": "^5.3",
         "spatie/laravel-ignition": "^2.0",
         "stevebauman/location": "^7.0"
     },
