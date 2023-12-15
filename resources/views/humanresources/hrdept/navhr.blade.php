@@ -120,7 +120,7 @@
 	<li class="nav-item dropdown">
 		<a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Appraisal</a>
 		<ul class="dropdown-menu">
-			<!-- <li><a class="dropdown-item btn btn-sm btn-outline-secondary" href="{{ route('appraisalexcelreport.index') }}"><i class="fa-solid fa-user-xmark"></i> Appraisal Questionnaire</a></li> -->
+			<li><a class="dropdown-item btn btn-sm btn-outline-secondary" href="{{ route('appraisalform.index') }}"><i class="fa-solid fa-user-xmark"></i> Appraisal Form</a></li>
 			<li><hr class="dropdown-divider"></li>
 			<li><a class="dropdown-item btn btn-sm btn-outline-secondary" href="{{ route('appraisalexcelreport.create') }}"><i class="fa-solid fa-award"></i> Appraisal Point</a></li>
 		</ul>
