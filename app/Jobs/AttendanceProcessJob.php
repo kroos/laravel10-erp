@@ -33,7 +33,7 @@ use Illuminate\Support\Str;
 // load lib
 use \Carbon\Carbon;
 
-class AttendanceProcess implements ShouldQueue
+class AttendanceProcessJob implements ShouldQueue
 {
 	use Batchable, Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
