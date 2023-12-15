@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Exports;
 
 // load db facade
@@ -21,12 +20,10 @@ use App\Models\HumanResources\OptDepartment;
 
 use Illuminate\Http\Request;
 
-// load queues
-// use App\Jobs\StaffAppraisalJob;
-
 // load batch and queue
 // use Illuminate\Bus\Batch;
 // use Illuminate\Support\Facades\Bus;
+// use App\Jobs\StaffAppraisalJob;
 
 // load helper
 use App\Helpers\TimeCalculator;
@@ -57,11 +54,14 @@ class StaffAppraisalExport implements FromCollection, /*FromQuery, */ShouldQueue
 {
 	use Exportable;
 
+	// protected $combine;
+
 	protected $staffs;
 	protected $year;
 
 	public function __construct($staffs, $year)
 	{
+		// $this->combine = $combine;
 		$this->staffs = $staffs;
 		$this->year = $year;
 		// dd($this->staffs, $this->year);
@@ -73,6 +73,7 @@ class StaffAppraisalExport implements FromCollection, /*FromQuery, */ShouldQueue
 	public function collection()
 	// public function query()
 	{
+		// return $combine;
 		$staffs = $this->staffs;
 		$year = $this->year;
 

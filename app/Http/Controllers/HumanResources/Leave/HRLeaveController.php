@@ -1168,6 +1168,7 @@ class HRLeaveController extends Controller
 					}
 				}
 			}
+			$timeoverlapcount = count($timeoverlap);
 			// return [$timeoverlap, $timeoverlapcount];
 
 			if ( $timeoverlapcount > 125 ) { // minutes over than 2 hours with contingency
