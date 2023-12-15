@@ -105,5 +105,3 @@ Route::get('/attendancedailyreport/print', [AttendanceDailyReportController::cla
 
 Route::get('/attendance', [AttendanceController::class, 'index'])->name('attendance.index');
 Route::post('/attendance', [AttendanceController::class, 'index'])->name('attendance.index');
-
-Route::get('/attendanceprocess', [AttendanceProcessController::class, 'index'])->name('attendanceprocess.index');

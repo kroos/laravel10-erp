@@ -21,6 +21,13 @@ use App\Models\HumanResources\OptDepartment;
 
 use Illuminate\Http\Request;
 
+// load queues
+// use App\Jobs\StaffAppraisalJob;
+
+// load batch and queue
+// use Illuminate\Bus\Batch;
+// use Illuminate\Support\Facades\Bus;
+
 // load helper
 use App\Helpers\TimeCalculator;
 use App\Helpers\UnavailableDateTime;
@@ -28,7 +35,7 @@ use App\Helpers\UnavailableDateTime;
 // load array helper
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
-use Illuminate\Support\Collection;
+// use Illuminate\Support\Collection;
 
 // load Carbon
 use \Carbon\Carbon;
@@ -40,23 +47,34 @@ use Throwable;
 use Log;
 use Exception;
 
+// load laravel-excel
 use Maatwebsite\Excel\Concerns\FromCollection;
+use Maatwebsite\Excel\Concerns\Exportable;
+// use Maatwebsite\Excel\Concerns\FromQuery;
+use Illuminate\Contracts\Queue\ShouldQueue;
 
-class StaffAppraisalExport implements FromCollection
+class StaffAppraisalExport implements FromCollection, /*FromQuery, */ShouldQueue
 {
-	protected $request;
+	use Exportable;
 
-	public function __construct($request)
+	protected $staffs;
+	protected $year;
+
+	public function __construct($staffs, $year)
 	{
-		$this->request = $request;
+		$this->staffs = $staffs;
+		$this->year = $year;
+		// dd($this->staffs, $this->year);
 	}
 
 	/**
 	* @return \Illuminate\Support\Collection
 	*/
 	public function collection()
+	// public function query()
 	{
-		$year = $this->request;
+		$staffs = $this->staffs;
+		$year = $this->year;
 
 		$header[0] = [
 						'#',
@@ -94,7 +112,7 @@ class StaffAppraisalExport implements FromCollection
 						'Warning Letter Frequency (3-5m per time)'
 					];
 
-		$staffs = Staff::where('active', 1)->get();
+		// $staffs = Staff::where('active', 1)->get();
 		// $logins = Login::()
 
 		$i = 1;
