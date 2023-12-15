@@ -1,5 +1,15 @@
 <?php
-namespace App\Exports;
+
+namespace App\Jobs;
+
+// load batch and queue
+use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldBeUnique;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Bus\Batchable;
 
 // load db facade
 use Illuminate\Database\Eloquent\Builder;
@@ -18,23 +28,12 @@ use App\Models\HumanResources\HRDisciplinary;
 use App\Models\HumanResources\OptBranch;
 use App\Models\HumanResources\OptDepartment;
 
-use Illuminate\Http\Request;
-
-// load batch and queue
-// use Illuminate\Bus\Batch;
-// use Illuminate\Support\Facades\Bus;
-// use App\Jobs\StaffAppraisalJob;
-
 // load helper
-use App\Helpers\TimeCalculator;
 use App\Helpers\UnavailableDateTime;
-
-// load array helper
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
-// use Illuminate\Support\Collection;
 
-// load Carbon
+// load lib
 use \Carbon\Carbon;
 use \Carbon\CarbonPeriod;
 use \Carbon\CarbonInterval;
@@ -45,36 +44,30 @@ use Log;
 use Exception;
 
 // load laravel-excel
-use Maatwebsite\Excel\Concerns\FromCollection;
-use Maatwebsite\Excel\Concerns\Exportable;
-// use Maatwebsite\Excel\Concerns\FromQuery;
-use Illuminate\Contracts\Queue\ShouldQueue;
+// use Maatwebsite\Excel\Facades\Excel;
+// use App\Exports\StaffAppraisalExport;
 
-class StaffAppraisalExport implements FromCollection, /*FromQuery, */ShouldQueue
+class AppraisalJob implements ShouldQueue
 {
-	use Exportable;
-
-	// protected $dataappraisal;
+	use Batchable, Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
 	protected $staffs;
 	protected $year;
 
-	// public function __construct($dataappraisal)
+	/**
+	 * Create a new job instance.
+	 */
 	public function __construct($staffs, $year)
 	{
-		// $this->dataappraisal = $dataappraisal;
 		$this->staffs = $staffs;
 		$this->year = $year;
-		// dd($this->staffs, $this->year);
 	}
 
 	/**
-	* @return \Illuminate\Support\Collection
-	*/
-	public function collection()
+	 * Execute the job.
+	 */
+	public function handle(): void
 	{
-		// $dataappraisal = $this->dataappraisal;
-		// return $dataappraisal;
 		$staffs = $this->staffs;
 		$year = $this->year;
 
@@ -113,9 +106,6 @@ class StaffAppraisalExport implements FromCollection, /*FromQuery, */ShouldQueue
 						'Verbal Warning (1m per time)',
 						'Warning Letter Frequency (3-5m per time)'
 					];
-
-		// $staffs = Staff::where('active', 1)->get();
-		// $logins = Login::()
 
 		$i = 1;
 		foreach ($staffs as $v) {
@@ -257,8 +247,7 @@ class StaffAppraisalExport implements FromCollection, /*FromQuery, */ShouldQueue
 			$i++;
 		}
 		$combine = $header + $records;
-		return collect($combine);
+		$dataappraisal = collect($combine);
+		Excel::store(new StaffAppraisalExport($dataappraisal), 'Staff_Appraisal_'.$year.'.xlsx');
 	}
 }
-
-

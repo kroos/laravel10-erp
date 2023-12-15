@@ -27,7 +27,11 @@ use Illuminate\Support\Str;
 						<th>Location</th>
 						<th>Date</th>
 						<th>In</th>
+						<th>Detected Region In</th>
+						<th>Detected City Out</th>
 						<th>Out</th>
+						<th>Detected Region Out</th>
+						<th>Detected City Out</th>
 						<th>Remarks</th>
 						<th>#</th>
 					</tr>
@@ -37,15 +41,21 @@ use Illuminate\Support\Str;
 					<tr>
 						<td>{{ Login::where([['staff_id', $v->staff_id], ['active', 1]])->first()?->username }}</td>
 						<td>{{ Staff::find($v->staff_id)->name }}</td>
-						<td>{{ HROutstation::find($v->id)->belongstocustomer?->customer }}</td>
+						<td>{{ HROutstation::find($v->outstation_id)->belongstocustomer?->customer }}</td>
 						<td>{{ ($v->date_attend)?Carbon::parse($v->date_attend)->format('j M Y'):NULL }}</td>
 						<td>{{ ($v->in)?Carbon::parse($v->in)->format('g:i a'):NULL }}</td>
+						<td>{{ $v->in_regionName }}</td>
+						<td>{{ $v->in_cityName }}</td>
 						<td>{{ ($v->out)?Carbon::parse($v->out)->format('g:i a'):NULL }}</td>
-						<td >
-							 {!! ($v->remarks)?'data-bs-toggle="tooltip" data-bs-custom-class="custom-tooltip" data-bs-html="true" data-bs-title="'.$v->remarks.'"':NULL !!}
+						<td>{{ $v->out_regionName }}</td>
+						<td>{{ $v->out_cityName }}</td>
+						<td {!! ($v->remarks)?'data-bs-toggle="tooltip" data-bs-custom-class="custom-tooltip" data-bs-html="true" data-bs-title="'.$v->remarks.'"':NULL !!}>
 							{{ Str::limit($v->remarks, 8, ' >') }}
 						</td>
-						<td></td>
+						<td>
+							<a href="{{ route('hroutstationattendance.edit', $v->id) }}" class="btn btn-sm btn-outline-secondary"><i class="fa-regular fa-pen-to-square"></i></a>
+							<button type="button" id="out" class="btn btn-sm btn-outline-secondary text-danger delete_button" data-id="{{ $v->id }}"><i class="fa-regular fa-trash-can"></i></button>
+						</td>
 					</tr>
 				@endforeach
 				</tbody>

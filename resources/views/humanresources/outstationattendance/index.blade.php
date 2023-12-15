@@ -23,19 +23,7 @@ $r = HROutstation::where('staff_id', \Auth::user()->belongstostaff->id)
 if ($r->count()) {
 	$t = true;
 	foreach ($r as $k => $v) {
-		$n = HROutstationAttendance::where([
-					['outstation_id', $v->id],
-					['date_attend', now()->format('Y-m-d')],
-					['staff_id', \Auth::user()->belongstostaff->id],
-				])
-				->whereNull('out')
-				->first();
-				// ->ddrawsql();
-		if($n) {
 			$loc[$v->id] = $v->belongstocustomer?->customer;
-		} else {
-			$loc[] = [];
-		}
 	}
 } else {
 	$t = false;
@@ -56,7 +44,7 @@ $m = HROutstationAttendance::whereDate('date_attend', now())
 		@else
 			<h4 class="text-center">You have mark all your attendance for today.</h4>
 		@endif
-		<div class="col-sm-6 row m-2" >
+		<div class="col-sm-6 row m-2 " >
 			<dl class="row">
 				<dt class="col-sm-3">Country Name:</dt>
 				<dd class="col-sm-9">{{ $data->countryName }}</dd>
@@ -88,7 +76,11 @@ $m = HROutstationAttendance::whereDate('date_attend', now())
 							<th>Location</th>
 							<th>Date</th>
 							<th>In</th>
+							<th>Detected Region In</th>
+							<th>Detected City In</th>
 							<th>Out</th>
+							<th>Detected Region Out</th>
+							<th>Detected City Out</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -98,27 +90,29 @@ $m = HROutstationAttendance::whereDate('date_attend', now())
 								<td>{{ $v->belongstooutstation?->belongstocustomer?->customer }}</td>
 								<td>{{ Carbon::parse($v->date_attend)->format('j M Y') }}</td>
 								<td>{{ ($v->in)?Carbon::parse($v->in)->format('g:i a'):NULL }}</td>
+								<td>{{ $v->in_regionName }}</td>
+								<td>{{ $v->in_cityName }}</td>
 								<td>{{ ($v->out)?Carbon::parse($v->out)->format('g:i a'):NULL }}</td>
+								<td>{{ $v->out_regionName }}</td>
+								<td>{{ $v->out_cityName }}</td>
 							</tr>
 						@endforeach
 					</tbody>
 				</table>
 			</div>
 
-			@if($m->whereNull('out')->count())
-				<p>Click button below to mark your attendance</p>
-				{{ Form::open(['route' => ['outstationattendance.store'], 'id' => 'form', 'autocomplete' => 'off', 'files' => true,  'data-toggle' => 'validator']) }}
-					<div class="form-group row m-2 {{ $errors->has('outstation_id') ? 'has-error' : '' }}">
-						{{ Form::label( 'outstation', 'Location : ', ['class' => 'col-sm-4 col-form-label'] ) }}
-						<div class="col-sm-8">
-							{{ Form::select('outstation_id', $loc, null, ['class' => 'form-select form-select-sm', 'id' => 'outstation', 'placeholder' => 'Please choose']) }}
-						</div>
+			<p>Click button below to mark your attendance</p>
+			{{ Form::open(['route' => ['outstationattendance.store'], 'id' => 'form', 'autocomplete' => 'off', 'files' => true,  'data-toggle' => 'validator']) }}
+				<div class="form-group row m-2 {{ $errors->has('outstation_id') ? 'has-error' : '' }}">
+					{{ Form::label( 'outstation', 'Location : ', ['class' => 'col-sm-4 col-form-label'] ) }}
+					<div class="col-sm-8">
+						{{ Form::select('outstation_id', $loc, null, ['class' => 'form-select form-select-sm', 'id' => 'outstation', 'placeholder' => 'Please choose']) }}
 					</div>
-					<div class="offset-sm-4 col-sm-8">
-						{{ Form::submit('Mark Attendance', ['class' => 'btn btn-sm btn-primary']) }}
-					</div>
-				{{ Form::close() }}
-			@endif
+				</div>
+				<div class="offset-sm-4 col-sm-8">
+					{{ Form::submit('Mark Attendance', ['class' => 'btn btn-sm btn-primary']) }}
+				</div>
+			{{ Form::close() }}
 		</div>
 	@else
 		<h2 class="p-4 m-3 border border-bottom text-center alert alert-danger">Please note, this page can be only use for the outstation personnel. If you are eligible to use this page and mark your attendance, please ask your superior (HR or CS Officer) to assists you by adding your ID into the outstation list.</h2>

@@ -17,6 +17,7 @@ use App\Models\Setting;
 use App\Models\Staff;
 use App\Models\HumanResources\HRLeave;
 use App\Models\HumanResources\HROutstation;
+use App\Models\HumanResources\HROutstationAttendance;
 use App\Models\HumanResources\HRHolidayCalendar;
 use App\Models\HumanResources\HRLeaveEntitlement;
 use App\Models\HumanResources\HRLeaveApprovalBackup;
@@ -64,6 +65,9 @@ use \Carbon\CarbonPeriod;
 use \Carbon\CarbonInterval;
 
 use Session;
+use Throwable;
+use Exception;
+use Log;
 
 class AjaxDBController extends Controller
 {
@@ -1300,6 +1304,51 @@ class AjaxDBController extends Controller
 		return response()->json($l);
 	}
 
+	public function outstationattendancestaff(Request $request): JsonResponse
+	{
+		$st = HROutstation::where(function (Builder $query) use ($request) {
+								$query->whereDate('date_from', '<=', $request->date_attend)
+								->whereDate('date_to', '>=', $request->date_attend);
+							})
+							->where('active', 1)
+							->groupBy('staff_id')
+							->get();
+							// ->ddrawsql();
+
+		// https://select2.org/data-sources/formats
+		foreach ($st as $key) {
+			$cuti['results'][] = [
+									'id' => $key->staff_id,
+									'text' => Staff::find($key->staff_id)->name,
+								];
+			// $cuti['pagination'] = ['more' => true];
+		}
+		return response()->json($cuti);
+	}
+
+	public function outstationattendancelocation(Request $request): JsonResponse
+	{
+		$st = HROutstation::where(function (Builder $query) use ($request) {
+								$query->whereDate('date_from', '<=', $request->date_attend)
+								->whereDate('date_to', '>=', $request->date_attend);
+							})
+							->where('active', 1)
+							->groupBy('staff_id')
+							->get();
+							// ->ddrawsql();
+
+		// https://select2.org/data-sources/formats
+		foreach ($st as $key) {
+			$cuti['results'][] = [
+									'id' => $key->staff_id,
+									'text' => Staff::find($key->staff_id)->name,
+								];
+			// $cuti['pagination'] = ['more' => true];
+		}
+		return response()->json($cuti);
+	}
+
+	// used by queue batches
 	public function progress(Request $request): JsonResponse
 	{
 		try {
