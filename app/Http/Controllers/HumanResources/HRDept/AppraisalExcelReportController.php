@@ -24,12 +24,10 @@ use App\Models\Staff;
 use App\Models\HumanResources\HRAttendance;
 use App\Models\HumanResources\HRLeave;
 
-// load queues
-// use App\Jobs\StaffAppraisalJob;
-
 // load batch and queue
-// use Illuminate\Bus\Batch;
-// use Illuminate\Support\Facades\Bus;
+use Illuminate\Bus\Batch;
+use Illuminate\Support\Facades\Bus;
+use App\Jobs\StaffAppraisalJob;
 
 // load helper
 use Illuminate\Support\Arr;
@@ -92,6 +90,25 @@ class AppraisalExcelReportController extends Controller
 		$staffs = Staff::where('active', 1)->get();
 		$year = $request->year;
 
+		// $dataprocess = $staffs->chunk(5);
+
+		// // process collection
+		// $batch = Bus::batch([])->name('Staff Appraisal Process on -> '.now())->dispatch();
+		// foreach ($dataprocess as $index => $values) {
+		// 	// $data[$index][] = $values;
+		// 	foreach ($values as $value) {
+		// 		$data[$index][] = $value;
+		// 	}
+		// 	// dd($data[$index]);
+
+		// 	// call queues by chunk
+		// 	// AttendanceProcess::dispatch($dataprocess[$index]);
+
+		// 	// we need a progress so we use batch n comment out the queue above
+		// 	$batch->add(new StaffAppraisalJob($staffs, $year));
+		// 	// $dat[] = new StaffAppraisalJob($data[$index], $year);
+		// }
+		// $batch = Bus::batch($dat)->name('Staff Appraisal Process on -> '.now())->dispatch();
 
 
 		// $st = (new StaffAppraisalExport($staffs, $year))

@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Jobs;
 
 // load db facade
@@ -18,8 +17,6 @@ use App\Models\HumanResources\HRLeaveReplacement;
 use App\Models\HumanResources\HRDisciplinary;
 use App\Models\HumanResources\OptBranch;
 use App\Models\HumanResources\OptDepartment;
-
-use Illuminate\Http\Request;
 
 // load batch and queue
 use Illuminate\Bus\Queueable;
@@ -45,19 +42,22 @@ use Throwable;
 use Log;
 use Exception;
 
+
 class StaffAppraisalJob implements ShouldQueue
 {
 	use Batchable, Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-	public $dataprocess;
+
+	protected $staffs;
+	protected $year;
 
 	/**
 	 * Create a new job instance.
 	 */
-	public function __construct($dataprocess)
+	public function __construct($staffs, $year)
 	{
-		$this->dataprocess = $dataprocess;
-		// dd($this->dataprocess);
+		$this->staffs = $staffs;
+		$this->year = $year;
 	}
 
 	/**
@@ -65,6 +65,6 @@ class StaffAppraisalJob implements ShouldQueue
 	 */
 	public function handle(): void
 	{
-
+		//
 	}
 }
