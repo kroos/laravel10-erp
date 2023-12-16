@@ -17,21 +17,13 @@ use App\Models\HumanResources\HROutstationAttendance;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 
-// load queues
-use App\Jobs\AttendanceProcess;
-
-// load batch and queue
-// use Illuminate\Bus\Batch;
-// use Illuminate\Support\Facades\Bus;
-
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
-
-use Illuminate\Support\Collection;
 
 // load array helper
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
+use Illuminate\Support\Collection;
 
 // load Carbon library
 use \Carbon\Carbon;
@@ -101,6 +93,8 @@ class OutstationAttendanceController extends Controller
 						'out' => now()->format('H:i:s'),
 						'out_latitude' => $data->latitude,
 						'out_longitude' => $data->longitude,
+						'out_regionName' => $data->regionName,
+						'out_cityName' => $data->cityName,
 					]
 			);
 		} else {																	// AM
@@ -115,6 +109,8 @@ class OutstationAttendanceController extends Controller
 						'in' => now()->format('H:i:s'),
 						'in_latitude' => $data->latitude,
 						'in_longitude' => $data->longitude,
+						'in_regionName' => $data->regionName,
+						'in_cityName' => $data->cityName,
 					]
 			);
 		}

@@ -63,6 +63,8 @@ Route::post('/staffdaily', [AjaxDBController::class, 'staffdaily'])->name('staff
 Route::post('/samelocationstaff', [AjaxDBController::class, 'samelocationstaff'])->name('samelocationstaff');
 Route::post('/overtimerange', [AjaxDBController::class, 'overtimerange'])->name('overtimerange');
 Route::post('/branchattendancelist', [AjaxDBController::class, 'branchattendancelist'])->name('branchattendancelist');
+Route::post('/outstationattendancestaff', [AjaxDBController::class, 'outstationattendancestaff'])->name('outstationattendancestaff');
+Route::post('/outstationattendancelocation', [AjaxDBController::class, 'outstationattendancelocation'])->name('outstationattendancelocation');
 
 
 

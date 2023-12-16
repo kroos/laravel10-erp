@@ -1,114 +1,46 @@
 @extends('layouts.app')
 
 @section('content')
-<style>
-	.scrollable-div {
-		/* Set the width height as needed */
-/*		width: 100%;*/
-		height: 400px;
-		background-color: blanchedalmond;
-		/* Add scrollbars when content overflows */
-		overflow: auto;
-	}
-
-	p {
-		margin-top: 4px;
-		margin-bottom: 4px;
-	}
-</style>
-
-<?php
-use \App\Models\HumanResources\OptWorkingHour;
-use \App\Models\Staff;
-use \App\Models\Customer;
-
-use \Carbon\Carbon;
-
-$staffs = Staff::join('logins', 'staffs.id', '=', 'logins.staff_id')
-			->where('staffs.active', 1)
-			->where('logins.active', 1)
-			->where(function ($query) {
-				$query->where('staffs.div_id', '!=', 2)
-				->orWhereNull('staffs.div_id');
-			})
-			->select('staffs.id as staffID', 'staffs.*', 'logins.*')
-			->orderBy('logins.username', 'asc')
-			->get();
-
-$c = Customer::orderBy('customer')->pluck('customer', 'id')->toArray();
-?>
-
-<div class="col-sm-12 row">
+<div class="col-sm-12 row align-items-start justify-content-center">
 	@include('humanresources.hrdept.navhr')
-	<h4>Add Staff For Outstation</h4>
-	{!! Form::open(['route' => ['outstation.store'], 'id' => 'form', 'autocomplete' => 'off', 'files' => true]) !!}
+	<h4>Add Staff For Outstation Attendance</h4>
+	<div class="col-sm-12 row">
+		{!! Form::open(['route' => ['hroutstationattendance.store'], 'id' => 'form', 'autocomplete' => 'off', 'files' => true]) !!}
 
-	<div class="form-group row mb-3 {{ $errors->has('staff_id') ? 'has-error' : '' }}">
-		<div class="col-md-2">
-		{{Form::label('staff', 'Outstation Staff : ')}}
-		</div>
-		<div class="col-md-10">
-			<div class="scrollable-div">
-				@foreach ($staffs as $staff)
-				<p>
-					<input type="checkbox" name="staff_id[]" id="staff" value="{{ $staff->staffID }}">
-					<label>{{ $staff->username }} - {{ $staff->name }}</label>
-				</p>
-				@endforeach
+		<div class="form-group row m-3 {{ $errors->has('date_attend') ? 'has-error' : Null }}">
+			{{ Form::label('date', 'Attend Date : ', ['class' => 'col-sm-4 col-form-label']) }}
+			<div class="col-sm-8" style="position:relative;">
+				{{ Form::text('date_attend', @$value, ['class' => 'form-control form-control-sm col-sm-auto', 'id' => 'date']) }}
 			</div>
 		</div>
-	</div>
 
-	<div class="form-group row mb-3 {{ $errors->has('customer_id') ? 'has-error' : '' }}">
-		{{ Form::label( 'loc', 'Location : ', ['class' => 'col-sm-2 col-form-label'] ) }}
-		<div class="col-md-10">
-			{{ Form::select('customer_id', $c, @$value, ['class' => 'form-control form-control-sm col-auto', 'id' => 'loc', 'placeholder' => 'Please choose', 'autocomplete' => 'off']) }}
+		<div class="form-group row m-3 {{ $errors->has('attend_date') ? 'has-error' : Null }}">
+			{{ Form::label('loc', 'Location : ', ['class' => 'col-sm-4 col-form-label']) }}
+			<div class="col-sm-8">
+				<select name="outstation_id" id="loc" class="form-select form-select-sm col-sm-5"></select>
+			</div>
 		</div>
-	</div>
 
-	<div class="form-group row mb-3 {{ $errors->has('date_from') ? 'has-error' : '' }}">
-		{{ Form::label( 'from', 'From : ', ['class' => 'col-sm-2 col-form-label'] ) }}
-		<div class="col-md-10" style="position: relative">
-			{{ Form::text('date_from', @$value, ['class' => 'form-control form-control-sm col-auto', 'id' => 'from', 'placeholder' => 'Date From', 'autocomplete' => 'off']) }}
+		<div class="form-group row m-3 {{ $errors->has('staff_id') ? 'has-error' : Null }}">
+			{{ Form::label('staff', 'Staff : ', ['class' => 'col-sm-4 col-form-label']) }}
+			<div class="col-sm-8">
+				<select name="staff_id" id="staff" class="form-select form-select-sm col-sm-5" multiple="multiple"></select>
+			</div>
 		</div>
-	</div>
 
-	<div class="form-group row mb-3 {{ $errors->has('date_to') ? 'has-error' : '' }}">
-		{{ Form::label( 'to', 'To : ', ['class' => 'col-sm-2 col-form-label'] ) }}
-		<div class="col-md-10" style="position: relative">
-			{{ Form::text('date_to', @$value, ['class' => 'form-control form-control-sm col-auto', 'id' => 'to', 'placeholder' => 'Date To', 'autocomplete' => 'off']) }}
+		<div class="offset-sm-4 col-sm-8">
+			{{ Form::submit('Generate Attendance',['class' => 'btn btn-sm btn-outline-secondary']) }}
 		</div>
-	</div>
 
-	<div class="form-group row mb-3 {{ $errors->has('remarks') ? 'has-error' : '' }}">
-		{{ Form::label( 'rem', 'Remarks : ', ['class' => 'col-sm-2 col-form-label'] ) }}
-		<div class="col-md-10">
-			{{ Form::textarea('remarks', @$value, ['class' => 'form-control form-control-sm col-auto', 'id' => 'rem', 'placeholder' => 'Remarks', 'autocomplete' => 'off', 'cols' => '120', 'rows' => '3']) }}
-		</div>
+		{{ Form::close() }}
 	</div>
-
-	<div class="form-group row mb-3 g-3 p-2">
-		<div class="col-sm-10 offset-sm-2">
-			{!! Form::button('Add Data', ['class' => 'btn btn-sm btn-outline-secondary', 'type' => 'submit']) !!}
-		</div>
-	</div>
-	{{ Form::close() }}
-
 </div>
 @endsection
 
 @section('js')
 /////////////////////////////////////////////////////////////////////////////////////////
-$('#loc').select2({
-	placeholder: 'Please choose',
-	allowClear: true,
-	closeOnSelect: true,
-	width: '100%',
-});
-
-/////////////////////////////////////////////////////////////////////////////////////////
 //date
-$('#from').datetimepicker({
+$('#date').datetimepicker({
 	icons: {
 		time: "fas fas-regular fa-clock fa-beat",
 		date: "fas fas-regular fa-calendar fa-beat",
@@ -121,36 +53,71 @@ $('#from').datetimepicker({
 		close: 'fas fas-regular fa-rectangle-xmark fa-beat'
 	},
 	format:'YYYY-MM-DD',
-	// useCurrent: false,
+	useCurrent: true,
 })
-.on("dp.change dp.show dp.update", function (e) {
-	var minDate = $('#from').val();
-	$('#to').datetimepicker('minDate', minDate);
-	$('#form').bootstrapValidator('revalidateField', 'date_from');
+.on('dp.change dp.update', function(e) {
+	// console.log(e);
+
+	//enable select 2 for backup
+	$('#loc').select2({
+		placeholder: 'Please Choose',
+		width: '100%',
+		ajax: {
+			url: '{{ route('outstationattendancelocation') }}',
+			// data: { '_token': '{!! csrf_token() !!}' },
+			type: 'POST',
+			dataType: 'json',
+			data: function (params) {
+				var query = {
+					_token: '{!! csrf_token() !!}',
+					date_attend: $('#date').val(),
+					search: params.term,
+					type: 'public'
+				}
+				return query;
+			}
+		},
+		allowClear: true,
+		closeOnSelect: true,
+	});
+
+	// get staff
+	$('#loc').on('change, select2:select', function (e) {
+		// console.log($('#loc').val());
+
+		$('#staff').select2({
+			placeholder: 'Please Choose',
+			width: '100%',
+			ajax: {
+				url: '{{ route('outstationattendancestaff') }}',
+				// data: { '_token': '{!! csrf_token() !!}' },
+				type: 'POST',
+				dataType: 'json',
+				data: function (params) {
+					var query = {
+						_token: '{!! csrf_token() !!}',
+						outstation_id: $('#loc').val(),
+						date_attend: $('#date').val(),
+						search: params.term,
+					}
+					return query;
+				}
+			},
+			allowClear: true,
+			closeOnSelect: true,
+		});
+
+
+
+	});
+
+
+
+
 });
 
-
-$('#to').datetimepicker({
-	icons: {
-		time: "fas fas-regular fa-clock fa-beat",
-		date: "fas fas-regular fa-calendar fa-beat",
-		up: "fa-regular fa-circle-up fa-beat",
-		down: "fa-regular fa-circle-down fa-beat",
-		previous: 'fas fas-regular fa-arrow-left fa-beat',
-		next: 'fas fas-regular fa-arrow-right fa-beat',
-		today: 'fas fas-regular fa-calenday-day fa-beat',
-		clear: 'fas fas-regular fa-broom-wide fa-beat',
-		close: 'fas fas-regular fa-rectangle-xmark fa-beat'
-	},
-	format: 'YYYY-MM-DD',
-	// useCurrent: false //Important! See issue #1075
-})
-.on("dp.change dp.show dp.update", function (e) {
-	var maxDate = $('#to').val();
-	$('#from').datetimepicker('maxDate', maxDate);
-	$('#form').bootstrapValidator('revalidateField', 'date_to');
-});
-
+/////////////////////////////////////////////////////////////////////////////////////////
+//select 2
 
 /////////////////////////////////////////////////////////////////////////////////////////
 // bootstrap validator
@@ -162,32 +129,21 @@ $('#form').bootstrapValidator({
 		validating: ''
 	},
 	fields: {
-		'staff_id[]': {
+		'staff_id': {
 			validators: {
 				notEmpty: {
 					message: 'Please choose '
 				},
 			}
 		},
-		'date_from': {
+		'date_attend': {
 			validators: {
 				notEmpty: {
-					message: 'Please insert date start. '
+					message: 'Please insert date. '
 				},
 				date: {
 					format: 'YYYY-MM-DD',
 					message: 'Please insert date start. '
-				},
-			}
-		},
-		'date_to': {
-			validators: {
-				notEmpty: {
-					message: 'Please insert date end. '
-				},
-				date: {
-					format: 'YYYY-MM-DD',
-					message: 'Please insert date end. '
 				},
 			}
 		},
