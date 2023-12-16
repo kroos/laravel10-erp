@@ -14,18 +14,22 @@
 			</div>
 		</div>
 
-		<div class="form-group row m-3 {{ $errors->has('staff_id') ? 'has-error' : Null }}">
-			{{ Form::label('staff', 'Staff : ', ['class' => 'col-sm-4 col-form-label']) }}
+		<div class="form-group row m-3 {{ $errors->has('attend_date') ? 'has-error' : Null }}">
+			{{ Form::label('loc', 'Location : ', ['class' => 'col-sm-4 col-form-label']) }}
 			<div class="col-sm-8">
-				<select name="staff_id" id="staff" class="form-select form-select-sm col-sm-5"></select>
+				<select name="outstation_id" id="loc" class="form-select form-select-sm col-sm-5"></select>
 			</div>
 		</div>
 
-		<div class="form-group row m-3 {{ $errors->has('attend_date') ? 'has-error' : Null }}">
-			{{ Form::label('staff', 'Location : ', ['class' => 'col-sm-4 col-form-label']) }}
+		<div class="form-group row m-3 {{ $errors->has('staff_id') ? 'has-error' : Null }}">
+			{{ Form::label('staff', 'Staff : ', ['class' => 'col-sm-4 col-form-label']) }}
 			<div class="col-sm-8">
-				<select name="outstation_id" id="staff" class="form-select form-select-sm col-sm-5"></select>
+				<select name="staff_id" id="staff" class="form-select form-select-sm col-sm-5" multiple="multiple"></select>
 			</div>
+		</div>
+
+		<div class="offset-sm-4 col-sm-8">
+			{{ Form::submit('Generate Attendance',['class' => 'btn btn-sm btn-outline-secondary']) }}
 		</div>
 
 		{{ Form::close() }}
@@ -55,18 +59,20 @@ $('#date').datetimepicker({
 	// console.log(e);
 
 	//enable select 2 for backup
-	$('#staff').select2({
+	$('#loc').select2({
 		placeholder: 'Please Choose',
 		width: '100%',
 		ajax: {
-			url: '{{ route('outstationattendancestaff') }}',
+			url: '{{ route('outstationattendancelocation') }}',
 			// data: { '_token': '{!! csrf_token() !!}' },
 			type: 'POST',
 			dataType: 'json',
 			data: function (params) {
 				var query = {
 					_token: '{!! csrf_token() !!}',
-					date_attend: $('#date').val()
+					date_attend: $('#date').val(),
+					search: params.term,
+					type: 'public'
 				}
 				return query;
 			}
@@ -75,8 +81,9 @@ $('#date').datetimepicker({
 		closeOnSelect: true,
 	});
 
-	$('#staff').on('change, select2:select', function (e) {
-		console.log($('#staff').val());
+	// get staff
+	$('#loc').on('change, select2:select', function (e) {
+		// console.log($('#loc').val());
 
 		$('#staff').select2({
 			placeholder: 'Please Choose',
@@ -89,7 +96,9 @@ $('#date').datetimepicker({
 				data: function (params) {
 					var query = {
 						_token: '{!! csrf_token() !!}',
-						date_attend: $('#date').val()
+						outstation_id: $('#loc').val(),
+						date_attend: $('#date').val(),
+						search: params.term,
 					}
 					return query;
 				}
@@ -98,7 +107,12 @@ $('#date').datetimepicker({
 			closeOnSelect: true,
 		});
 
+
+
 	});
+
+
+
 
 });
 
