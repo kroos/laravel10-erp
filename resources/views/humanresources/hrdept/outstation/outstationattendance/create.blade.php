@@ -24,7 +24,28 @@
 		<div class="form-group row m-3 {{ $errors->has('staff_id') ? 'has-error' : Null }}">
 			{{ Form::label('staff', 'Staff : ', ['class' => 'col-sm-4 col-form-label']) }}
 			<div class="col-sm-8">
-				<select name="staff_id" id="staff" class="form-select form-select-sm col-sm-5" multiple="multiple"></select>
+				<select name="staff_id[]" id="staff" class="form-select form-select-sm col-sm-5" multiple="multiple"></select>
+			</div>
+		</div>
+
+		<div class="form-group row m-3 {{ $errors->has('in') ? 'has-error' : Null }}">
+			{{ Form::label('in', 'In : ', ['class' => 'col-sm-4 col-form-label']) }}
+			<div class="col-sm-8" style="position:relative;">
+				{{ Form::text('in', @$value, ['class' => 'form-control form-control-sm col-sm-auto', 'id' => 'in']) }}
+			</div>
+		</div>
+
+		<div class="form-group row m-3 {{ $errors->has('out') ? 'has-error' : Null }}">
+			{{ Form::label('out', 'Out : ', ['class' => 'col-sm-4 col-form-label']) }}
+			<div class="col-sm-8" style="position:relative;">
+				{{ Form::text('out', @$value, ['class' => 'form-control form-control-sm col-sm-auto', 'id' => 'out']) }}
+			</div>
+		</div>
+
+		<div class="form-group row m-3 {{ $errors->has('in') ? 'has-error' : Null }}">
+			{{ Form::label('remarks', 'Remarks : ', ['class' => 'col-sm-4 col-form-label']) }}
+			<div class="col-sm-8">
+				{{ Form::textarea('remarks', @$value, ['class' => 'form-control form-control-sm col-sm-auto', 'id' => 'remarks']) }}
 			</div>
 		</div>
 
@@ -106,18 +127,24 @@ $('#date').datetimepicker({
 			allowClear: true,
 			closeOnSelect: true,
 		});
-
-
-
 	});
-
-
-
-
 });
 
 /////////////////////////////////////////////////////////////////////////////////////////
-//select 2
+$('#in, #out').datetimepicker({
+	icons: {
+		time: "fas fas-regular fa-clock fa-beat",
+		date: "fas fas-regular fa-calendar fa-beat",
+		up: "fa-regular fa-circle-up fa-beat",
+		down: "fa-regular fa-circle-down fa-beat",
+		previous: 'fas fas-regular fa-arrow-left fa-beat',
+		next: 'fas fas-regular fa-arrow-right fa-beat',
+		today: 'fas fas-regular fa-calenday-day fa-beat',
+		clear: 'fas fas-regular fa-broom-wide fa-beat',
+		close: 'fas fas-regular fa-rectangle-xmark fa-beat'
+	},
+	format: 'h:mm A',
+});
 
 /////////////////////////////////////////////////////////////////////////////////////////
 // bootstrap validator
@@ -129,7 +156,7 @@ $('#form').bootstrapValidator({
 		validating: ''
 	},
 	fields: {
-		'staff_id': {
+		'staff_id[]': {
 			validators: {
 				notEmpty: {
 					message: 'Please choose '
@@ -143,7 +170,14 @@ $('#form').bootstrapValidator({
 				},
 				date: {
 					format: 'YYYY-MM-DD',
-					message: 'Please insert date start. '
+					message: 'Please insert date. '
+				},
+			}
+		},
+		'outstation_id': {
+			validators: {
+				notEmpty: {
+					message: 'Please choose. '
 				},
 			}
 		},
