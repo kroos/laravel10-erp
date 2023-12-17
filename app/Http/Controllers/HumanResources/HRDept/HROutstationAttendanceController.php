@@ -77,6 +77,16 @@ class HROutstationAttendanceController extends Controller
 	{
 		// dd($request->all());
 		$cust = HROutstation::find($request->outstation_id)->customer_id;
+		if ($request->in) {
+			$in = Carbon::parse($request->in)->format('H:i:s');
+		} else {
+			$in = NULL;
+		}
+		if ($request->out) {
+			$out = Carbon::parse($request->out)->format('H:i:s');
+		} else {
+			$out = NULL;
+		}
 
 		foreach ($request->staff_id as $v) {
 
@@ -93,8 +103,8 @@ class HROutstationAttendanceController extends Controller
 					'staff_id' => $v,
 					'date_attend' => $request->date_attend
 			],[
-					'in' => Carbon::parse($request->in)->format('H:i:s'),
-					'out' => Carbon::parse($request->out)->format('H:i:s'),
+					'in' => $in,
+					'out' => $out,
 					'remarks' => ucwords(Str::lower($request->remarks)),
 			]);
 		}
@@ -122,7 +132,23 @@ class HROutstationAttendanceController extends Controller
 	 */
 	public function update(Request $request, HROutstationAttendance $hroutstationattendance): RedirectResponse
 	{
+		if ($request->in) {
+			$in = Carbon::parse($request->in)->format('H:i:s');
+		} else {
+			$in = NULL;
+		}
+		if ($request->out) {
+			$out = Carbon::parse($request->out)->format('H:i:s');
+		} else {
+			$out = NULL;
+		}
 
+		$hroutstationattendance->update([
+			'in' => $in,
+			'out' => $out,
+			'remarks' => ucwords(Str::lower($request->remarks)),
+		]);
+		return redirect()->route('hroutstationattendance.index')->with('flash_message', 'Successfully Edit Outstation Staff Attendance');
 	}
 
 	/**
@@ -130,6 +156,10 @@ class HROutstationAttendanceController extends Controller
 	 */
 	public function destroy(HROutstationAttendance $hroutstationattendance): JsonResponse
 	{
-
+		$hroutstationattendance->delete();
+		return response()->json([
+			'message' => 'Successfully delete outstation attendance',
+			'status' => 'success',
+		]);
 	}
 }

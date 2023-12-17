@@ -17,14 +17,14 @@
 		<div class="form-group row m-3 {{ $errors->has('attend_date') ? 'has-error' : Null }}">
 			{{ Form::label('loc', 'Location : ', ['class' => 'col-sm-4 col-form-label']) }}
 			<div class="col-sm-8">
-				<select name="outstation_id" id="loc" class="form-select form-select-sm col-sm-5"></select>
+				<input type="text" name="outstation_id" value="{{ $hroutstationattendance->belongstooutstation->belongstocustomer->customer }}" id="loc" class="form-control form-control-sm col-sm-5" readonly>
 			</div>
 		</div>
 
 		<div class="form-group row m-3 {{ $errors->has('staff_id') ? 'has-error' : Null }}">
 			{{ Form::label('staff', 'Staff : ', ['class' => 'col-sm-4 col-form-label']) }}
 			<div class="col-sm-8">
-				<select name="staff_id[]" id="staff" class="form-select form-select-sm col-sm-5"></select>
+				<input type="text" name="staff_id" value="{{ $hroutstationattendance->belongstostaff->name }}" id="staff" class="form-control form-control-sm col-sm-5" readonly>
 			</div>
 		</div>
 
@@ -61,7 +61,7 @@
 @section('js')
 /////////////////////////////////////////////////////////////////////////////////////////
 //date
-$('#date').datetimepicker({
+$('#date1').datetimepicker({
 	icons: {
 		time: "fas fas-regular fa-clock fa-beat",
 		date: "fas fas-regular fa-calendar fa-beat",
@@ -78,7 +78,7 @@ $('#date').datetimepicker({
 });
 
 // $('document').ready();
-$('#loc').select2({
+$('#loc1').select2({
 	placeholder: 'Please Choose',
 	width: '100%',
 	ajax: {
@@ -150,7 +150,7 @@ $('#loc').select2({
 //		});
 	});
 
-$('#staff').select2({
+$('#staff1').select2({
 	placeholder: 'Please Choose',
 	width: '100%',
 	ajax: {
@@ -171,7 +171,7 @@ $('#staff').select2({
 	allowClear: true,
 	closeOnSelect: true,
 });
-$('#staff').val('{{ $hroutstationattendance->staff_id }}').trigger('change');
+$('#staff1').val('{{ $hroutstationattendance->staff_id }}').trigger('change');
 
 
 /////////////////////////////////////////////////////////////////////////////////////////

@@ -28,7 +28,7 @@ use Illuminate\Support\Str;
 						<th>Date</th>
 						<th>In</th>
 						<th>Detected Region In</th>
-						<th>Detected City Out</th>
+						<th>Detected City In</th>
 						<th>Out</th>
 						<th>Detected Region Out</th>
 						<th>Detected City Out</th>
