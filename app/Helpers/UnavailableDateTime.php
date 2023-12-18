@@ -58,16 +58,16 @@ class UnavailableDateTime
 			// dd(empty($entitannual->count() && $entitmc->count() && $entitmaternity->count()) && empty($wh->count()) );
 			$nextyear = [];
 		if (Setting::find(6)->active == 1) {																					// block next year leave (setting): enable is 1
-			foreach ($nystart_date->daysUntil($nyend_date) as $nydate) {															// straight away block next year
-				$nextyear[] = $nydate->format('Y-m-d');
-			}
-		} else {																													// no block next year leave (setting):
 			if(empty($entitannual->count()) && empty($entitmc->count()) && empty($entitmaternity->count()) && empty($wh->count())) {	// check the tables if its there 1st, endure all are ready
 				foreach ($nystart_date->daysUntil($nyend_date) as $nydate) {														// table not ready
 					$nextyear[] = $nydate->format('Y-m-d');
 				}
 			} else {																												// table ready
 				$nextyear = [];
+			}
+		} else {																													// no block next year leave (setting):
+			foreach ($nystart_date->daysUntil($nyend_date) as $nydate) {															// straight away block next year
+				$nextyear[] = $nydate->format('Y-m-d');
 			}
 		}
 
