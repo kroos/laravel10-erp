@@ -14,6 +14,7 @@ use App\Models\HumanResources\OptDayType;
 use App\Models\HumanResources\OptTcms;
 use App\Models\HumanResources\HROvertime;
 use App\Models\HumanResources\HROutstation;
+use App\Models\HumanResources\HRAttendanceRemark;
 
 // load helper
 use App\Helpers\UnavailableDateTime;
@@ -3954,6 +3955,10 @@ $i = 1;
 			// 	$lea = NULL;
 			// 	$s->update(['leave_id' => NULL]);
 			// }
+			HRAttendanceRemark::where(function(Builder $query) use ($s) {
+				$query->whereDate('date_from')
+				->whereDate();
+			})
 			?>
 
 				<tr>

@@ -67,7 +67,7 @@ if ($leaves->count()) {
 
 ?>
 
-<div class="col-sm-12 row">
+<div class="container row align-items-start justify-content-center">
 	@include('humanresources.hrdept.navhr')
 	<div class="d-flex justify-content-center align-items-start">
 		<div class="col-md-7">
