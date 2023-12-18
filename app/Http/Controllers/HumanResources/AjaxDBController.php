@@ -1344,6 +1344,7 @@ class AjaxDBController extends Controller
 									->whereDate('date_to', '>=', $request->date_attend);
 								})
 								->where('customer_id', $st->customer_id)
+								->where('active', 1)
 								// ->ddrawsql();
 								->get() ;
 
