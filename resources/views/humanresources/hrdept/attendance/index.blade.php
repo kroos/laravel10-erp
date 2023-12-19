@@ -3955,10 +3955,20 @@ $i = 1;
 			// 	$lea = NULL;
 			// 	$s->update(['leave_id' => NULL]);
 			// }
-			HRAttendanceRemark::where(function(Builder $query) use ($s) {
-				$query->whereDate('date_from')
-				->whereDate();
-			})
+			$attrem = HRAttendanceRemark::where(function(Builder $query) use ($s) {
+												$query->whereDate('date_from', '>=', $s->attend_date)
+												->whereDate('date_to', '<=', $s->attend_date);
+											})
+											->where('staff_id', $s->staff_id)
+											->get();
+			if ($attrem->count()) {
+				if($s->daytype_id == 1) {
+					$s->update([
+						'remarks' => $attrem->first()?->attendance_remarks,
+						'remarks' => $attrem->first()?->hr_attendance_remarks,
+					]);
+				}
+			}
 			?>
 
 				<tr>

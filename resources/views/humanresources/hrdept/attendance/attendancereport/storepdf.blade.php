@@ -251,6 +251,8 @@ $p = [];
 		$pdf->SetLineHeight(4);
 		/////////////////////////////
 
+		dd($ha);
+
 		// loop attendance for each staff
 		foreach ($ha as $v1) {
 
