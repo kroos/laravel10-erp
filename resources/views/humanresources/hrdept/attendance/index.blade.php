@@ -15,6 +15,7 @@ use App\Models\HumanResources\OptTcms;
 use App\Models\HumanResources\HROvertime;
 use App\Models\HumanResources\HROutstation;
 use App\Models\HumanResources\HRAttendanceRemark;
+use App\Models\HumanResources\HROutstationAttendance;
 
 // load helper
 use App\Helpers\UnavailableDateTime;
@@ -3965,7 +3966,17 @@ $i = 1;
 				if($s->daytype_id == 1) {
 					$s->update([
 						'remarks' => $attrem->first()?->attendance_remarks,
-						'remarks' => $attrem->first()?->hr_attendance_remarks,
+						'hr_remarks' => $attrem->first()?->hr_attendance_remarks,
+					]);
+				}
+			}
+
+			$outatt = HROutstationAttendance::where([['date_attend', $s->attend_date], ['staff_id', $s->staff_id], ['confirm', 1]])->get();
+			if($outatt->count()) {
+				if ($s->daytype_id == 1 && is_null($s->leave_id) && !is_null($s->outstation_id)) {
+					$s->update([
+						'in' => $outatt->first()?->in,
+						'out' => $outatt->first()?->out,
 					]);
 				}
 			}
@@ -3975,21 +3986,13 @@ $i = 1;
 					<td>
 						<a href="{{ route('attendance.edit', $s->id) }}" target="_blank">{{ $s->belongstostaff?->hasmanylogin()->where('active', 1)->first()?->username }}</a>
 					</td>
-					<td>
-						{{ $s->name }}
+					<td {!! ($s->name)?'data-bs-toggle="tooltip" data-bs-custom-class="custom-tooltip" data-bs-html="true" data-bs-title="'.$s->name.'"':NULL !!}>
+						{{ Str::words($s->name, 3, ' >>') }}
 					</td>
-					<td>
-						{{ $dayt }}
-					</td>
-					<td>
-						{!! $ll !!}
-					</td>
-					<td>
-						{!! $lea !!}
-					</td>
-					<td>
-						{{ Carbon::parse($s->attend_date)->format('j M Y') }}
-					</td>
+					<td>{{ $dayt }}</td>
+					<td>{!! $ll !!}</td>
+					<td>{!! $lea !!}</td>
+					<td>{{ Carbon::parse($s->attend_date)->format('j M Y') }}</td>
 					<td>
 						<span class="{{ ($in)?'text-info':((Carbon::parse($s->in)->gt($wh->time_start_am))?'text-danger':'') }}">{{ ($in)?'':Carbon::parse($s->in)->format('g:i a') }}</span>
 					</td>
@@ -4048,10 +4051,12 @@ $i = 1;
 					</td>
 					<td {!! ($s->remarks || $s->hr_remarks)?'data-bs-toggle="tooltip" data-bs-custom-class="custom-tooltip" data-bs-html="true" data-bs-title="'.$s->remarks.'<br />'.$s->hr_remarks.'"':NULL !!}>
 						{{ Str::limit($s->remarks, 8, ' >') }}
-						<br />
-						<span class="text-danger">
-							{{ Str::limit($s->hr_remarks, 8, ' >') }}
-						</span>
+						@if($s->hr_remarks)
+							<br />
+							<span class="text-danger">
+								{{ Str::limit($s->hr_remarks, 8, ' >') }}
+							</span>
+						@endif
 					</td>
 					<td>
 						{{ ($s->exception == 1)?'Yes':NULL }}

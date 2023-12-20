@@ -2,8 +2,40 @@
 
 @section('content')
 <?php
+use App\Models\HumanResources\HRLeave;
+use App\Models\HumanResources\OptLeaveType;
 use Illuminate\Database\Eloquent\Builder;
 use \Carbon\Carbon;
+
+// entitlement
+$annl = $staff->hasmanyleaveannual()?->where('year', now()->format('Y'))->first();
+$mcel = $staff->hasmanyleavemc()?->where('year', now()->format('Y'))->first();
+$matl = $staff->hasmanyleavematernity()?->where('year', now()->format('Y'))->first();
+$replt = $staff->hasmanyleavereplacement()?->selectRaw('SUM(leave_total) as total')->where(function(Builder $query){$query->whereDate('date_start', '>=', now()->startOfYear())->whereDate('date_end', '<=', now()->endOfYear());})->get();
+$replb = $staff->hasmanyleavereplacement()?->selectRaw('SUM(leave_balance) as total')->where(function(Builder $query){$query->whereDate('date_start', '>=', now()->startOfYear())->whereDate('date_end', '<=', now()->endOfYear());})->get();
+$upal = $staff->hasmanyleave()?->selectRaw('SUM(period_day) as total')
+								->where(function(Builder $query){
+									$query->whereDate('date_time_start', '>=', now()->startOfYear())
+										->whereDate('date_time_end', '<=', now()->endOfYear());
+									})
+								->where(function(Builder $query) {
+									$query->whereIn('leave_status_id', [5,6])
+										->orWhereNull('leave_status_id');
+								})
+								->whereIn('leave_type_id', [3, 6])
+								->get();
+$mcupl = $staff->hasmanyleave()?->selectRaw('SUM(period_day) as total')
+								->where(function(Builder $query){
+									$query->whereDate('date_time_start', '>=', now()->startOfYear())
+										->whereDate('date_time_end', '<=', now()->endOfYear());
+									})
+								->where(function(Builder $query) {
+									$query->whereIn('leave_status_id', [5,6])
+										->orWhereNull('leave_status_id');
+								})
+								->where('leave_type_id', 11)
+								->get();
+$mcupl = $staff->hasmanyleave()?->get();
 ?>
 <div class="col-sm-12 row justify-content-center align-items-start">
 	@include('humanresources.hrdept.navhr')
@@ -218,12 +250,12 @@ use \Carbon\Carbon;
 				<table class="table table-sm table-hover" style="font-size:12px;">
 					<thead>
 						<tr>
-							<th class="text-center align-middle" width="35px;">Year</th>
-							<th class="text-center align-middle" width="98px;">MC Entitlement</th>
-							<th class="text-center align-middle" width="95px;">MC Adjustment</th>
-							<th class="text-center align-middle" width="68px;">MC Utilize</th>
+							<th class="text-center align-middle">Year</th>
+							<th class="text-center align-middle">MC Entitlement</th>
+							<th class="text-center align-middle">MC Adjustment</th>
+							<th class="text-center align-middle">MC Utilize</th>
 							<th class="text-center align-middle">MC Balance</th>
-							<th class="text-center align-middle" width="40px;">&nbsp;</th>
+							<th class="text-center align-middle">&nbsp;</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -277,6 +309,52 @@ use \Carbon\Carbon;
 			@endif
 			@endif
 		</dl>
+	</div>
+
+	<div class="col-sm-12 table-responsive">
+		<h4>Entitlements</h4>
+		<table class="table table-sm table-hover table-bordered" style="font-size: 12px;">
+			<thead>
+				<tr>
+					<th class="text-center" rowspan="3">Year</th>
+					<th class="text-center" colspan="2">Annual Leave (AL)</th>
+					<th class="text-center" colspan="2">Medical Certificate Leave (MC)</th>
+					<th class="text-center" colspan="2">Maternity Leave (ML)</th>
+					<th class="text-center" colspan="2">Replacement Leave (NRL)</th>
+					<th class="text-center">Unpaid Leave (UPL)</th>
+					<th class="text-center">Medical Certificate Unpaid Leave (MC-UPL)</th>
+				</tr>
+				<tr>
+					<th class="text-center">Balance (days)</th>
+					<th class="text-center">Total (days)</th>
+					<th class="text-center">Balance (days)</th>
+					<th class="text-center">Total (days)</th>
+					<th class="text-center">Balance (days)</th>
+					<th class="text-center">Total (days)</th>
+					<th class="text-center">Balance (days)</th>
+					<th class="text-center">Total (days)</th>
+					<th class="text-center">Total (days)</th>
+					<th class="text-center">Total (days)</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td class="text-center">{{ now()->format('Y') }}</td>
+					<td class="text-center">{{ $annl?->annual_leave_balance }}</td>
+					<td class="text-center">{{ $annl?->annual_leave }}</td>
+					<td class="text-center">{{ $mcel?->mc_leave_balance }}</td>
+					<td class="text-center">{{ $mcel?->mc_leave }}</td>
+					<td class="text-center">{{ $matl?->maternity_leave_balance }}</td>
+					<td class="text-center">{{ $matl?->maternity_leave }}</td>
+					<td class="text-center">{{ $replb?->first()?->total }}</td>
+					<td class="text-center">{{ $replt?->first()?->total }}</td>
+					<td class="text-center">{{ $upal?->first()?->total }}</td>
+					<td class="text-center">{{ $mcupl?->first()?->total }}</td>
+				</tr>
+			</tbody>
+		</table>
+
+
 	</div>
 
 	<p>&nbsp;</p>
@@ -528,6 +606,343 @@ use \Carbon\Carbon;
 	</div>
 
 	<p>&nbsp;</p>
+	<h4>Annual Leave Entitlement</h4>
+	@if($staff->hasmanyleaveannual()?->get()->count())
+	<div class="table-responsive">
+		<table class="table table-sm table-hover" style="font-size:12px;">
+			<thead>
+				<tr>
+					<th class="text-center align-middle">Year</th>
+					<th class="text-center align-middle">AL Entitlement</th>
+					<th class="text-center align-middle">AL Adjustment</th>
+					<th class="text-center align-middle">AL Utilize</th>
+					<th class="text-center align-middle">AL Balance</th>
+					<th class="text-center align-middle">Leave</th>
+					<th class="text-center align-middle">&nbsp;</th>
+				</tr>
+			</thead>
+			<tbody>
+				@foreach($staff->hasmanyleaveannual()->orderBy('year', 'DESC')->get() as $al)
+				<tr>
+					<td class="text-center align-middle">{{ $al->year }}</td>
+					<td class="text-center align-middle">{{ $al->annual_leave }}</td>
+					<td class="text-center align-middle">{{ $al->annual_leave_adjustment }}</td>
+					<td class="text-center align-middle">{{ $al->annual_leave_utilize }}</td>
+					<td class="text-center align-middle">{{ $al->annual_leave_balance }}</td>
+					<td class="table-responsive">
+						<?php
+						$leaves = HRLeave::where(function(Builder $query) {
+												$query->whereIn('leave_status_id', [5, 6])->orWhereNull('leave_status_id');
+											})
+											->where('staff_id', $staff->id)
+											->whereIn('leave_type_id', [1, 5])
+											->get();
+						?>
+						@if($leaves->count())
+						<table class="table table-hover table-sm">
+							<thead>
+								<tr>
+									<th>Leave ID</th>
+									<th>Duration</th>
+								</tr>
+							</thead>
+							<tbody>
+								<?php $total = 0; ?>
+								@foreach($leaves as $key => $leave)
+									<tr>
+										<td>
+											<a href="{{ route('hrleave.show', $leave->id) }}" target="_blank">HR9-{{ str_pad( $leave->leave_no, 5, "0", STR_PAD_LEFT ) }}/{{ $leave->leave_year }}</a>
+										</td>
+										<td>
+											{{ $leave->period_day }} day/s
+											<?php $total += $leave->period_day; ?>
+										</td>
+									</tr>
+								@endforeach
+							</tbody>
+							<tfoot>
+								<tr>
+									<td>Total</td>
+									<td>{{ $total }} day/s</td>
+								</tr>
+							</tfoot>
+						</table>
+						@endif
+					</td>
+					<td class="text-center align-middle">
+						<a href="{{ route('annualleave.edit', $al->id) }}" class="btn btn-sm btn-outline-secondary"><i class="fa-regular fa-pen-to-square"></i></a>
+					</td>
+				</tr>
+				@endforeach
+			</tbody>
+		</table>
+	</div>
+	@endif
+
+	<p>&nbsp;</p>
+	<h4>Medical Certificate Leave</h4>
+	<div class="table-responsive">
+	@if($staff->hasmanyleavemc()?->get()->count())
+		<table class="table table-sm table-hover" style="font-size:12px;">
+			<thead>
+				<tr>
+					<th class="text-center align-middle">Year</th>
+					<th class="text-center align-middle">MC Entitlement</th>
+					<th class="text-center align-middle">MC Adjustment</th>
+					<th class="text-center align-middle">MC Utilize</th>
+					<th class="text-center align-middle">MC Balance</th>
+					<th class="text-center align-middle">Leave</th>
+					<th class="text-center align-middle">&nbsp;</th>
+				</tr>
+			</thead>
+			<tbody>
+				@foreach($staff->hasmanyleavemc()->orderBy('year', 'DESC')->get() as $al)
+				<tr>
+					<td class="text-center align-middle">{{ $al->year }}</td>
+					<td class="text-center align-middle">{{ $al->mc_leave }}</td>
+					<td class="text-center align-middle">{{ $al->mc_leave_adjustment }}</td>
+					<td class="text-center align-middle">{{ $al->mc_leave_utilize }}</td>
+					<td class="text-center align-middle">{{ $al->mc_leave_balance }}</td>
+					<td class="text-center align-middle">
+						<?php
+						$leaves = HRLeave::where(function(Builder $query) {
+												$query->whereIn('leave_status_id', [5, 6])->orWhereNull('leave_status_id');
+											})
+											->where('staff_id', $staff->id)
+											->where('leave_type_id', 2)
+											->get();
+						?>
+						@if($leaves->count())
+							<table class="table table-hover table-sm">
+								<thead>
+									<tr>
+										<th>Leave ID</th>
+										<th>Duration</th>
+									</tr>
+								</thead>
+								<tbody>
+									<?php $total = 0; ?>
+									@foreach($leaves as $key => $leave)
+										<tr>
+											<td>
+												<a href="{{ route('hrleave.show', $leave->id) }}" target="_blank">HR9-{{ str_pad( $leave->leave_no, 5, "0", STR_PAD_LEFT ) }}/{{ $leave->leave_year }}</a>
+											</td>
+											<td>
+												{{ $leave->period_day }} day/s
+												<?php $total += $leave->period_day; ?>
+											</td>
+										</tr>
+									@endforeach
+								</tbody>
+								<tfoot>
+									<tr>
+										<td>Total</td>
+										<td>{{ $total }} day/s</td>
+									</tr>
+								</tfoot>
+							</table>
+						@endif
+					</td>
+					<td class="text-center align-middle">
+						<a href="{{ route('mcleave.edit', $al->id) }}" class="btn btn-sm btn-outline-secondary"><i class="fa-regular fa-pen-to-square"></i></a>
+					</td>
+				</tr>
+				@endforeach
+			</tbody>
+		</table>
+	@endif
+	</div>
+
+	@if($staff->gender_id == 2)
+	<p>&nbsp;</p>
+	<h4>Maternity Leave</h4>
+	<div class="table-responsive">
+		@if($staff->hasmanyleavematernity()?->get()->count())
+		<table class="table table-sm table-hover" style="font-size:12px;">
+			<thead>
+				<tr>
+					<th class="text-center align-middle">Year</th>
+					<th class="text-center align-middle">Maternity Entitlement</th>
+					<th class="text-center align-middle">Maternity Adjustment</th>
+					<th class="text-center align-middle">Maternity Utilize</th>
+					<th class="text-center align-middle">Maternity Balance</th>
+					<th class="text-center align-middle">Leave</th>
+					<th class="text-center align-middle">&nbsp;</th>
+				</tr>
+			</thead>
+			<tbody>
+				@foreach($staff->hasmanyleavematernity()->orderBy('year', 'DESC')->get() as $al)
+				<tr>
+					<td class="text-center align-middle">{{ $al->year }}</td>
+					<td class="text-center align-middle">{{ $al->maternity_leave }}</td>
+					<td class="text-center align-middle">{{ $al->maternity_leave_adjustment }}</td>
+					<td class="text-center align-middle">{{ $al->maternity_leave_utilize }}</td>
+					<td class="text-center align-middle">{{ $al->maternity_leave_balance }}</td>
+					<td class="text-center align-middle">
+						<?php
+						$leaves = HRLeave::where(function(Builder $query) {
+										$query->whereIn('leave_status_id', [5, 6])->orWhereNull('leave_status_id');
+									})
+									->where('staff_id', $staff->id)
+									->where('leave_type_id', 7)
+									->get();
+						?>
+						@if($leaves->count())
+							<table class="table table-hover table-sm">
+								<thead>
+									<tr>
+										<th>Leave ID</th>
+										<th>Duration</th>
+									</tr>
+								</thead>
+								<tbody>
+									<?php $total = 0; ?>
+									@foreach($leaves as $key => $leave)
+										<tr>
+											<td>
+												<a href="{{ route('hrleave.show', $leave->id) }}" target="_blank">HR9-{{ str_pad( $leave->leave_no, 5, "0", STR_PAD_LEFT ) }}/{{ $leave->leave_year }}</a>
+											</td>
+											<td>
+												{{ $leave->period_day }} day/s
+												<?php $total += $leave->period_day; ?>
+											</td>
+										</tr>
+									@endforeach
+								</tbody>
+								<tfoot>
+									<tr>
+										<td>Total</td>
+										<td>{{ $total }} day/s</td>
+									</tr>
+								</tfoot>
+							</table>
+						@endif
+					</td>
+					<td class="text-center align-middle">
+						<a href="{{ route('maternityleave.edit', $al->id) }}" class="btn btn-sm btn-outline-secondary"><i class="fa-regular fa-pen-to-square"></i></a>
+					</td>
+				</tr>
+				@endforeach
+			</tbody>
+		</table>
+		@endif
+	</div>
+	@endif
+
+	<p>&nbsp;</p>
+	<h4>Unpaid Leave</h4>
+	<div class="table-responsive">
+	<?php
+	$leavesupls = HRLeave::where(function(Builder $query) {
+							$query->whereIn('leave_status_id', [5, 6])->orWhereNull('leave_status_id');
+						})
+						->where('staff_id', $staff->id)
+						->whereIn('leave_type_id', [3, 6, 12])
+						->get();
+	$dur = 0;
+	?>
+	@if($leavesupls->count())
+		<table class="table table-sm table-hover" style="font-size:12px;">
+			<thead>
+				<tr>
+					<th class="text-center align-middle">ID</th>
+					<th class="text-center align-middle">Leave Type</th>
+					<th class="text-center align-middle">From</th>
+					<th class="text-center align-middle">To</th>
+					<th class="text-center align-middle">Duration</th>
+				</tr>
+			</thead>
+			<tbody>
+				@foreach($leavesupls as $leavesupl)
+				<tr>
+					<td class="text-center align-middle">
+						<a href="{{ route('hrleave.show', $leavesupl->id) }}" target="_blank">HR9-{{ str_pad( $leavesupl->leave_no, 5, "0", STR_PAD_LEFT ) }}/{{ $leavesupl->leave_year }}</a>
+					</td>
+					<td class="text-center align-middle">{{ OptLeaveType::find($leavesupl->leave_type_id)->leave_type_code }}</td>
+					<td class="text-center align-middle">{{ \Carbon\Carbon::parse($leavesupl->date_time_start)->format('j M Y') }}</td>
+					<td class="text-center align-middle">{{ \Carbon\Carbon::parse($leavesupl->date_time_end)->format('j M Y') }}</td>
+					<td class="text-center align-middle">
+							{{ $leavesupl->period_day }} day/s
+							<?php $dur += $leavesupl->period_day ?>
+					</td>
+				</tr>
+				@endforeach
+			</tbody>
+			<tfoot>
+				<tr>
+					<th colspan="4" class="text-right">Total :</th>
+					<th class="text-center">{{ $dur }} day/s</th>
+				</tr>
+			</tfoot>
+		</table>
+	@endif
+	</div>
+
+	<p>&nbsp;</p>
+	<h4>Medical Certificate Unpaid Leave</h4>
+	<div class="table-responsive">
+	<?php
+	$leavesmcs = HRLeave::where(function(Builder $query) {
+							$query->whereIn('leave_status_id', [5, 6])->orWhereNull('leave_status_id');
+						})
+						->where('staff_id', $staff->id)
+						->where('leave_type_id', 11)
+						->get();
+	$durm = 0;
+	?>
+	@if($leavesmcs->count())
+		<table class="table table-sm table-hover" style="font-size:12px;">
+			<thead>
+				<tr>
+					<th class="text-center align-middle">ID</th>
+					<th class="text-center align-middle">Leave Type</th>
+					<th class="text-center align-middle">From</th>
+					<th class="text-center align-middle">To</th>
+					<th class="text-center align-middle">Duration</th>
+				</tr>
+			</thead>
+			<tbody>
+				@foreach($leavesmcs as $leavesmc)
+				<tr>
+					<td class="text-center align-middle">
+						<a href="{{ route('hrleave.show', $leavesmc->id) }}" target="_blank">HR9-{{ str_pad( $leavesmc->leave_no, 5, "0", STR_PAD_LEFT ) }}/{{ $leavesmc->leave_year }}</a>
+					</td>
+					<td class="text-center align-middle">{{ OptLeaveType::find($leavesmc->leave_type_id)->leave_type_code }}</td>
+					<td class="text-center align-middle">{{ \Carbon\Carbon::parse($leavesmc->date_time_start)->format('j M Y') }}</td>
+					<td class="text-center align-middle">{{ \Carbon\Carbon::parse($leavesmc->date_time_end)->format('j M Y') }}</td>
+					<td class="text-center align-middle">
+							{{ $leavesmc->period_day }} day/s
+							<?php $durm += $leave->period_day ?>
+					</td>
+				</tr>
+				@endforeach
+			</tbody>
+			<tfoot>
+				<tr>
+					<th colspan="4" class="text-right">Total :</th>
+					<th class="text-center">{{ $durm }} day/s</th>
+				</tr>
+			</tfoot>
+		</table>
+	@endif
+	</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	<p>&nbsp;</p>
 	<h4 class="align-items-center">Replacement Leave</h4>
 	<div class="table-responsive">
 		@if($staff->hasmanyleavereplacement()?->get()->count())
@@ -537,7 +952,7 @@ use \Carbon\Carbon;
 					<th>From</th>
 					<th>To</th>
 					<th>Location</th>
-					<th>Reason</th>
+					<th>Remarks</th>
 					<th>Total Day/s</th>
 					<th>Leave Utilize</th>
 					<th>Leave Balance</th>
