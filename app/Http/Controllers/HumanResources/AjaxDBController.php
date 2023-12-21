@@ -15,6 +15,7 @@ use Illuminate\View\View;
 use App\Models\Setting;
 
 use App\Models\Staff;
+use App\Models\Login;
 use App\Models\Customer;
 use App\Models\HumanResources\HRLeave;
 use App\Models\HumanResources\HROutstation;
@@ -485,7 +486,7 @@ class AjaxDBController extends Controller
 		foreach ($s as $v) {
 				$ls['results'][] = [
 										'id' => $v->id,
-										'text' => $v->name
+										'text' => Login::where([['active', 1], ['staff_id', $v->id]])->first()?->username.'  '.$v->name
 									];
 		}
 		return response()->json($ls);

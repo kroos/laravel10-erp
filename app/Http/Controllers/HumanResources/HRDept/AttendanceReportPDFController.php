@@ -22,6 +22,7 @@ use Illuminate\Support\Facades\DB;
 // load models
 use App\Models\HumanResources\HRAttendance;
 use App\Models\Staff;
+use App\Models\Login;
 
 // load paginator
 use Illuminate\Pagination\Paginator;
@@ -50,18 +51,21 @@ class AttendanceReportPDFController extends Controller
 	public function store(Request $request): View
 	{
 		// dd($request->all());
-		$sa = HRAttendance::select('staff_id')
+		$sa1 = HRAttendance::select('staff_id')
 					->whereIn('staff_id', $request->staff_id)
-					// ->whereIn('staff_id', [1, 2, 3, 4, 5, 6, 7, 8, 9, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 52, 53, 54, 55, 56, 57, 58, 59, 65, 67, 68, 69, 71])
 					->where(function (Builder $query) use ($request){
 						$query->whereDate('attend_date', '>=', $request->from)
-						// $query->whereDate('attend_date', '>=', '2023-11-01')
 						->whereDate('attend_date', '<=', $request->to);
-						// ->whereDate('attend_date', '<=', '2023-11-14');
 					})
 					->groupBy('hr_attendances.staff_id')
 					->get();
-
+		foreach ($sa1 as $k) {
+			$lp[] = $k->staff_id;
+		}
+		$sa = Login::whereIn('staff_id', $lp)->groupBy('staff_id')
+					->orderBy('active', 'desc')
+					->orderBy('username')
+					->get();
 		return view('humanresources.hrdept.attendance.attendancereport.storepdf', ['sa' => $sa, 'request' => $request]);
 	}
 

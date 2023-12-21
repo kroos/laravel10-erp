@@ -56,7 +56,7 @@ class AttendanceReportController extends Controller
 
 	public function store(Request $request): View
 	{
-		// dd($request->all());
+		// dd($request->all(), $request->staff_id);
 		$sa1 = HRAttendance::select('staff_id')
 					->whereIn('staff_id', $request->staff_id)
 					->where(function (Builder $query) use ($request){
@@ -65,15 +65,15 @@ class AttendanceReportController extends Controller
 					})
 					->groupBy('hr_attendances.staff_id')
 					->get();
-		foreach ($sa1 as $k1) {
-			$r[] = $k1->staff_id;
+		foreach ($sa1 as $k) {
+			$lp[] = $k->staff_id;
 		}
-		$sa = Login::whereIn('staff_id', $r)->where('active', 1)->orderBy('username')->get();
-		// dd($r, $sa);
-		// foreach ($sa as $sid) {
-		// 	$ui[] = $sid->staff_id;
-		// }
-
+		$sa = Login::whereIn('staff_id', $lp)->groupBy('staff_id')
+					->orderBy('active', 'desc')
+					->orderBy('username')
+					->get();
+					// ->ddRawSql();
+		// dd($sa1, $lp, $sa);
 		return view('humanresources.hrdept.attendance.attendancereport.store', ['sa' => $sa, 'request' => $request]);
 	}
 
