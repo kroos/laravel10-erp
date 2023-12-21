@@ -3,8 +3,8 @@
 @section('content')
 <?php
 use Illuminate\Database\Eloquent\Builder;
-
 ?>
+
 <style>
 	.scrollable-div {
 		/* Set the width height as needed */
@@ -129,9 +129,16 @@ $('#from').datetimepicker({
 			});
 			$.each( obj, function() {
 				$('.wrap_checkbox').append(
-											'<div class="form-check mb-1 g-3 remove_checkbox">' +
+											'<div class="form-check mb-1 g-3 remove_checkbox" style="vertical-align: middle;">' +
 												'<input class="form-check-input" name="staff_id" type="checkbox" value="' + this.id + '" id="staff_' + i + '" >' +
-												'<label class="form-check-label" for="staff_' + i + '">' + this.name + '</label>' +
+												'<label class="form-check-label" for="staff_' + i + '">' + 
+												this.username + 
+												' - ' +
+												this.name +
+												'&nbsp;&nbsp;&nbsp;[' +
+												this.department +
+												']' + 
+												'</label>' +
 											'</div>'
 				);
 				i++
@@ -229,9 +236,16 @@ $('#to').datetimepicker({
 			});
 			$.each( obj, function() {
 				$('.wrap_checkbox').append(
-							'<div class="form-check mb-1 g-3 remove_checkbox">' +
+							'<div class="form-check mb-1 g-3 remove_checkbox" style="vertical-align: middle;">' +
 								'<input class="form-check-input ' + this.branch + '" name="staff_id[]" type="checkbox" value="' + this.id + '" id="staff_' + i + '">' +
-								'<label class="form-check-label" for="staff_' + i + '">' + this.name + '</label>' +
+								'<label class="form-check-label" for="staff_' + i + '">' + 
+									this.username + 
+									' - ' +
+									this.name +
+									'&nbsp;&nbsp;&nbsp;[' +
+									this.department +
+									']' +
+									'</label>' +
 							'</div>'
 				);
 				i++
