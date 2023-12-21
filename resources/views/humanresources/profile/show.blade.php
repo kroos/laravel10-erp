@@ -336,7 +336,7 @@ $childrens = $profile->hasmanychildren()->get();
 	<p>&nbsp;</p>
 	<div class="col-sm-12 table-responsive">
 		<h4>Entitlements</h4>
-		<table class="table table-sm table-hover table-bordered" style="font-size: 12px;">
+		<table id="ent" class="table table-sm table-hover table-bordered" style="font-size: 12px;">
 			<thead>
 				<tr>
 					<th class="text-center" rowspan="3">Year</th>
@@ -382,7 +382,7 @@ $childrens = $profile->hasmanychildren()->get();
 	<h4>Annual Leave Entitlement</h4>
 	@if($profile->hasmanyleaveannual()?->get()->count())
 	<div class="table-responsive">
-		<table class="table table-sm table-hover" style="font-size:12px;">
+		<table id="al" class="table table-sm table-hover" style="font-size:12px;">
 			<thead>
 				<tr>
 					<th class="text-center align-middle">Year</th>
@@ -452,7 +452,7 @@ $childrens = $profile->hasmanychildren()->get();
 	<h4>Medical Certificate Leave</h4>
 	<div class="table-responsive">
 	@if($profile->hasmanyleavemc()?->get()->count())
-		<table class="table table-sm table-hover" style="font-size:12px;">
+		<table id="mc" class="table table-sm table-hover" style="font-size:12px;">
 			<thead>
 				<tr>
 					<th class="text-center align-middle">Year</th>
@@ -523,7 +523,7 @@ $childrens = $profile->hasmanychildren()->get();
 	<h4>Maternity Leave</h4>
 	<div class="table-responsive">
 		@if($profile->hasmanyleavematernity()?->get()->count())
-		<table class="table table-sm table-hover" style="font-size:12px;">
+		<table id="ml" class="table table-sm table-hover" style="font-size:12px;">
 			<thead>
 				<tr>
 					<th class="text-center align-middle">Year</th>
@@ -590,108 +590,11 @@ $childrens = $profile->hasmanychildren()->get();
 	</div>
 	@endif
 
-	<p>&nbsp;</p>
-	<h4>Unpaid Leave</h4>
-	<div class="table-responsive">
-	<?php
-	$leavesupls = HRLeave::where(function(Builder $query) {
-							$query->whereIn('leave_status_id', [5, 6])->orWhereNull('leave_status_id');
-						})
-						->where('staff_id', $profile->id)
-						->whereIn('leave_type_id', [3, 6, 12])
-						->get();
-	$dur = 0;
-	?>
-	@if($leavesupls->count())
-		<table class="table table-sm table-hover" style="font-size:12px;">
-			<thead>
-				<tr>
-					<th class="text-center align-middle">ID</th>
-					<th class="text-center align-middle">Leave Type</th>
-					<th class="text-center align-middle">From</th>
-					<th class="text-center align-middle">To</th>
-					<th class="text-center align-middle">Duration</th>
-				</tr>
-			</thead>
-			<tbody>
-				@foreach($leavesupls as $leavesupl)
-				<tr>
-					<td class="text-center align-middle">
-						<a href="{{ route('leave.show', $leavesupl->id) }}" target="_blank">HR9-{{ str_pad( $leavesupl->leave_no, 5, "0", STR_PAD_LEFT ) }}/{{ $leavesupl->leave_year }}</a>
-					</td>
-					<td class="text-center align-middle">{{ OptLeaveType::find($leavesupl->leave_type_id)->leave_type_code }}</td>
-					<td class="text-center align-middle">{{ \Carbon\Carbon::parse($leavesupl->date_time_start)->format('j M Y') }}</td>
-					<td class="text-center align-middle">{{ \Carbon\Carbon::parse($leavesupl->date_time_end)->format('j M Y') }}</td>
-					<td class="text-center align-middle">
-							{{ $leavesupl->period_day }} day/s
-							<?php $dur += $leavesupl->period_day ?>
-					</td>
-				</tr>
-				@endforeach
-			</tbody>
-			<tfoot>
-				<tr>
-					<th colspan="4" class="text-right">Total :</th>
-					<th class="text-center">{{ $dur }} day/s</th>
-				</tr>
-			</tfoot>
-		</table>
-	@endif
-	</div>
-
-	<p>&nbsp;</p>
-	<h4>Medical Certificate Unpaid Leave</h4>
-	<div class="table-responsive">
-	<?php
-	$leavesmcs = HRLeave::where(function(Builder $query) {
-							$query->whereIn('leave_status_id', [5, 6])->orWhereNull('leave_status_id');
-						})
-						->where('staff_id', $profile->id)
-						->where('leave_type_id', 11)
-						->get();
-	$durm = 0;
-	?>
-	@if($leavesmcs->count())
-		<table class="table table-sm table-hover" style="font-size:12px;">
-			<thead>
-				<tr>
-					<th class="text-center align-middle">ID</th>
-					<th class="text-center align-middle">Leave Type</th>
-					<th class="text-center align-middle">From</th>
-					<th class="text-center align-middle">To</th>
-					<th class="text-center align-middle">Duration</th>
-				</tr>
-			</thead>
-			<tbody>
-				@foreach($leavesmcs as $leavesmc)
-				<tr>
-					<td class="text-center align-middle">
-						<a href="{{ route('leave.show', $leavesmc->id) }}" target="_blank">HR9-{{ str_pad( $leavesmc->leave_no, 5, "0", STR_PAD_LEFT ) }}/{{ $leavesmc->leave_year }}</a>
-					</td>
-					<td class="text-center align-middle">{{ OptLeaveType::find($leavesmc->leave_type_id)->leave_type_code }}</td>
-					<td class="text-center align-middle">{{ \Carbon\Carbon::parse($leavesmc->date_time_start)->format('j M Y') }}</td>
-					<td class="text-center align-middle">{{ \Carbon\Carbon::parse($leavesmc->date_time_end)->format('j M Y') }}</td>
-					<td class="text-center align-middle">
-							{{ $leavesmc->period_day }} day/s
-							<?php $durm += $leave->period_day ?>
-					</td>
-				</tr>
-				@endforeach
-			</tbody>
-			<tfoot>
-				<tr>
-					<th colspan="4" class="text-right">Total :</th>
-					<th class="text-center">{{ $durm }} day/s</th>
-				</tr>
-			</tfoot>
-		</table>
-	@endif
-	</div>
-	<p>&nbsp;</p>
+		<p>&nbsp;</p>
 	<h4 class="align-items-center">Replacement Leave</h4>
 	<div class="table-responsive">
 		@if($profile->hasmanyleavereplacement()?->get()->count())
-		<table class="table table-sm table-hover" style="font-size:12px;" id="replacementleave">
+		<table id="rpl" class="table table-sm table-hover" style="font-size:12px;" id="replacementleave">
 			<thead>
 				<tr>
 					<th>From</th>
@@ -702,7 +605,6 @@ $childrens = $profile->hasmanychildren()->get();
 					<th>Leave Utilize</th>
 					<th>Leave Balance</th>
 					<th>Replacement Leave</th>
-					<th>&nbsp;</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -755,11 +657,6 @@ $childrens = $profile->hasmanychildren()->get();
 							</table>
 						@endif
 					</td>
-					<td>
-						<a href="{{ route('rleave.edit', $al->id) }}" class="btn btn-sm btn-outline-secondary">
-							<i class="fa-regular fa-pen-to-square"></i>
-						</a>
-					</td>
 				</tr>
 				@endforeach
 			</tbody>
@@ -767,6 +664,103 @@ $childrens = $profile->hasmanychildren()->get();
 		@else
 		<p>No Leave Yet</p>
 		@endif
+	</div>
+	<p>&nbsp;</p>
+	<h4>Unpaid Leave</h4>
+	<div class="table-responsive">
+	<?php
+	$leavesupls = HRLeave::where(function(Builder $query) {
+							$query->whereIn('leave_status_id', [5, 6])->orWhereNull('leave_status_id');
+						})
+						->where('staff_id', $profile->id)
+						->whereIn('leave_type_id', [3, 6, 12])
+						->get();
+	$dur = 0;
+	?>
+	@if($leavesupls->count())
+		<table id="upl" class="table table-sm table-hover" style="font-size:12px;">
+			<thead>
+				<tr>
+					<th class="text-center align-middle">ID</th>
+					<th class="text-center align-middle">Leave Type</th>
+					<th class="text-center align-middle">From</th>
+					<th class="text-center align-middle">To</th>
+					<th class="text-center align-middle">Duration</th>
+				</tr>
+			</thead>
+			<tbody>
+				@foreach($leavesupls as $leavesupl)
+				<tr>
+					<td class="text-center align-middle">
+						<a href="{{ route('leave.show', $leavesupl->id) }}" target="_blank">HR9-{{ str_pad( $leavesupl->leave_no, 5, "0", STR_PAD_LEFT ) }}/{{ $leavesupl->leave_year }}</a>
+					</td>
+					<td class="text-center align-middle">{{ OptLeaveType::find($leavesupl->leave_type_id)->leave_type_code }}</td>
+					<td class="text-center align-middle">{{ \Carbon\Carbon::parse($leavesupl->date_time_start)->format('j M Y') }}</td>
+					<td class="text-center align-middle">{{ \Carbon\Carbon::parse($leavesupl->date_time_end)->format('j M Y') }}</td>
+					<td class="text-center align-middle">
+							{{ $leavesupl->period_day }} day/s
+							<?php $dur += $leavesupl->period_day ?>
+					</td>
+				</tr>
+				@endforeach
+			</tbody>
+			<tfoot>
+				<tr>
+					<th colspan="4" class="text-right">Total :</th>
+					<th class="text-center">{{ $dur }} day/s</th>
+				</tr>
+			</tfoot>
+		</table>
+	@endif
+	</div>
+
+	<p>&nbsp;</p>
+	<h4>Medical Certificate Unpaid Leave</h4>
+	<div class="table-responsive">
+	<?php
+	$leavesmcs = HRLeave::where(function(Builder $query) {
+							$query->whereIn('leave_status_id', [5, 6])->orWhereNull('leave_status_id');
+						})
+						->where('staff_id', $profile->id)
+						->where('leave_type_id', 11)
+						->get();
+	$durm = 0;
+	?>
+	@if($leavesmcs->count())
+		<table id="mcupl" class="table table-sm table-hover" style="font-size:12px;">
+			<thead>
+				<tr>
+					<th class="text-center align-middle">ID</th>
+					<th class="text-center align-middle">Leave Type</th>
+					<th class="text-center align-middle">From</th>
+					<th class="text-center align-middle">To</th>
+					<th class="text-center align-middle">Duration</th>
+				</tr>
+			</thead>
+			<tbody>
+				@foreach($leavesmcs as $leavesmc)
+				<tr>
+					<td class="text-center align-middle">
+						<a href="{{ route('leave.show', $leavesmc->id) }}" target="_blank">HR9-{{ str_pad( $leavesmc->leave_no, 5, "0", STR_PAD_LEFT ) }}/{{ $leavesmc->leave_year }}</a>
+					</td>
+					<td class="text-center align-middle">{{ OptLeaveType::find($leavesmc->leave_type_id)->leave_type_code }}</td>
+					<td class="text-center align-middle">{{ \Carbon\Carbon::parse($leavesmc->date_time_start)->format('j M Y') }}</td>
+					<td class="text-center align-middle">{{ \Carbon\Carbon::parse($leavesmc->date_time_end)->format('j M Y') }}</td>
+					<td class="text-center align-middle">
+							{{ $leavesmc->period_day }} day/s
+							<?php $durm += $leave->period_day ?>
+					</td>
+				</tr>
+				@endforeach
+			</tbody>
+			<tfoot>
+				<tr>
+					<th colspan="4" class="text-right">Total :</th>
+					<th class="text-center">{{ $durm }} day/s</th>
+				</tr>
+			</tfoot>
+		</table>
+	@endif
 	</div>
 </div>
 @endsection
@@ -781,6 +775,7 @@ $(document).ready(function(){
 /////////////////////////////////////////////////////////////////////////////////////////
 // datatables
 $.fn.dataTable.moment( 'D MMM YYYY' );
+$.fn.dataTable.moment( 'YYYY' );
 $.fn.dataTable.moment( 'h:mm a' );
 $('#attendance').DataTable({
 	"paging": true,
@@ -793,7 +788,27 @@ $('#attendance').DataTable({
 		{ type: 'time', 'targets': [5] },
 		{ type: 'time', 'targets': [6] },
 	],
-	"order": [[ 0, 'asc' ]], // sorting the 6th column descending
+	"order": [[ 0, 'desc' ]], // sorting the 6th column descending
+	responsive: true
+})
+.on( 'length.dt page.dt order.dt search.dt', function ( e, settings, len ) {
+	$(document).ready(function(){
+		$('[data-bs-toggle="tooltip"]').tooltip();
+	});
+});
+
+$('#al, #mc, #ml').DataTable({
+	"paging": true,
+	"lengthMenu": [ [30, 60, 100, -1], [30, 60, 100, "All"] ],
+	"columnDefs": [
+		{ type: 'date', 'targets': [0] },
+		{ type: 'time', 'targets': [2] },
+		{ type: 'time', 'targets': [3] },
+		{ type: 'time', 'targets': [4] },
+		{ type: 'time', 'targets': [5] },
+		{ type: 'time', 'targets': [6] },
+	],
+	"order": [[ 0, 'desc' ]], // sorting the 6th column descending
 	responsive: true
 })
 .on( 'length.dt page.dt order.dt search.dt', function ( e, settings, len ) {

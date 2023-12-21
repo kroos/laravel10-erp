@@ -155,10 +155,7 @@ class StaffController extends Controller
 			->whereYear('hr_attendances.attend_date', '=', $year)
 			->select('hr_attendances.remarks as attend_remark', 'hr_attendances.*', 'staffs.*')
 			->get();
-
 		$wh_group = $staff->belongstomanydepartment()->wherePivot('main', 1)->first();
-
-
 		return view('humanresources.hrdept.staff.show', ['staff' => $staff, 'attendance' => $attendance, 'wh_group' => $wh_group->wh_group_id]);
 	}
 
@@ -232,8 +229,9 @@ class StaffController extends Controller
 			}
 		}
 
-		$staff->belongstomanydepartment()->sync($request->only(['pivot_dept_id']), ['main' => 1]);
-		$staff->crossbackupto()->sync($request->only(['backup_staff_id'], ['active' => 1]));
+		// $staff->belongstomanydepartment()->sync($request->only(['pivot_dept_id']), ['main' => 1]);
+		$staff->belongstomanydepartment()->syncWithPivotValues($request->only(['pivot_dept_id']), ['main' => 1]);
+		$staff->crossbackupto()->syncWithPivotValues($request->only(['backup_staff_id'], ['active' => 1]));
 		// $staff->hasmanyleaveannual()->whereYear('year', now())->updateOrCreate([
 		// 																			'year' => Carbon::now()->format('Y'),
 		// 																			'annual_leave' => $request->annual_leave,

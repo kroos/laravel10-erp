@@ -21,91 +21,6 @@ use App\Models\HumanResources\HROvertime;
 use App\Models\HumanResources\HROutstation;
 
 ?>
-<style>
-	@media print {
-		body {
-			visibility: hidden;
-		}
-
-		#printPageButton, #back {
-			display: none;
-		}
-
-		.table-container {
-			visibility: visible;
-			position: absolute;
-			left: 0;
-			top: 0;
-		}
-	}
-
-	.table-container {
-		display: table;
-		width: 100%;
-		border-collapse: collapse;
-	}
-
-	.table {
-		display: table;
-		width: 100%;
-		border-collapse: collapse;
-		margin-top: 0;
-		padding-top: 0;
-		margin-bottom: 0;
-		padding-bottom: 0;
-	}
-
-	.table-row {
-		display: table-row;
-	}
-
-	.table-cell {
-		display: table-cell;
-		border: 1px solid #b3b3b3;
-		padding: 4px;
-		box-sizing: border-box;
-	}
-
-	.table-cell-top {
-		display: table-cell;
-		border: 1px solid #b3b3b3;
-		border-top: none;
-		padding: 4px;
-		box-sizing: border-box;
-	}
-
-	.table-cell-top-bottom {
-		display: table-cell;
-		border: 1px solid #b3b3b3;
-		border-top: none;
-		border-bottom: none;
-		padding: 0px;
-		box-sizing: border-box;
-	}
-
-	.table-cell-hidden {
-		display: table-cell;
-		border: none;
-	}
-
-	.header {
-		font-size: 22px;
-		text-align: center;
-	}
-
-	.theme {
-		background-color: #e6e6e6;
-	}
-
-	.table-cell-top1 {
-		display: table-cell;
-		border: 1px solid #b3b3b3;
-		border-top: none;
-		padding: 0px;
-		box-sizing: border-box;
-	}
-</style>
-<?php // dd($request->staff_id) ?>
 <div class="container table-responsive row align-items-start justify-content-center">
 @include('humanresources.hrdept.navhr')
 	<div class="row g-3">
@@ -115,8 +30,9 @@ use App\Models\HumanResources\HROutstation;
 				<input type="hidden" name="from" value="{!! $request->from !!}">
 				<input type="hidden" name="to" value="{!! $request->to !!}">
 				@if($sa)
+					<?php $po = 1; ?>
 					@foreach($sa as $key)
-						<input type="hidden" name="staff_id[]" value="{!! $key->staff_id !!}">
+						<input type="hidden" id="{{ $po++ }}" name="staff_id[]" value="{!! $key->staff_id !!}">
 					@endforeach
 				@endif
 				<input type="submit" class="form-control form-control-sm btn btn-sm btn-outline-secondary" value="Print PDF" target="_blank">
