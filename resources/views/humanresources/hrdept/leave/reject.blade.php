@@ -59,9 +59,9 @@ $category = $dept->category_id;
 					<th>Duration</th>
 					<th>Reason</th>
 					<th>Status</th>
-					<th>Supp Doc</th>
-					<th>Remarks</th>
-					<th>Remarks HR</th>
+					<th>Others Approval</th>
+					<th>Leave Remarks</th>
+					<th>Leave Remarks HR</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -123,14 +123,18 @@ if ($me1) {																				// hod
 					@if( $ha )
 						<tr>
 							<td><a href="{{ route('staff.show', $ul->staff_id) }}" target="_blank">{{ App\Models\Login::where([['staff_id', $ul->staff_id], ['active', 1]])->first()->username ?? NULL }}</a></td>
-							<td>{{ $ul->belongstostaff?->name }}</td>
+							<td {!!  ($ul->staff_id)?'data-bs-toggle="tooltip" data-bs-custom-class="custom-tooltip" data-bs-html="true" data-bs-title="'.$ul->belongstostaff?->name.'"':null !!}>
+								{{ Str::words($ul->belongstostaff?->name, 3, ' >') }}
+							</td>
 							<td><a href="{{ route('hrleave.show', $ul->id) }}" target="_blank">HR9-{{ str_pad( $ul->leave_no, 5, "0", STR_PAD_LEFT ) }}/{{ $ul->leave_year }}</a></td>
 							<td>{{ $ul->belongstooptleavetype?->leave_type_code }}</td>
 							<td>{{ Carbon::parse($ul->created_at)->format('j M Y') }}</td>
 							<td>{{ $dts }}</td>
 							<td>{{ $dte }}</td>
 							<td>{{ $dper }}</td>
-							<td data-bs-toggle="tooltip" data-bs-custom-class="custom-tooltip" data-bs-html="true" data-bs-title="{{ $ul->reason }}">{{ Str::limit($ul->reason, 10, ' >') }}</td>
+							<td {!! ($ul->reason)?'data-bs-toggle="tooltip" data-bs-custom-class="custom-tooltip" data-bs-html="true" data-bs-title="'.$ul->reason.'"':null !!}>
+								{{ Str::limit($ul->reason, 10, ' >') }}
+							</td>
 							<td>
 								@if(is_null($ul->leave_status_id))
 									Pending
@@ -139,16 +143,88 @@ if ($me1) {																				// hod
 								@endif
 							</td>
 							<td>
+
+
+								<table class="table table-hover table-sm">
+									<tbody>
+										@if($ul->hasmanyleaveapprovalbackup()->get()->isNotEmpty())
+											<tr>
+												<!-- <td>Backup {{ $ul->hasmanyleaveapprovalbackup()->first()->belongstostaff?->name }}</td> -->
+												<th>Backup</th>
+												<td>{{ $ul->hasmanyleaveapprovalbackup()->first()->belongstoleavestatus?->status ?? 'Pending' }}</td>
+												<th>Remarks</th>
+												<td {!! ($ul->hasmanyleaveapprovalbackup()->first()?->remarks)?'data-bs-toggle="tooltip" data-bs-custom-class="custom-tooltip" data-bs-html="true" data-bs-title="'.$ul->hasmanyleaveapprovalbackup()->first()?->remarks.'"':null !!}>{{ Str::limit($ul->hasmanyleaveapprovalbackup()->first()?->remarks, 7, ' >>') }}</td>
+											</tr>
+										@endif
+
+										@if($ul->hasmanyleaveapprovalsupervisor()->get()->isNotEmpty())
+											<tr>
+												<!-- <td>Supervisor {{ $ul->hasmanyleaveapprovalsupervisor()->first()->belongstostaff?->name }}</td> -->
+												<th>Supervisor</th>
+												<td>{{ $ul->hasmanyleaveapprovalsupervisor()->first()->belongstoleavestatus?->status ?? 'Pending' }}</td>
+												<th>Remarks</th>
+												<td {!! ($ul->hasmanyleaveapprovalsupervisor()->first()?->remarks)?'data-bs-toggle="tooltip" data-bs-custom-class="custom-tooltip" data-bs-html="true" data-bs-title="'.$ul->hasmanyleaveapprovalsupervisor()->first()?->remarks.'"':null !!}>{{ Str::limit($ul->hasmanyleaveapprovalsupervisor()->first()?->remarks, 7, ' >>') }}</td>
+											</tr>
+										@endif
+
+										@if($ul->hasmanyleaveapprovalhod()->get()->isNotEmpty())
+											<tr>
+												<!-- <td>HOD {{ $ul->hasmanyleaveapprovalhod()->first()->belongstostaff?->name }}</td> -->
+												<th>HOD</th>
+												<td>{{ $ul->hasmanyleaveapprovalhod()->first()->belongstoleavestatus?->status ?? 'Pending' }}</td>
+												<th>Remarks</th>
+												<td {!! ($ul->hasmanyleaveapprovalhod()->first()?->remarks)?'data-bs-toggle="tooltip" data-bs-custom-class="custom-tooltip" data-bs-html="true" data-bs-title="'.$ul->hasmanyleaveapprovalhod()->first()?->remarks.'"':null !!}>{{ Str::limit($ul->hasmanyleaveapprovalhod()->first()?->remarks, 7, ' >>') }}</td>
+											</tr>
+										@endif
+
+										@if($ul->hasmanyleaveapprovaldir()->get()->isNotEmpty())
+											<tr>
+												<!-- <td>Director {{ $ul->hasmanyleaveapprovaldir()->first()->belongstostaff?->name }}</td> -->
+												<th>Director</th>
+												<td>{{ $ul->hasmanyleaveapprovaldir()->first()->belongstoleavestatus?->status ?? 'Pending' }}</td>
+												<th>Remarks</th>
+												<td {!! ($ul->hasmanyleaveapprovaldir()->first()?->remarks)?'data-bs-toggle="tooltip" data-bs-custom-class="custom-tooltip" data-bs-html="true" data-bs-title="'.$ul->hasmanyleaveapprovaldir()->first()?->remarks.'"':null !!}>{{ Str::limit($ul->hasmanyleaveapprovaldir()->first()?->remarks, 7, ' >>') }}</td>
+											</tr>
+										@endif
+
+										@if($ul->hasmanyleaveapprovalhr()->get()->isNotEmpty())
+											<tr>
+												<!-- <td>HR {{ $ul->hasmanyleaveapprovalhr()->first()->belongstostaff?->name }}</td> -->
+												<th>HR</th>
+												<td>{{ $ul->hasmanyleaveapprovalhr()->first()->belongstoleavestatus?->status ?? 'Pending' }}</td>
+												<th>Remarks</th>
+												<td {!! ($ul->hasmanyleaveapprovalhr()->first()?->remarks)?'data-bs-toggle="tooltip" data-bs-custom-class="custom-tooltip" data-bs-html="true" data-bs-title="'.$ul->hasmanyleaveapprovalhr()->first()?->remarks.'"':null !!}>{{ Str::limit($ul->hasmanyleaveapprovalhr()->first()?->remarks, 7, ' >>') }}</td>
+											</tr>
+										@endif
+									</tbody>
+								</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 								@if($ul->softcopy)
-									<a href="{{ asset('storage/leaves/'.$ul->softcopy) }}" class="btn btn-sm btn-outline-secondary" target="_blank"><i class="bi bi-file-richtext"></i></a>
+									<!-- <a href="{{ asset('storage/leaves/'.$ul->softcopy) }}" class="btn btn-sm btn-outline-secondary" target="_blank"><i class="bi bi-file-richtext"></i></a> -->
 								@else
 									<!-- Button trigger modal -->
-									<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#uploaddoc_{{ $ul->id }}">
+									<!-- <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#uploaddoc_{{ $ul->id }}">
 										<i class="fa-solid fa-upload"></i>
-									</button>
+									</button> -->
 
 									<!-- Modal -->
-									<div class="modal fade" id="uploaddoc_{{ $ul->id }}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="uploaddocLabel_{{ $ul->id }}" aria-hidden="true">
+									<!-- <div class="modal fade" id="uploaddoc_{{ $ul->id }}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="uploaddocLabel_{{ $ul->id }}" aria-hidden="true">
 										<div class="modal-dialog">
 											<div class="modal-content">
 												{{ Form::open(['route' => ['uploaddoc', $ul->id], 'method' => 'patch', 'id' => 'form', 'autocomplete' => 'off', 'files' => true,  'data-toggle' => 'validator']) }}
@@ -180,11 +256,15 @@ if ($me1) {																				// hod
 												{{ Form::close() }}
 											</div>
 										</div>
-									</div>
+									</div> -->
 								@endif
 							</td>
-							<td data-bs-toggle="tooltip" data-bs-custom-class="custom-tooltip" data-bs-html="true" data-bs-title="{{ ($ul->remarks)??' ' }}">{{ Str::limit($ul->remarks, 10, ' >') }}</td>
-							<td data-bs-toggle="tooltip" data-bs-custom-class="custom-tooltip" data-bs-html="true" data-bs-title="{{ ($ul->hasmanyleaveamend()->first()?->amend_note)??' ' }}">{{ Str::limit($ul->hasmanyleaveamend()->first()?->amend_note, 10, ' >') }}</td>
+							<td {!! ($ul->remarks)?'data-bs-toggle="tooltip" data-bs-custom-class="custom-tooltip" data-bs-html="true" data-bs-title="'.$ul->remarks.'"':null !!}>
+								{{ Str::limit($ul->remarks, 10, ' >') }}
+							</td>
+							<td {!! ($ul->hasmanyleaveamend()->first()?->amend_note)?'data-bs-toggle="tooltip" data-bs-custom-class="custom-tooltip" data-bs-html="true" data-bs-title="'.$ul->hasmanyleaveamend()->first()?->amend_note.'"':null !!}>
+								{{ Str::limit($ul->hasmanyleaveamend()->first()?->amend_note, 10, ' >') }}
+							</td>
 						</tr>
 					@endif
 				@endforeach

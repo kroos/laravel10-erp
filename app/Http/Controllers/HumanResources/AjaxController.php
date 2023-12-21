@@ -27,6 +27,7 @@ use App\Models\HumanResources\HRLeaveApprovalHR;
 use App\Models\HumanResources\HRLeaveAnnual;
 use App\Models\HumanResources\HRLeaveMC;
 use App\Models\HumanResources\HRLeaveMaternity;
+use App\Models\HumanResources\HROutstationAttendance;
 
 
 use App\Models\HumanResources\OptAuthorise;
@@ -1052,6 +1053,32 @@ class AjaxController extends Controller
 					'date' => now()
 				]);
 			}
+		}
+		return redirect()->back();
+	}
+
+	public function confirmoutstationattendance(Request $request)
+	{
+		$validated = $request->validate([
+				'id' => 'required',
+			],
+			[],
+			[
+				'id' => 'Outstation Attendance',
+			]
+		);
+		// dd($request->all());
+		foreach($request->id as $r) {
+			// dd($r);
+			$oa = HROutstationAttendance::find($r);
+			$oa->update([
+				'confirm' => 1,
+				'date_confirm' => now()
+			]);
+			HRAttendance::where([['staff_id', $oa->staff_id], ['attend_date', $oa->date_attend]])->update([
+				'in' => $oa->in,
+				'out' => $oa->out,
+			]);
 		}
 		return redirect()->back();
 	}

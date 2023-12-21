@@ -123,7 +123,23 @@ $m = HROutstationAttendance::whereDate('date_attend', now())
 
 @section('js')
 /////////////////////////////////////////////////////////////////////////////////////////
+$.getJSON("https://ipgeolocation.abstractapi.com/v1/?api_key={{ env('API_GEOLOCATION_KEY') }}", function(data) {
+	console.log(data);
+})
 
+
+
+let api_key = "{{ env('API_GEOLOCATION_KEY') }}";
+$.getJSON("https://ipgeolocation.abstractapi.com/v1/?api_key=" + api_key, function(data) {
+	var loc_info = "Your location details :\n";
+	loc_info += "Latitude: "+data.latitude +"\n";
+	loc_info += "Longitude: "+data.longitude+"\n";
+	loc_info += "Timezone: GMT"+data.gmt_offset+"\n";
+	loc_info += "Country: "+data.country+"\n";
+	loc_info += "Region: "+data.region+"\n";
+	loc_info += "City: "+data.city+"\n";
+	console.log(loc_info);
+})
 /////////////////////////////////////////////////////////////////////////////////////////
 @endsection
 

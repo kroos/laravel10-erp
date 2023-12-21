@@ -18,6 +18,7 @@ Route::patch('/staffactivate/{staff}', [AjaxController::class, 'staffactivate'])
 Route::post('/generateannualleave', [AjaxController::class, 'generateannualleave'])->name('generateannualleave');
 Route::post('/generatemcleave', [AjaxController::class, 'generatemcleave'])->name('generatemcleave');
 Route::post('/generatematernityleave', [AjaxController::class, 'generatematernityleave'])->name('generatematernityleave');
+Route::post('/confirmoutstationattendance', [AjaxController::class, 'confirmoutstationattendance'])->name('confirmoutstationattendance');
 
 
 

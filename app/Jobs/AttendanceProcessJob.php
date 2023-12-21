@@ -15,6 +15,8 @@ use App\Models\HumanResources\OptDayType;
 use App\Models\HumanResources\OptTcms;
 use App\Models\HumanResources\HROvertime;
 use App\Models\HumanResources\HROutstation;
+use App\Models\HumanResources\HRAttendanceRemark;
+use App\Models\HumanResources\HROutstationAttendance;
 
 // load batch and queue
 use Illuminate\Bus\Queueable;
@@ -3897,6 +3899,29 @@ class AttendanceProcessJob implements ShouldQueue
 						$s->update(['overtime_id' => $o->id]);
 					} else {
 						$s->update(['overtime_id' => NULL]);
+					}
+				}
+				$attrem = HRAttendanceRemark::where(function(Builder $query) use ($s) {
+													$query->whereDate('date_from', '>=', $s->attend_date)
+													->whereDate('date_to', '<=', $s->attend_date);
+												})
+												->where('staff_id', $s->staff_id)
+												->get();
+				if ($attrem->count()) {
+					if($s->daytype_id == 1) {
+						$s->update([
+							'remarks' => $attrem->first()?->attendance_remarks,
+							'hr_remarks' => $attrem->first()?->hr_attendance_remarks,
+						]);
+					}
+				}
+				$outatt = HROutstationAttendance::where([['date_attend', $s->attend_date], ['staff_id', $s->staff_id], ['confirm', 1]])->get();
+				if($outatt->count()) {
+					if ($s->daytype_id == 1 && is_null($s->leave_id)) {
+						$s->update([
+							'in' => $outatt->first()?->in,
+							'out' => $outatt->first()?->out,
+						]);
 					}
 				}
 			}
