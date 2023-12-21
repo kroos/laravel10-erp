@@ -37,11 +37,11 @@ use App\Http\Controllers\HumanResources\HRDept\HRLeaveApprovalHODController;
 use App\Http\Controllers\HumanResources\HRDept\HRLeaveApprovalDirectorController;
 use App\Http\Controllers\HumanResources\HRDept\HRLeaveApprovalHRController;
 use App\Http\Controllers\HumanResources\HRDept\AbsentController;
-use App\Http\Controllers\HumanResources\Process\AttendanceProcessController;
 use App\Http\Controllers\HumanResources\OutstationAttendance\OutstationAttendanceController;
 use App\Http\Controllers\HumanResources\HRDept\HROutstationAttendanceController;
 use App\Http\Controllers\HumanResources\HRDept\AppraisalExcelReportController;
 use App\Http\Controllers\HumanResources\HRDept\AttendanceRemarkController;
+use App\Http\Controllers\HumanResources\HRDept\AppraisalFormController;
 
 
 Route::resources([
@@ -80,6 +80,7 @@ Route::resources([
 	'hroutstationattendance' => HROutstationAttendanceController::class,
 	'appraisalexcelreport' => AppraisalExcelReportController::class,
 	'attendanceremark' => AttendanceRemarkController::class,
+	'appraisalform' => AppraisalFormController::class,
 ]);
 
 Route::get('/leavereject', [LeaveController::class, 'reject'])->name('hrleave.reject');
@@ -106,3 +107,5 @@ Route::get('/attendancedailyreport/print', [AttendanceDailyReportController::cla
 
 Route::get('/attendance', [AttendanceController::class, 'index'])->name('attendance.index');
 Route::post('/attendance', [AttendanceController::class, 'index'])->name('attendance.index');
+
+Route::get('/appraisalform/create/{id}', [AppraisalFormController::class, 'create'])->name('appraisalform.create');

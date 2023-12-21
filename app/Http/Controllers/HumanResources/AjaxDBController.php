@@ -935,15 +935,18 @@ class AjaxDBController extends Controller
 
 	public function staffattendancelist(Request $request): JsonResponse
 	{
-		$sa = HRAttendance::select('staff_id')
+		$sa = HRAttendance::leftjoin('logins', 'hr_attendances.staff_id', '=', 'logins.staff_id')
+			->select('hr_attendances.staff_id', 'logins.username')
 			->where(function (Builder $query) use ($request){
-				$query->whereDate('attend_date', '>=', $request->from)
-				->whereDate('attend_date', '<=', $request->to);
+				$query->whereDate('hr_attendances.attend_date', '>=', $request->from)
+				->whereDate('hr_attendances.attend_date', '<=', $request->to);
 			})
+			->where('logins.active', 1)
 			->groupBy('hr_attendances.staff_id')
+			->orderBy('logins.username', 'ASC')
 			->get();
 		foreach ($sa as $v) {
-			$l0[] = ['id' => $v->staff_id, 'name' => Staff::find($v->staff_id)->name, 'branch' => Staff::find($v->staff_id)->belongstomanydepartment()->wherePivot('main', 1)->first()->branch_id];
+			$l0[] = ['id' => $v->staff_id, 'username' => $v->username, 'name' => Staff::find($v->staff_id)->name, 'branch' => Staff::find($v->staff_id)->belongstomanydepartment()->wherePivot('main', 1)->first()->branch_id, 'department' => Staff::find($v->staff_id)->belongstomanydepartment()->wherePivot('main', 1)->first()->department];
 		}
 		return response()->json( $l0 );
 	}
