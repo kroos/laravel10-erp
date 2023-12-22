@@ -59,7 +59,7 @@ $('#from').datetimepicker({
 	},
 	format: 'YYYY-MM-DD',
 	maxDate: moment().subtract(1, 'days').format('YYYY-MM-DD'),
-	// useCurrent: false,
+	useCurrent: false,
 })
 .on('dp.change', function(e) {
 	$('#to').datetimepicker('minDate', $('#from').val());
@@ -131,13 +131,13 @@ $('#from').datetimepicker({
 				$('.wrap_checkbox').append(
 											'<div class="form-check mb-1 g-3 remove_checkbox" style="vertical-align: middle;">' +
 												'<input class="form-check-input" name="staff_id" type="checkbox" value="' + this.id + '" id="staff_' + i + '" >' +
-												'<label class="form-check-label" for="staff_' + i + '">' + 
-												this.username + 
+												'<label class="form-check-label" for="staff_' + i + '">' +
+												this.username +
 												' - ' +
 												this.name +
 												'&nbsp;&nbsp;&nbsp;[' +
 												this.department +
-												']' + 
+												']' +
 												'</label>' +
 											'</div>'
 				);
@@ -169,7 +169,7 @@ $('#to').datetimepicker({
 	},
 	format: 'YYYY-MM-DD',
 	maxDate: moment().subtract(1, 'days').format('YYYY-MM-DD'),
-	// useCurrent: false,
+	useCurrent: false,
 })
 .on('dp.change', function(e) {
 	$('#from').datetimepicker('maxDate', $('#to').val());
@@ -238,8 +238,8 @@ $('#to').datetimepicker({
 				$('.wrap_checkbox').append(
 							'<div class="form-check mb-1 g-3 remove_checkbox" style="vertical-align: middle;">' +
 								'<input class="form-check-input ' + this.branch + '" name="staff_id[]" type="checkbox" value="' + this.id + '" id="staff_' + i + '">' +
-								'<label class="form-check-label" for="staff_' + i + '">' + 
-									this.username + 
+								'<label class="form-check-label" for="staff_' + i + '">' +
+									this.username +
 									' - ' +
 									this.name +
 									'&nbsp;&nbsp;&nbsp;[' +

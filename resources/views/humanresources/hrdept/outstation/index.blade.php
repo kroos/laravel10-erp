@@ -29,7 +29,7 @@ use Illuminate\Support\Str;
 						<th>From</th>
 						<th>To</th>
 						<th>Duration</th>
-						<th >Remarks</th>
+						<th>Remarks</th>
 						<th>#</th>
 					</tr>
 				</thead>
@@ -42,7 +42,9 @@ use Illuminate\Support\Str;
 							<td>{{ Carbon::parse($outstation->date_from)->format('D, j M Y') }}</td>
 							<td>{{ Carbon::parse($outstation->date_to)->format('D, j M Y') }}</td>
 							<td>{{ Carbon::parse($outstation->date_from)->toPeriod($outstation->date_to, 1, 'day')->count() }} day/s</td>
-							<td data-bs-toggle="tooltip" data-bs-custom-class="custom-tooltip" data-bs-html="true" data-bs-title="{{ ($outstation->remarks)??' ' }}">{{ Str::limit($outstation->remarks, 10, ' >') }}</td>
+							<td {!! ($outstation->remarks)?'data-bs-toggle="tooltip" data-bs-custom-class="custom-tooltip" data-bs-html="true" data-bs-title="'.$outstation->remarks.'"':null !!}>
+								{{ Str::limit($outstation->remarks, 7, ' >') }}
+							</td>
 							<td>
 								<a href="{{ route('outstation.edit', $outstation->id) }}" class="btn btn-sm btn-outline-secondary"><i class="fa-regular fa-pen-to-square"></i></a>
 								<button type="button" id="out" class="btn btn-sm btn-outline-secondary text-danger delete_button" data-id="{{ $outstation->id }}"><i class="fa-regular fa-trash-can"></i></button>
@@ -131,7 +133,4 @@ function SwalDelete(outId){
 		}
 	});
 }
-
-
-
 @endsection
