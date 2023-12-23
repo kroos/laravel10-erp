@@ -161,7 +161,7 @@ use App\Models\HumanResources\HRAttendance;
 			<?php $no = 1; ?>
 			<tr class="top-row">
 				<td colspan="11">
-					<b>LATENESS</b>
+					<b>LATE</b>
 				</td>
 			</tr>
 			<tr class="top-row">
