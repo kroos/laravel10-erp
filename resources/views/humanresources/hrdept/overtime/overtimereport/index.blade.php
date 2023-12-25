@@ -49,6 +49,13 @@ if ($date_start != NULL && $date_end != NULL) {
       {{ Form::select('branch', $location, @$value, ['class' => 'form-control branch', 'id' => 'branch', 'placeholder' => '']) }}
     </div>
     <div class="col-auto">
+      <select class="form-control title" id="title" name="title">
+        <option selected="selected" value=""></option>
+        <option value="1st half">1st half</option>
+        <option value="2nd half">2nd half</option>
+      </select>
+    </div>
+    <div class="col-auto">
       {!! Form::submit('SUBMIT', ['class' => 'form-control form-control-sm btn btn-sm btn-outline-secondary']) !!}
     </div>
   </div>
@@ -56,6 +63,12 @@ if ($date_start != NULL && $date_end != NULL) {
   {!! Form::close() !!}
 
   @if ($overtimes != NULL)
+  <div class="row g-3 mb-3 text-center">
+    <div class="text-center">
+      Overtime Claim Form {{Carbon::parse($date_start)->format('j')}} - {{Carbon::parse($date_end)->format('j')}} {{Carbon::parse($date_end)->format('F')}} {{Carbon::parse($date_end)->format('Y') }} ({{ $title }} of {{Carbon::parse($date_end)->format('F')}} {{Carbon::parse($date_end)->format('Y') }})
+    </div>
+  </div>
+
   <div class="row g-3 mb-3">
     <table class="table table-hover table-sm align-middle">
       <tr class="top-row">
@@ -156,6 +169,7 @@ if ($date_start != NULL && $date_end != NULL) {
         <input type="hidden" name="date_start" id="date_start" value="{{ $date_start }}">
         <input type="hidden" name="date_end" id="date_end" value="{{ $date_end }}">
         <input type="hidden" name="branch" id="branch" value="{{ $branch }}">
+        <input type="hidden" name="title" id="title" value="{{ $title }}">
 
         <input type="submit" class="btn btn-sm btn-outline-secondary" value="PRINT" target="_blank">
       </div>
@@ -190,7 +204,14 @@ useCurrent: true,
 /////////////////////////////////////////////////////////////////////////////////////////
 $('#branch').select2({
 placeholder: 'Location',
-width: '100%',
+width: '100px',
+allowClear: false,
+closeOnSelect: true,
+});
+
+$('#title').select2({
+placeholder: 'Title',
+width: '100px',
 allowClear: false,
 closeOnSelect: true,
 });
