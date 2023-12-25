@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\DB;
 
 // load models
 use App\Models\HumanResources\DepartmentPivot;
+use App\Models\HumanResources\HRAppraisalSection;
 
 // load paginator
 use Illuminate\Pagination\Paginator;
@@ -90,7 +91,17 @@ class AppraisalFormController extends Controller
 	 */
 	public function store(Request $request): RedirectResponse
 	{
-		//
+		// model
+		if ($request->has('p1')) {
+			foreach( $request->p1 as $key => $val ) {
+				HRAppraisalSection::create([
+					'section' => $val['section_text'],
+				]);
+			}
+		}
+
+		Session::flash('flash_message', 'Successfully Submit Appraisal Form.');
+		return redirect()->route('appraisalform.index');
 	}
 
 	/**
