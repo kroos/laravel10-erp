@@ -1,13 +1,6 @@
 @extends('layouts.app')
 
 @section('content')
-
-<style>
-  div {
-    border: 1px solid red;
-  }
-</style>
-
 <style>
   .img1 {
     text-align: center;
@@ -56,6 +49,7 @@ $Questions = App\Models\HumanResources\HRAppraisalQuestion::select('question', '
 ?>
 /////////////////////////////////////////////////////////////////////////////////////
 // p1
+var head = a;
 var num = 0;
 var p1_add	= $(".p1_add");
 var p1_wrap	= $(".p1_wrap");
@@ -72,10 +66,10 @@ $(p1_add).click(function(){
           '</button>' +
         '</div>' +
         '<div class="col-sm-1 {{ $errors->has('p1.*.section_sort') ? 'has-error' : '' }}">' +
-          '<input type="text" name="p1[' + num + '][section_sort]" class="form-control form-control-sm" placeholder="Sort">' +
+          '<input type="text" name="p1' + head + '[' + num + '][section_sort]" class="form-control form-control-sm" placeholder="Sort">' +
         '</div>' +
         '<div class="col-sm-10 {{ $errors->has('p1.*.section') ? 'has-error' : '' }}">' +
-          '<select id="section'+ num +'" name="p1[' + num + '][section]" autocomplete="off">' +
+          '<select id="section'+ num +'" name="p1' + head + '[' + num + '][section]" autocomplete="off">' +
             '<option value=""></option>' +
             @foreach ($Sections as $Section)
             '<option value="{!! $Section->section !!}">{!! $Section->section !!}</option>' +
@@ -84,7 +78,7 @@ $(p1_add).click(function(){
         '</div>' +
       '</div>' +
       '<div class="mb-1 {{ $errors->has('p1.*.section_text') ? 'has-error' : '' }}">' +
-        '<textarea id="editor'+ num +'" name="p1[' + num + '][section_text]"></textarea>' +
+        '<textarea id="editor'+ num +'" name="p1' + head + '[' + num + '][section_text]"></textarea>' +
       '</div>' +
       '<div class="row mb-5">' +
         '<div style="width: 4%">' +
@@ -115,17 +109,17 @@ $(p1_add).click(function(){
     ]
   });
 
-  $('#form').bootstrapValidator('addField',	$('.section')	.find('[name="p1[' + num + '][section_sort]"]'));
-  $('#form').bootstrapValidator('addField',	$('.section')	.find('[name="p1[' + num + '][section]"]'));
-	$('#form').bootstrapValidator('addField',	$('.section')	.find('[name="p1[' + num + '][section_text]"]'));
+  $('#form').bootstrapValidator('addField',	$('.section')	.find('[name="p1' + head + '[' + num + '][section_sort]"]'));
+  $('#form').bootstrapValidator('addField',	$('.section')	.find('[name="p1' + head + '[' + num + '][section]"]'));
+	$('#form').bootstrapValidator('addField',	$('.section')	.find('[name="p1' + head + '[' + num + '][section_text]"]'));
 
   $(p1_wrap).on("click",".remove_section", function(e){
     var sectionId = $(this).data('id');
     e.preventDefault();
     var $row = $(this).parent().parent().parent();
-    var $option1 = $row.find('[name="p1[' + sectionId + '][section_sort]"]');
-    var $option2 = $row.find('[name="p1[' + sectionId + '][section]"]');
-    var $option3 = $row.find('[name="p1[' + sectionId + '][section_text]"]');
+    var $option1 = $row.find('[name="p1' + head + '[' + sectionId + '][section_sort]"]');
+    var $option2 = $row.find('[name="p1' + head + '[' + sectionId + '][section]"]');
+    var $option3 = $row.find('[name="p1' + head + '[' + sectionId + '][section_text]"]');
     $row.remove();
 
     $('#form').bootstrapValidator('removeField', $option1);
@@ -152,10 +146,10 @@ $(p1_add).click(function(){
             '</button>' +
           '</div>' +
           '<div class="col-sm-1 {{ $errors->has('p2.*.sectionsub_sort') ? 'has-error' : '' }}">' +
-            '<input type="text" name="p2[' + num + '][sectionsub_sort]" class="form-control form-control-sm" placeholder="Sort">' +
+            '<input type="text" name="p2' + head + '[' + num + '][sectionsub_sort]" class="form-control form-control-sm" placeholder="Sort">' +
           '</div>' +
           '<div class="col-sm-10 {{ $errors->has('p2.*.sectionsub') ? 'has-error' : '' }}">' +
-            '<select id="sectionsub'+ num +'" name="p2[' + num + '][sectionsub]" autocomplete="off">' +
+            '<select id="sectionsub'+ num +'" name="p2' + head + '[' + num + '][sectionsub]" autocomplete="off">' +
               '<option value=""></option>' +
               @foreach ($SectionSubs as $SectionSub)
               '<option value="{!! $SectionSub->section_sub !!}">{!! $SectionSub->section_sub !!}</option>' +
@@ -164,15 +158,15 @@ $(p1_add).click(function(){
           '</div>' +
         '</div>' +
         '<div class="mb-1 {{ $errors->has('p2.*.sectionsub_text') ? 'has-error' : '' }}">' +
-          '<textarea id="editor'+ num +'" name="p2[' + num + '][sectionsub_text]"></textarea>' +
+          '<textarea id="editor'+ num +'" name="p2' + head + '[' + num + '][sectionsub_text]"></textarea>' +
         '</div>' +
         '<div class="row mb-1">' +
           '<div style="width: 4%">' +
-            '<button type="button" class="col-auto btn btn-sm btn-outline-secondary p3_add">' +
+            '<button type="button" class="col-auto btn btn-sm btn-outline-secondary p3_add'+ num +'">' +
               '<i class="fas fa-plus" aria-hidden="true"></i><br />P3' +
             '</button>' +
           '</div>' +
-          '<div class="p3_wrap" style="width: 96%">' +
+          '<div class="p3_wrap'+ num +'" style="width: 96%">' +
           '</div>' +
         '</div>' +
       '</div>'
@@ -195,7 +189,7 @@ $(p1_add).click(function(){
       ]
     });
 
-    $('#form').bootstrapValidator('addField',	$('.section')	.find('[name="p2[' + num + '][sectionsub_sort]"]'));
+    $('#form').bootstrapValidator('addField',	$('.sectionsub')	.find('[name="p2[' + num + '][sectionsub_sort]"]'));
     $('#form').bootstrapValidator('addField',	$('.sectionsub')	.find('[name="p2[' + num + '][sectionsub]"]'));
 		$('#form').bootstrapValidator('addField',	$('.sectionsub')	.find('[name="p2[' + num + '][sectionsub_text]"]'));
 
@@ -214,7 +208,7 @@ $(p1_add).click(function(){
       console.log(num);
     });
 
-
+    
     /////////////////////////////////////////////////////////////////////////////////////
     // p3
     var p3_add	= $(".p3_add" + num);
@@ -234,7 +228,10 @@ $(p1_add).click(function(){
             '<div class="col-sm-1 {{ $errors->has('p3.*.mainquestion_sort') ? 'has-error' : '' }}">' +
               '<input type="text" name="p3[' + num + '][mainquestion_sort]" class="form-control form-control-sm" placeholder="Sort">' +
             '</div>' +
-            '<div class="col-sm-10 {{ $errors->has('p3.*.mainquestion') ? 'has-error' : '' }}">' +
+            '<div class="col-sm-1 {{ $errors->has('p3.*.mainquestion_mark') ? 'has-error' : '' }}">' +
+              '<input type="text" name="p3[' + num + '][mainquestion_mark]" class="form-control form-control-sm" placeholder="Mark">' +
+            '</div>' +
+            '<div class="col-sm-9 {{ $errors->has('p3.*.mainquestion') ? 'has-error' : '' }}">' +
               '<select id="mainquestion'+ num +'" name="p3[' + num + '][mainquestion]" autocomplete="off">' +
                 '<option value=""></option>' +
                 @foreach ($MainQuestions as $MainQuestion)
@@ -243,24 +240,24 @@ $(p1_add).click(function(){
               '</select>' +
             '</div>' +
           '</div>' +
-          '<div class="mb-1 {{ $errors->has('p2.*.sectionsub_text') ? 'has-error' : '' }}">' +
-            '<textarea id="editor'+ num +'" name="p2[' + num + '][sectionsub_text]"></textarea>' +
+          '<div class="mb-1 {{ $errors->has('p3.*.mainquestion_text') ? 'has-error' : '' }}">' +
+            '<textarea id="editor'+ num +'" name="p3[' + num + '][mainquestion_text]"></textarea>' +
           '</div>' +
           '<div class="row mb-1">' +
             '<div style="width: 4%">' +
-              '<button type="button" class="col-auto btn btn-sm btn-outline-secondary p3_add">' +
-                '<i class="fas fa-plus" aria-hidden="true"></i><br />P3' +
+              '<button type="button" class="col-auto btn btn-sm btn-outline-secondary p4_add'+ num +'">' +
+                '<i class="fas fa-plus" aria-hidden="true"></i><br />P4' +
               '</button>' +
             '</div>' +
-            '<div class="p3_wrap" style="width: 96%">' +
+            '<div class="p4_wrap'+ num +'" style="width: 96%">' +
             '</div>' +
           '</div>' +
         '</div>'
-      ); 
+      );
 
       // p3
-      $('#sectionsub' + num).select2({
-        placeholder: 'Part 2 : Please Select',
+      $('#mainquestion' + num).select2({
+        placeholder: 'Part 3 : Please Select',
         width: '100%',
         allowClear: true,
         closeOnSelect: true,
@@ -275,25 +272,108 @@ $(p1_add).click(function(){
         ]
       });
 
-      $('#form').bootstrapValidator('addField',	$('.section')	.find('[name="p2[' + num + '][sectionsub_sort]"]'));
-      $('#form').bootstrapValidator('addField',	$('.sectionsub')	.find('[name="p2[' + num + '][sectionsub]"]'));
-      $('#form').bootstrapValidator('addField',	$('.sectionsub')	.find('[name="p2[' + num + '][sectionsub_text]"]'));
+      $('#form').bootstrapValidator('addField',	$('.mainquestion')	.find('[name="p3[' + num + '][mainquestion_sort]"]'));
+      $('#form').bootstrapValidator('addField',	$('.mainquestion')	.find('[name="p3[' + num + '][mainquestion_mark]"]'));
+      $('#form').bootstrapValidator('addField',	$('.mainquestion')	.find('[name="p3[' + num + '][mainquestion]"]'));
+      $('#form').bootstrapValidator('addField',	$('.mainquestion')	.find('[name="p3[' + num + '][mainquestion_text]"]'));
 
-      $(p2_wrap).on("click",".remove_sectionsub", function(e){
-        var sectionsubId = $(this).data('id');
+      $(p3_wrap).on("click",".remove_mainquestion", function(e){
+        var mainquestionId = $(this).data('id');
         e.preventDefault();
         var $row = $(this).parent().parent().parent();
-        var $option1 = $row.find('[name="p2[' + sectionsubId + '][sectionsub_sort]"]');
-        var $option2 = $row.find('[name="p2[' + sectionsubId + '][sectionsub]"]');
-        var $option3 = $row.find('[name="p2[' + sectionsubId + '][sectionsub_text]"]');
+        var $option1 = $row.find('[name="p3[' + mainquestionId + '][mainquestion_sort]"]');
+        var $option2 = $row.find('[name="p3[' + mainquestionId + '][mainquestion_mark]"]');
+        var $option3 = $row.find('[name="p3[' + mainquestionId + '][mainquestion]"]');
+        var $option4 = $row.find('[name="p3[' + mainquestionId + '][mainquestion_text]"]');
         $row.remove();
 
         $('#form').bootstrapValidator('removeField', $option1);
         $('#form').bootstrapValidator('removeField', $option2);
         $('#form').bootstrapValidator('removeField', $option3);
+        $('#form').bootstrapValidator('removeField', $option4);
         console.log(num);
       });
+
+
+      /////////////////////////////////////////////////////////////////////////////////////
+      // p4
+      var p4_add	= $(".p4_add" + num);
+      var p4_wrap	= $(".p4_wrap" + num);
+
+      $(p4_add).click(function(){
+        num++;
+
+        p4_wrap.append(
+          '<div class="question">' +
+            '<div class="row mb-1">' +
+              '<div class="col-sm-1">' +
+                '<button type="button" class="col-sm-12 text-danger btn btn-sm btn-outline-secondary remove_question" id="delete_question' + num + '" data-id="' + num + '">' +
+                  '<i class="fas fa-trash" aria-hidden="true"></i>' +
+                '</button>' +
+              '</div>' +
+              '<div class="col-sm-1 {{ $errors->has('p4.*.question_sort') ? 'has-error' : '' }}">' +
+                '<input type="text" name="p4[' + num + '][question_sort]" class="form-control form-control-sm" placeholder="Sort">' +
+              '</div>' +
+              '<div class="col-sm-1 {{ $errors->has('p4.*.question_mark') ? 'has-error' : '' }}">' +
+                '<input type="text" name="p4[' + num + '][question_mark]" class="form-control form-control-sm" placeholder="Mark">' +
+              '</div>' +
+              '<div class="col-sm-9 {{ $errors->has('p4.*.question') ? 'has-error' : '' }}">' +
+                '<select id="question'+ num +'" name="p4[' + num + '][question]" autocomplete="off">' +
+                  '<option value=""></option>' +
+                  @foreach ($Questions as $Question)
+                  '<option value="{!! $Question->question !!}">{!! $Question->question !!}</option>' +
+                  @endforeach
+                '</select>' +
+              '</div>' +
+            '</div>' +
+            '<div class="mb-1 {{ $errors->has('p4.*.question_text') ? 'has-error' : '' }}">' +
+              '<textarea id="editor'+ num +'" name="p4[' + num + '][question_text]"></textarea>' +
+            '</div>' +
+          '</div>'
+        );
+
+        // p4
+        $('#question' + num).select2({
+          placeholder: 'Part 4 : Please Select',
+          width: '100%',
+          allowClear: true,
+          closeOnSelect: true,
+        });
+
+        CKEDITOR.replace('editor' + num, {
+          toolbar: [
+            { name: 'clipboard', items: ['Cut', 'Copy', 'Paste', '-', 'Undo', 'Redo'] },
+            { name: 'basicstyles', items: ['Bold', 'Italic', 'Underline', '-'] },
+            { name: 'paragraph', items: ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'] },
+            { name: 'styles', items: ['Styles', 'Format', 'Font', 'FontSize'] },
+          ]
+        });
+
+        $('#form').bootstrapValidator('addField',	$('.question')	.find('[name="p4[' + num + '][question_sort]"]'));
+        $('#form').bootstrapValidator('addField',	$('.question')	.find('[name="p4[' + num + '][question_mark]"]'));
+        $('#form').bootstrapValidator('addField',	$('.question')	.find('[name="p4[' + num + '][question]"]'));
+        $('#form').bootstrapValidator('addField',	$('.question')	.find('[name="p4[' + num + '][question_text]"]'));
+
+        $(p4_wrap).on("click",".remove_question", function(e){
+          var questionId = $(this).data('id');
+          e.preventDefault();
+          var $row = $(this).parent().parent().parent();
+          var $option1 = $row.find('[name="p4[' + questionId + '][question_sort]"]');
+          var $option2 = $row.find('[name="p4[' + questionId + '][question_mark]"]');
+          var $option3 = $row.find('[name="p4[' + questionId + '][question]"]');
+          var $option4 = $row.find('[name="p4[' + questionId + '][question_text]"]');
+          $row.remove();
+
+          $('#form').bootstrapValidator('removeField', $option1);
+          $('#form').bootstrapValidator('removeField', $option2);
+          $('#form').bootstrapValidator('removeField', $option3);
+          $('#form').bootstrapValidator('removeField', $option4);
+          console.log(num);
+        });
+      })
     })
   })
+
+  head++;
 })
 @endsection

@@ -21,6 +21,9 @@ use Illuminate\Support\Facades\DB;
 // load models
 use App\Models\HumanResources\DepartmentPivot;
 use App\Models\HumanResources\HRAppraisalSection;
+use App\Models\HumanResources\HRAppraisalSectionSub;
+use App\Models\HumanResources\HRAppraisalMainQuestion;
+use App\Models\HumanResources\HRAppraisalQuestion;
 
 // load paginator
 use Illuminate\Pagination\Paginator;
@@ -91,15 +94,44 @@ class AppraisalFormController extends Controller
 	 */
 	public function store(Request $request): RedirectResponse
 	{
-		// model
+		// P1
 		if ($request->has('p1')) {
 			foreach( $request->p1 as $key => $val ) {
-				HRAppraisalSection::create([
-					'section' => $val['section_text'],
-				]);
+        if ($val['section'] != NULL) {
+          HRAppraisalSection::create([
+            'sort' => $val['section_sort'],
+            'section' => $val['section'],
+          ]);
+        } else {
+          HRAppraisalSection::create([
+            'sort' => $val['section_sort'],
+            'section' => preg_replace('/>\s*</', '><', $val['section_text']),
+          ]);
+        }
+
+        $section_id = HRAppraisalSection::select('id')->orderBy('id', 'DESC')->first();
+
+        // P2
+        if ($request->has('p2')) {
+          foreach( $request->p2 as $key => $val ) {
+            if ($val['sectionsub'] != NULL) {
+              HRAppraisalSectionSub::create([
+                'section_id' => $section_id->id,
+                'sort' => $val['sectionsub_sort'],
+                'section_sub' => $val['sectionsub'],
+              ]);
+            } else {
+              HRAppraisalSectionSub::create([
+                'section_id' => $section_id->id,
+                'sort' => $val['sectionsub_sort'],
+                'section_sub' => preg_replace('/>\s*</', '><', $val['sectionsub_text']),
+              ]);
+            }
+          }
+        }
 			}
 		}
-
+		
 		Session::flash('flash_message', 'Successfully Submit Appraisal Form.');
 		return redirect()->route('appraisalform.index');
 	}
