@@ -800,14 +800,14 @@ $('#attendance').DataTable({
 $('#al, #mc, #ml').DataTable({
 	"paging": true,
 	"lengthMenu": [ [30, 60, 100, -1], [30, 60, 100, "All"] ],
-	"columnDefs": [
-		{ type: 'date', 'targets': [0] },
-		{ type: 'time', 'targets': [2] },
-		{ type: 'time', 'targets': [3] },
-		{ type: 'time', 'targets': [4] },
-		{ type: 'time', 'targets': [5] },
-		{ type: 'time', 'targets': [6] },
-	],
+	// "columnDefs": [
+	// 	{ type: 'date', 'targets': [0] },
+	// 	{ type: 'time', 'targets': [2] },
+	// 	{ type: 'time', 'targets': [3] },
+	// 	{ type: 'time', 'targets': [4] },
+	// 	{ type: 'time', 'targets': [5] },
+	// 	{ type: 'time', 'targets': [6] },
+	// ],
 	"order": [[ 0, 'desc' ]], // sorting the 6th column descending
 	responsive: true
 })

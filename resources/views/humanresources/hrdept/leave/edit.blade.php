@@ -503,6 +503,9 @@ $(document).ready(function(){
 			'</div>'
 
 		);
+		$('#form').bootstrapValidator('addField', $('.time').find('[name="time_start"]'));
+		$('#form').bootstrapValidator('addField', $('.time').find('[name="time_end"]'));
+		$('#form').bootstrapValidator('addField', $('.datetime').find('[name="date_time_start"]'));
 	} else {																			// other than TF
 		// console.log('else');
 		console.log(moment('{{ Carbon::parse($hrleave->date_time_start) }}').format('HH:mm:ss'));
@@ -1893,7 +1896,7 @@ $oi = $hrleave->belongstostaff->hasmanyleavereplacement()->where('leave_balance'
 
 		/////////////////////////////////////////////////////////////////////////////////////////
 		// more option
-		$('#form').bootstrapValidator('addField', $('.nrl').find('[name="leave_id"]'));
+		$('#form').bootstrapValidator('addField', $('.nrl').find('[name="id"]'));
 		@if( $userneedbackup == 1 )
 		$('#form').bootstrapValidator('addField', $('.backup').find('[name="staff_id"]'));
 		@endif
@@ -1905,7 +1908,9 @@ $oi = $hrleave->belongstostaff->hasmanyleavereplacement()->where('leave_balance'
 
 		/////////////////////////////////////////////////////////////////////////////////////////
 		// enable select2 on nrla
-		$('#nrla').select2({ placeholder: 'Please select', 	width: '100%',
+		$('#nrla').select2({
+			placeholder: 'Please select',
+			width: '100%',
 		});
 
 		/////////////////////////////////////////////////////////////////////////////////////////
@@ -4667,10 +4672,17 @@ $(document).ready(function() {
 					}
 				}
 			},
-			leave_id: {
+			id: {
 				validators: {
 					notEmpty: {
-						message: 'Please select 1 option',
+						message: 'Please select',
+					},
+				}
+			},
+			leave_cat: {
+				validators: {
+					notEmpty: {
+						message: 'Please select leave category',
 					},
 				}
 			},
@@ -4683,9 +4695,9 @@ $(document).ready(function() {
 			},
 			amend_note: {
 				validators: {
-					// notEmpty: {
-					// 	message: 'Please choose'
-					// }
+					notEmpty: {
+						message: 'Please insert note'
+					}
 				}
 			},
 			document: {
