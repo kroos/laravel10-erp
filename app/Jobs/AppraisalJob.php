@@ -71,8 +71,10 @@ class AppraisalJob implements ShouldQueue
 		$staffs = $this->staffs;
 		$year = $this->year;
 
+		$handle = fopen(storage_path('app/public/excel/export.csv'), 'a+') or die();
+
 		$header[0] = [
-						'#',
+						// '#',
 						'Emp. No',
 						'Staff Name',
 						'Location',
@@ -243,11 +245,15 @@ class AppraisalJob implements ShouldQueue
 			// Warning Letter Frequency (3-5m per time)
 			$warningletterfrequency = HRDisciplinary::where('staff_id', $v->id)->where('disciplinary_action_id', 3)->get()->count();
 
-			$records[$i] = [$i, $username, $name, $location, $department, /*$age,*/ $datejoined, $dateconfirmed, $altotal, $alutilize, $albalance, $mctotal, $mcutilize, $mcbalance, $nrlbalance, $utilizeupl, $utilizemcupl, $absent, $apparaisalmark1, $apparaisalmark2, $apparaisalmark3, $apparaisalmark4, $apparaisalaveragemark, $freqlate, $uplfrequency, $mcfrequency, $elwosupportingdoc, $absentwonotice, $absentasreject, $notapplyleave3, $supl, $verbalwarning, $warningletterfrequency];
+			$records[$i] = [/*$i, */$username, $name, $location, $department, /*$age,*/ $datejoined, $dateconfirmed, $altotal, $alutilize, $albalance, $mctotal, $mcutilize, $mcbalance, $nrlbalance, $utilizeupl, $utilizemcupl, $absent, $apparaisalmark1, $apparaisalmark2, $apparaisalmark3, $apparaisalmark4, $apparaisalaveragemark, $freqlate, $uplfrequency, $mcfrequency, $elwosupportingdoc, $absentwonotice, $absentasreject, $notapplyleave3, $supl, $verbalwarning, $warningletterfrequency];
 			$i++;
 		}
-		$combine = $header + $records;
-		$dataappraisal = collect($combine);
-		Excel::store(new StaffAppraisalExport($dataappraisal), 'Staff_Appraisal_'.$year.'.xlsx');
+		// $combine = $header + $records;
+		// $dataappraisal = collect($combine);
+		// Excel::store(new StaffAppraisalExport($dataappraisal), 'Staff_Appraisal_'.$year.'.xlsx');
+		foreach ($records as $value) {
+			fputcsv($handle, $value);
+		}
+		fclose($handle);
 	}
 }

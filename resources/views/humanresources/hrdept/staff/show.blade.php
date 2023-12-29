@@ -912,7 +912,7 @@ $mcupl = $staff->hasmanyleave()?->get();
 					<td class="text-center align-middle">{{ \Carbon\Carbon::parse($leavesmc->date_time_end)->format('j M Y') }}</td>
 					<td class="text-center align-middle">
 							{{ $leavesmc->period_day }} day/s
-							<?php $durm += $leave->period_day ?>
+							<?php $durm += $leavesmc->period_day ?>
 					</td>
 				</tr>
 				@endforeach
@@ -926,21 +926,6 @@ $mcupl = $staff->hasmanyleave()?->get();
 		</table>
 	@endif
 	</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 	<p>&nbsp;</p>
 	<h4 class="align-items-center">Replacement Leave</h4>
