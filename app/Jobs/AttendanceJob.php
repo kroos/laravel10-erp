@@ -1,11 +1,21 @@
 <?php
 
-namespace App\Exports;
+namespace App\Jobs;
+
+// load batch and queue
+use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldBeUnique;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Bus\Batchable;
 
 // load db facade
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 
+// load models
 use App\Models\Staff;
 use App\Models\Login;
 use App\Models\HumanResources\HRAttendance;
@@ -14,36 +24,53 @@ use App\Models\HumanResources\HROvertime;
 use App\Models\HumanResources\HROvertimeRange;
 // use App\Models\HumanResources\HROvertimeRange;
 
-use Illuminate\Http\Request;
+// load helper
+use App\Helpers\TimeCalculator;
+use App\Helpers\UnavailableDateTime;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 
-// load Carbon
+// load lib
 use \Carbon\Carbon;
 use \Carbon\CarbonPeriod;
 use \Carbon\CarbonInterval;
 
-// load helper
-use App\Helpers\TimeCalculator;
-use App\Helpers\UnavailableDateTime;
+use Session;
+use Throwable;
+use Log;
+use Exception;
 
-use Maatwebsite\Excel\Concerns\FromCollection;
+// load laravel-excel
+// use Maatwebsite\Excel\Facades\Excel;
+// use App\Exports\StaffAppraisalExport;
 
-class PayslipExport implements FromCollection
+class AttendanceJob implements ShouldQueue
 {
+	use Batchable, Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+
+	protected $dates;
 	protected $request;
 
-	public function __construct($request)
+	/**
+	 * Create a new job instance.
+	 */
+	public function __construct($dates, $request)
 	{
+		$this->dates = $dates;
 		$this->request = $request;
 	}
 
 	/**
-	* @return \Illuminate\Support\Collection
-	*/
-	public function collection()
+	 * Execute the job.
+	 */
+	public function handle(): void
 	{
 		// return HRAttendance::all();
+		$dates = $this->dates;
 		$req = $this->request;
-		// dd($req['from']);
+		dd($dates);
+
+		$handle = fopen(storage_path('app/public/excel/attendance.csv'), 'a+') or die();
 
 		// how many days
 		$days = Carbon::parse($req['from'])->daysUntil($req['to'], 1);
@@ -249,8 +276,12 @@ class PayslipExport implements FromCollection
 			$records[$k1] = [$login, $name, $al, $nrl, $mc, $upl, $absent, $mcupl, $lateness, $earlyout, $nopayhour, $ml, $hosp, $supl, $compasleave, $marriageLeave, $daywork, $ot1, $ot05, $ot2, $tf1];
 		}
 		// dd($records);
-		$combine = $header + $records;
+		// $combine = $header + $records;
 		// dd(collect($combine));
-		return collect($combine);
+		// return collect($combine);
+		foreach ($records as $value) {
+			fputcsv($handle, $value);
+		}
+		fclose($handle);
 	}
 }
