@@ -48,16 +48,14 @@ class AttendanceJob implements ShouldQueue
 {
 	use Batchable, Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-	protected $dates;
-	protected $request;
+	protected $hratt;
 
 	/**
 	 * Create a new job instance.
 	 */
-	public function __construct($dates, $request)
+	public function __construct($hratt)
 	{
-		$this->dates = $dates;
-		$this->request = $request;
+		$this->hratt = $hratt;
 	}
 
 	/**
@@ -66,28 +64,9 @@ class AttendanceJob implements ShouldQueue
 	public function handle(): void
 	{
 		// return HRAttendance::all();
-		$dates = $this->dates;
-		$req = $this->request;
-		dd($dates);
+		$hratt = $this->hratt;
 
-		$handle = fopen(storage_path('app/public/excel/attendance.csv'), 'a+') or die();
-
-		// how many days
-		$days = Carbon::parse($req['from'])->daysUntil($req['to'], 1);
-		// dump($days->count());
-
-		// get staff which is in attendance for a particular date
-		$hratt = HRAttendance::select('staff_id')
-				->where(function (Builder $query) use ($req){
-					$query->whereDate('attend_date', '>=', $req['from'])
-						->whereDate('attend_date', '<=', $req['to']);
-				})
-				->groupBy('staff_id')
-				// ->ddrawsql();
-				->get();
-
-		$header[-1] = ['Emp No', 'Name', 'AL', 'NRL', 'MC', 'UPL', 'Absent', 'UPMC', 'Lateness(minute)', 'Early Out(minute)', 'No Pay Hour', 'Maternity', 'Hospitalization', 'Other Leave', 'Compassionate Leave', 'Marriage Leave', 'Day Work', '1.0 OT', '1.5 OT', 'OT', 'TF'];
-		// $records = [];
+		$handle = fopen(storage_path('app/public/excel/attendance.csv'), 'a+');
 
 		// loop staff from attendance => total staff
 		foreach ($hratt as $k1 => $v1) {
@@ -95,9 +74,9 @@ class AttendanceJob implements ShouldQueue
 			$name = Staff::find($v1->staff_id)->name;
 
 			// find leave in attendance
-			$sattendances = HRAttendance::where(function (Builder $query) use ($req){
-					$query->whereDate('attend_date', '>=', $req['from'])
-						->whereDate('attend_date', '<=', $req['to']);
+			$sattendances = HRAttendance::where(function (Builder $query) use ($dates){
+					$query->whereDate('attend_date', '>=', $v1->attend_date)
+						->whereDate('attend_date', '<=', $v1->attend_date);
 				})
 				->where('staff_id', $v1->staff_id)
 				->get();

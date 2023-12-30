@@ -1420,10 +1420,12 @@ class AjaxDBController extends Controller
 	// used by queue batches
 	public function progress(Request $request): JsonResponse
 	{
-		$batchId = $request->id ?? session()->get('lastBatchId');
-
 		if (!$request->id) {
-			$bid = 1;
+			if (session()->exists('lastBatchId')) {
+				$bid = session()->get('lastBatchId');
+			} else {
+				$bid = 1;
+			}
 		} else {
 			$bid = $request->id;
 		}

@@ -66,7 +66,11 @@ class AppraisalExcelReportController extends Controller
 	public function create(Request $request)/*: View*/
 	{
 		if (!$request->id) {
-			$bid = 1;
+			if (session()->exists('lastBatchId')) {
+				$bid = session()->get('lastBatchId');
+			} else {
+				$bid = 1;
+			}
 		} else {
 			$bid = $request->id;
 		}
