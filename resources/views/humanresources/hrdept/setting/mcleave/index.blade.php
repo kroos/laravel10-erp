@@ -10,7 +10,7 @@ use \Carbon\Carbon;
 <div class="col-sm-12 row">
 	@include('humanresources.hrdept.navhr')
 	<h4>Medical Certificate Leave Entitlement &nbsp; <button type="button" id="genal" class="btn btn-sm btn-outline-secondary"><i class="fa-solid fa-calendar-plus fa-beat"></i> &nbsp;Generate Medical Certificate Leave For Next Year</button> </h4>
-	<table class="table table-hover table-sm" style="font-size:12px">
+	<table class="table table-hover table-sm" id="mcl" style="font-size:12px">
 	@foreach(HRLeaveMC::groupBy('year')->select('year')->orderBy('year', 'DESC')->get() as $tp)
 		<thead>
 			<tr>
@@ -85,6 +85,25 @@ use \Carbon\Carbon;
 @endsection
 
 @section('js')
+/////////////////////////////////////////////////////////////////////////////////////////
+// datatables
+$.fn.dataTable.moment( 'D MMM YYYY' );
+$.fn.dataTable.moment( 'h:mm a' );
+$('#mcl').DataTable({
+	"lengthMenu": [ [-1], ["All"] ],
+	// "columnDefs": [
+	// 				{ type: 'date', 'targets': [4,5,6] },
+	// 				// { type: 'time', 'targets': [6] },
+	// 			],
+	"order": [ 0, 'asc' ],
+	responsive: true
+})
+.on( 'length.dt page.dt order.dt search.dt', function ( e, settings, len ) {
+	$(document).ready(function(){
+		$('[data-bs-toggle="tooltip"]').tooltip();
+	});}
+);
+
 /////////////////////////////////////////////////////////////////////////////////////////
 // ajax post delete row
 $(document).on('click', '#genal', function(e){

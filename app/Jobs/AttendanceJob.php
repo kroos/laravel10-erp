@@ -49,13 +49,15 @@ class AttendanceJob implements ShouldQueue
 	use Batchable, Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
 	protected $hratt;
+	protected $request;
 
 	/**
 	 * Create a new job instance.
 	 */
-	public function __construct($hratt)
+	public function __construct($hratt, $request)
 	{
 		$this->hratt = $hratt;
+		$this->request = $request;
 	}
 
 	/**
@@ -65,6 +67,8 @@ class AttendanceJob implements ShouldQueue
 	{
 		// return HRAttendance::all();
 		$hratt = $this->hratt;
+		$request = $this->request;
+		dd($request);
 
 		$handle = fopen(storage_path('app/public/excel/attendance.csv'), 'a+');
 
@@ -75,8 +79,8 @@ class AttendanceJob implements ShouldQueue
 
 			// find leave in attendance
 			$sattendances = HRAttendance::where(function (Builder $query) use ($dates){
-					$query->whereDate('attend_date', '>=', $v1->attend_date)
-						->whereDate('attend_date', '<=', $v1->attend_date);
+					$query->whereDate('attend_date', '>=', $request['from'])
+						->whereDate('attend_date', '<=', $request['to']);
 				})
 				->where('staff_id', $v1->staff_id)
 				->get();
