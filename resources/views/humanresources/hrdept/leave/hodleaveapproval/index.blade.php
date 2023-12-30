@@ -279,7 +279,6 @@ foreach ($c as $v) {
 															})
 															->where('leave_type_id', 11)
 															->get();
-							$mcupl = $staff->hasmanyleave()?->get();
 							?>
 							@if($me5)
 									<tr class="{{ $u }}" >

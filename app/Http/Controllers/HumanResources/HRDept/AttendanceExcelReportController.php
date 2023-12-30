@@ -15,8 +15,10 @@ use Illuminate\View\View;
 use App\Exports\PayslipExport;
 use Maatwebsite\Excel\Facades\Excel;
 
-// load validation
-// use App\Http\Requests\HumanResources\Attendance\AttendanceRequestUpdate;
+// load batch and queue
+use Illuminate\Bus\Batch;
+use Illuminate\Support\Facades\Bus;
+use App\Jobs\AttendanceJob;
 
 // load db facade
 use Illuminate\Database\Eloquent\Builder;
@@ -36,6 +38,7 @@ use App\Models\Staff;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Storage;
 
 // load Carbon
 use \Carbon\Carbon;
@@ -67,7 +70,7 @@ class AttendanceExcelReportController extends Controller
 	/**
 	 * Show the form for creating a new resource.
 	 */
-	public function create(): View
+	public function create(Request $request)/*: View*/
 	{
 		return view('humanresources.hrdept.attendance.attendanceexcelreport.create');
 	}
@@ -77,6 +80,20 @@ class AttendanceExcelReportController extends Controller
 	 */
 	public function store(Request $request)/*: RedirectResponse*/
 	{
+		$validated = $request->validate(
+			[
+				'from' => 'required|date_format:Y-m-d|before_or_equal:to',
+				'to' => 'required|date_format:Y-m-d|after_or_equal:from',
+			],
+			[
+				'from.required' => 'Please insert date from',
+				'to.required' => 'Please insert date to',
+			],
+			[
+				'from' => 'From Date',
+				'to' => 'To Date',
+			]
+		);
 		// dd($request->all());
 		// $staff = HRAttendance::where(function (Builder $query) use ($request){
 		// 							$query->whereDate('attend_date', '<=', $s->attend_date)
@@ -85,6 +102,7 @@ class AttendanceExcelReportController extends Controller
 		$from = Carbon::parse($request->from)->format('j F Y');
 		$to = Carbon::parse($request->to)->format('j F Y');
 		return Excel::download(new PayslipExport($request->only(['from', 'to'])), $from.' - '.$to.' AttendancePayRoll.xlsx');
+		// return redirect()->route('excelreport.create', ['id' => $batch->id, 'request' => $request]);
 	}
 
 	/**
