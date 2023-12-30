@@ -275,7 +275,6 @@ $us = $user->belongstomanydepartment->first()?->branch_id;							//get user supe
 															})
 															->where('leave_type_id', 11)
 															->get();
-							$mcupl = $staff1->hasmanyleave()?->get();
 							?>
 							@if($me3)
 								@if($ul == $us)

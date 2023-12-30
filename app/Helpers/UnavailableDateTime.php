@@ -45,18 +45,19 @@ class UnavailableDateTime
 		}
 
 		// block next year date till entitlement and working hour were generate
-			$nystart_date = $start_date->copy()->addYear();
-			$nyend_date = $end_date->copy()->addYears(1)->subDay();
-			// block next year if entitlements and working hours not set
-			$entitannual = HRLeaveAnnual::where('year', $nystart_date->copy()->year)->get();
-			$entitmc = HRLeaveMC::where('year', $nystart_date->copy()->year)->get();
-			$entitmaternity = HRLeaveMaternity::where('year', $nystart_date->copy()->year)->get();
-			$wh = OptWorkingHour::where('year', $nystart_date->copy()->year)->get();
-			// dd([$entitannual, $entitmc, $entitmaternity, $wh]);
-			// dd([empty($entitannual->count()), empty($entitmc->count()), empty($entitmaternity->count()), empty($wh->count())]);
-			// dd([ empty($entitannual->count()) && empty($entitmc->count()) && empty($entitmaternity->count()) && empty($wh->count()) ]);
-			// dd(empty($entitannual->count() && $entitmc->count() && $entitmaternity->count()) && empty($wh->count()) );
-			$nextyear = [];
+		$nystart_date = $start_date->copy()->addYear();
+		$nyend_date = $end_date->copy()->addYears(1)->subDay();
+		// block next year if entitlements and working hours not set
+		$entitannual = HRLeaveAnnual::where('year', $nystart_date->copy()->year)->get();
+		$entitmc = HRLeaveMC::where('year', $nystart_date->copy()->year)->get();
+		$entitmaternity = HRLeaveMaternity::where('year', $nystart_date->copy()->year)->get();
+		$wh = OptWorkingHour::where('year', $nystart_date->copy()->year)->get();
+		// dd([$entitannual, $entitmc, $entitmaternity, $wh]);
+		// dd([empty($entitannual->count()), empty($entitmc->count()), empty($entitmaternity->count()), empty($wh->count())]);
+		// dd([ empty($entitannual->count()) && empty($entitmc->count()) && empty($entitmaternity->count()) && empty($wh->count()) ]);
+		// dd(empty($entitannual->count() && $entitmc->count() && $entitmaternity->count()) && empty($wh->count()) );
+		$nextyear = [];
+
 		if (Setting::find(6)->active == 1) {																					// block next year leave (setting): enable is 1
 			if(empty($entitannual->count()) && empty($entitmc->count()) && empty($entitmaternity->count()) && empty($wh->count())) {	// check the tables if its there 1st, endure all are ready
 				foreach ($nystart_date->daysUntil($nyend_date) as $nydate) {														// table not ready
@@ -124,15 +125,22 @@ class UnavailableDateTime
 			$query->whereIn('leave_status_id', [5,6])
 			->orwhereNull('leave_status_id');
 		})
-		// ->where('leave_cat', 2)
 		->where(function (Builder $query) use ($d){
 			$query->whereYear('date_time_start', '<=', $d->copy()->year)
-			->whereYear('date_time_end', '>=', $d->copy()->year);
+			->whereYear('date_time_end', '>=', $d->copy()->year)
+			->orwhere(function(Builder $query) use ($d) {
+				$query->whereYear('date_time_start', '<=', $d->copy()->addYear()->year)
+				->whereYear('date_time_end', '>=', $d->copy()->addYear()->year);
+			});
 		})
-		->orwhere(function (Builder $query) use ($d){
-			$query->whereYear('date_time_start', '<=', $d->copy()->addYear()->year)
-			->whereYear('date_time_end', '>=', $d->copy()->addYear()->year);
-		})
+		// ->where(function (Builder $query) use ($d){
+		// 	$query->whereYear('date_time_start', '<=', $d->copy()->year)
+		// 	->whereYear('date_time_end', '>=', $d->copy()->year);
+		// })
+		// ->orwhere(function (Builder $query) use ($d){
+		// 	$query->whereYear('date_time_start', '<=', $d->copy()->addYear()->year)
+		// 	->whereYear('date_time_end', '>=', $d->copy()->addYear()->year);
+		// })
 		// ->ddRawSql();
 		->get();
 
@@ -192,7 +200,7 @@ class UnavailableDateTime
 		}
 		// dd($leavday);
 
-		$unavailableleave = Arr::collapse([$holiday, $sundays, $leavday, $saturdays, $nextyear]);
+		$unavailableleave = Arr::collapse([$holiday, $sundays, $saturdays, $nextyear, $leavday]);
 		return $unavailableleave;
 	}
 

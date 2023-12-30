@@ -79,6 +79,18 @@ Route::post('/outstationattendancelocation', [AjaxDBController::class, 'outstati
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
 // progress for excel generate
 Route::get('/progress', [AjaxDBController::class, 'progress'])->name('progress');
 

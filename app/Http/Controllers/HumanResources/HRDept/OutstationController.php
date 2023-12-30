@@ -94,9 +94,14 @@ class OutstationController extends Controller
 	{
 		// dd($request->all());
 		// $outstation->update($request->only(['customer_id', 'date_from', 'date_to', 'remarks']));
-		$outstation->update( Arr::add( $request->only(['customer_id', 'date_from', 'date_to']), 'remarks', $request->remarks) );
-		Session::flash('flash_message', 'Successfully edit staff for outstation');
-		return redirect()->route('outstation.index');
+		$outstation->update( Arr::add( $request->only(['customer_id', 'date_from', 'date_to']), 'remarks', ucwords(Str::lower($request->remarks))) );
+
+		// DELETE FROM TABLE ATTENDANCE
+		$r = HRAttendance::where('outstation_id', $outstation->id)->get();
+		foreach ($r as $c) {
+			HRAttendance::where('id', $c->id)->update(['outstation_id' => NULL]);
+		}
+		return redirect()->route('outstation.index')->with('flash_message', 'Successfully edit staff for outstation');
 	}
 
 	/**
@@ -105,7 +110,7 @@ class OutstationController extends Controller
 	public function destroy(HROutstation $outstation): JsonResponse
 	{
 		// DELETE FROM TABLE ATTENDANCE
-		$r = HRAttendance::where('outstation_id', $outstation['id'])->get();
+		$r = HRAttendance::where('outstation_id', $outstation->id)->get();
 
 		foreach ($r as $c) {
 			HRAttendance::where('id', $c->id)->update(['outstation_id' => NULL]);
