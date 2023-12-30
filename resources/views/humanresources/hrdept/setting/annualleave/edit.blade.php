@@ -22,7 +22,7 @@ use \Carbon\Carbon;
 		<div class="form-group row {{ $errors->has('annual_leave_adjustment') ? 'has-error' : '' }} mb-3 g-3">
 			{{ Form::label( 'ala', 'Annual Leave Adjustment : ', ['class' => 'col-sm-3 col-form-label'] ) }}
 			<div class=" col-sm-2">
-				{{ Form::number('annual_leave_adjustment', @$value, ['class' => 'form-control form-control-sm', 'id' => 'ala', 'placeholder' => 'Annual Leave Adjustment', 'pattern' => "^\d*(\.\d{0,1})?$", 'step' => '0.5', 'autocomplete' => 'off']) }}
+				{{ Form::number('annual_leave_adjustment', @$value, ['class' => 'form-control form-control-sm', 'id' => 'ala', 'placeholder' => 'Annual Leave Adjustment', 'step' => '0.5', 'autocomplete' => 'off']) }}
 			</div>
 		</div>
 
