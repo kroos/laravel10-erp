@@ -82,7 +82,8 @@ class AttendanceDailyReportController extends Controller
         })
         ->where(function ($query) {
           $query->where('hr_attendances.in', '=', '00:00:00')
-            ->orWhere('hr_attendances.leave_id', '!=', NULL);
+            ->orWhere('hr_attendances.leave_id', '!=', NULL)
+            ->orWhere('hr_attendances.remarks', '!=', NULL);
         })
         ->where('hr_attendances.outstation_id', '=', NULL)
         ->where(function ($query) {
@@ -106,7 +107,8 @@ class AttendanceDailyReportController extends Controller
         ->where('hr_attendances.attend_date', '=', $selected_date)
         ->where(function ($query) {
           $query->where('hr_attendances.in', '=', '00:00:00')
-            ->orWhere('hr_attendances.leave_id', '!=', NULL);
+            ->orWhere('hr_attendances.leave_id', '!=', NULL)
+            ->orWhere('hr_attendances.remarks', '!=', NULL);
         })
         ->where('hr_attendances.outstation_id', '=', NULL)
         ->where(function ($query) {
@@ -124,6 +126,8 @@ class AttendanceDailyReportController extends Controller
 
 
     ////////////////////////////////////////////////////////////////////////////////////
+    $dailyreport_late = NULL;
+
     $staffs_late = HRAttendance::join('staffs', 'staffs.id', '=', 'hr_attendances.staff_id')
       ->join('logins', 'hr_attendances.staff_id', '=', 'logins.staff_id')
       ->join('pivot_staff_pivotdepts', 'staffs.id', '=', 'pivot_staff_pivotdepts.staff_id')
@@ -229,7 +233,8 @@ class AttendanceDailyReportController extends Controller
         })
         ->where(function ($query) {
           $query->where('hr_attendances.in', '=', '00:00:00')
-            ->orWhere('hr_attendances.leave_id', '!=', NULL);
+            ->orWhere('hr_attendances.leave_id', '!=', NULL)
+            ->orWhere('hr_attendances.remarks', '!=', NULL);
         })
         ->where('hr_attendances.outstation_id', '=', NULL)
         ->where(function ($query) {
@@ -253,7 +258,8 @@ class AttendanceDailyReportController extends Controller
         ->where('hr_attendances.attend_date', '=', $selected_date)
         ->where(function ($query) {
           $query->where('hr_attendances.in', '=', '00:00:00')
-            ->orWhere('hr_attendances.leave_id', '!=', NULL);
+            ->orWhere('hr_attendances.leave_id', '!=', NULL)
+            ->orWhere('hr_attendances.remarks', '!=', NULL);
         })
         ->where('hr_attendances.outstation_id', '=', NULL)
         ->where(function ($query) {
@@ -271,6 +277,8 @@ class AttendanceDailyReportController extends Controller
 
 
     ////////////////////////////////////////////////////////////////////////////////////
+    $dailyreport_late = NULL;
+
     $staffs_late = HRAttendance::join('staffs', 'staffs.id', '=', 'hr_attendances.staff_id')
       ->join('logins', 'hr_attendances.staff_id', '=', 'logins.staff_id')
       ->join('pivot_staff_pivotdepts', 'staffs.id', '=', 'pivot_staff_pivotdepts.staff_id')
