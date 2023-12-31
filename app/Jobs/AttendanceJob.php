@@ -22,7 +22,6 @@ use App\Models\HumanResources\HRAttendance;
 use App\Models\HumanResources\HRLeave;
 use App\Models\HumanResources\HROvertime;
 use App\Models\HumanResources\HROvertimeRange;
-// use App\Models\HumanResources\HROvertimeRange;
 
 // load helper
 use App\Helpers\TimeCalculator;
@@ -49,38 +48,35 @@ class AttendanceJob implements ShouldQueue
 	use Batchable, Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
 	protected $hratt;
-	protected $request;
+	protected $k1;
 
 	/**
 	 * Create a new job instance.
 	 */
-	public function __construct($hratt, $request)
+	public function __construct($hratt, $k1)
 	{
 		$this->hratt = $hratt;
-		$this->request = $request;
+		$this->k1 = $k1;
 	}
 
 	/**
 	 * Execute the job.
 	 */
-	public function handle(): void
+	public function handle()/*: void*/
 	{
 		// return HRAttendance::all();
 		$hratt = $this->hratt;
-		$request = $this->request;
-		dd($request);
+		$k1 = $this->k1;
+		// dd($request);
 
-		$handle = fopen(storage_path('app/public/excel/attendance.csv'), 'a+');
-
-		// loop staff from attendance => total staff
 		foreach ($hratt as $k1 => $v1) {
 			$login = Login::where([['staff_id', $v1->staff_id], ['active', 1]])->first()?->username;
 			$name = Staff::find($v1->staff_id)->name;
 
 			// find leave in attendance
-			$sattendances = HRAttendance::where(function (Builder $query) use ($dates){
-					$query->whereDate('attend_date', '>=', $request['from'])
-						->whereDate('attend_date', '<=', $request['to']);
+			$sattendances = HRAttendance::where(function (Builder $query) use ($req){
+					$query->whereDate('attend_date', '>=', $req['from'])
+						->whereDate('attend_date', '<=', $req['to']);
 				})
 				->where('staff_id', $v1->staff_id)
 				->get();
@@ -258,13 +254,23 @@ class AttendanceJob implements ShouldQueue
 			}
 			$records[$k1] = [$login, $name, $al, $nrl, $mc, $upl, $absent, $mcupl, $lateness, $earlyout, $nopayhour, $ml, $hosp, $supl, $compasleave, $marriageLeave, $daywork, $ot1, $ot05, $ot2, $tf1];
 		}
-		// dd($records);
-		// $combine = $header + $records;
-		// dd(collect($combine));
-		// return collect($combine);
-		foreach ($records as $value) {
-			fputcsv($handle, $value);
-		}
-		fclose($handle);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	}
 }
