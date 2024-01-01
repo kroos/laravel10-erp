@@ -26,7 +26,6 @@
 		</div>
 	</div>
 	{!! Form::close() !!}
-</div>
 @endsection
 
 @section('js')

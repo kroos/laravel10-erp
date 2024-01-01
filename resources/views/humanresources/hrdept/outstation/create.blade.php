@@ -51,8 +51,8 @@ $c = Customer::orderBy('customer')->pluck('customer', 'id')->toArray();
 			<div class="scrollable-div">
 				@foreach ($staffs as $staff)
 				<p>
-					<input type="checkbox" name="staff_id[]" id="staff" value="{{ $staff->staffID }}">
-					<label>{{ $staff->username }} - {{ $staff->name }}</label>
+					<input type="checkbox" id="staff_id{{ $staff->staffID }}" name="staff_id[]" id="staff" value="{{ $staff->staffID }}">
+					<label for="staff_id{{ $staff->staffID }}">{{ $staff->username }} - {{ $staff->name }}</label>
 				</p>
 				@endforeach
 			</div>

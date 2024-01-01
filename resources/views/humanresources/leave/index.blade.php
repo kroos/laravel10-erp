@@ -3,6 +3,7 @@
 @section('content')
 <?php
 use Illuminate\Support\Str;
+use App\Models\Setting;
 use \App\Models\HumanResources\HRLeave;
 use \App\Models\Staff;
 use \App\Models\HumanResources\HRLeaveApprovalSupervisor;
@@ -40,7 +41,8 @@ foreach ($c as $v) {
 ?>
 <div class="container row align-items-start justify-content-center">
 	<div class="col-sm-12 table-responsive">
-		<table class="table table-hover table-sm">
+		<table class="table table-hover table-sm table-border">
+
 			<tr>
 				<th>Attention</th>
 				<td colspan="2">
@@ -53,6 +55,15 @@ foreach ($c as $v) {
 						<br />Please complete your profile before applying your leave. Once completed, please proceed with leave application.
 					</p>
 				</td>
+			</tr>
+			@for($i = now()->year; $i <= ((Setting::find(6)->active == 1)?now()->addYear()->year:now()->year); ++$i)
+<?php
+$leaveAL =  $us->hasmanyleaveannual()?->where('year', $i)->first();
+$leaveMC =  $us->hasmanyleavemc()?->where('year', $i)->first();
+$leaveMa =  $us->hasmanyleavematernity()?->where('year', $i)->first();
+?>
+			<tr>
+				<th colspan="3" class="text-center">Year {{ $i }}</th>
 			</tr>
 			<tr>
 				<th rowspan="2">Annual Leave :</th>
@@ -83,6 +94,7 @@ foreach ($c as $v) {
 				<td><span class=" {{ ($leaveMa?->maternity_leave_balance < 4)?'text-danger font-weight-bold':'' }}">{{ $leaveMa?->maternity_leave_balance }} days</span></td>
 			</tr>
 			@endif
+			@endfor
 			<tr>
 				<th>Unpaid Leave :</th>
 				<td colspan="2">{{  $us->hasmanyleave()?->whereYear( 'date_time_start', date('Y') )->whereIn('leave_type_id', [3, 6])->get()->sum('period_day') }} days</td>
