@@ -1423,6 +1423,8 @@ class AjaxDBController extends Controller
 		if (!$request->id) {
 			if (session()->exists('lastBatchId')) {
 				$bid = session()->get('lastBatchId');
+			} elseif (session()->exists('lastBatchIdPay')) {
+				$bid = session()->get('lastBatchIdPay');
 			} else {
 				$bid = 1;
 			}

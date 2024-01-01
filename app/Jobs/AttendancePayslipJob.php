@@ -43,42 +43,42 @@ use Exception;
 // use Maatwebsite\Excel\Facades\Excel;
 // use App\Exports\StaffAppraisalExport;
 
-class AttendanceJob implements ShouldQueue
+class AttendancePayslipJob implements ShouldQueue
 {
 	use Batchable, Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
 	protected $hratt;
-	protected $k1;
+	protected $request;
 
 	/**
 	 * Create a new job instance.
 	 */
-	public function __construct($hratt, $k1)
+	public function __construct($hratt, $request)
 	{
 		$this->hratt = $hratt;
-		$this->k1 = $k1;
+		$this->request = $request;
 	}
 
 	/**
 	 * Execute the job.
 	 */
-	public function handle()/*: void*/
+	public function handle(): void
 	{
-		// return HRAttendance::all();
 		$hratt = $this->hratt;
-		$k1 = $this->k1;
-		// dd($request);
+		$request = $this->request;
+		// dd($hratt, $request);
 
 		foreach ($hratt as $k1 => $v1) {
-			$login = Login::where([['staff_id', $v1->staff_id], ['active', 1]])->first()?->username;
-			$name = Staff::find($v1->staff_id)->name;
+			// dd($v1);
+			$login = Login::where([['staff_id', $v1['staff_id']], ['active', 1]])->first()?->username;
+			$name = Staff::find($v1['staff_id'])->name;
 
 			// find leave in attendance
-			$sattendances = HRAttendance::where(function (Builder $query) use ($req){
-					$query->whereDate('attend_date', '>=', $req['from'])
-						->whereDate('attend_date', '<=', $req['to']);
+			$sattendances = HRAttendance::where(function (Builder $query) use ($request) {
+					$query->whereDate('attend_date', '>=', $request['from'])
+						->whereDate('attend_date', '<=', $request['to']);
 				})
-				->where('staff_id', $v1->staff_id)
+				->where('staff_id', $v1['staff_id'])
 				->get();
 				// ->dumpRawSql();
 
@@ -105,7 +105,7 @@ class AttendanceJob implements ShouldQueue
 
 
 			// loop attendance foreach staff to find leave, absent, OT, lateness and early out
-			$i = 0;
+			$i = 1;
 			foreach ($sattendances as $sattendance) {
 				$wh = UnavailableDateTime::workinghourtime($sattendance->attend_date, $sattendance->staff_id)->first();
 
@@ -254,23 +254,12 @@ class AttendanceJob implements ShouldQueue
 			}
 			$records[$k1] = [$login, $name, $al, $nrl, $mc, $upl, $absent, $mcupl, $lateness, $earlyout, $nopayhour, $ml, $hosp, $supl, $compasleave, $marriageLeave, $daywork, $ot1, $ot05, $ot2, $tf1];
 		}
+		// dd($records);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+		$handle = fopen(storage_path('app/public/excel/payslip.csv'), 'a+');
+		foreach ($records as $value) {
+			fputcsv($handle, $value);
+		}
+		fclose($handle);
 	}
 }
