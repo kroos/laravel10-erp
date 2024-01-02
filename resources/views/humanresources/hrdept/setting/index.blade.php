@@ -63,7 +63,7 @@
 
 @section('js')
 /////////////////////////////////////////////////////////////////////////////////////////
-$('#1_setting,#2_setting,#3_setting,#4_setting,#6_setting').change(function() {
+$('#1_setting,#2_setting,#3_setting,#4_setting,#6_setting,#7_setting').change(function() {
 	// console.log($(this).prop('checked'));
 	// console.log($(this).val());		// cant rely on value, always give value 1 even if its unchecked
 

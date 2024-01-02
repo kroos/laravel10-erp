@@ -131,13 +131,15 @@ class AjaxDBController extends Controller
 	public function leaveType(Request $request): JsonResponse
 	{
 		$user = Staff::find($request->id);
+		// tahun lepas
+		$pastyear = now()->subYear()->year;
 		// tahun sekarang ni
 		$year = now()->year;
 		$nextyear = Carbon::parse(now()->addYear())->year;
 		// dd(Setting::find(6)->active, $year, $nextyear);
 
 		// group entitlement by year
-		for ($i = $year; $i <= ((Setting::find(6)->active == 1)?$nextyear:$year); ++$i) {
+		for ($i = ((Setting::find(7)->active == 1)?$pastyear:$year); $i <= ((Setting::find(6)->active == 1)?$nextyear:$year); ++$i) {
 
 			// checking for annual leave, mc, nrl and maternity
 			// hati-hati dgn yg ni sbb melibatkan masa
@@ -1149,16 +1151,16 @@ class AjaxDBController extends Controller
 			$workday = $workday1->count();
 
 			// dump($sq->first()->daytype_id);
-			// dump($workday1);
+			// dump($workday);
 			if ($workday >= 1) {
 				if (Carbon::parse($sd)->dayOfWeek == Carbon::SATURDAY) {
 					$working = OptDayType::find(1)->daytype;
 				} else {
 					$working = OptDayType::find($sq->first()->daytype_id)->daytype;
 				}
-				$workingpeople1 = HRAttendance::whereDate('attend_date', $sd)->where('daytype_id', 1)->whereNull('attendance_type_id')->whereNull('leave_id')->get();
+				$workingpeople1 = HRAttendance::whereDate('attend_date', $sd)->where('daytype_id', 1)->whereNull('outstation_id')->whereNull('leave_id')->get();
 				$workingpeople = $workingpeople1->count();
-				$outstation1 = HRAttendance::whereDate('attend_date', $sd)->where('daytype_id', 1)->where('attendance_type_id', 4)->get();
+				$outstation1 = HRAttendance::whereDate('attend_date', $sd)->where('daytype_id', 1)->whereNotNull('outstation_id')->get();
 				$outstation = $outstation1->count();
 				$absent1 = HRAttendance::whereDate('attend_date', $sd)->where('daytype_id', 1)->where('attendance_type_id', 1)->get();
 				$absent = $absent1->count();
@@ -1252,16 +1254,26 @@ class AjaxDBController extends Controller
 				} else {
 					$locleave1 = json_decode("{}");
 				}
-
 				$overallpercentage = number_format(((($workingpeople + $outstation) - $absent - $leave) / ($workingpeople + $outstation)) * 100, 2);
 
 			} else {
-				$overallpercentage = 0;
-				$workingpeople = 0;
+
+				$workingpeople1 = HRAttendance::whereDate('attend_date', $sd)
+												->where(function(Builder $query) {
+													$query->where('in', '!=', '00:00:00')
+														->orwhere('break', '!=', '00:00:00')
+														->orwhere('resume', '!=', '00:00:00')
+														->orwhere('out', '!=', '00:00:00');
+												})
+												->whereNull('outstation_id')
+												->whereNull('leave_id')
+												->get();
+				$workingpeople = $workingpeople1->count();
+				$outstation1 = HRAttendance::whereDate('attend_date', $sd)->whereNotNull('outstation_id')->get();
+				$outstation = $outstation1->count();
 				$absent = 0;
 				$halfabsent = 0;
 				$leave = 0;
-				$outstation = 0;
 				$working = OptDayType::find($sq->first()?->daytype_id)?->daytype;
 				// $locabsent1 = [];
 				// $lochalfabsent1 = [];
@@ -1271,6 +1283,20 @@ class AjaxDBController extends Controller
 				$lochalfabsent1 = json_decode("{}");
 				$locoutstation1 = json_decode("{}");
 				$locleave1 = json_decode("{}");
+				// dump($workingpeople);
+				$available = $workingpeople + $outstation;
+
+				if ($available == 0) {
+					$availableppl = 1;
+					$workday = 0;
+				} else {
+					$availableppl = $available;
+					$workday = $available;
+				}
+
+
+				$overallpercentage = number_format((($available - $absent - $leave) / ($availableppl)) * 100, 2);
+				// $overallpercentage = 0;
 			}
 
 			$chartdata[$b] = [
