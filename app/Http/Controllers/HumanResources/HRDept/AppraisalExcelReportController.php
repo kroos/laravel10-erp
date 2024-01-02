@@ -127,7 +127,7 @@ class AppraisalExcelReportController extends Controller
 
 			// (C) SAVE UPDATED CSV
 			// $csv = fopen(storage_path('app/public/excel/export.csv'), 'w');
-			$filename = 'Staff_Appraisal_'.now()->format('j F Y g.i').'.csv';
+			$filename = 'Staff_Appraisal_'.now()->format('j_F_Y_g.i').'.csv';
 			$file = fopen(storage_path('app/public/excel/'.$filename), 'w');
 			foreach ($rows as $r) {
 				fputcsv($file, $r);
@@ -194,14 +194,6 @@ class AppraisalExcelReportController extends Controller
 
 		Session(['lastBatchId' => $batch->id]);
 		return response()->json(route('appraisalexcelreport.create', ['id' => $batch->id]));
-
-		// $st = (new StaffAppraisalExport($staffs, $year))
-		// 			->queue('public/excel/Staff_Appraisal_'.$year.'.xlsx')
-		// 			->chain(response()->download('public/excel/Staff_Appraisal_'.$year.'.xlsx'));
-		// return Excel::download(new StaffAppraisalExport($staffs, $year), 'Staff_Appraisal_'.$year.'.xlsx');
-		// return [$batch->id, $batch->totalJobs, $batch->pendingJobs, $batch->processedJobs(), $batch->progress(), $batch->finished()];
-		// return [redirect()->back(), Storage::download('app/public/excel/export.csv')];
-		// return redirect()->back();
 	}
 
 	/**
