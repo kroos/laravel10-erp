@@ -29,7 +29,6 @@
   }
 </style>
 
-
 <?php
 ini_set('max_execution_time', 3000);
 
@@ -113,9 +112,6 @@ use App\Models\HumanResources\HROutstation;
           <td align="center" width="60px;">
             Leave
           </td>
-          <!-- <td align="center" width="90px;">
-            Leave ID
-          </td> -->
           <td align="center" width="60px;">
             In
           </td>
@@ -1191,9 +1187,6 @@ use App\Models\HumanResources\HROutstation;
             <td align="center">
               {{ $ll }}
             </td>
-            <!-- <td align="center">
-              {{ $lea }}
-            </td> -->
             <td align="center">
               {{ $in1 }}
             </td>
