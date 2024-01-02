@@ -1138,7 +1138,7 @@ class AjaxDBController extends Controller
 		$lsoy = $now->copy()->subDays(6);								// 6 days ago
 
 		$b = 0;
-		for ($i = 0; $i <= $lsoy->copy()->diffInDays($now->copy()); $i++) {	// take only 2 years back
+		for ($i = 0; $i <= $lsoy->copy()->diffInDays($now->copy()); $i++) {
 			$sd = $lsoy->copy()->addDays($i);
 			// dump($sd);
 
@@ -1253,7 +1253,7 @@ class AjaxDBController extends Controller
 					$locleave1 = json_decode("{}");
 				}
 
-				$overallpercentage = number_format((($workingpeople - $outstation - $absent - $leave) / $workingpeople) * 100, 2);
+				$overallpercentage = number_format(((($workingpeople + $outstation) - $absent - $leave) / ($workingpeople + $outstation)) * 100, 2);
 
 			} else {
 				$overallpercentage = 0;
@@ -1423,6 +1423,8 @@ class AjaxDBController extends Controller
 		if (!$request->id) {
 			if (session()->exists('lastBatchId')) {
 				$bid = session()->get('lastBatchId');
+			} elseif (session()->exists('lastBatchIdPay')) {
+				$bid = session()->get('lastBatchIdPay');
 			} else {
 				$bid = 1;
 			}
