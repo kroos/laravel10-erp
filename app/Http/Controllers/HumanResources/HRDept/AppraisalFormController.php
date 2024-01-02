@@ -95,13 +95,16 @@ class AppraisalFormController extends Controller
   public function store(Request $request): RedirectResponse
   {
 
-    $end = $request->end;
+    $p1_end = $request->p1_end;
+    $p2_end = $request->p2_end;
+    $p3_end = $request->p3_end;
+    $p4_end = $request->p4_end;
 
-    for ($begin = 1; $begin <= $end; $begin++) {
+    // P1
+    for ($p1_start = 1; $p1_start <= $p1_end; $p1_start++) {
 
-      // P1
-      if ($request->has('p1' . $begin)) {
-        foreach ($request->{'p1' . $begin} as $key => $val) {
+      if ($request->has('p1' . $p1_start)) {
+        foreach ($request->{'p1' . $p1_start} as $key => $val) {
           if ($val['section'] != NULL) {
             HRAppraisalSection::create([
               'sort' => $val['section_sort'],
@@ -116,27 +119,88 @@ class AppraisalFormController extends Controller
 
           $section_id = HRAppraisalSection::select('id')->orderBy('id', 'DESC')->first();
 
+
+          // PIVOT DEPT APPRAISAL
+          $section_id->belongstomanydepartmentpivot()->attach($request->department_id);
+
+
           // P2
-          if ($request->has('p2' . $begin)) {
-            foreach ($request->{'p2' . $begin} as $key => $val) {
-              if ($val['sectionsub'] != NULL) {
-                HRAppraisalSectionSub::create([
-                  'section_id' => $section_id->id,
-                  'sort' => $val['sectionsub_sort'],
-                  'section_sub' => $val['sectionsub'],
-                ]);
-              } else {
-                HRAppraisalSectionSub::create([
-                  'section_id' => $section_id->id,
-                  'sort' => $val['sectionsub_sort'],
-                  'section_sub' => preg_replace('/>\s*</', '><', $val['sectionsub_text']),
-                ]);
+          for ($p2_start = 1; $p2_start <= $p2_end; $p2_start++) {
+
+            if ($request->has('p2' . $p1_start . $p2_start)) {
+              foreach ($request->{'p2' . $p1_start . $p2_start} as $key => $val) {
+                if ($val['sectionsub'] != NULL) {
+                  HRAppraisalSectionSub::create([
+                    'section_id' => $section_id->id,
+                    'sort' => $val['sectionsub_sort'],
+                    'section_sub' => $val['sectionsub'],
+                  ]);
+                } else {
+                  HRAppraisalSectionSub::create([
+                    'section_id' => $section_id->id,
+                    'sort' => $val['sectionsub_sort'],
+                    'section_sub' => preg_replace('/>\s*</', '><', $val['sectionsub_text']),
+                  ]);
+                }
+
+                $sectionsub_id = HRAppraisalSectionSub::select('id')->orderBy('id', 'DESC')->first();
+
+
+                // P3
+                for ($p3_start = 1; $p3_start <= $p3_end; $p3_start++) {
+
+                  if ($request->has('p3' . $p1_start . $p2_start . $p3_start)) {
+                    foreach ($request->{'p3' . $p1_start . $p2_start . $p3_start} as $key => $val) {
+                      if ($val['mainquestion'] != NULL) {
+                        HRAppraisalMainQuestion::create([
+                          'section_sub_id' => $sectionsub_id->id,
+                          'sort' => $val['mainquestion_sort'],
+                          'mark' => $val['mainquestion_mark'],
+                          'main_question' => $val['mainquestion'],
+                        ]);
+                      } else {
+                        HRAppraisalMainQuestion::create([
+                          'section_sub_id' => $sectionsub_id->id,
+                          'sort' => $val['mainquestion_sort'],
+                          'mark' => $val['mainquestion_mark'],
+                          'main_question' => preg_replace('/>\s*</', '><', $val['mainquestion_text']),
+                        ]);
+                      }
+
+                      $mainquestion_id = HRAppraisalMainQuestion::select('id')->orderBy('id', 'DESC')->first();
+
+                      
+                      // P4
+                      for ($p4_start = 1; $p4_start <= $p4_end; $p4_start++) {
+
+                        if ($request->has('p4' . $p1_start . $p2_start . $p3_start . $p4_start)) {
+                          foreach ($request->{'p4' . $p1_start . $p2_start . $p3_start . $p4_start} as $key => $val) {
+                            if ($val['question'] != NULL) {
+                              HRAppraisalQuestion::create([
+                                'main_question_id' => $mainquestion_id->id,
+                                'sort' => $val['question_sort'],
+                                'mark' => $val['question_mark'],
+                                'question' => $val['question'],
+                              ]);
+                            } else {
+                              HRAppraisalQuestion::create([
+                                'main_question_id' => $mainquestion_id->id,
+                                'sort' => $val['question_sort'],
+                                'mark' => $val['question_mark'],
+                                'question' => preg_replace('/>\s*</', '><', $val['question_text']),
+                              ]);
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
               }
             }
           }
         }
       }
-
     }
 
     Session::flash('flash_message', 'Successfully Submit Appraisal Form.');
