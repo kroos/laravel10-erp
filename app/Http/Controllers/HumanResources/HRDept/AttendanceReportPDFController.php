@@ -38,35 +38,45 @@ use \Carbon\Carbon;
 use \Carbon\CarbonPeriod;
 use \Carbon\CarbonInterval;
 
+// load pdf
+use Barryvdh\DomPDF\Facade\Pdf;
+
 use Session;
 
 class AttendanceReportPDFController extends Controller
 {
-	function __construct()
-	{
-		$this->middleware(['auth']);
-		$this->middleware('highMgmtAccess:1|2|5,14|31', ['only' => ['store']]);
-	}
+  function __construct()
+  {
+    $this->middleware(['auth']);
+    $this->middleware('highMgmtAccess:1|2|5,14|31', ['only' => ['store']]);
+  }
 
-	public function store(Request $request): View
-	{
-		// dd($request->all());
-		$sa1 = HRAttendance::select('staff_id')
-					->whereIn('staff_id', $request->staff_id)
-					->where(function (Builder $query) use ($request){
-						$query->whereDate('attend_date', '>=', $request->from)
-						->whereDate('attend_date', '<=', $request->to);
-					})
-					->groupBy('hr_attendances.staff_id')
-					->get();
-		foreach ($sa1 as $k) {
-			$lp[] = $k->staff_id;
-		}
-		$sa = Login::whereIn('staff_id', $lp)->groupBy('staff_id')
-					->orderBy('active', 'desc')
-					->orderBy('username')
-					->get();
-		return view('humanresources.hrdept.attendance.attendancereport.storepdf', ['sa' => $sa, 'request' => $request]);
-	}
+  public function store(Request $request)
+  {
+    // dd($request->all());
+    $sa1 = HRAttendance::select('staff_id')
+      ->whereIn('staff_id', $request->staff_id)
+      ->where(function (Builder $query) use ($request) {
+        $query->whereDate('attend_date', '>=', $request->from)
+          ->whereDate('attend_date', '<=', $request->to);
+      })
+      ->groupBy('hr_attendances.staff_id')
+      ->get();
 
+    foreach ($sa1 as $k) {
+      $lp[] = $k->staff_id;
+    }
+
+    $sa = Login::whereIn('staff_id', $lp)
+      ->groupBy('staff_id')
+      ->orderBy('active', 'desc')
+      ->orderBy('username')
+      ->get();
+
+    $pdf = PDF::loadView('humanresources.hrdept.attendance.attendancereport.storepdf', ['sa' => $sa, 'request' => $request]);
+    // return $pdf->download('attendance daily report ' . $selected_date . '.pdf');
+    return $pdf->stream();
+
+    // return view('humanresources.hrdept.attendance.attendancereport.storepdf', ['sa' => $sa, 'request' => $request]);
+  }
 }
