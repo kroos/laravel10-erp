@@ -45,10 +45,6 @@ class PayslipExport implements FromCollection
 		$req = $this->request;
 		// dd($req['from']);
 
-		// how many days
-		$days = Carbon::parse($req['from'])->daysUntil($req['to'], 1);
-		// dump($days->count());
-
 		// get staff which is in attendance for a particular date
 		$hratt = HRAttendance::select('staff_id')
 				->where(function (Builder $query) use ($req){

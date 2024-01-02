@@ -408,6 +408,7 @@ $childrens = $profile->hasmanychildren()->get();
 											})
 											->where('staff_id', $profile->id)
 											->whereIn('leave_type_id', [1, 5])
+											->whereYear('date_time_start', $al->year)
 											->get();
 						?>
 						@if($leaves->count())
@@ -477,6 +478,7 @@ $childrens = $profile->hasmanychildren()->get();
 												$query->whereIn('leave_status_id', [5, 6])->orWhereNull('leave_status_id');
 											})
 											->where('staff_id', $profile->id)
+											->whereYear('date_time_start', $al->year)
 											->where('leave_type_id', 2)
 											->get();
 						?>

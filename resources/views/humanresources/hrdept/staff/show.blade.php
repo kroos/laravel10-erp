@@ -635,6 +635,7 @@ $mcupl = $staff->hasmanyleave()?->get();
 												$query->whereIn('leave_status_id', [5, 6])->orWhereNull('leave_status_id');
 											})
 											->where('staff_id', $staff->id)
+											->whereYear('date_time_start', $al->year)
 											->whereIn('leave_type_id', [1, 5])
 											->get();
 						?>
@@ -709,6 +710,7 @@ $mcupl = $staff->hasmanyleave()?->get();
 												$query->whereIn('leave_status_id', [5, 6])->orWhereNull('leave_status_id');
 											})
 											->where('staff_id', $staff->id)
+											->whereYear('date_time_start', $al->year)
 											->where('leave_type_id', 2)
 											->get();
 						?>
