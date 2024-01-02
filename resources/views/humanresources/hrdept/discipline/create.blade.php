@@ -11,6 +11,7 @@
 use App\Models\Staff;
 use App\Models\HumanResources\OptDisciplinaryAction;
 use App\Models\HumanResources\OptViolation;
+use App\Models\HumanResources\OptInfractions;
 
 $staff = Staff::join('logins', 'staffs.id', '=', 'logins.staff_id')
   ->select(DB::raw('CONCAT(username, " - ", name) AS display_name'), 'staffs.id')
@@ -20,8 +21,8 @@ $staff = Staff::join('logins', 'staffs.id', '=', 'logins.staff_id')
   ->toArray();
 
 $disciplinary_action = OptDisciplinaryAction::pluck('disciplinary_action', 'id')->toArray();
-
 $violation = OptViolation::select(DB::raw('CONCAT(IFNULL(violation, ""), " - ", IFNULL(remarks, "")) AS display_violation'), 'id')->pluck('display_violation', 'id')->toArray();
+$infraction = OptInfractions::select(DB::raw('CONCAT(IFNULL(infraction, ""), " - ", IFNULL(remarks, "")) AS display_infraction'), 'id')->pluck('display_infraction', 'id')->toArray();
 ?>
 
 <div class="container">
@@ -41,10 +42,10 @@ $violation = OptViolation::select(DB::raw('CONCAT(IFNULL(violation, ""), " - ", 
 
   <div class="row mt-3">
     <div class="col-md-2">
-      {{Form::label('date', 'Warning Date')}}
+      {{Form::label('supervisor', 'Supervisor Incharge')}}
     </div>
-    <div class="col-md-10 {{ $errors->has('date') ? 'has-error' : '' }}">
-      {{ Form::text('date', @$value, ['class' => 'form-control form-control-sm col-auto', 'id' => 'date', 'autocomplete' => 'off']) }}
+    <div class="col-md-10 {{ $errors->has('supervisor_id') ? 'has-error' : '' }}">
+      {{ Form::select('supervisor_id', $staff, @$value, ['class' => 'form-control form-select form-select-sm col-auto', 'id' => 'supervisor_id', 'placeholder' => '', 'autocomplete' => 'off']) }}
     </div>
   </div>
 
@@ -68,10 +69,46 @@ $violation = OptViolation::select(DB::raw('CONCAT(IFNULL(violation, ""), " - ", 
 
   <div class="row mt-3">
     <div class="col-md-2">
-      {{Form::label('reason', 'Reason')}}
+      {{Form::label('infraction', 'Infraction Level')}}
+    </div>
+    <div class="col-md-10 {{ $errors->has('infraction_id') ? 'has-error' : '' }}">
+      {{ Form::select('infraction_id', $infraction, @$value, ['class' => 'form-control form-select form-select-sm col-auto', 'id' => 'infraction_id', 'placeholder' => '', 'autocomplete' => 'off']) }}
+    </div>
+  </div>
+
+  <div class="row mt-3">
+    <div class="col-md-2">
+      {{Form::label('misconduct date', 'Misconduct Date')}}
+    </div>
+    <div class="col-md-10 {{ $errors->has('misconduct_date') ? 'has-error' : '' }}">
+      {{ Form::text('misconduct_date', @$value, ['class' => 'form-control form-control-sm col-auto', 'id' => 'misconduct_date', 'autocomplete' => 'off']) }}
+    </div>
+  </div>
+
+  <div class="row mt-3">
+    <div class="col-md-2">
+      {{Form::label('action taken date', 'Action Taken Date')}}
+    </div>
+    <div class="col-md-10 {{ $errors->has('action_taken_date') ? 'has-error' : '' }}">
+      {{ Form::text('action_taken_date', @$value, ['class' => 'form-control form-control-sm col-auto', 'id' => 'action_taken_date', 'autocomplete' => 'off']) }}
+    </div>
+  </div>
+
+  <div class="row mt-3">
+    <div class="col-md-2">
+      {{Form::label('reason', 'Description of Incident')}}
     </div>
     <div class="col-md-10 {{ $errors->has('reason') ? 'has-error' : '' }}">
-      {!! Form::textarea('reason', @$value, ['class' => 'form-control', 'id' => 'reason', 'placeholder' => 'Please Insert Reason'] ) !!}
+      {!! Form::textarea('reason', @$value, ['class' => 'form-control', 'id' => 'reason', 'placeholder' => 'Please Insert Incident Description'] ) !!}
+    </div>
+  </div>
+
+  <div class="row mt-3">
+    <div class="col-md-2">
+      {{Form::label('action to be taken', 'Action to be Taken')}}
+    </div>
+    <div class="col-md-10 {{ $errors->has('reason') ? 'has-error' : '' }}">
+      {!! Form::textarea('action_to_be_taken', @$value, ['class' => 'form-control', 'id' => 'action_to_be_taken', 'placeholder' => 'Please Insert Action Taken'] ) !!}
     </div>
   </div>
 
@@ -115,7 +152,7 @@ closeOnSelect: true,
 
 /////////////////////////////////////////////////////////////////////////////////////////
 // DATE PICKER
-$('#date').datetimepicker({
+$('#misconduct_date, #action_taken_date').datetimepicker({
 icons: {
 time: "fas fas-regular fa-clock fa-beat",
 date: "fas fas-regular fa-calendar fa-beat",
@@ -146,15 +183,15 @@ fields: {
 staff_id: {
 validators: {
 notEmpty: {
-message: 'Please select a staff.'
+message: 'Please select staff.'
 }
 }
 },
 
-date: {
+supervisor_id: {
 validators: {
 notEmpty: {
-message: 'Please select a warning date.'
+message: 'Please select supervisor incharge.'
 }
 }
 },
@@ -162,7 +199,7 @@ message: 'Please select a warning date.'
 disciplinary_action_id: {
 validators: {
 notEmpty: {
-message: 'Please select a disciplinary action.'
+message: 'Please select disciplinary action.'
 }
 }
 },
@@ -170,7 +207,31 @@ message: 'Please select a disciplinary action.'
 violation_id: {
 validators: {
 notEmpty: {
-message: 'Please select a violation.'
+message: 'Please select violation.'
+}
+}
+},
+
+infraction_id: {
+validators: {
+notEmpty: {
+message: 'Please select infraction.'
+}
+}
+},
+
+misconduct_date: {
+validators: {
+notEmpty: {
+message: 'Please insert misconduct date.'
+}
+}
+},
+
+action_taken_date: {
+validators: {
+notEmpty: {
+message: 'Please insert action taken date.'
 }
 }
 },
@@ -178,7 +239,15 @@ message: 'Please select a violation.'
 reason: {
 validators: {
 notEmpty: {
-message: 'Please insert a reason.'
+message: 'Please insert incident description.'
+}
+}
+},
+
+action_to_be_taken: {
+validators: {
+notEmpty: {
+message: 'Please insert action to be taken.'
 }
 }
 },
