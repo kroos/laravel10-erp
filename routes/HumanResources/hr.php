@@ -109,3 +109,6 @@ Route::get('/attendance', [AttendanceController::class, 'index'])->name('attenda
 Route::post('/attendance', [AttendanceController::class, 'index'])->name('attendance.index');
 
 Route::get('/appraisalform/create/{id}', [AppraisalFormController::class, 'create'])->name('appraisalform.create');
+
+Route::get('/staff/show/{staff}', [StaffController::class, 'show'])->name('staff.show');
+Route::post('/staff/show/{staff}', [StaffController::class, 'show'])->name('staff.show');
