@@ -406,7 +406,7 @@ $mcupl = $staff->hasmanyleave()?->get();
 
 		{{ Form::open(['route' => ['staff.show', $staff->id], 'id' => 'form', 'class' => 'form-horizontal', 'autocomplete' => 'off', 'files' => true]) }}
 
-		<table width="100%" class="text">
+		<table width="100%">
 			<tr>
 				<td></td>
 				<td width="100px">
@@ -418,7 +418,7 @@ $mcupl = $staff->hasmanyleave()?->get();
 				</td>
 				<td width="5px"></td>
 				<td width="70px">
-					{!! Form::submit('SEARCH', ['id' => 'scroll_here', 'class' => 'form-control form-control-sm btn btn-sm btn-outline-secondary scroll_here']) !!}
+					{!! Form::submit('SEARCH', ['class' => 'form-control form-control-sm btn btn-sm btn-outline-secondary']) !!}
 				</td>
 			</tr>
 		</table>

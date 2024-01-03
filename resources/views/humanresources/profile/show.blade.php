@@ -1,6 +1,25 @@
 @extends('layouts.app')
 
 @section('content')
+<script>
+// Check if session storage is supported by the browser
+if (typeof(Storage) !== 'undefined') {
+	// Store the current scroll position in session storage on page unload
+	window.addEventListener('beforeunload', function() {
+		sessionStorage.setItem('scrollPosition', window.scrollY);
+	});
+
+	// Restore the scroll position on page load
+	window.addEventListener('load', function() {
+		var scrollPosition = sessionStorage.getItem('scrollPosition');
+		if (scrollPosition !== null) {
+			window.scrollTo(0, scrollPosition);
+			sessionStorage.removeItem('scrollPosition');
+		}
+	});
+}
+</script>
+
 <?php
 // load facade
 use Illuminate\Database\Eloquent\Builder;
@@ -167,9 +186,46 @@ $childrens = $profile->hasmanychildren()->get();
 		<canvas id="myChart"></canvas>
 	</div>
 
+	<?php
+	use App\Models\Staff;
+	use App\Models\HumanResources\HRAttendance;
+
+	$group_year = HRAttendance::join('staffs', 'hr_attendances.staff_id', '=', 'staffs.id')
+		->select(DB::raw('YEAR(hr_attendances.attend_date) AS year'))
+		->where('hr_attendances.staff_id', $profile->id)
+		->groupBy('year')
+		->orderBy('year', 'desc')
+		->pluck('year', 'year')
+		->toArray();
+
+	$group_month = ['01'=>'01', '02'=>'02', '03'=>'03', '04'=>'04', '05'=>'05', '06'=>'06', '07'=>'07', '08'=>'08', '09'=>'09', '10'=>'10', '11'=>'11', '12'=>'12'];
+	?>
+
 	<p>&nbsp;</p>
 	<div class="col-sm-12 table-responsive">
 		<h4>Attendance</h4>
+
+		{{ Form::open(['route' => ['profile.show', $profile->id], 'id' => 'form', 'class' => 'form-horizontal', 'autocomplete' => 'off', 'files' => true]) }}
+
+		<table width="100%" class="text">
+			<tr>
+				<td></td>
+				<td width="100px">
+					{{ Form::select('year', $group_year, @$year, ['class' => 'form-control form-control-sm form-select', 'id' => 'year', 'placeholder' => '', 'autocomplete' => 'off']) }}
+				</td>
+				<td width="5px"></td>
+				<td width="80px">
+					{{ Form::select('month', $group_month, @$month, ['class' => 'form-control form-control-sm form-select', 'id' => 'month', 'placeholder' => '', 'autocomplete' => 'off']) }}
+				</td>
+				<td width="5px"></td>
+				<td width="70px">
+					{!! Form::submit('SEARCH', ['class' => 'form-control form-control-sm btn btn-sm btn-outline-secondary']) !!}
+				</td>
+			</tr>
+		</table>
+
+		{!! Form::close() !!}
+
 		<table id="attendance" class="table table-hover table-sm align-middle" style="font-size:12px">
 			<thead>
 				<tr>
@@ -767,6 +823,14 @@ $childrens = $profile->hasmanychildren()->get();
 
 @section('js')
 /////////////////////////////////////////////////////////////////////////////////////////
+$('.form-select').select2({
+placeholder: '',
+width: '100%',
+allowClear: false,
+closeOnSelect: true,
+});
+
+/////////////////////////////////////////////////////////////////////////////////////////
 // tooltip
 $(document).ready(function(){
 	$('[data-bs-toggle="tooltip"]').tooltip();
@@ -778,7 +842,9 @@ $.fn.dataTable.moment( 'D MMM YYYY' );
 $.fn.dataTable.moment( 'YYYY' );
 $.fn.dataTable.moment( 'h:mm a' );
 $('#attendance').DataTable({
-	"paging": true,
+	"searching": false, 
+	"info": false,
+	"paging": false,
 	"lengthMenu": [ [30, 60, 100, -1], [30, 60, 100, "All"] ],
 	"columnDefs": [
 		{ type: 'date', 'targets': [0] },
@@ -789,7 +855,7 @@ $('#attendance').DataTable({
 		{ type: 'time', 'targets': [6] },
 	],
 	"order": [[ 0, 'desc' ]], // sorting the 6th column descending
-	responsive: true
+	"responsive": true
 })
 .on( 'length.dt page.dt order.dt search.dt', function ( e, settings, len ) {
 	$(document).ready(function(){
@@ -816,7 +882,6 @@ $('#al, #mc, #ml').DataTable({
 		$('[data-bs-toggle="tooltip"]').tooltip();
 	});
 });
-
 @endsection
 
 @section('nonjquery')

@@ -112,3 +112,6 @@ Route::get('/appraisalform/create/{id}', [AppraisalFormController::class, 'creat
 
 Route::get('/staff/show/{staff}', [StaffController::class, 'show'])->name('staff.show');
 Route::post('/staff/show/{staff}', [StaffController::class, 'show'])->name('staff.show');
+
+Route::get('/profile/show/{profile}', [ProfileController::class, 'show'])->name('profile.show');
+Route::post('/profile/show/{profile}', [ProfileController::class, 'show'])->name('profile.show');
