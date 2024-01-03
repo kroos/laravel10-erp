@@ -64,6 +64,7 @@ class StaffController extends Controller
 	{
 		// dd($request->all());
 		$data = $request->only(['ic', 'religion_id', 'gender_id', 'race_id', 'nationality_id', 'marital_status_id', 'mobile', 'phone', 'dob', 'cimb_account', 'epf_account', 'income_tax_no', 'socso_no', 'weight', 'height', 'join', 'div_id', 'restday_group_id', 'leave_flow_id', 'status_id', 'active', 'authorise_id']);
+		$data += ['join' => now()];
 		$data += ['active' => 1];
 		$data += ['name' => ucwords(Str::of($request->name)->lower())];
 		$data += ['address' => ucwords(Str::of($request->address)->lower())];
@@ -88,8 +89,9 @@ class StaffController extends Controller
 		}
 
 		$signin = $request->only(['password']);
-		$signin += ['username' => Str::of($request->address)->upper()];
+		$signin += ['username' => Str::of($request->username)->upper()];
 		$signin += ['active' => 1];
+		dd($data, $signin);
 
 		$s = Staff::create($data);
 
@@ -137,18 +139,14 @@ class StaffController extends Controller
 				$s->hasmanyemergency()->create($v);
 			}
 		}
-
-		// Session::flash('flash_danger', 'Please make sure your applied leave does not exceed your available leave balance');
-		// return redirect()->back();
-		Session::flash('flash_message', 'Successfully Add New Staff.');
-		return redirect()->route('staff.index');
+		return redirect()->route('staff.index')->with('flash_message', 'Successfully Add New Staff.');
 	}
 
 	/**
 	 * Display the specified resource.
 	 */
 	public function show(Request $request, Staff $staff): View
-	{ 
+	{
 		$current_time = now();
 		$current_year = $current_time->format('Y');
 		$current_month = $current_time->format('m');

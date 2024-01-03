@@ -1189,7 +1189,7 @@ $(document).ready(function(){
 $.fn.dataTable.moment( 'D MMM YYYY' );
 $.fn.dataTable.moment( 'h:mm a' );
 $('#attendance').DataTable({
-	"searching": false, 
+	"searching": false,
 	"info": false,
 	"paging": false,
 	"lengthMenu": [ [30, 60, 100, -1], [30, 60, 100, "All"] ],
@@ -1318,11 +1318,16 @@ document.addEventListener('DOMContentLoaded', function() {
 
 	var calendar = new FullCalendar.Calendar(calendarEl, {
 		aspectRatio: 1.0,
-		height: 500,
+		height: 2000,
 		// plugins: [multiMonthPlugin],
-		// initialView: 'multiMonthYear',
+		initialView: 'multiMonthYear',
+		// initialView: 'dayGridMonth',
 		// multiMonthMaxColumns: 1,					// force a single column
-		initialView: 'dayGridMonth',
+		headerToolbar: {
+			left: 'prev,next today',
+			center: 'title',
+			right: 'multiMonthYear,dayGridMonth,timeGridWeek'
+		},
 		weekNumbers: true,
 		themeSystem: 'bootstrap',
 		events: {

@@ -827,7 +827,7 @@ class AjaxDBController extends Controller
 
 		// mark saturday as restday
 		$sat = Staff::find($request->staff_id)->belongstorestdaygroup?->hasmanyrestdaycalendar()->get();
-		if ($sat->isNotEmpty()) {
+		if (!is_null($sat)) {
 			foreach ($sat as $v) {
 				$l4[] = [
 							'title' => 'RESTDAY',
@@ -855,7 +855,7 @@ class AjaxDBController extends Controller
 				})
 				->get();
 				// ->ddRawSql();
-		if ($hdate->isNotEmpty()) {
+		if (!is_null($hdate)) {
 			foreach ($hdate as $v) {
 				$l1[] = [
 							'title' => $v->holiday,
@@ -882,7 +882,7 @@ class AjaxDBController extends Controller
 		})
 		->get();
 
-		if($l->isNotEmpty()) {
+		if(!is_null($l)) {
 			foreach ($l as $v) {
 				$dts = \Carbon\Carbon::parse($v->date_time_start)->format('Y');
 				$dte = \Carbon\Carbon::parse($v->date_time_end)->addDay()->format('j M Y g:i a');

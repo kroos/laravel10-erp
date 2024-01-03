@@ -186,6 +186,9 @@ $childrens = $profile->hasmanychildren()->get();
 		<canvas id="myChart"></canvas>
 	</div>
 
+	<p>&nbsp;</p>
+	<div id="calendar" class="col-sm-12"></div>
+
 	<?php
 	use App\Models\Staff;
 	use App\Models\HumanResources\HRAttendance;
@@ -842,7 +845,7 @@ $.fn.dataTable.moment( 'D MMM YYYY' );
 $.fn.dataTable.moment( 'YYYY' );
 $.fn.dataTable.moment( 'h:mm a' );
 $('#attendance').DataTable({
-	"searching": false, 
+	"searching": false,
 	"info": false,
 	"paging": false,
 	"lengthMenu": [ [30, 60, 100, -1], [30, 60, 100, "All"] ],
@@ -953,4 +956,56 @@ xmlhttp.onload = function() {
 		},
 	});
 };
+
+/////////////////////////////////////////////////////////////////////////////////////////
+// fullcalendar cant use jquery
+// import { Calendar } from '@fullcalendar/core'
+// import multiMonthPlugin from '@fullcalendar/multimonth'
+
+document.addEventListener('DOMContentLoaded', function() {
+	var calendarEl = document.getElementById('calendar');
+
+	var calendar = new FullCalendar.Calendar(calendarEl, {
+		aspectRatio: 1.0,
+		height: 2000,
+		// plugins: [multiMonthPlugin],
+		initialView: 'multiMonthYear',
+		// initialView: 'dayGridMonth',
+		// multiMonthMaxColumns: 1,					// force a single column
+		headerToolbar: {
+			left: 'prev,next today',
+			center: 'title',
+			right: 'multiMonthYear,dayGridMonth,timeGridWeek'
+		},
+		weekNumbers: true,
+		themeSystem: 'bootstrap',
+		events: {
+			url: '{{ route('staffattendance') }}',
+			method: 'POST',
+			extraParams: {
+				_token: '{!! csrf_token() !!}',
+				staff_id: '{{ $profile->id }}',
+			},
+		},
+		// failure: function() {
+		// 	alert('There was an error while fetching leaves!');
+		// },
+		eventDidMount: function(info) {
+				var tooltip = new Tooltip(info.el, {
+					title: info.event.extendedProps.description,
+					placement: 'top',
+					trigger: 'hover',
+					container: 'body'
+				});
+		},
+		eventTimeFormat: { // like '14:30:00'
+			hour: '2-digit',
+			minute: '2-digit',
+			second: '2-digit',
+			hour12: true
+		}
+	});
+	calendar.render();
+});
+
 @endsection
