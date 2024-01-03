@@ -29,6 +29,11 @@ class HRDisciplinary extends Model
 		return $this->belongsTo(\App\Models\Staff::class, 'staff_id');
 	}
 
+	public function belongstosupervisor(): BelongsTo
+	{
+		return $this->belongsTo(\App\Models\Staff::class, 'supervisor_id');
+	}
+
 	public function belongstooptdisciplinaryaction(): BelongsTo
 	{
 		return $this->belongsTo(\App\Models\HumanResources\OptDisciplinaryAction::class, 'disciplinary_action_id');
@@ -37,6 +42,11 @@ class HRDisciplinary extends Model
 	public function belongstooptviolation(): BelongsTo
 	{
 		return $this->belongsTo(\App\Models\HumanResources\OptViolation::class, 'violation_id');
+	}
+
+	public function belongstooptinfractions(): BelongsTo
+	{
+		return $this->belongsTo(\App\Models\HumanResources\OptInfractions::class, 'infraction_id');
 	}
 }
 

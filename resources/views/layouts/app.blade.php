@@ -1,5 +1,10 @@
 <!doctype html>
 <html lang="en" data-bs-theme="auto">
+<?php
+use \Carbon\Carbon;
+
+$currentYear = Carbon::now()->year;
+?>
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
@@ -38,6 +43,7 @@
 									<ul class="dropdown-menu">
 										<li><a class="dropdown-item" href="{{ route('profile.show', Auth::user()->belongstostaff->id) }}"><i class="fa-regular fa-user"></i> Profile</a></li>
 										<li><a class="dropdown-item" href="#"><i class="fa-regular fa-comment"></i> Notifications</a></li>
+										<li><a class="dropdown-item" href="{{ route('holidaycalendar.show', $currentYear) }}"><i class="fa-regular fa-calendar"></i> Holiday</a></li>
 										<li><a class="dropdown-item" href="{{ route('leave.index') }}"><i class="fa-solid fa-mug-hot"></i> Apply Leave</a></li>
 										<li><a class="dropdown-item" href="{{ route('outstationattendance.index') }}"><i class="fa-solid fa-user-plus"></i> Outstation Attendance</a></li>
 										<form method="POST" action="{{ route('logout') }}">
