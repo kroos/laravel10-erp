@@ -16,7 +16,7 @@
 		</thead>
 		<tbody>
 			@foreach($setting as $set)
-				@if($set->id != 5 && $set->id != 6)
+				@if($set->id != 5 && $set->id != 6 && $set->id != 7)
 					<tr>
 						<td>{{ $set->id }}</td>
 						<td>{{ $set->setting }}</td>
@@ -27,7 +27,7 @@
 								<label class="form-check-label" for="{{$set->id}}_setting">{{ (!is_null($set->active))?'Enable':'Disable' }}</label>
 							</div>
 						</td>
-						<td>{{ \Carbon\Carbon::parse($set->update_at)->format('j M Y') }}</td>
+						<td>{{ \Carbon\Carbon::parse($set->updated_at)->format('j M Y') }}</td>
 					</tr>
 				@endif
 				@if($set->id == 5)
@@ -38,7 +38,7 @@
 						<td>
 							<input type="number" name="active" value="{{ $set->active }}" id="{{$set->id}}_setting" data-id="{{ $set->id }}" class="form-control form-control-small col-auto" />
 						</td>
-						<td>{{ \Carbon\Carbon::parse($set->update_at)->format('j M Y') }}</td>
+						<td>{{ \Carbon\Carbon::parse($set->updated_at)->format('j M Y') }}</td>
 					</tr>
 				@endif
 				@if($set->id == 6)
@@ -52,7 +52,21 @@
 								<label class="form-check-label" for="{{$set->id}}_setting">{{ (!is_null($set->active))?'Enable':'Disable' }}</label>
 							</div>
 						</td>
-						<td>{{ \Carbon\Carbon::parse($set->update_at)->format('j M Y') }}</td>
+						<td>{{ \Carbon\Carbon::parse($set->updated_at)->format('j M Y') }}</td>
+					</tr>
+				@endif
+				@if($set->id == 7)
+					<tr>
+						<td>{{ $set->id }}</td>
+						<td>{{ $set->setting }}</td>
+						<td>{{ $set->remarks }}</td>
+						<td>
+							<div class="form-check form-switch">
+								<input type="checkbox" name="active" value="1" class="form-check-input" role="switch" id="{{$set->id}}_setting" data-id="{{ $set->id }}" {{ (!is_null($set->active))?'checked=checked':NULL }}>
+								<label class="form-check-label" for="{{$set->id}}_setting">{{ (!is_null($set->active))?'Enable':'Disable' }}</label>
+							</div>
+						</td>
+						<td>{{ \Carbon\Carbon::parse($set->updated_at)->format('j M Y') }}</td>
 					</tr>
 				@endif
 			@endforeach
@@ -120,10 +134,4 @@ $('#5_setting').change(function() {
 	swal.fire("Good job!", data.status, "success");
 	// alert(data.status);
 });
-
-
-
-
-
-
 @endsection

@@ -139,7 +139,7 @@ class AjaxDBController extends Controller
 		// dd(Setting::find(6)->active, $year, $nextyear);
 
 		// group entitlement by year
-		for ($i = ((Setting::find(7)->active == 1)?$pastyear:$year); $i <= ((Setting::find(6)->active == 1)?$nextyear:$year); ++$i) {
+		for ($i = ((Setting::find(7)->active != 1)?$pastyear:$year); $i <= ((Setting::find(6)->active != 1)?$nextyear:$year); ++$i) {
 
 			// checking for annual leave, mc, nrl and maternity
 			// hati-hati dgn yg ni sbb melibatkan masa

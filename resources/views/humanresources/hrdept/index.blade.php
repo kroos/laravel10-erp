@@ -7,18 +7,18 @@
 		<div class="col-sm-12 m-3">
 			<h4>Overall Summary</h4>
 			<div class="table-responsive">
-				<table class="table table-hover table-sm align-middle" style="font-size:12px">
+				<table class="table table-hover table-sm align-middle table-border" style="font-size:12px">
 					<thead>
 						<tr>
-							<th>Date</th>
-							<th>Day Status</th>
-							<th>Percentage</th>
-							<th>Available Staff</th>
-							<th colspan="2">Outstation</th>
-							<th colspan="2">On Leave</th>
-							<th colspan="2">Absents</th>
-							<th colspan="2">Half Absents</th>
-							<th>Total Staff</th>
+							<th class="text-center">Date</th>
+							<th class="text-center">Day Status</th>
+							<th class="text-center">Percentage</th>
+							<th class="text-center">Available Staff</th>
+							<th class="text-center" colspan="2">Outstation</th>
+							<th class="text-center" colspan="2">On Leave</th>
+							<th class="text-center" colspan="2">Absents</th>
+							<th class="text-center" colspan="2">Half Absents</th>
+							<th class="text-center">Total Staff</th>
 						</tr>
 					</thead>
 					<tbody id="summary">
@@ -58,23 +58,23 @@ var i = 0;
 $.each(data, function( index, value ) {
 	$('#summary').append(
 		'<tr>' +
-			'<td>' + value.date + '</td>' +
-			'<td>' + value.working + '</td>' +
-			'<td>' + value.overallpercentage + '%</td>' +
-			'<td>' + value.workingpeople + '</td>' +
-			'<td colspan="2">' + value.outstation + '</td>' +
-			'<td colspan="2">' + value.leave + '</td>' +
-			'<td colspan="2">' + value.absent + '</td>' +
-			'<td colspan="2">' + value.halfabsent + '</td>' +
-			'<td>' + value.workday + '</td>' +
+			'<td class="text-center">' + value.date + '</td>' +
+			'<td class="text-center">' + value.working + '</td>' +
+			'<td class="text-center">' + value.overallpercentage + '%</td>' +
+			'<td class="text-center">' + value.workingpeople + '</td>' +
+			'<td class="text-center" colspan="2">' + value.outstation + '</td>' +
+			'<td class="text-center" colspan="2">' + value.leave + '</td>' +
+			'<td class="text-center" colspan="2">' + value.absent + '</td>' +
+			'<td class="text-center" colspan="2">' + value.halfabsent + '</td>' +
+			'<td class="text-center">' + value.workday + '</td>' +
 		'</tr>' +
 		'<tr>' +
-			'<td colspan="4"></td>' +
-			'<td colspan="2" id="infoa' + i + '"></td>' +
-			'<td colspan="2" id="infob' + i + '"></td>' +
-			'<td colspan="2" id="infoc' + i + '"></td>' +
-			'<td colspan="2" id="infod' + i + '"></td>' +
-			'<td></td>' +
+			'<td class="text-center" colspan="4"></td>' +
+			'<td class="text-center" colspan="2" id="infoa' + i + '"></td>' +
+			'<td class="text-center" colspan="2" id="infob' + i + '"></td>' +
+			'<td class="text-center" colspan="2" id="infoc' + i + '"></td>' +
+			'<td class="text-center" colspan="2" id="infod' + i + '"></td>' +
+			'<td class="text-center"></td>' +
 		'</tr>'
 	);
 
@@ -93,10 +93,7 @@ $.each(data, function( index, value ) {
 			// $('#infoa' + i).append();
 		} else {
 			$('#infoa' + i).append(
-				'<tr>' +
-					'<td>' + ind + '</td>' +
-					'<td>' + val + '</td>' +
-				'<tr>'
+				ind + ' : ' + val + '<br/>'
 			);
 		}
 	});
@@ -106,10 +103,7 @@ $.each(data, function( index, value ) {
 			// $('#infob' + i).append();
 		} else {
 			$('#infob' + i).append(
-				'<tr>' +
-					'<td>' + ind + '</td>' +
-					'<td>' + val + '</td>' +
-				'<tr>'
+				ind + ' : ' + val + '<br/>'
 			);
 		}
 	});
@@ -119,10 +113,7 @@ $.each(data, function( index, value ) {
 			// $('#infoc' + i).append();
 		} else {
 			$('#infoc' + i).append(
-				'<tr>' +
-					'<td>' + ind + '</td>' +
-					'<td>' + val + '</td>' +
-				'<tr>'
+				ind + ' : ' + val + '<br/>'
 			);
 		}
 	});
@@ -132,10 +123,7 @@ $.each(data, function( index, value ) {
 			// $('#infod' + i).append();
 		} else {
 			$('#infod' + i).append(
-				'<tr>' +
-					'<td>' + ind + '</td>' +
-					'<td>' + val + '</td>' +
-				'<tr>'
+				ind + ' : ' + val + '<br/>'
 			);
 		}
 	});
