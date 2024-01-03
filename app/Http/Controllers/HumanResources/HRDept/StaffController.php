@@ -9,6 +9,8 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Storage;
 
 // load models
 use App\Models\Staff;
@@ -145,18 +147,30 @@ class StaffController extends Controller
 	/**
 	 * Display the specified resource.
 	 */
-	public function show(Staff $staff): View
-	{
+	public function show(Request $request, Staff $staff): View
+	{ 
 		$current_time = now();
-		$year = $current_time->format('Y');
+		$current_year = $current_time->format('Y');
+		$current_month = $current_time->format('m');
+
+		if ($request->year != NULL && $request->month != NULL) {
+			$year = $request->year;
+			$month = $request->month;
+		} else {
+			$year = $current_year;
+			$month = $current_month;
+		}
 
 		$attendance = HRAttendance::join('staffs', 'hr_attendances.staff_id', '=', 'staffs.id')
 			->where('hr_attendances.staff_id', $staff->id)
 			->whereYear('hr_attendances.attend_date', '=', $year)
+			->whereMonth('hr_attendances.attend_date', '=', $month)
 			->select('hr_attendances.remarks as attend_remark', 'hr_attendances.*', 'staffs.*')
 			->get();
+
 		$wh_group = $staff->belongstomanydepartment()->wherePivot('main', 1)->first();
-		return view('humanresources.hrdept.staff.show', ['staff' => $staff, 'attendance' => $attendance, 'wh_group' => $wh_group->wh_group_id]);
+
+		return view('humanresources.hrdept.staff.show', ['staff' => $staff, 'attendance' => $attendance, 'wh_group' => $wh_group->wh_group_id, 'year' => $year, 'month' => $month]);
 	}
 
 	/**

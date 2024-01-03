@@ -74,9 +74,7 @@ class AttendanceReportPDFController extends Controller
       ->get();
 
     $pdf = PDF::loadView('humanresources.hrdept.attendance.attendancereport.storepdf', ['sa' => $sa, 'request' => $request]);
-    // return $pdf->download('attendance daily report ' . $selected_date . '.pdf');
+    // return $pdf->download('attendance monthly report ' . $request->from . ' - ' . $request->to . '.pdf');
     return $pdf->stream();
-
-    // return view('humanresources.hrdept.attendance.attendancereport.storepdf', ['sa' => $sa, 'request' => $request]);
   }
 }

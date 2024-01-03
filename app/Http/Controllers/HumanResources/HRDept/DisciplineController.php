@@ -43,7 +43,7 @@ class DisciplineController extends Controller
 	{
 		// Paginator::useBootstrap();
 		// $disciplinary = HRDisciplinary::orderBy('date', 'desc')->paginate(30);
-		$disciplinary = HRDisciplinary::orderBy('date', 'desc')->get();
+		$disciplinary = HRDisciplinary::orderBy('action_taken_date', 'desc')->get();
 		return view('humanresources.hrdept.discipline.index', compact('disciplinary'));
 	}
 
@@ -72,24 +72,32 @@ class DisciplineController extends Controller
 			// INSERT NEW DATABASE
 			HRDisciplinary::create([
 				'staff_id' => $request->staff_id,
+				'supervisor_id' => $request->supervisor_id,
 				'disciplinary_action_id' => $request->disciplinary_action_id,
 				'violation_id' => $request->violation_id,
-				'date' => $request->date,
+				'infraction_id' => $request->infraction_id,
+				'misconduct_date' => $request->misconduct_date,
+				'action_taken_date' => $request->action_taken_date,
 				'reason' => $request->reason,
+				'action_to_be_taken' => $request->action_to_be_taken,
 				'softcopy' => $file,
 			]);
 		} else {
 			// INSERT NEW DATABASE
 			HRDisciplinary::create([
 				'staff_id' => $request->staff_id,
+				'supervisor_id' => $request->supervisor_id,
 				'disciplinary_action_id' => $request->disciplinary_action_id,
 				'violation_id' => $request->violation_id,
-				'date' => $request->date,
+				'infraction_id' => $request->infraction_id,
+				'misconduct_date' => $request->misconduct_date,
+				'action_taken_date' => $request->action_taken_date,
 				'reason' => $request->reason,
+				'action_to_be_taken' => $request->action_to_be_taken,
 			]);
 		}
 
-		Session::flash('flash_message', 'Successfully Add Discipline.');
+		Session::flash('flash_message', 'Successfully Added Discipline.');
 		return redirect()->route('discipline.index');
 	}
 
@@ -129,19 +137,27 @@ class DisciplineController extends Controller
 
 			// UPDATE DATABASE
 			$discipline->update([
+				'supervisor_id' => $request->supervisor_id,
 				'disciplinary_action_id' => $request->disciplinary_action_id,
 				'violation_id' => $request->violation_id,
-				'date' => $request->date,
+				'infraction_id' => $request->infraction_id,
+				'misconduct_date' => $request->misconduct_date,
+				'action_taken_date' => $request->action_taken_date,
 				'reason' => $request->reason,
+				'action_to_be_taken' => $request->action_to_be_taken,
 				'softcopy' => $file,
 			]);
 		} else {
 			// UPDATE DATABASE
 			$discipline->update([
+				'supervisor_id' => $request->supervisor_id,
 				'disciplinary_action_id' => $request->disciplinary_action_id,
 				'violation_id' => $request->violation_id,
-				'date' => $request->date,
+				'infraction_id' => $request->infraction_id,
+				'misconduct_date' => $request->misconduct_date,
+				'action_taken_date' => $request->action_taken_date,
 				'reason' => $request->reason,
+				'action_to_be_taken' => $request->action_to_be_taken,
 			]);
 		}
 
