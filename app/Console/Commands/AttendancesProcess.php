@@ -58,6 +58,7 @@ class AttendancesProcess extends Command
 	public function handle()
 	{
 		$attendance = HRAttendance::whereYear('attend_date', now()->format('Y'))
+									->orwhereYear('attend_date', now()->subYear()->format('Y'))
 									->get();				// collection
 									// ->toArray();			// array
 		// dd($attendance);
