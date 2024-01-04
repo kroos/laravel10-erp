@@ -231,7 +231,7 @@ class StaffController extends Controller
 			$staff->hasmanylogin()->update(['active' => 0]);																										// disable old login
 			if (!$request->password) {																																// create new login
 				$staff->hasmanylogin()->create([
-					'username' => $request->username,
+					'username' => Str::upper($request->username),
 					'password' => $staff->hasmanylogin()->where('active', 0)->first()->password,
 				]);
 				$staff->update(['status_id' => $request->status_id, 'confirmed' => now()]);
@@ -243,7 +243,13 @@ class StaffController extends Controller
 
 		// $staff->belongstomanydepartment()->sync($request->only(['pivot_dept_id']), ['main' => 1]);
 		$staff->belongstomanydepartment()->syncWithPivotValues($request->only(['pivot_dept_id']), ['main' => 1]);
-		$staff->crossbackupto()->syncWithPivotValues($request->only(['backup_staff_id'], ['active' => 1]));
+		if ($request->has('crossbackup')) {
+			// syncWithPivotValues([1, 2, 3], ['active' => true])
+			foreach ($request->crossbackup as $k => $v) {
+				$staff->crossbackupto()->syncWithoutDetaching([$v['backup_staff_id'] => ['active' => 1]]);
+			}
+		}
+
 		// $staff->hasmanyleaveannual()->whereYear('year', now())->updateOrCreate([
 		// 																			'year' => Carbon::now()->format('Y'),
 		// 																			'annual_leave' => $request->annual_leave,
@@ -256,12 +262,6 @@ class StaffController extends Controller
 		// 																			'year' => Carbon::now()->format('Y'),
 		// 																			'maternity_leave' => $request->maternity_leave,
 		// 																		]);
-		if ($request->has('crossbackup')) {
-			// syncWithPivotValues([1, 2, 3], ['active' => true])
-			foreach ($request->crossbackup as $k => $v) {
-				$staff->crossbackupto()->syncWithoutDetaching([$v['backup_staff_id'] => ['active' => 1]]);
-			}
-		}
 
 
 
