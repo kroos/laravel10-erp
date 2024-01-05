@@ -252,15 +252,24 @@ foreach ($c as $v) {
 							$director = $leav->hasmanyleaveapprovaldir?->first();
 							$hr = $leav->hasmanyleaveapprovalhr?->first();
 							// entitlement
-							$annl = $staff->hasmanyleaveannual()?->where('year', now()->format('Y'))->first();
-							$mcel = $staff->hasmanyleavemc()?->where('year', now()->format('Y'))->first();
-							$matl = $staff->hasmanyleavematernity()?->where('year', now()->format('Y'))->first();
-							$replt = $staff->hasmanyleavereplacement()?->selectRaw('SUM(leave_total) as total')->where(function(Builder $query){$query->whereDate('date_start', '>=', now()->startOfYear())->whereDate('date_end', '<=', now()->endOfYear());})->get();
-							$replb = $staff->hasmanyleavereplacement()?->selectRaw('SUM(leave_balance) as total')->where(function(Builder $query){$query->whereDate('date_start', '>=', now()->startOfYear())->whereDate('date_end', '<=', now()->endOfYear());})->get();
+							$annl = $staff->hasmanyleaveannual()?->where('year', Carbon::parse($leav->date_time_start)->format('Y'))->first();
+							$mcel = $staff->hasmanyleavemc()?->where('year', Carbon::parse($leav->date_time_start)->format('Y'))->first();
+							$matl = $staff->hasmanyleavematernity()?->where('year', Carbon::parse($leav->date_time_start)->format('Y'))->first();
+							$replt = $staff->hasmanyleavereplacement()?->selectRaw('SUM(leave_total) as total')->where(function(Builder $query) use($leav) {
+																														$query->whereDate('date_start', '>=', Carbon::parse($leav?->date_time_start)->startOfYear())
+																														->whereDate('date_end', '<=', Carbon::parse($leav?->date_time_start)->endOfYear());
+																													})
+																													// ->ddRawSql();
+																													->get();
+							$replb = $staff->hasmanyleavereplacement()?->selectRaw('SUM(leave_balance) as total')->where(function(Builder $query) use($leav) {
+																														$query->whereDate('date_start', '>=', Carbon::parse($leav?->date_time_start)->startOfYear())
+																														->whereDate('date_end', '<=', Carbon::parse($leav?->date_time_start)->endOfYear());
+																													})
+																													->get();
 							$upal = $staff->hasmanyleave()?->selectRaw('SUM(period_day) as total')
-															->where(function(Builder $query){
-																$query->whereDate('date_time_start', '>=', now()->startOfYear())
-																	->whereDate('date_time_end', '<=', now()->endOfYear());
+															->where(function(Builder $query) use($leav) {
+																$query->whereDate('date_time_start', '>=', Carbon::parse($leav?->date_time_start)->startOfYear())
+																	->whereDate('date_time_end', '<=', Carbon::parse($leav?->date_time_start)->endOfYear());
 																})
 															->where(function(Builder $query) {
 																$query->whereIn('leave_status_id', [5,6])
@@ -269,9 +278,9 @@ foreach ($c as $v) {
 															->whereIn('leave_type_id', [3, 6])
 															->get();
 							$mcupl = $staff->hasmanyleave()?->selectRaw('SUM(period_day) as total')
-															->where(function(Builder $query){
-																$query->whereDate('date_time_start', '>=', now()->startOfYear())
-																	->whereDate('date_time_end', '<=', now()->endOfYear());
+															->where(function(Builder $query) use($leav) {
+																$query->whereDate('date_time_start', '>=', Carbon::parse($leav?->date_time_start)->startOfYear())
+																	->whereDate('date_time_end', '<=', Carbon::parse($leav?->date_time_start)->endOfYear());
 																})
 															->where(function(Builder $query) {
 																$query->whereIn('leave_status_id', [5,6])
@@ -395,10 +404,13 @@ foreach ($c as $v) {
 																	@endif
 
 																	<div class="table">
+																		<div class="table-row text-center border">
+																			<strong>Entitlement Year {{ Carbon::parse($leav->date_time_start)->format('Y') }}</strong>
+																		</div>
 																		<div class="table-row">
-																			<div class="table-cell-top text-wrap" style="width: 17%;">AL : {{ $annl?->annual_leave_balance }}/{{ $annl?->annual_leave }}</div>
-																			<div class="table-cell-top text-wrap" style="width: 17%;">MC : {{ $mcel?->mc_leave_balance }}/{{ $mcel?->mc_leave }}</div>
-																			<div class="table-cell-top text-wrap" style="width: 17%;">Maternity : {{ $matl?->maternity_leave_balance }}/{{ $matl?->maternity_leave }}</div>
+																			<div class="table-cell-top text-wrap" style="width: 17%;">AL : {{ $annl?->annual_leave_balance }}/{{ $annl?->annual_leave + $annl?->annual_leave_adjustment }}</div>
+																			<div class="table-cell-top text-wrap" style="width: 17%;">MC : {{ $mcel?->mc_leave_balance }}/{{ $mcel?->mc_leave + $mcel?->mc_leave_adjustment }}</div>
+																			<div class="table-cell-top text-wrap" style="width: 17%;">Maternity : {{ $matl?->maternity_leave_balance }}/{{ $matl?->maternity_leave + $matl?->maternity_leave_adjustment }}</div>
 																			<div class="table-cell-top text-wrap" style="width: 17%;">Replacement : {{ $replb?->first()?->total }}/{{ $replt?->first()?->total }}</div>
 																			<div class="table-cell-top text-wrap" style="width: 17%;">UPL : {{ $upal?->first()?->total }}</div>
 																			<div class="table-cell-top text-wrap" style="width: 15%;">MC-UPL : {{ $mcupl?->first()?->total }}</div>
@@ -560,10 +572,13 @@ foreach ($c as $v) {
 																	@endif
 
 																	<div class="table">
+																		<div class="table-row text-center border">
+																			<strong>Entitlement Year {{ Carbon::parse($leav->date_time_start)->format('Y') }}</strong>
+																		</div>
 																		<div class="table-row">
-																			<div class="table-cell-top text-wrap" style="width: 17%;">AL : {{ $annl?->annual_leave_balance }}/{{ $annl?->annual_leave }}</div>
-																			<div class="table-cell-top text-wrap" style="width: 17%;">MC : {{ $mcel?->mc_leave_balance }}/{{ $mcel?->mc_leave }}</div>
-																			<div class="table-cell-top text-wrap" style="width: 17%;">Maternity : {{ $matl?->maternity_leave_balance }}/{{ $matl?->maternity_leave }}</div>
+																			<div class="table-cell-top text-wrap" style="width: 17%;">AL : {{ $annl?->annual_leave_balance }}/{{ $annl?->annual_leave + $annl?->annual_leave_adjustment }}</div>
+																			<div class="table-cell-top text-wrap" style="width: 17%;">MC : {{ $mcel?->mc_leave_balance }}/{{ $mcel?->mc_leave + $mcel?->mc_leave_adjustment }}</div>
+																			<div class="table-cell-top text-wrap" style="width: 17%;">Maternity : {{ $matl?->maternity_leave_balance }}/{{ $matl?->maternity_leave + $matl?->maternity_leave_adjustment }}</div>
 																			<div class="table-cell-top text-wrap" style="width: 17%;">Replacement : {{ $replb?->first()?->total }}/{{ $replt?->first()?->total }}</div>
 																			<div class="table-cell-top text-wrap" style="width: 17%;">UPL : {{ $upal?->first()?->total }}</div>
 																			<div class="table-cell-top text-wrap" style="width: 15%;">MC-UPL : {{ $mcupl?->first()?->total }}</div>
@@ -726,10 +741,13 @@ foreach ($c as $v) {
 																	@endif
 
 																	<div class="table">
+																		<div class="table-row text-center border">
+																			<strong>Entitlement Year {{ Carbon::parse($leav->date_time_start)->format('Y') }}</strong>
+																		</div>
 																		<div class="table-row">
-																			<div class="table-cell-top text-wrap" style="width: 17%;">AL : {{ $annl?->annual_leave_balance }}/{{ $annl?->annual_leave }}</div>
-																			<div class="table-cell-top text-wrap" style="width: 17%;">MC : {{ $mcel?->mc_leave_balance }}/{{ $mcel?->mc_leave }}</div>
-																			<div class="table-cell-top text-wrap" style="width: 17%;">Maternity : {{ $matl?->maternity_leave_balance }}/{{ $matl?->maternity_leave }}</div>
+																			<div class="table-cell-top text-wrap" style="width: 17%;">AL : {{ $annl?->annual_leave_balance }}/{{ $annl?->annual_leave + $annl?->annual_leave_adjustment }}</div>
+																			<div class="table-cell-top text-wrap" style="width: 17%;">MC : {{ $mcel?->mc_leave_balance }}/{{ $mcel?->mc_leave + $mcel?->mc_leave_adjustment }}</div>
+																			<div class="table-cell-top text-wrap" style="width: 17%;">Maternity : {{ $matl?->maternity_leave_balance }}/{{ $matl?->maternity_leave + $matl?->maternity_leave_adjustment }}</div>
 																			<div class="table-cell-top text-wrap" style="width: 17%;">Replacement : {{ $replb?->first()?->total }}/{{ $replt?->first()?->total }}</div>
 																			<div class="table-cell-top text-wrap" style="width: 17%;">UPL : {{ $upal?->first()?->total }}</div>
 																			<div class="table-cell-top text-wrap" style="width: 15%;">MC-UPL : {{ $mcupl?->first()?->total }}</div>
@@ -892,10 +910,13 @@ foreach ($c as $v) {
 																	@endif
 
 																	<div class="table">
+																		<div class="table-row text-center border">
+																			<strong>Entitlement Year {{ Carbon::parse($leav->date_time_start)->format('Y') }}</strong>
+																		</div>
 																		<div class="table-row">
-																			<div class="table-cell-top text-wrap" style="width: 17%;">AL : {{ $annl?->annual_leave_balance }}/{{ $annl?->annual_leave }}</div>
-																			<div class="table-cell-top text-wrap" style="width: 17%;">MC : {{ $mcel?->mc_leave_balance }}/{{ $mcel?->mc_leave }}</div>
-																			<div class="table-cell-top text-wrap" style="width: 17%;">Maternity : {{ $matl?->maternity_leave_balance }}/{{ $matl?->maternity_leave }}</div>
+																			<div class="table-cell-top text-wrap" style="width: 17%;">AL : {{ $annl?->annual_leave_balance }}/{{ $annl?->annual_leave + $annl?->annual_leave_adjustment }}</div>
+																			<div class="table-cell-top text-wrap" style="width: 17%;">MC : {{ $mcel?->mc_leave_balance }}/{{ $mcel?->mc_leave + $mcel?->mc_leave_adjustment }}</div>
+																			<div class="table-cell-top text-wrap" style="width: 17%;">Maternity : {{ $matl?->maternity_leave_balance }}/{{ $matl?->maternity_leave + $matl?->maternity_leave_adjustment }}</div>
 																			<div class="table-cell-top text-wrap" style="width: 17%;">Replacement : {{ $replb?->first()?->total }}/{{ $replt?->first()?->total }}</div>
 																			<div class="table-cell-top text-wrap" style="width: 17%;">UPL : {{ $upal?->first()?->total }}</div>
 																			<div class="table-cell-top text-wrap" style="width: 15%;">MC-UPL : {{ $mcupl?->first()?->total }}</div>
@@ -1058,10 +1079,13 @@ foreach ($c as $v) {
 																	@endif
 
 																	<div class="table">
+																		<div class="table-row text-center border">
+																			<strong>Entitlement Year {{ Carbon::parse($leav->date_time_start)->format('Y') }}</strong>
+																		</div>
 																		<div class="table-row">
-																			<div class="table-cell-top text-wrap" style="width: 17%;">AL : {{ $annl?->annual_leave_balance }}/{{ $annl?->annual_leave }}</div>
-																			<div class="table-cell-top text-wrap" style="width: 17%;">MC : {{ $mcel?->mc_leave_balance }}/{{ $mcel?->mc_leave }}</div>
-																			<div class="table-cell-top text-wrap" style="width: 17%;">Maternity : {{ $matl?->maternity_leave_balance }}/{{ $matl?->maternity_leave }}</div>
+																			<div class="table-cell-top text-wrap" style="width: 17%;">AL : {{ $annl?->annual_leave_balance }}/{{ $annl?->annual_leave + $annl?->annual_leave_adjustment }}</div>
+																			<div class="table-cell-top text-wrap" style="width: 17%;">MC : {{ $mcel?->mc_leave_balance }}/{{ $mcel?->mc_leave + $mcel?->mc_leave_adjustment }}</div>
+																			<div class="table-cell-top text-wrap" style="width: 17%;">Maternity : {{ $matl?->maternity_leave_balance }}/{{ $matl?->maternity_leave + $matl?->maternity_leave_adjustment }}</div>
 																			<div class="table-cell-top text-wrap" style="width: 17%;">Replacement : {{ $replb?->first()?->total }}/{{ $replt?->first()?->total }}</div>
 																			<div class="table-cell-top text-wrap" style="width: 17%;">UPL : {{ $upal?->first()?->total }}</div>
 																			<div class="table-cell-top text-wrap" style="width: 15%;">MC-UPL : {{ $mcupl?->first()?->total }}</div>
@@ -1224,10 +1248,13 @@ foreach ($c as $v) {
 																	@endif
 
 																	<div class="table">
+																		<div class="table-row text-center border">
+																			<strong>Entitlement Year {{ Carbon::parse($leav->date_time_start)->format('Y') }}</strong>
+																		</div>
 																		<div class="table-row">
-																			<div class="table-cell-top text-wrap" style="width: 17%;">AL : {{ $annl?->annual_leave_balance }}/{{ $annl?->annual_leave }}</div>
-																			<div class="table-cell-top text-wrap" style="width: 17%;">MC : {{ $mcel?->mc_leave_balance }}/{{ $mcel?->mc_leave }}</div>
-																			<div class="table-cell-top text-wrap" style="width: 17%;">Maternity : {{ $matl?->maternity_leave_balance }}/{{ $matl?->maternity_leave }}</div>
+																			<div class="table-cell-top text-wrap" style="width: 17%;">AL : {{ $annl?->annual_leave_balance }}/{{ $annl?->annual_leave + $annl?->annual_leave_adjustment }}</div>
+																			<div class="table-cell-top text-wrap" style="width: 17%;">MC : {{ $mcel?->mc_leave_balance }}/{{ $mcel?->mc_leave + $mcel?->mc_leave_adjustment }}</div>
+																			<div class="table-cell-top text-wrap" style="width: 17%;">Maternity : {{ $matl?->maternity_leave_balance }}/{{ $matl?->maternity_leave + $matl?->maternity_leave_adjustment }}</div>
 																			<div class="table-cell-top text-wrap" style="width: 17%;">Replacement : {{ $replb?->first()?->total }}/{{ $replt?->first()?->total }}</div>
 																			<div class="table-cell-top text-wrap" style="width: 17%;">UPL : {{ $upal?->first()?->total }}</div>
 																			<div class="table-cell-top text-wrap" style="width: 15%;">MC-UPL : {{ $mcupl?->first()?->total }}</div>
@@ -1390,10 +1417,13 @@ foreach ($c as $v) {
 																	@endif
 
 																	<div class="table">
+																		<div class="table-row text-center border">
+																			<strong>Entitlement Year {{ Carbon::parse($leav->date_time_start)->format('Y') }}</strong>
+																		</div>
 																		<div class="table-row">
-																			<div class="table-cell-top text-wrap" style="width: 17%;">AL : {{ $annl?->annual_leave_balance }}/{{ $annl?->annual_leave }}</div>
-																			<div class="table-cell-top text-wrap" style="width: 17%;">MC : {{ $mcel?->mc_leave_balance }}/{{ $mcel?->mc_leave }}</div>
-																			<div class="table-cell-top text-wrap" style="width: 17%;">Maternity : {{ $matl?->maternity_leave_balance }}/{{ $matl?->maternity_leave }}</div>
+																			<div class="table-cell-top text-wrap" style="width: 17%;">AL : {{ $annl?->annual_leave_balance }}/{{ $annl?->annual_leave + $annl?->annual_leave_adjustment }}</div>
+																			<div class="table-cell-top text-wrap" style="width: 17%;">MC : {{ $mcel?->mc_leave_balance }}/{{ $mcel?->mc_leave + $mcel?->mc_leave_adjustment }}</div>
+																			<div class="table-cell-top text-wrap" style="width: 17%;">Maternity : {{ $matl?->maternity_leave_balance }}/{{ $matl?->maternity_leave + $matl?->maternity_leave_adjustment }}</div>
 																			<div class="table-cell-top text-wrap" style="width: 17%;">Replacement : {{ $replb?->first()?->total }}/{{ $replt?->first()?->total }}</div>
 																			<div class="table-cell-top text-wrap" style="width: 17%;">UPL : {{ $upal?->first()?->total }}</div>
 																			<div class="table-cell-top text-wrap" style="width: 15%;">MC-UPL : {{ $mcupl?->first()?->total }}</div>
@@ -1556,10 +1586,13 @@ foreach ($c as $v) {
 																	@endif
 
 																	<div class="table">
+																		<div class="table-row text-center border">
+																			<strong>Entitlement Year {{ Carbon::parse($leav->date_time_start)->format('Y') }}</strong>
+																		</div>
 																		<div class="table-row">
-																			<div class="table-cell-top text-wrap" style="width: 17%;">AL : {{ $annl?->annual_leave_balance }}/{{ $annl?->annual_leave }}</div>
-																			<div class="table-cell-top text-wrap" style="width: 17%;">MC : {{ $mcel?->mc_leave_balance }}/{{ $mcel?->mc_leave }}</div>
-																			<div class="table-cell-top text-wrap" style="width: 17%;">Maternity : {{ $matl?->maternity_leave_balance }}/{{ $matl?->maternity_leave }}</div>
+																			<div class="table-cell-top text-wrap" style="width: 17%;">AL : {{ $annl?->annual_leave_balance }}/{{ $annl?->annual_leave + $annl?->annual_leave_adjustment }}</div>
+																			<div class="table-cell-top text-wrap" style="width: 17%;">MC : {{ $mcel?->mc_leave_balance }}/{{ $mcel?->mc_leave + $mcel?->mc_leave_adjustment }}</div>
+																			<div class="table-cell-top text-wrap" style="width: 17%;">Maternity : {{ $matl?->maternity_leave_balance }}/{{ $matl?->maternity_leave + $matl?->maternity_leave_adjustment }}</div>
 																			<div class="table-cell-top text-wrap" style="width: 17%;">Replacement : {{ $replb?->first()?->total }}/{{ $replt?->first()?->total }}</div>
 																			<div class="table-cell-top text-wrap" style="width: 17%;">UPL : {{ $upal?->first()?->total }}</div>
 																			<div class="table-cell-top text-wrap" style="width: 15%;">MC-UPL : {{ $mcupl?->first()?->total }}</div>
@@ -1722,10 +1755,13 @@ foreach ($c as $v) {
 																	@endif
 
 																	<div class="table">
+																		<div class="table-row text-center border">
+																			<strong>Entitlement Year {{ Carbon::parse($leav->date_time_start)->format('Y') }}</strong>
+																		</div>
 																		<div class="table-row">
-																			<div class="table-cell-top text-wrap" style="width: 17%;">AL : {{ $annl?->annual_leave_balance }}/{{ $annl?->annual_leave }}</div>
-																			<div class="table-cell-top text-wrap" style="width: 17%;">MC : {{ $mcel?->mc_leave_balance }}/{{ $mcel?->mc_leave }}</div>
-																			<div class="table-cell-top text-wrap" style="width: 17%;">Maternity : {{ $matl?->maternity_leave_balance }}/{{ $matl?->maternity_leave }}</div>
+																			<div class="table-cell-top text-wrap" style="width: 17%;">AL : {{ $annl?->annual_leave_balance }}/{{ $annl?->annual_leave + $annl?->annual_leave_adjustment }}</div>
+																			<div class="table-cell-top text-wrap" style="width: 17%;">MC : {{ $mcel?->mc_leave_balance }}/{{ $mcel?->mc_leave + $mcel?->mc_leave_adjustment }}</div>
+																			<div class="table-cell-top text-wrap" style="width: 17%;">Maternity : {{ $matl?->maternity_leave_balance }}/{{ $matl?->maternity_leave + $matl?->maternity_leave_adjustment }}</div>
 																			<div class="table-cell-top text-wrap" style="width: 17%;">Replacement : {{ $replb?->first()?->total }}/{{ $replt?->first()?->total }}</div>
 																			<div class="table-cell-top text-wrap" style="width: 17%;">UPL : {{ $upal?->first()?->total }}</div>
 																			<div class="table-cell-top text-wrap" style="width: 15%;">MC-UPL : {{ $mcupl?->first()?->total }}</div>
@@ -1888,10 +1924,13 @@ foreach ($c as $v) {
 																	@endif
 
 																	<div class="table">
+																		<div class="table-row text-center border">
+																			<strong>Entitlement Year {{ Carbon::parse($leav->date_time_start)->format('Y') }}</strong>
+																		</div>
 																		<div class="table-row">
-																			<div class="table-cell-top text-wrap" style="width: 17%;">AL : {{ $annl?->annual_leave_balance }}/{{ $annl?->annual_leave }}</div>
-																			<div class="table-cell-top text-wrap" style="width: 17%;">MC : {{ $mcel?->mc_leave_balance }}/{{ $mcel?->mc_leave }}</div>
-																			<div class="table-cell-top text-wrap" style="width: 17%;">Maternity : {{ $matl?->maternity_leave_balance }}/{{ $matl?->maternity_leave }}</div>
+																			<div class="table-cell-top text-wrap" style="width: 17%;">AL : {{ $annl?->annual_leave_balance }}/{{ $annl?->annual_leave + $annl?->annual_leave_adjustment }}</div>
+																			<div class="table-cell-top text-wrap" style="width: 17%;">MC : {{ $mcel?->mc_leave_balance }}/{{ $mcel?->mc_leave + $mcel?->mc_leave_adjustment }}</div>
+																			<div class="table-cell-top text-wrap" style="width: 17%;">Maternity : {{ $matl?->maternity_leave_balance }}/{{ $matl?->maternity_leave + $matl?->maternity_leave_adjustment }}</div>
 																			<div class="table-cell-top text-wrap" style="width: 17%;">Replacement : {{ $replb?->first()?->total }}/{{ $replt?->first()?->total }}</div>
 																			<div class="table-cell-top text-wrap" style="width: 17%;">UPL : {{ $upal?->first()?->total }}</div>
 																			<div class="table-cell-top text-wrap" style="width: 15%;">MC-UPL : {{ $mcupl?->first()?->total }}</div>
@@ -2054,10 +2093,13 @@ foreach ($c as $v) {
 																	@endif
 
 																	<div class="table">
+																		<div class="table-row text-center border">
+																			<strong>Entitlement Year {{ Carbon::parse($leav->date_time_start)->format('Y') }}</strong>
+																		</div>
 																		<div class="table-row">
-																			<div class="table-cell-top text-wrap" style="width: 17%;">AL : {{ $annl?->annual_leave_balance }}/{{ $annl?->annual_leave }}</div>
-																			<div class="table-cell-top text-wrap" style="width: 17%;">MC : {{ $mcel?->mc_leave_balance }}/{{ $mcel?->mc_leave }}</div>
-																			<div class="table-cell-top text-wrap" style="width: 17%;">Maternity : {{ $matl?->maternity_leave_balance }}/{{ $matl?->maternity_leave }}</div>
+																			<div class="table-cell-top text-wrap" style="width: 17%;">AL : {{ $annl?->annual_leave_balance }}/{{ $annl?->annual_leave + $annl?->annual_leave_adjustment }}</div>
+																			<div class="table-cell-top text-wrap" style="width: 17%;">MC : {{ $mcel?->mc_leave_balance }}/{{ $mcel?->mc_leave + $mcel?->mc_leave_adjustment }}</div>
+																			<div class="table-cell-top text-wrap" style="width: 17%;">Maternity : {{ $matl?->maternity_leave_balance }}/{{ $matl?->maternity_leave + $matl?->maternity_leave_adjustment }}</div>
 																			<div class="table-cell-top text-wrap" style="width: 17%;">Replacement : {{ $replb?->first()?->total }}/{{ $replt?->first()?->total }}</div>
 																			<div class="table-cell-top text-wrap" style="width: 17%;">UPL : {{ $upal?->first()?->total }}</div>
 																			<div class="table-cell-top text-wrap" style="width: 15%;">MC-UPL : {{ $mcupl?->first()?->total }}</div>
