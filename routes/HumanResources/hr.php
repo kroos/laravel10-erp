@@ -42,6 +42,7 @@ use App\Http\Controllers\HumanResources\HRDept\HROutstationAttendanceController;
 use App\Http\Controllers\HumanResources\HRDept\AppraisalExcelReportController;
 use App\Http\Controllers\HumanResources\HRDept\AttendanceRemarkController;
 use App\Http\Controllers\HumanResources\HRDept\AppraisalFormController;
+use App\Http\Controllers\HumanResources\HRDept\OutstationDurationController;
 
 
 Route::resources([
@@ -115,3 +116,5 @@ Route::post('/staff/show/{staff}', [StaffController::class, 'show'])->name('staf
 
 Route::get('/profile/show/{profile}', [ProfileController::class, 'show'])->name('profile.show');
 Route::post('/profile/show/{profile}', [ProfileController::class, 'show'])->name('profile.show');
+
+Route::get('/outstationduration', [OutstationDurationController::class, 'index'])->name('outstationduration.index');

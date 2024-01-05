@@ -177,91 +177,91 @@ foreach ($c as $v) {
 							<?php
 							$leav = HRLeave::find($a->leave_id);
 							$staff = Staff::find($leav->staff_id);
-								if ( ($leav->leave_type_id == 9) || ($leav->leave_type_id != 9 && $leav->half_type_id == 2) || ($leav->leave_type_id != 9 && $leav->half_type_id == 1) ) {
-									$dts = \Carbon\Carbon::parse($leav->date_time_start)->format('j M Y g:i a');
-									$dte = \Carbon\Carbon::parse($leav->date_time_end)->format('j M Y g:i a');
+							if ( ($leav->leave_type_id == 9) || ($leav->leave_type_id != 9 && $leav->half_type_id == 2) || ($leav->leave_type_id != 9 && $leav->half_type_id == 1) ) {
+								$dts = \Carbon\Carbon::parse($leav->date_time_start)->format('j M Y g:i a');
+								$dte = \Carbon\Carbon::parse($leav->date_time_end)->format('j M Y g:i a');
 
-									if ($leav->leave_type_id != 9) {
-										if ($leav->half_type_id == 2) {
-											$dper = $leav->period_day.' Day';
-										} elseif ($leav->half_type_id == 1) {
-											$dper = $leav->period_day.' Day';
-										}
-									} elseif ($leav->leave_type_id == 9) {
-										$i = \Carbon\Carbon::parse($leav->period_time);
-										$dper = $i->hour.' hour, '.$i->minute.' minutes';
+								if ($leav->leave_type_id != 9) {
+									if ($leav->half_type_id == 2) {
+										$dper = $leav->period_day.' Day';
+									} elseif ($leav->half_type_id == 1) {
+										$dper = $leav->period_day.' Day';
 									}
-
-								} else {
-									$dts = \Carbon\Carbon::parse($leav->date_time_start)->format('j M Y ');
-									$dte = \Carbon\Carbon::parse($leav->date_time_end)->format('j M Y ');
-									$dper = $leav->period_day.' day/s';
-								}
-								$z = \Carbon\Carbon::parse(now())->daysUntil($leav->date_time_start, 1)->count();
-								if(3 >= $z && $z >= 2){
-									$u = 'table-warning';
-								} elseif($z < 2){
-									$u = 'table-danger';
-								} else {
-									$u = NULL;
-								}
-								// find leave backup if any
-								$backup = $leav->hasmanyleaveapprovalbackup()->get();
-								if ($backup->count()) {
-									if (is_null($backup->first()->leave_status_id)) {
-										$bapp = '<span class="text-danger">Pending</span>';
-										$bappb = false;
-									} else {
-										$bapp = '<span class="text-success">'.OptLeaveStatus::find($backup->first()->leave_status_id)->status.'</span>';
-										$bappb = true;
-									}
-								} else {
-									$bapp = '<span class="text-success">No Backup</span>';
-										$bappb = true;
+								} elseif ($leav->leave_type_id == 9) {
+									$i = \Carbon\Carbon::parse($leav->period_time);
+									$dper = $i->hour.' hour, '.$i->minute.' minutes';
 								}
 
-								// find leave supervisor if any
-								$supervisor = $leav->hasmanyleaveapprovalsupervisor()->get();
-								if ($supervisor->count()) {
-									if (is_null($supervisor->first()->leave_status_id)) {
-										$supp = '<span class="text-danger">Pending</span>';
-										$suppb = false;
-									} else {
-										$supp = '<span class="text-success">'.OptLeaveStatus::find($supervisor->first()->leave_status_id)->status.'</span>';
-										$suppb = true;
-									}
+							} else {
+								$dts = \Carbon\Carbon::parse($leav->date_time_start)->format('j M Y ');
+								$dte = \Carbon\Carbon::parse($leav->date_time_end)->format('j M Y ');
+								$dper = $leav->period_day.' day/s';
+							}
+							$z = \Carbon\Carbon::parse(now())->daysUntil($leav->date_time_start, 1)->count();
+							if(3 >= $z && $z >= 2){
+								$u = 'table-warning';
+							} elseif($z < 2){
+								$u = 'table-danger';
+							} else {
+								$u = NULL;
+							}
+							// find leave backup if any
+							$backup = $leav->hasmanyleaveapprovalbackup()->get();
+							if ($backup->count()) {
+								if (is_null($backup->first()->leave_status_id)) {
+									$bapp = '<span class="text-danger">Pending</span>';
+									$bappb = false;
 								} else {
-									$supp = '<span class="text-success">No Supervisor</span>';
+									$bapp = '<span class="text-success">'.OptLeaveStatus::find($backup->first()->leave_status_id)->status.'</span>';
+									$bappb = true;
+								}
+							} else {
+								$bapp = '<span class="text-success">No Backup</span>';
+									$bappb = true;
+							}
+
+							// find leave supervisor if any
+							$supervisor = $leav->hasmanyleaveapprovalsupervisor()->get();
+							if ($supervisor->count()) {
+								if (is_null($supervisor->first()->leave_status_id)) {
+									$supp = '<span class="text-danger">Pending</span>';
+									$suppb = false;
+								} else {
+									$supp = '<span class="text-success">'.OptLeaveStatus::find($supervisor->first()->leave_status_id)->status.'</span>';
 									$suppb = true;
 								}
-								// find leave hod if any
-								$hod = $leav->hasmanyleaveapprovalhod()->get();
-								if ($hod->count()) {
-									if (is_null($hod->first()->leave_status_id)) {
-										$hodd = '<span class="text-danger">Pending</span>';
-										$hoddb = false;
-									} else {
-										$hodd = '<span class="text-success">'.OptLeaveStatus::find($hod->first()->leave_status_id)->status.'</span>';
-										$hoddb = true;
-									}
+							} else {
+								$supp = '<span class="text-success">No Supervisor</span>';
+								$suppb = true;
+							}
+							// find leave hod if any
+							$hod = $leav->hasmanyleaveapprovalhod()->get();
+							if ($hod->count()) {
+								if (is_null($hod->first()->leave_status_id)) {
+									$hodd = '<span class="text-danger">Pending</span>';
+									$hoddb = false;
 								} else {
-									$hodd = '<span class="text-success">No HOD</span>';
+									$hodd = '<span class="text-success">'.OptLeaveStatus::find($hod->first()->leave_status_id)->status.'</span>';
 									$hoddb = true;
 								}
-								// find leave dir if any
-								$dir = $leav->hasmanyleaveapprovaldir()->get();
-								if ($dir->count()) {
-									if (is_null($dir->first()->leave_status_id)) {
-										$dirr = '<span class="text-danger">Pending</span>';
-										$dirrb = false;
-									} else {
-										$dirr = '<span class="text-success">'.OptLeaveStatus::find($dir->first()->leave_status_id)->status.'</span>';
-										$dirrb = true;
-									}
+							} else {
+								$hodd = '<span class="text-success">No HOD</span>';
+								$hoddb = true;
+							}
+							// find leave dir if any
+							$dir = $leav->hasmanyleaveapprovaldir()->get();
+							if ($dir->count()) {
+								if (is_null($dir->first()->leave_status_id)) {
+									$dirr = '<span class="text-danger">Pending</span>';
+									$dirrb = false;
 								} else {
-									$dirr = '<span class="text-success">No Director</span>';
+									$dirr = '<span class="text-success">'.OptLeaveStatus::find($dir->first()->leave_status_id)->status.'</span>';
 									$dirrb = true;
 								}
+							} else {
+								$dirr = '<span class="text-success">No Director</span>';
+								$dirrb = true;
+							}
 
 							$hrremarksattendance = HRAttendance::where(function (Builder $query) use ($leav){
 																	$query->whereDate('attend_date', '>=', $leav->date_time_start)
@@ -277,16 +277,27 @@ foreach ($c as $v) {
 							$hod = $leav->hasmanyleaveapprovalhod?->first();
 							$director = $leav->hasmanyleaveapprovaldir?->first();
 							$hr = $leav->hasmanyleaveapprovalhr?->first();
+
 							// entitlement
-							$annl = $staff->hasmanyleaveannual()?->where('year', now()->format('Y'))->first();
-							$mcel = $staff->hasmanyleavemc()?->where('year', now()->format('Y'))->first();
-							$matl = $staff->hasmanyleavematernity()?->where('year', now()->format('Y'))->first();
-							$replt = $staff->hasmanyleavereplacement()?->selectRaw('SUM(leave_total) as total')->where(function(Builder $query){$query->whereDate('date_start', '>=', now()->startOfYear())->whereDate('date_end', '<=', now()->endOfYear());})->get();
-							$replb = $staff->hasmanyleavereplacement()?->selectRaw('SUM(leave_balance) as total')->where(function(Builder $query){$query->whereDate('date_start', '>=', now()->startOfYear())->whereDate('date_end', '<=', now()->endOfYear());})->get();
+							// dump($leav?->date_time_start, $leav?->date_time_end);
+							$annl = $staff->hasmanyleaveannual()?->where('year', Carbon::parse($leav->date_time_start)->format('Y'))->first();
+							$mcel = $staff->hasmanyleavemc()?->where('year', Carbon::parse($leav->date_time_start)->format('Y'))->first();
+							$matl = $staff->hasmanyleavematernity()?->where('year', Carbon::parse($leav->date_time_start)->format('Y'))->first();
+							$replt = $staff->hasmanyleavereplacement()?->selectRaw('SUM(leave_total) as total')->where(function(Builder $query) use($leav) {
+																														$query->whereDate('date_start', '>=', Carbon::parse($leav?->date_time_start)->startOfYear())
+																														->whereDate('date_end', '<=', Carbon::parse($leav?->date_time_start)->endOfYear());
+																													})
+																													// ->ddRawSql();
+																													->get();
+							$replb = $staff->hasmanyleavereplacement()?->selectRaw('SUM(leave_balance) as total')->where(function(Builder $query) use($leav) {
+																														$query->whereDate('date_start', '>=', Carbon::parse($leav?->date_time_start)->startOfYear())
+																														->whereDate('date_end', '<=', Carbon::parse($leav?->date_time_start)->endOfYear());
+																													})
+																													->get();
 							$upal = $staff->hasmanyleave()?->selectRaw('SUM(period_day) as total')
-															->where(function(Builder $query){
-																$query->whereDate('date_time_start', '>=', now()->startOfYear())
-																	->whereDate('date_time_end', '<=', now()->endOfYear());
+															->where(function(Builder $query) use($leav) {
+																$query->whereDate('date_time_start', '>=', Carbon::parse($leav?->date_time_start)->startOfYear())
+																	->whereDate('date_time_end', '<=', Carbon::parse($leav?->date_time_start)->endOfYear());
 																})
 															->where(function(Builder $query) {
 																$query->whereIn('leave_status_id', [5,6])
@@ -295,9 +306,9 @@ foreach ($c as $v) {
 															->whereIn('leave_type_id', [3, 6])
 															->get();
 							$mcupl = $staff->hasmanyleave()?->selectRaw('SUM(period_day) as total')
-															->where(function(Builder $query){
-																$query->whereDate('date_time_start', '>=', now()->startOfYear())
-																	->whereDate('date_time_end', '<=', now()->endOfYear());
+															->where(function(Builder $query) use($leav) {
+																$query->whereDate('date_time_start', '>=', Carbon::parse($leav?->date_time_start)->startOfYear())
+																	->whereDate('date_time_end', '<=', Carbon::parse($leav?->date_time_start)->endOfYear());
 																})
 															->where(function(Builder $query) {
 																$query->whereIn('leave_status_id', [5,6])
@@ -389,7 +400,7 @@ foreach ($c as $v) {
 																		<div class="table">
 																			@foreach($hrremarksattendance as $key => $value)
 																			<div class="table-row">
-																				<div class="table-cell-top" style="width: 100%;">REMARKS FROM ATTENDANCE : {!! $value->remarks !!}<br/>HR REMARKS FROM ATTENDANCE : {!! $value->hr_remarks !!}</div>
+																				<div class="table-cell-top" style="width: 100%;">REMARKS FROM ATTENDANCE : {{ $value->remarks }}<br/>HR REMARKS FROM ATTENDANCE : {{ $value->hr_remarks }}</div>
 																			</div>
 																			@endforeach
 																		</div>
@@ -400,7 +411,7 @@ foreach ($c as $v) {
 																		@if($leav->remarks)
 																		<div class="table">
 																			<div class="table-row">
-																				<div class="table-cell-top" style="width: 100%;">LEAVE REMARKS : {!! $leav->remarks !!}</div>
+																				<div class="table-cell-top" style="width: 100%;">LEAVE REMARKS : {{ $leav->remarks }}</div>
 																			</div>
 																		</div>
 																		@endif
@@ -419,10 +430,13 @@ foreach ($c as $v) {
 																	@endif
 
 																	<div class="table">
+																		<div class="table-row text-center border">
+																			<strong>Entitlement Year {{ Carbon::parse($leav->date_time_start)->format('Y') }}</strong>
+																		</div>
 																		<div class="table-row">
-																			<div class="table-cell-top text-wrap" style="width: 17%;">AL : {{ $annl?->annual_leave_balance }}/{{ $annl?->annual_leave }}</div>
-																			<div class="table-cell-top text-wrap" style="width: 17%;">MC : {{ $mcel?->mc_leave_balance }}/{{ $mcel?->mc_leave }}</div>
-																			<div class="table-cell-top text-wrap" style="width: 17%;">Maternity : {{ $matl?->maternity_leave_balance }}/{{ $matl?->maternity_leave }}</div>
+																			<div class="table-cell-top text-wrap" style="width: 17%;">AL : {{ $annl?->annual_leave_balance }}/{{ $annl?->annual_leave + $annl?->annual_leave_adjustment }}</div>
+																			<div class="table-cell-top text-wrap" style="width: 17%;">MC : {{ $mcel?->mc_leave_balance }}/{{ $mcel?->mc_leave + $mcel?->mc_leave_adjustment }}</div>
+																			<div class="table-cell-top text-wrap" style="width: 17%;">Maternity : {{ $matl?->maternity_leave_balance }}/{{ $matl?->maternity_leave + $matl?->maternity_leave_adjustment }}</div>
 																			<div class="table-cell-top text-wrap" style="width: 17%;">Replacement : {{ $replb?->first()?->total }}/{{ $replt?->first()?->total }}</div>
 																			<div class="table-cell-top text-wrap" style="width: 17%;">UPL : {{ $upal?->first()?->total }}</div>
 																			<div class="table-cell-top text-wrap" style="width: 15%;">MC-UPL : {{ $mcupl?->first()?->total }}</div>

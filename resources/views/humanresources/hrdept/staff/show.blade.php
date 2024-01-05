@@ -361,11 +361,11 @@ $mcupl = $staff->hasmanyleave()?->get();
 				<tr>
 					<td class="text-center">{{ now()->format('Y') }}</td>
 					<td class="text-center">{{ $annl?->annual_leave_balance }}</td>
-					<td class="text-center">{{ $annl?->annual_leave }}</td>
+					<td class="text-center">{{ $annl?->annual_leave + $annl?->annual_leave_adjustment }}</td>
 					<td class="text-center">{{ $mcel?->mc_leave_balance }}</td>
-					<td class="text-center">{{ $mcel?->mc_leave }}</td>
+					<td class="text-center">{{ $mcel?->mc_leave + $mcel?->mc_leave_adjustment }}</td>
 					<td class="text-center">{{ $matl?->maternity_leave_balance }}</td>
-					<td class="text-center">{{ $matl?->maternity_leave }}</td>
+					<td class="text-center">{{ $matl?->maternity_leave + $matl?->maternity_leave_adjustment }}</td>
 					<td class="text-center">{{ $replb?->first()?->total }}</td>
 					<td class="text-center">{{ $replt?->first()?->total }}</td>
 					<td class="text-center">{{ $upal?->first()?->total }}</td>
@@ -596,6 +596,7 @@ $mcupl = $staff->hasmanyleave()?->get();
 				<tr>
 					<th>No</th>
 					<th>Type</th>
+					<th>Applied Date</th>
 					<th>From</th>
 					<th>To</th>
 					<th>Duration</th>
@@ -637,6 +638,7 @@ $mcupl = $staff->hasmanyleave()?->get();
 				<tr>
 					<td>HR9-{{ str_pad( $ls->leave_no, 5, "0", STR_PAD_LEFT ) }}/{{ $ls->leave_year }}</td>
 					<td>{{ $ls->belongstooptleavetype?->leave_type_code }}</td>
+					<td>{{ Carbon::parse($ls->created_at)->format('j M Y g:i a') }}</td>
 					<td>{{ $dts }}</td>
 					<td>{{ $dte }}</td>
 					<td>{{ $dper }}</td>
@@ -1189,7 +1191,7 @@ $(document).ready(function(){
 $.fn.dataTable.moment( 'D MMM YYYY' );
 $.fn.dataTable.moment( 'h:mm a' );
 $('#attendance').DataTable({
-	"searching": false, 
+	"searching": false,
 	"info": false,
 	"paging": false,
 	"lengthMenu": [ [30, 60, 100, -1], [30, 60, 100, "All"] ],
@@ -1305,56 +1307,55 @@ function SwalDelete(ackID, ackSoftcopy, ackTable){
 	});
 }
 
+/////////////////////////////////////////////////////////////////////////////////////////
+// fullcalendar
+var calendarEl = document.getElementById('calendar');
+var calendar = new FullCalendar.Calendar(calendarEl, {
+	aspectRatio: 1.0,
+	height: 2000,
+	// plugins: [multiMonthPlugin],
+	initialView: 'multiMonthYear',
+	// initialView: 'dayGridMonth',
+	// multiMonthMaxColumns: 1,					// force a single column
+	headerToolbar: {
+		left: 'prev,next today',
+		center: 'title',
+		right: 'multiMonthYear,dayGridMonth,timeGridWeek'
+	},
+	weekNumbers: true,
+	themeSystem: 'bootstrap',
+	events: {
+		url: '{{ route('staffattendance') }}',
+		method: 'POST',
+		extraParams: {
+			_token: '{!! csrf_token() !!}',
+			staff_id: '{{ $staff->id }}',
+		},
+	},
+	// failure: function() {
+	// 	alert('There was an error while fetching leaves!');
+	// },
+	eventDidMount: function(info) {
+		$(info.el).tooltip({
+		// var tooltip = new Tooltip(info.el, {
+			title: info.event.extendedProps.description,
+			placement: 'top',
+			trigger: 'hover',
+			container: 'body'
+		});
+	},
+	eventTimeFormat: { // like '14:30:00'
+		hour: '2-digit',
+		minute: '2-digit',
+		second: '2-digit',
+		hour12: true
+	}
+});
+calendar.render();
+
 @endsection
 
 @section('nonjquery')
-/////////////////////////////////////////////////////////////////////////////////////////
-// fullcalendar cant use jquery
-// import { Calendar } from '@fullcalendar/core'
-// import multiMonthPlugin from '@fullcalendar/multimonth'
-
-document.addEventListener('DOMContentLoaded', function() {
-	var calendarEl = document.getElementById('calendar');
-
-	var calendar = new FullCalendar.Calendar(calendarEl, {
-		aspectRatio: 1.0,
-		height: 500,
-		// plugins: [multiMonthPlugin],
-		// initialView: 'multiMonthYear',
-		// multiMonthMaxColumns: 1,					// force a single column
-		initialView: 'dayGridMonth',
-		weekNumbers: true,
-		themeSystem: 'bootstrap',
-		events: {
-			url: '{{ route('staffattendance') }}',
-			method: 'POST',
-			extraParams: {
-				_token: '{!! csrf_token() !!}',
-				staff_id: '{{ $staff->id }}',
-			},
-		},
-		// failure: function() {
-		// 	alert('There was an error while fetching leaves!');
-		// },
-		eventDidMount: function(info) {
-				var tooltip = new Tooltip(info.el, {
-					title: info.event.extendedProps.description,
-					placement: 'top',
-					trigger: 'hover',
-					container: 'body'
-				});
-		},
-		eventTimeFormat: { // like '14:30:00'
-			hour: '2-digit',
-			minute: '2-digit',
-			second: '2-digit',
-			hour12: true
-		}
-	});
-	calendar.render();
-});
-
-
 /////////////////////////////////////////////////////////////////////////////////////////
 // chartjs also dont use jquery
 
