@@ -182,9 +182,57 @@ $childrens = $profile->hasmanychildren()->get();
 	</div>
 
 	<p>&nbsp;</p>
+	<div class="col-sm-12 table-responsive">
+		<h4>Entitlements</h4>
+		<table id="ent" class="table table-sm table-hover table-bordered" style="font-size: 12px;">
+			<thead>
+				<tr>
+					<th class="text-center" rowspan="3">Year</th>
+					<th class="text-center" colspan="2">Annual Leave (AL)</th>
+					<th class="text-center" colspan="2">Medical Certificate Leave (MC)</th>
+					<th class="text-center" colspan="2">Maternity Leave (ML)</th>
+					<th class="text-center" colspan="2">Replacement Leave (NRL)</th>
+					<th class="text-center">Unpaid Leave (UPL)</th>
+					<th class="text-center">Medical Certificate Unpaid Leave (MC-UPL)</th>
+				</tr>
+				<tr>
+					<th class="text-center">Balance (days)</th>
+					<th class="text-center">Total (days)</th>
+					<th class="text-center">Balance (days)</th>
+					<th class="text-center">Total (days)</th>
+					<th class="text-center">Balance (days)</th>
+					<th class="text-center">Total (days)</th>
+					<th class="text-center">Balance (days)</th>
+					<th class="text-center">Total (days)</th>
+					<th class="text-center">Total (days)</th>
+					<th class="text-center">Total (days)</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td class="text-center">{{ now()->format('Y') }}</td>
+					<td class="text-center">{{ $annl?->annual_leave_balance }}</td>
+					<td class="text-center">{{ $annl?->annual_leave + $annl?->annual_leave_adjustment }}</td>
+					<td class="text-center">{{ $mcel?->mc_leave_balance }}</td>
+					<td class="text-center">{{ $mcel?->mc_leave + $mcel?->mc_leave_adjustment }}</td>
+					<td class="text-center">{{ $matl?->maternity_leave_balance }}</td>
+					<td class="text-center">{{ $matl?->maternity_leave + $matl?->maternity_leave_adjustment }}</td>
+					<td class="text-center">{{ $replb?->first()?->total }}</td>
+					<td class="text-center">{{ $replt?->first()?->total }}</td>
+					<td class="text-center">{{ $upal?->first()?->total }}</td>
+					<td class="text-center">{{ $mcupl?->first()?->total }}</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+	<p>&nbsp;</p>
 	<div class="col-sm-12">
 		<canvas id="myChart"></canvas>
 	</div>
+
+	<p>&nbsp;</p>
+	<div id="calendar" class="col-sm-12"></div>
 
 	<?php
 	use App\Models\Staff;
@@ -383,51 +431,6 @@ $childrens = $profile->hasmanychildren()->get();
 					</td>
 				</tr>
 				@endforeach
-			</tbody>
-		</table>
-	</div>
-
-	<p>&nbsp;</p>
-	<div class="col-sm-12 table-responsive">
-		<h4>Entitlements</h4>
-		<table id="ent" class="table table-sm table-hover table-bordered" style="font-size: 12px;">
-			<thead>
-				<tr>
-					<th class="text-center" rowspan="3">Year</th>
-					<th class="text-center" colspan="2">Annual Leave (AL)</th>
-					<th class="text-center" colspan="2">Medical Certificate Leave (MC)</th>
-					<th class="text-center" colspan="2">Maternity Leave (ML)</th>
-					<th class="text-center" colspan="2">Replacement Leave (NRL)</th>
-					<th class="text-center">Unpaid Leave (UPL)</th>
-					<th class="text-center">Medical Certificate Unpaid Leave (MC-UPL)</th>
-				</tr>
-				<tr>
-					<th class="text-center">Balance (days)</th>
-					<th class="text-center">Total (days)</th>
-					<th class="text-center">Balance (days)</th>
-					<th class="text-center">Total (days)</th>
-					<th class="text-center">Balance (days)</th>
-					<th class="text-center">Total (days)</th>
-					<th class="text-center">Balance (days)</th>
-					<th class="text-center">Total (days)</th>
-					<th class="text-center">Total (days)</th>
-					<th class="text-center">Total (days)</th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr>
-					<td class="text-center">{{ now()->format('Y') }}</td>
-					<td class="text-center">{{ $annl?->annual_leave_balance }}</td>
-					<td class="text-center">{{ $annl?->annual_leave }}</td>
-					<td class="text-center">{{ $mcel?->mc_leave_balance }}</td>
-					<td class="text-center">{{ $mcel?->mc_leave }}</td>
-					<td class="text-center">{{ $matl?->maternity_leave_balance }}</td>
-					<td class="text-center">{{ $matl?->maternity_leave }}</td>
-					<td class="text-center">{{ $replb?->first()?->total }}</td>
-					<td class="text-center">{{ $replt?->first()?->total }}</td>
-					<td class="text-center">{{ $upal?->first()?->total }}</td>
-					<td class="text-center">{{ $mcupl?->first()?->total }}</td>
-				</tr>
 			</tbody>
 		</table>
 	</div>
@@ -842,7 +845,7 @@ $.fn.dataTable.moment( 'D MMM YYYY' );
 $.fn.dataTable.moment( 'YYYY' );
 $.fn.dataTable.moment( 'h:mm a' );
 $('#attendance').DataTable({
-	"searching": false, 
+	"searching": false,
 	"info": false,
 	"paging": false,
 	"lengthMenu": [ [30, 60, 100, -1], [30, 60, 100, "All"] ],
@@ -882,6 +885,52 @@ $('#al, #mc, #ml').DataTable({
 		$('[data-bs-toggle="tooltip"]').tooltip();
 	});
 });
+
+/////////////////////////////////////////////////////////////////////////////////////////
+// fullcalendar cant use jquery
+var calendarEl = document.getElementById('calendar');
+var calendar = new FullCalendar.Calendar(calendarEl, {
+	aspectRatio: 1.0,
+	height: 2000,
+	// plugins: [multiMonthPlugin],
+	initialView: 'multiMonthYear',
+	// initialView: 'dayGridMonth',
+	// multiMonthMaxColumns: 1,					// force a single column
+	headerToolbar: {
+		left: 'prev,next today',
+		center: 'title',
+		right: 'multiMonthYear,dayGridMonth,timeGridWeek'
+	},
+	weekNumbers: true,
+	themeSystem: 'bootstrap',
+	events: {
+		url: '{{ route('staffattendance') }}',
+		method: 'POST',
+		extraParams: {
+			_token: '{!! csrf_token() !!}',
+			staff_id: '{{ $profile->id }}',
+		},
+	},
+	// failure: function() {
+	// 	alert('There was an error while fetching leaves!');
+	// },
+	eventDidMount: function(info) {
+		$(info.el).tooltip({
+		// var tooltip = new Tooltip(info.el, {
+			title: info.event.extendedProps.description,
+			placement: 'top',
+			trigger: 'hover',
+			container: 'body'
+		});
+	},
+	eventTimeFormat: { // like '14:30:00'
+		hour: '2-digit',
+		minute: '2-digit',
+		second: '2-digit',
+		hour12: true
+	}
+});
+calendar.render();
 @endsection
 
 @section('nonjquery')
@@ -953,4 +1002,5 @@ xmlhttp.onload = function() {
 		},
 	});
 };
+
 @endsection

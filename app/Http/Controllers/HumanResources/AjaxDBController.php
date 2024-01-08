@@ -815,7 +815,7 @@ class AjaxDBController extends Controller
 							'end' => Carbon::parse($v)->format('Y-m-d'),
 							// 'url' => ,
 							'allDay' => true,
-							// 'description' => '',
+							'description' => 'RESTDAY',
 							// 'extendedProps' => [
 							// 						'department' => 'BioChemistry'
 							// 					],
@@ -827,7 +827,7 @@ class AjaxDBController extends Controller
 
 		// mark saturday as restday
 		$sat = Staff::find($request->staff_id)->belongstorestdaygroup?->hasmanyrestdaycalendar()->get();
-		if ($sat->isNotEmpty()) {
+		if (!is_null($sat)) {
 			foreach ($sat as $v) {
 				$l4[] = [
 							'title' => 'RESTDAY',
@@ -835,7 +835,7 @@ class AjaxDBController extends Controller
 							'end' => Carbon::parse($v->saturday_date)->format('Y-m-d'),
 							// 'url' => ,
 							'allDay' => true,
-							// 'description' => '',
+							'description' => 'RESTDAY',
 							// 'extendedProps' => [
 							// 						'department' => 'BioChemistry'
 							// 					],
@@ -855,7 +855,7 @@ class AjaxDBController extends Controller
 				})
 				->get();
 				// ->ddRawSql();
-		if ($hdate->isNotEmpty()) {
+		if (!is_null($hdate)) {
 			foreach ($hdate as $v) {
 				$l1[] = [
 							'title' => $v->holiday,
@@ -863,10 +863,10 @@ class AjaxDBController extends Controller
 							'end' => Carbon::parse($v->date_end)->addDay(),
 							// 'url' => ,
 							'allDay' => true,
-							'description' => $v->holiday,
 							// 'extendedProps' => [
 							// 						'department' => 'BioChemistry'
 							// 					],
+							'description' => $v->holiday??'null',
 							'color' => 'blue',
 							'textColor' => 'white',
 					];
@@ -877,23 +877,23 @@ class AjaxDBController extends Controller
 
 		// looking for leave of each staff
 		$l = HRLeave::where('staff_id', $request->staff_id)
-		->where(function (Builder $query) {
-			$query->whereIn('leave_status_id', [5,6])->orWhereNull('leave_status_id');
-		})
-		->get();
+					->where(function (Builder $query) {
+						$query->whereIn('leave_status_id', [5,6])->orWhereNull('leave_status_id');
+					})
+					->get();
 
-		if($l->isNotEmpty()) {
+		// if(!is_null($l)) {
+		if($l->count()) {
 			foreach ($l as $v) {
-				$dts = \Carbon\Carbon::parse($v->date_time_start)->format('Y');
-				$dte = \Carbon\Carbon::parse($v->date_time_end)->addDay()->format('j M Y g:i a');
-				$arr = str_split( $dts, 2 );
+				$dts = Carbon::parse($v->date_time_start)->format('Y');
+				$dte = Carbon::parse($v->date_time_end)->addDay()->format('j M Y g:i a');
 				// only available if only now is before date_time_start and active is 1
-				$dtsl = \Carbon\Carbon::parse( $v->date_time_start );
-				$dt = \Carbon\Carbon::now()->lte( $dtsl );
+				$dtsl = Carbon::parse( $v->date_time_start );
+				$dt = Carbon::now()->lte( $dtsl );
 
 				if (($v->leave_type_id == 9) || ($v->leave_type_id != 9 && $v->half_type_id == 2) || ($v->leave_type_id != 9 && $v->half_type_id == 1)) {
 					$l2[] = [
-								'title' => 'HR9-'.str_pad( $v->leave_no, 5, "0", STR_PAD_LEFT ).'/'.$arr[1],
+								'title' => 'HR9-'.str_pad( $v->leave_no, 5, "0", STR_PAD_LEFT ).'/'.$v->leave_year,
 								'start' => $v->date_time_start,
 								'end' => $v->date_time_end,
 								'url' => route('hrleave.show', $v->id),
@@ -901,7 +901,7 @@ class AjaxDBController extends Controller
 								// 'extendedProps' => [
 								// 						'department' => 'BioChemistry'
 								// 					],
-								// 'description' => 'test',
+								'description' => $v->belongstooptleavetype?->leave_type_code??'null',
 								'color' => 'purple',
 								'textColor' => 'white',
 								'borderColor' => 'purple',
@@ -909,7 +909,7 @@ class AjaxDBController extends Controller
 
 				} else {
 					$l2[] = [
-							'title' => 'HR9-'.str_pad( $v->leave_no, 5, "0", STR_PAD_LEFT ).'/'.$arr[1],
+							'title' => 'HR9-'.str_pad( $v->leave_no, 5, "0", STR_PAD_LEFT ).'/'.$v->leave_year,
 							'start' => $v->date_time_start,
 							'end' => Carbon::parse($v->date_time_end)->addDay(),
 							'url' => route('hrleave.show', $v->id),
@@ -917,7 +917,7 @@ class AjaxDBController extends Controller
 							// 'extendedProps' => [
 													// 'department' => 'BioChemistry'
 												// ],
-							// 'description' => 'test',
+							'description' => $v->belongstooptleavetype?->leave_type_code??'null',
 							'color' => 'purple',
 							'textColor' => 'white',
 							'borderColor' => 'red',
@@ -940,7 +940,7 @@ class AjaxDBController extends Controller
 							// 'extendedProps' => [
 							// 						'department' => 'BioChemistry'
 							// 					],
-							// 'description' => 'test',
+							'description' => $v->belongstocustomer?->customer??$v->remarks??'null',
 							'color' => 'teal',
 							'textColor' => 'yellow',
 							'borderColor' => 'green',
@@ -1407,6 +1407,31 @@ class AjaxDBController extends Controller
 		return response()->json($cuti);
 	}
 
+	public function staffoutstationduration(Request $request): JsonResponse
+	{
+		$outstation = HROutstation::where('active', 1)->get();
+		if ($outstation->count()) {
+			foreach ($outstation as $v) {
+				$out[] = [
+							'title' => ucwords(Str::lower($v->belongstocustomer?->customer??$v->remarks)),
+							'start' => $v->date_from,
+							'end' => Carbon::parse($v->date_to)->addDay(),
+							// 'url' => route('hrleave.show', $v->id),
+							'allDay' => true,
+							// 'extendedProps' => [
+							// 						'department' => 'BioChemistry'
+							// 					],
+							'description' => ((Login::where([['staff_id', $v->staff_id], ['active', 1]])->first()?->username)??'-').' '.Staff::find($v->staff_id)->name,
+							'color' => 'green',
+							'textColor' => 'yellow',
+							'borderColor' => 'green',
+					];
+			}
+		} else {
+			$out[] = [];
+		}
+		return response()->json( $out );
+	}
 
 
 
@@ -1465,3 +1490,4 @@ class AjaxDBController extends Controller
 		]);
 	}
 }
+

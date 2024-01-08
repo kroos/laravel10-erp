@@ -73,11 +73,10 @@ class HolidayCalendarController extends Controller
 	/**
 	 * Display the specified resource.
 	 */
-	public function show($holidaycalendar)
+	public function show(HRHolidayCalendar $holidaycalendar)
 	{
 		$holidays = HRHolidayCalendar::whereYear('date_start', $holidaycalendar)->orderBy('date_start', 'asc')->get();
-
-		return view('humanresources.hrdept.setting.holidaycalendar.show', ['holidays' => $holidays, 'holidaycalendar' => $holidaycalendar]);
+		return view('humanresources.holidaycalendar.show', ['holidays' => $holidays, 'holidaycalendar' => $holidaycalendar]);
 	}
 
 	/**
