@@ -636,33 +636,51 @@ $('#paleave').DataTable({
 	});}
 );
 
+/////////////////////////////////////////////////////////////////////////////////////////
+// fullcalendar cant use jquery
+var calendarEl = document.getElementById('calendar');
+var calendar = new FullCalendar.Calendar(calendarEl, {
+	aspectRatio: 1.0,
+	height: 2000,
+	// plugins: [multiMonthPlugin],
+	initialView: 'multiMonthYear',
+	// initialView: 'dayGridMonth',
+	// multiMonthMaxColumns: 1,					// force a single column
+	headerToolbar: {
+		left: 'prev,next today',
+		center: 'title',
+		right: 'multiMonthYear,dayGridMonth,timeGridWeek'
+	},
+	weekNumbers: true,
+	themeSystem: 'bootstrap',
+	events: {
+		url: '{{ route('leaveevents') }}',
+		method: 'POST',
+		extraParams: {
+			_token: '{!! csrf_token() !!}',
+		},
+	},
+	eventDidMount: function(info) {
+		$(info.el).tooltip({
+		// var tooltip = new Tooltip(info.el, {
+			title: info.event.extendedProps.description,
+			placement: 'top',
+			trigger: 'hover',
+			container: 'body'
+		});
+	},
+	eventTimeFormat: { // like '14:30:00'
+		hour: '2-digit',
+		minute: '2-digit',
+		// second: '2-digit',
+		hour12: true
+	}
+});
+calendar.render();
+
+/////////////////////////////////////////////////////////////////////////////////////////
 @endsection
 
 @section('nonjquery')
-/////////////////////////////////////////////////////////////////////////////////////////
-// fullcalendar cant use jquery
-document.addEventListener('DOMContentLoaded', function() {
-	var calendarEl = document.getElementById('calendar');
-	var calendar = new FullCalendar.Calendar(calendarEl, {
-		aspectRatio: 1.0,
-		initialView: 'dayGridMonth',
-		weekNumbers: true,
-		themeSystem: 'bootstrap',
-		events: {
-			url: '{{ route('leaveevents') }}',
-			method: 'POST',
-			extraParams: {
-				_token: '{!! csrf_token() !!}',
-			},
-		},
-		failure: function() {
-			alert('There was an error while fetching leaves!');
-		},
-	});
-	calendar.render();
-	console.log(calendar.getOption('aspectRatio'));
-});
-
-/////////////////////////////////////////////////////////////////////////////////////////
 
 @endsection

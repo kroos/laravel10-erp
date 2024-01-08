@@ -759,37 +759,26 @@ class AjaxDBController extends Controller
 		foreach ($l1 as $v) {
 			$dts = \Carbon\Carbon::parse($v->date_time_start)->format('Y');
 			$dte = \Carbon\Carbon::parse($v->date_time_end)->addDay()->format('j M Y g:i a');
-			$arr = str_split( $dts, 2 );
 			// only available if only now is before date_time_start and active is 1
 			$dtsl = \Carbon\Carbon::parse( $v->date_time_start );
 			$dt = \Carbon\Carbon::now()->lte( $dtsl );
 
-			if (($v->leave_type_id == 9) || ($v->leave_type_id != 9 && $v->half_type_id == 2) || ($v->leave_type_id != 9 && $v->half_type_id == 1)) {
-				$l2[] = [
-							'title' => 'HR9-'.str_pad( $v->leave_no, 5, "0", STR_PAD_LEFT ).'/'.$arr[1],
-							'start' => $v->date_time_start,
-							'end' => $v->date_time_end,
-							'url' => route('hrleave.show', $v->id),
-							'allDay' => false,
-							// 'extendedProps' => [
-							// 						'department' => 'BioChemistry'
-							// 					],
-							// 'description' => 'test',
-					];
-
+			if (($v->leave_type_id == 9) || ($v->leave_type_id != 9 && is_null($v->half_type_id == 2))) {
+				$bool = false;
 			} else {
-				$l2[] = [
-						'title' => 'HR9-'.str_pad( $v->leave_no, 5, "0", STR_PAD_LEFT ).'/'.$arr[1],
-						'start' => $v->date_time_start,
-						'end' => Carbon::parse($v->date_time_end)->addDay(),
-						'url' => route('hrleave.show', $v->id),
-						'allDay' => true,
-						// 'extendedProps' => [
-												// 'department' => 'BioChemistry'
-											// ],
-						// 'description' => 'test',
-					];
+				$bool = true;
 			}
+			$l2[] = [
+					'title' => 'HR9-'.str_pad( $v->leave_no, 5, "0", STR_PAD_LEFT ).'/'.$v->leave_year,
+					'start' => $v->date_time_start,
+					'end' => Carbon::parse($v->date_time_end)->addDay(),
+					'url' => route('hrleave.show', $v->id),
+					'allDay' => $bool,
+					// 'extendedProps' => [
+											// 'department' => 'BioChemistry'
+										// ],
+					'description' => $v->belongstooptleavetype?->leave_type_code,
+				];
 		}
 			return response()->json( $l2 );
 	}
