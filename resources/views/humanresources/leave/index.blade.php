@@ -58,7 +58,6 @@ foreach ($c as $v) {
 			</tr>
 			@for($i = (Setting::find(7)->active == 1)?now()->year:now()->subYear()->year; $i <= ((Setting::find(6)->active == 1)?now()->year:now()->addYear()->year); ++$i)
 <?php
-echo $i;
 $leaveAL =  $us->hasmanyleaveannual()?->where('year', $i)->first();
 $leaveMC =  $us->hasmanyleavemc()?->where('year', $i)->first();
 $leaveMa =  $us->hasmanyleavematernity()?->where('year', $i)->first();
@@ -156,10 +155,11 @@ $leaveMa =  $us->hasmanyleavematernity()?->where('year', $i)->first();
 		<h4>Leave</h4>
 	<!-- list of leaves -->
 	<?php
-	// dd(\Carbon\Carbon::now()->copy()->startOfYear());
-	$starty = now()->format('Y');
-	$lea =  $us->hasmanyleave()->whereYear('date_time_start', '>=', now()->subYear()->format('Y'))->whereYear('date_time_end', '<=', now()->format('Y'))->get();
-	// dd($lea);
+	$beginy = (Setting::find(7)->active == 1)?now()->year:now()->subYear()->year;
+	$endy = (Setting::find(6)->active == 1)?now()->year:now()->addYear()->year;
+	$lea =  $us->hasmanyleave()->whereYear('date_time_start', '>=', $beginy)
+							->whereYear('date_time_end', '<=', $endy)
+							->get();
 	?>
 	@if( $lea->count() > 0 )
 			<table class="table table-hover table-sm" id="leaves" style="font-size:12px">
