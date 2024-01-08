@@ -741,12 +741,17 @@ class AjaxDBController extends Controller
 
 	public function leaveevents(Request $request): JsonResponse
 	{
+		// dd($request->all());
+		$now = now();
+		$nowYear = $now->copy()->year;
+		$lastYear = $now->copy()->subYear()->year;
+		$nextYear = $now->copy()->addYear()->year;
 		// please note that the full calendar for end date is EXCLUSIVE
 		// https://fullcalendar.io/docs/event-object
 		$l1 = HRLeave::
-		where(function (Builder $query){
-			$query->whereYear('date_time_start', date('Y'))->
-			orWhereYear('date_time_start', Carbon::now()->addYear()->format('Y'));
+		where(function (Builder $query) use ($lastYear, $nowYear, $nextYear) {
+			$query->whereYear('date_time_start', '>=', $lastYear)
+			->whereYear('date_time_end', '<=', $nextYear);
 		})
 		->where(function (Builder $query){
 			$query->whereIn('leave_status_id', [5,6])

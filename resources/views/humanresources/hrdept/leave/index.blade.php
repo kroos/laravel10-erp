@@ -642,7 +642,6 @@ var calendarEl = document.getElementById('calendar');
 var calendar = new FullCalendar.Calendar(calendarEl, {
 	aspectRatio: 1.0,
 	height: 2000,
-	// plugins: [multiMonthPlugin],
 	initialView: 'multiMonthYear',
 	// initialView: 'dayGridMonth',
 	// multiMonthMaxColumns: 1,					// force a single column
