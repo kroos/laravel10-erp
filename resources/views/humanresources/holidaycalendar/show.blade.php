@@ -18,17 +18,17 @@ use \Carbon\Carbon;
         <th class="text-center" colspan="6">Holiday Calendar {{ $holidaycalendar }}</th>
       </tr>
       <tr>
-        <th width="250px">From</th>
-        <th width="250px">To</th>
-        <th width="100px">Duration</th>
+        <th>From</th>
+        <th>To</th>
+        <th>Duration</th>
         <th>Holiday</th>
       </tr>
     </thead>
     <tbody>
       @foreach($holidays as $holiday)
       <tr>
-        <td>{{ Carbon::parse($holiday->date_start)->format('d-m-Y l') }}</td>
-        <td>{{ Carbon::parse($holiday->date_end)->format('d-m-Y l') }}</td>
+        <td>{{ Carbon::parse($holiday->date_start)->format('j M Y') }}</td>
+        <td>{{ Carbon::parse($holiday->date_end)->format('j M Y') }}</td>
         <td>{{ Carbon::parse($holiday->date_start)->daysUntil($holiday->date_end, 1)->count() }} day/s</td>
         <td>{{ $holiday->holiday }}</td>
       </tr>

@@ -200,6 +200,7 @@ foreach ($c as $v) {
         // find leave backup if any
         $backup = $leav->hasmanyleaveapprovalbackup()->get();
 
+        //indicator start
         if ($backup->count()) {
           if (is_null($backup->first()->leave_status_id)) {
             $bapp = '<span class="text-warning" style="background-color:transparent;">Pending</span>';
@@ -212,6 +213,7 @@ foreach ($c as $v) {
           $bapp = '<span class="text-danger" style="background-color:transparent;">No Backup</span>';
           $backup_person = "box-red";
         }
+        //indicator end
 
         $hrremarksattendance = HRAttendance::where(function (Builder $query) use ($leav) {
           $query->whereDate('attend_date', '>=', $leav->date_time_start)
@@ -262,7 +264,7 @@ foreach ($c as $v) {
           ->where('leave_type_id', 11)
           ->get();
 
-        // INDICATOR 
+        // INDICATOR start
         $leave_type_code = $leav->belongstooptleavetype?->leave_type_code;
 
         if (strpos($leave_type_code, 'EL') === false) {
@@ -286,6 +288,7 @@ foreach ($c as $v) {
             $support_doc = 'box-red';
           }
         }
+        //indicator end
         ?>
 
         <?php
@@ -364,6 +367,7 @@ foreach ($c as $v) {
         } else {
           $attendance_percentage = 'box-red';
         }
+        //indicator end
         ?>
 
         <tr class="{{ $u }}">

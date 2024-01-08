@@ -66,6 +66,7 @@
 		<ul class="dropdown-menu">
 			<li><a class="dropdown-item btn btn-sm btn-outline-secondary" href="{{ route('outstation.index') }}"><i class="fa-solid fa-person-walking-luggage fa-beat"></i> Outstation List</a></li>
 			<li><a class="dropdown-item btn btn-sm btn-outline-secondary" href="{{ route('hroutstationattendance.index') }}"><i class="fa-solid fa-person-circle-plus"></i> Outstation Attendance List</a></li>
+			<li><a class="dropdown-item btn btn-sm btn-outline-secondary" href="{{ route('outstationduration.index') }}"><i class="fa-regular fa-clock"></i> Outstation Duration</a></li>
 		</ul>
 	</li>
 	<li class="nav-item dropdown">

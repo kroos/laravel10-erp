@@ -342,17 +342,6 @@ use App\Models\HumanResources\HRLeaveApprovalFlow;
 					</div>
 				</div>
 				<div class="row m-0 p-0 crossbackup_wrap">
-					<div class="row m-1 p-0 crossbackup_row">
-						<div class="col-sm-1">
-							<button class="btn btn-sm btn-outline-secondary crossbackup_remove" type="button">
-								<i class="fas fa-trash" aria-hidden="true"></i>
-							</button>
-						</div>
-						<div class="col-sm-10 form-group {{ $errors->has('crossbackup.*.backup_staff_id') ? 'has-error' : '' }}">
-							<input type="hidden" name="crossbackup[1][active]" value="1">
-							<select name="crossbackup[1][backup_staff_id]" id="sta_1" class="form-select form-select-sm" placeholder="Cross Backup Personnel"></select>
-						</div>
-					</div>
 				</div>
 			</div>
 

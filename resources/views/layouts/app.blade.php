@@ -43,7 +43,7 @@ $currentYear = Carbon::now()->year;
 									<ul class="dropdown-menu">
 										<li><a class="dropdown-item" href="{{ route('profile.show', Auth::user()->belongstostaff->id) }}"><i class="fa-regular fa-user"></i> Profile</a></li>
 										<li><a class="dropdown-item" href="#"><i class="fa-regular fa-comment"></i> Notifications</a></li>
-										<li><a class="dropdown-item" href="{{ route('holidaycalendar.show', $currentYear) }}"><i class="fa-regular fa-calendar"></i> Holiday</a></li>
+										<!-- <li><a class="dropdown-item" href="{{ route('holidaycalendar.show', $currentYear) }}"><i class="fa-regular fa-calendar"></i> Holiday</a></li> -->
 										<li><a class="dropdown-item" href="{{ route('leave.index') }}"><i class="fa-solid fa-mug-hot"></i> Apply Leave</a></li>
 										<li><a class="dropdown-item" href="{{ route('outstationattendance.index') }}"><i class="fa-solid fa-user-plus"></i> Outstation Attendance</a></li>
 										<form method="POST" action="{{ route('logout') }}">
@@ -143,12 +143,12 @@ $currentYear = Carbon::now()->year;
 	</footer>
 </body>
 
-<script src="{{ asset('js/fullcalendar/index.global.js') }}"></script>
 <!-- <script type="module" src="{{ asset('js/fullcalendar/bootstrap5/index.global.js') }}"></script> -->
 <!-- <script type="module" src="{{ asset('js/fullcalendar/daygrid/index.global.js') }}"></script> -->
 <!-- <script type="module" src="{{ asset('js/fullcalendar/multimonth/index.global.js') }}"></script> -->
-<script src='https://unpkg.com/popper.js/dist/umd/popper.min.js'></script>
-<script src='https://unpkg.com/tooltip.js/dist/umd/tooltip.min.js'></script>
+<script src="{{ asset('js/fullcalendar/index.global.js') }}"></script>
+<!-- <script src="https://unpkg.com/popper.js/dist/umd/popper.min.js"></script> -->
+<!-- <script src="https://unpkg.com/tooltip.js/dist/umd/tooltip.min.js"></script> -->
 <script src="{{ asset('js/chartjs/chart.umd.js') }}"></script>
 <script src="{{ asset('js/app.js') }}"></script>
 <script src="{{ asset('js/ckeditor/ckeditor.js') }}"></script>
