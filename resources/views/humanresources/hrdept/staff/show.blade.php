@@ -1347,18 +1347,17 @@ var calendar = new FullCalendar.Calendar(calendarEl, {
 	eventTimeFormat: { // like '14:30:00'
 		hour: '2-digit',
 		minute: '2-digit',
-		second: '2-digit',
+		// second: '2-digit',
 		hour12: true
 	}
 });
 calendar.render();
 
+/////////////////////////////////////////////////////////////////////////////////////////
 @endsection
 
 @section('nonjquery')
 /////////////////////////////////////////////////////////////////////////////////////////
-// chartjs also dont use jquery
-
 // const data = [
 // 					{ month: 'January', percentage: 90.59, workdays: 31, leaves: 1, absents: 1, working_days: 25 },
 // 					{ month: 'February', percentage: 93.23, workdays: 28, leaves: 1, absents: 1, working_days: 25 },
@@ -1386,32 +1385,32 @@ xmlhttp.onload = function() {
 		data: {
 			labels: data.map(row => row.month),
 			datasets: [
-						{
-							type: 'line',
-							label: 'Attendance Percentage By Month(%)',
-							data: data.map(row => row.percentage),
-							tension: 0.3,
-						},
-						{
-							type: 'bar',
-							label: 'Leaves By Month',
-							data: data.map(row => row.leaves)
-						},
-						{
-							type: 'bar',
-							label: 'Absents By Month',
-							data: data.map(row => row.absents)
-						},
-						{
-							type: 'bar',
-							label: 'Working Days By Month (Person Available)',
-							data: data.map(row => row.working_days)
-						},
-						{
-							type: 'bar',
-							label: 'Work Days By Month',
-							data: data.map(row => row.workdays)
-						},
+				{
+					type: 'line',
+					label: 'Attendance Percentage By Month(%)',
+					data: data.map(row => row.percentage),
+					tension: 0.3,
+				},
+				{
+					type: 'bar',
+					label: 'Leaves By Month',
+					data: data.map(row => row.leaves)
+				},
+				{
+					type: 'bar',
+					label: 'Absents By Month',
+					data: data.map(row => row.absents)
+				},
+				{
+					type: 'bar',
+					label: 'Working Days By Month (Person Available)',
+					data: data.map(row => row.working_days)
+				},
+				{
+					type: 'bar',
+					label: 'Work Days By Month',
+					data: data.map(row => row.workdays)
+				},
 			]
 		},
 		options: {

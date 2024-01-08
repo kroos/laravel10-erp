@@ -120,11 +120,11 @@ class AppraisalJob implements ShouldQueue
 			$datejoined = ($v->join)?Carbon::parse($v->join)->format('j M Y'):NULL;
 			$dateconfirmed = ($v->confirmed)?Carbon::parse($v->confirmed)->format('j M Y'):NULL;
 			$ALentitlements = HRLeaveAnnual::where([['staff_id', $v->id], ['year', $year]])->first();
-			$altotal = $ALentitlements?->annual_leave;
+			$altotal = $ALentitlements?->annual_leave + $ALentitlements?->annual_leave_adjustment;
 			$alutilize = $ALentitlements?->annual_leave_utilize;
 			$albalance = $ALentitlements?->annual_leave_balance;
 			$MCentitlements = HRLeaveMC::where([['staff_id', $v->id], ['year', $year]])->first();
-			$mctotal = $MCentitlements?->mc_leave;
+			$mctotal = $MCentitlements?->mc_leave + $MCentitlements?->mc_leave_adjustment;
 			$mcutilize = $MCentitlements?->mc_leave_utilize;
 			$mcbalance = $MCentitlements?->mc_leave_balance;
 			$nrl = HRLeaveReplacement::where([['staff_id', $v->id], ['leave_balance', '!=', 0]])->get();

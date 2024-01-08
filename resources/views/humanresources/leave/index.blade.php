@@ -56,8 +56,9 @@ foreach ($c as $v) {
 					</p>
 				</td>
 			</tr>
-			@for($i = now()->year; $i <= ((Setting::find(6)->active == 1)?now()->addYear()->year:now()->year); ++$i)
+			@for($i = (Setting::find(7)->active == 1)?now()->year:now()->subYear()->year; $i <= ((Setting::find(6)->active == 1)?now()->year:now()->addYear()->year); ++$i)
 <?php
+echo $i;
 $leaveAL =  $us->hasmanyleaveannual()?->where('year', $i)->first();
 $leaveMC =  $us->hasmanyleavemc()?->where('year', $i)->first();
 $leaveMa =  $us->hasmanyleavematernity()?->where('year', $i)->first();
@@ -156,8 +157,8 @@ $leaveMa =  $us->hasmanyleavematernity()?->where('year', $i)->first();
 	<!-- list of leaves -->
 	<?php
 	// dd(\Carbon\Carbon::now()->copy()->startOfYear());
-	$starty = \Carbon\Carbon::now()->copy()->startOfYear();
-	$lea =  $us->hasmanyleave()->where('date_time_start', '>=', $starty)->get();
+	$starty = now()->format('Y');
+	$lea =  $us->hasmanyleave()->whereYear('date_time_start', '>=', now()->subYear()->format('Y'))->whereYear('date_time_end', '<=', now()->format('Y'))->get();
 	// dd($lea);
 	?>
 	@if( $lea->count() > 0 )
