@@ -546,9 +546,9 @@ $us = $user->belongstomanydepartment->first()?->branch_id;              //get us
 
                         <div class="table">
                           <div class="table-row">
-                            <div class="table-cell-top text-wrap" style="width: 17%;"><span id="left-detail">AL</span>:<span id="right-detail">{{ $annl?->annual_leave_balance }}/{{ $annl?->annual_leave }}</span></div>
-                            <div class="table-cell-top text-wrap" style="width: 17%;"><span id="left-detail">MC</span>:<span id="right-detail">{{ $mcel?->mc_leave_balance }}/{{ $mcel?->mc_leave }}</span></div>
-                            <div class="table-cell-top text-wrap" style="width: 16%;"><span id="left-detail">Maternity</span>:<span id="right-detail">{{ $matl?->maternity_leave_balance }}/{{ $matl?->maternity_leave }}</span></div>
+                            <div class="table-cell-top text-wrap" style="width: 17%;"><span id="left-detail">AL</span>:<span id="right-detail">{{ $annl?->annual_leave_balance }}/{{ $annl?->annual_leave + $annl?->annual_leave_adjustment }}</span></div>
+                            <div class="table-cell-top text-wrap" style="width: 17%;"><span id="left-detail">MC</span>:<span id="right-detail">{{ $mcel?->mc_leave_balance }}/{{ $mcel?->mc_leave + $mcel?->mc_leave_adjustment }}</span></div>
+                            <div class="table-cell-top text-wrap" style="width: 16%;"><span id="left-detail">Maternity</span>:<span id="right-detail">{{ $matl?->maternity_leave_balance }}/{{ $matl?->maternity_leave + $matl?->maternity_leave_adjustment }}</span></div>
                             <div class="table-cell-top text-wrap" style="width: 17%;"><span id="left-detail">Replacement</span>:<span id="right-detail">{{ $replb?->first()?->total }}/{{ $replt?->first()?->total }}</span></div>
                             <div class="table-cell-top text-wrap" style="width: 17%;"><span id="left-detail">UPL</span>:<span id="right-detail">{{ $upal?->first()?->total }}</span></div>
                             <div class="table-cell-top text-wrap" style="width: 16%;"><span id="left-detail">MC-UPL</span>:<span id="right-detail">{{ $mcupl?->first()?->total }}</span></div>
@@ -744,9 +744,9 @@ $us = $user->belongstomanydepartment->first()?->branch_id;              //get us
 
                         <div class="table">
                           <div class="table-row">
-                            <div class="table-cell-top text-wrap" style="width: 17%;"><span id="left-detail">AL</span>:<span id="right-detail">{{ $annl?->annual_leave_balance }}/{{ $annl?->annual_leave }}</span></div>
-                            <div class="table-cell-top text-wrap" style="width: 17%;"><span id="left-detail">MC</span>:<span id="right-detail">{{ $mcel?->mc_leave_balance }}/{{ $mcel?->mc_leave }}</span></div>
-                            <div class="table-cell-top text-wrap" style="width: 16%;"><span id="left-detail">Maternity</span>:<span id="right-detail">{{ $matl?->maternity_leave_balance }}/{{ $matl?->maternity_leave }}</span></div>
+                            <div class="table-cell-top text-wrap" style="width: 17%;"><span id="left-detail">AL</span>:<span id="right-detail">{{ $annl?->annual_leave_balance }}/{{ $annl?->annual_leave + $annl?->annual_leave_adjustment }}</span></div>
+                            <div class="table-cell-top text-wrap" style="width: 17%;"><span id="left-detail">MC</span>:<span id="right-detail">{{ $mcel?->mc_leave_balance }}/{{ $mcel?->mc_leave + $mcel?->mc_leave_adjustment }}</span></div>
+                            <div class="table-cell-top text-wrap" style="width: 16%;"><span id="left-detail">Maternity</span>:<span id="right-detail">{{ $matl?->maternity_leave_balance }}/{{ $matl?->maternity_leave + $matl?->maternity_leave_adjustment }}</span></div>
                             <div class="table-cell-top text-wrap" style="width: 17%;"><span id="left-detail">Replacement</span>:<span id="right-detail">{{ $replb?->first()?->total }}/{{ $replt?->first()?->total }}</span></div>
                             <div class="table-cell-top text-wrap" style="width: 17%;"><span id="left-detail">UPL</span>:<span id="right-detail">{{ $upal?->first()?->total }}</span></div>
                             <div class="table-cell-top text-wrap" style="width: 16%;"><span id="left-detail">MC-UPL</span>:<span id="right-detail">{{ $mcupl?->first()?->total }}</span></div>
