@@ -239,15 +239,41 @@ $us = $user->belongstomanydepartment->first()?->branch_id;              //get us
         $hr = $leav->hasmanyleaveapprovalhr?->first();
 
         // entitlement
-        $annl = $staff1->hasmanyleaveannual()?->where('year', now()->format('Y'))->first();
-        $mcel = $staff1->hasmanyleavemc()?->where('year', now()->format('Y'))->first();
-        $matl = $staff1->hasmanyleavematernity()?->where('year', now()->format('Y'))->first();
-        $replt = $staff1->hasmanyleavereplacement()?->selectRaw('SUM(leave_total) as total')->where(function (Builder $query) {
-          $query->whereDate('date_start', '>=', now()->startOfYear())->whereDate('date_end', '<=', now()->endOfYear());
-        })->get();
-        $replb = $staff1->hasmanyleavereplacement()?->selectRaw('SUM(leave_balance) as total')->where(function (Builder $query) {
-          $query->whereDate('date_start', '>=', now()->startOfYear())->whereDate('date_end', '<=', now()->endOfYear());
-        })->get();
+        $annl = $staff1->hasmanyleaveannual()?->where('year', Carbon::parse($leav->date_time_start)->format('Y'))->first();
+        $mcel = $staff1->hasmanyleavemc()?->where('year', Carbon::parse($leav->date_time_start)->format('Y'))->first();
+        $matl = $staff1->hasmanyleavematernity()?->where('year', Carbon::parse($leav->date_time_start)->format('Y'))->first();
+        $replt = $staff1->hasmanyleavereplacement()?->selectRaw('SUM(leave_total) as total')->where(function (Builder $query) use ($leav) {
+          $query->whereDate('date_start', '>=', Carbon::parse($leav?->date_time_start)->startOfYear())
+            ->whereDate('date_end', '<=', Carbon::parse($leav?->date_time_start)->endOfYear());
+        })
+          ->get();
+        $replb = $staff1->hasmanyleavereplacement()?->selectRaw('SUM(leave_balance) as total')->where(function (Builder $query) use ($leav) {
+          $query->whereDate('date_start', '>=', Carbon::parse($leav?->date_time_start)->startOfYear())
+            ->whereDate('date_end', '<=', Carbon::parse($leav?->date_time_start)->endOfYear());
+        })
+          ->get();
+        $upal = $staff1->hasmanyleave()?->selectRaw('SUM(period_day) as total')
+          ->where(function (Builder $query) use ($leav) {
+            $query->whereDate('date_time_start', '>=', Carbon::parse($leav?->date_time_start)->startOfYear())
+              ->whereDate('date_time_end', '<=', Carbon::parse($leav?->date_time_start)->endOfYear());
+          })
+          ->where(function (Builder $query) {
+            $query->whereIn('leave_status_id', [5, 6])
+              ->orWhereNull('leave_status_id');
+          })
+          ->whereIn('leave_type_id', [3, 6])
+          ->get();
+        $mcupl = $staff1->hasmanyleave()?->selectRaw('SUM(period_day) as total')
+          ->where(function (Builder $query) use ($leav) {
+            $query->whereDate('date_time_start', '>=', Carbon::parse($leav?->date_time_start)->startOfYear())
+              ->whereDate('date_time_end', '<=', Carbon::parse($leav?->date_time_start)->endOfYear());
+          })
+          ->where(function (Builder $query) {
+            $query->whereIn('leave_status_id', [5, 6])
+              ->orWhereNull('leave_status_id');
+          })
+          ->where('leave_type_id', 11)
+          ->get();
         $upal = $staff1->hasmanyleave()?->selectRaw('SUM(period_day) as total')
           ->where(function (Builder $query) {
             $query->whereDate('date_time_start', '>=', now()->startOfYear())
@@ -508,6 +534,16 @@ $us = $user->belongstomanydepartment->first()?->branch_id;              //get us
                         @endif
                         @endif
 
+                        <p>Supporting Document : {!! ($leav->softcopy)?'<a href="'.asset('storage/leaves/'.$leav->softcopy).'" target="_blank">Link</a>':null !!} </p>
+
+                        <div class="table">
+                          <div class="table-row">
+                            <div class="table-cell">
+                              <span id="left-detail">Entitlement Year {{ Carbon::parse($leav->date_time_start)->format('Y') }}</span>
+                            </div>
+                          </div>
+                        </div>
+
                         <div class="table">
                           <div class="table-row">
                             <div class="table-cell-top text-wrap" style="width: 17%;"><span id="left-detail">AL</span>:<span id="right-detail">{{ $annl?->annual_leave_balance }}/{{ $annl?->annual_leave }}</span></div>
@@ -519,11 +555,12 @@ $us = $user->belongstomanydepartment->first()?->branch_id;              //get us
                           </div>
                         </div>
 
-                        <p>Supporting Document : {!! ($leav->softcopy)?'<a href="'.asset('storage/leaves/'.$leav->softcopy).'" target="_blank">Link</a>':null !!} </p>
+                        <p></p>
+
                       </div>
                     </div>
                     <!-------------------------------------------------------------------------------- LEAVE SHOW END -------------------------------------------------------------------------------->
-                    
+
                     {{ Form::open(['route' => ['leavestatus.supervisorstatus'], 'method' => 'patch', 'id' => 'form', 'class' => 'form', 'autocomplete' => 'off', 'files' => true, 'data-id' => $a->id, 'data-toggle' => 'validator']) }}
                     {{ Form::hidden('id', $a->id) }}
 
@@ -550,7 +587,7 @@ $us = $user->belongstomanydepartment->first()?->branch_id;              //get us
                       </div>
                     </div>
                   </div>
-                  
+
                   <div class="modal-footer">
                     <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Close</button>
                     {{ Form::submit('Submit', ['class' => 'btn btn-sm btn-outline-secondary']) }}
@@ -695,6 +732,16 @@ $us = $user->belongstomanydepartment->first()?->branch_id;              //get us
                         @endif
                         @endif
 
+                        <p>Supporting Document : {!! ($leav->softcopy)?'<a href="'.asset('storage/leaves/'.$leav->softcopy).'" target="_blank">Link</a>':null !!} </p>
+
+                        <div class="table">
+                          <div class="table-row">
+                            <div class="table-cell">
+                              <span id="left-detail">Entitlement Year {{ Carbon::parse($leav->date_time_start)->format('Y') }}</span>
+                            </div>
+                          </div>
+                        </div>
+
                         <div class="table">
                           <div class="table-row">
                             <div class="table-cell-top text-wrap" style="width: 17%;"><span id="left-detail">AL</span>:<span id="right-detail">{{ $annl?->annual_leave_balance }}/{{ $annl?->annual_leave }}</span></div>
@@ -706,7 +753,8 @@ $us = $user->belongstomanydepartment->first()?->branch_id;              //get us
                           </div>
                         </div>
 
-                        <p>Supporting Document : {!! ($leav->softcopy)?'<a href="'.asset('storage/leaves/'.$leav->softcopy).'" target="_blank">Link</a>':null !!} </p>
+                        <p></p>
+
                       </div>
                     </div>
                     <!-------------------------------------------------------------------------------- LEAVE SHOW END -------------------------------------------------------------------------------->
@@ -758,6 +806,7 @@ $us = $user->belongstomanydepartment->first()?->branch_id;              //get us
   @endif
 </div>
 @endsection
+
 
 @section('js')
 /////////////////////////////////////////////////////////////////////////////////////////

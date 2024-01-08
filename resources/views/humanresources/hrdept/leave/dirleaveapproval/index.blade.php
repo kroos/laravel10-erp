@@ -200,7 +200,6 @@ foreach ($c as $v) {
         // find leave backup if any
         $backup = $leav->hasmanyleaveapprovalbackup()->get();
 
-        //indicator start
         if ($backup->count()) {
           if (is_null($backup->first()->leave_status_id)) {
             $bapp = '<span class="text-warning" style="background-color:transparent;">Pending</span>';
@@ -213,7 +212,6 @@ foreach ($c as $v) {
           $bapp = '<span class="text-danger" style="background-color:transparent;">No Backup</span>';
           $backup_person = "box-red";
         }
-        //indicator end
 
         $hrremarksattendance = HRAttendance::where(function (Builder $query) use ($leav) {
           $query->whereDate('attend_date', '>=', $leav->date_time_start)
@@ -232,19 +230,23 @@ foreach ($c as $v) {
         $hr = $leav->hasmanyleaveapprovalhr?->first();
 
         // entitlement
-        $annl = $staff->hasmanyleaveannual()?->where('year', now()->format('Y'))->first();
-        $mcel = $staff->hasmanyleavemc()?->where('year', now()->format('Y'))->first();
-        $matl = $staff->hasmanyleavematernity()?->where('year', now()->format('Y'))->first();
-        $replt = $staff->hasmanyleavereplacement()?->selectRaw('SUM(leave_total) as total')->where(function (Builder $query) {
-          $query->whereDate('date_start', '>=', now()->startOfYear())->whereDate('date_end', '<=', now()->endOfYear());
-        })->get();
-        $replb = $staff->hasmanyleavereplacement()?->selectRaw('SUM(leave_balance) as total')->where(function (Builder $query) {
-          $query->whereDate('date_start', '>=', now()->startOfYear())->whereDate('date_end', '<=', now()->endOfYear());
-        })->get();
+        $annl = $staff->hasmanyleaveannual()?->where('year', Carbon::parse($leav->date_time_start)->format('Y'))->first();
+        $mcel = $staff->hasmanyleavemc()?->where('year', Carbon::parse($leav->date_time_start)->format('Y'))->first();
+        $matl = $staff->hasmanyleavematernity()?->where('year', Carbon::parse($leav->date_time_start)->format('Y'))->first();
+        $replt = $staff->hasmanyleavereplacement()?->selectRaw('SUM(leave_total) as total')->where(function (Builder $query) use ($leav) {
+          $query->whereDate('date_start', '>=', Carbon::parse($leav?->date_time_start)->startOfYear())
+            ->whereDate('date_end', '<=', Carbon::parse($leav?->date_time_start)->endOfYear());
+        })
+          ->get();
+        $replb = $staff->hasmanyleavereplacement()?->selectRaw('SUM(leave_balance) as total')->where(function (Builder $query) use ($leav) {
+          $query->whereDate('date_start', '>=', Carbon::parse($leav?->date_time_start)->startOfYear())
+            ->whereDate('date_end', '<=', Carbon::parse($leav?->date_time_start)->endOfYear());
+        })
+          ->get();
         $upal = $staff->hasmanyleave()?->selectRaw('SUM(period_day) as total')
-          ->where(function (Builder $query) {
-            $query->whereDate('date_time_start', '>=', now()->startOfYear())
-              ->whereDate('date_time_end', '<=', now()->endOfYear());
+          ->where(function (Builder $query) use ($leav) {
+            $query->whereDate('date_time_start', '>=', Carbon::parse($leav?->date_time_start)->startOfYear())
+              ->whereDate('date_time_end', '<=', Carbon::parse($leav?->date_time_start)->endOfYear());
           })
           ->where(function (Builder $query) {
             $query->whereIn('leave_status_id', [5, 6])
@@ -253,9 +255,9 @@ foreach ($c as $v) {
           ->whereIn('leave_type_id', [3, 6])
           ->get();
         $mcupl = $staff->hasmanyleave()?->selectRaw('SUM(period_day) as total')
-          ->where(function (Builder $query) {
-            $query->whereDate('date_time_start', '>=', now()->startOfYear())
-              ->whereDate('date_time_end', '<=', now()->endOfYear());
+          ->where(function (Builder $query) use ($leav) {
+            $query->whereDate('date_time_start', '>=', Carbon::parse($leav?->date_time_start)->startOfYear())
+              ->whereDate('date_time_end', '<=', Carbon::parse($leav?->date_time_start)->endOfYear());
           })
           ->where(function (Builder $query) {
             $query->whereIn('leave_status_id', [5, 6])
@@ -264,7 +266,7 @@ foreach ($c as $v) {
           ->where('leave_type_id', 11)
           ->get();
 
-        // INDICATOR start
+        // INDICATOR 
         $leave_type_code = $leav->belongstooptleavetype?->leave_type_code;
 
         if (strpos($leave_type_code, 'EL') === false) {
@@ -288,7 +290,6 @@ foreach ($c as $v) {
             $support_doc = 'box-red';
           }
         }
-        //indicator end
         ?>
 
         <?php
@@ -367,7 +368,6 @@ foreach ($c as $v) {
         } else {
           $attendance_percentage = 'box-red';
         }
-        //indicator end
         ?>
 
         <tr class="{{ $u }}">
@@ -501,6 +501,16 @@ foreach ($c as $v) {
                         @endif
                         @endif
 
+                        <p>Supporting Document : {!! ($leav->softcopy)?'<a href="'.asset('storage/leaves/'.$leav->softcopy).'" target="_blank">Link</a>':null !!} </p>
+
+                        <div class="table">
+                          <div class="table-row">
+                            <div class="table-cell">
+                              <span id="left-detail">Entitlement Year {{ Carbon::parse($leav->date_time_start)->format('Y') }}</span>
+                            </div>
+                          </div>
+                        </div>
+
                         <div class="table">
                           <div class="table-row">
                             <div class="table-cell-top text-wrap" style="width: 17%;"><span id="left-detail">AL</span>:<span id="right-detail">{{ $annl?->annual_leave_balance }}/{{ $annl?->annual_leave }}</span></div>
@@ -512,7 +522,8 @@ foreach ($c as $v) {
                           </div>
                         </div>
 
-                        <p>Supporting Document : {!! ($leav->softcopy)?'<a href="'.asset('storage/leaves/'.$leav->softcopy).'" target="_blank">Link</a>':null !!} </p>
+                        <p></p>
+
                       </div>
                     </div>
                     <!-------------------------------------------------------------------------------- LEAVE SHOW END -------------------------------------------------------------------------------->
@@ -563,6 +574,7 @@ foreach ($c as $v) {
   @endif
 </div>
 @endsection
+
 
 @section('js')
 /////////////////////////////////////////////////////////////////////////////////////////
