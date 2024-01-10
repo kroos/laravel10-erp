@@ -57,24 +57,6 @@ class AppraisalFormController extends Controller
    */
   public function index(): View
   {
-    // // ini_set('max_execution_time', 60000000000);
-    // if ($request->date != NULL) {
-    // 	$selected_date = $request->date;
-    // } else {
-    // 	$current_time = now();
-    // 	$selected_date = $current_time->format('Y-m-d');
-    // }
-
-    // $attendance = HRAttendance::join('staffs', 'hr_attendances.staff_id', '=', 'staffs.id')
-    // 	->select('hr_attendances.id as id', 'staff_id', 'daytype_id', 'attendance_type_id', 'attend_date', 'in', 'break', 'resume', 'out', 'time_work_hour', 'work_hour', 'leave_id', 'hr_attendances.remarks as remarks', 'hr_attendances.hr_remarks as hr_remarks', 'exception', 'hr_attendances.created_at as created_at', 'hr_attendances.updated_at as updated_at', 'hr_attendances.deleted_at as deleted_at', 'staffs.name as name', 'staffs.restday_group_id as restday_group_id', 'staffs.active as active')
-    // 	->where('staffs.active', 1)
-    // 	->where('attend_date', $selected_date)
-    // 	// ->where(function(Builder $query) {
-    // 	// 	$query->whereDate('attend_date', '>=', '2023-01-01')
-    // 	// 	->whereDate('attend_date', '<=', '2023-12-31');
-    // 	// })
-    // 	->get();
-
     $departments = DepartmentPivot::all();
 
     return view('humanresources.hrdept.appraisal.form.index', ['departments' => $departments]);
@@ -100,7 +82,7 @@ class AppraisalFormController extends Controller
     $p3_end = $request->p3_end;
     $p4_end = $request->p4_end;
 
-    // P1
+    // ---------------------------------------------- P1 ----------------------------------------------
     for ($p1_start = 1; $p1_start <= $p1_end; $p1_start++) {
 
       if ($request->has('p1' . $p1_start)) {
@@ -119,12 +101,29 @@ class AppraisalFormController extends Controller
 
           $section_id = HRAppraisalSection::select('id')->orderBy('id', 'DESC')->first();
 
-
           // PIVOT DEPT APPRAISAL
-          $section_id->belongstomanydepartmentpivot()->attach($request->department_id);
+          $form_version = DB::table('pivot_dept_appraisals')
+            ->where('department_id', $request->department_id)
+            ->whereNotNull('version')
+            ->orderBy('version', 'DESC')
+            ->first();
+
+          if ($form_version) {
+            $form_ver = $form_version->version ?? 0;
+          } else {
+            $form_ver = 0;
+          }
+
+          if ($p1_start == 1) {
+            $form_ver = $form_ver + 1;
+          }
+          
+          $section_id->belongstomanydepartmentpivot()->attach($request->department_id, [
+            'version' => $form_ver,
+          ]);
 
 
-          // P2
+          // ---------------------------------------------- P2 ----------------------------------------------
           for ($p2_start = 1; $p2_start <= $p2_end; $p2_start++) {
 
             if ($request->has('p2' . $p1_start . $p2_start)) {
@@ -146,7 +145,7 @@ class AppraisalFormController extends Controller
                 $sectionsub_id = HRAppraisalSectionSub::select('id')->orderBy('id', 'DESC')->first();
 
 
-                // P3
+                // ---------------------------------------------- P3 ----------------------------------------------
                 for ($p3_start = 1; $p3_start <= $p3_end; $p3_start++) {
 
                   if ($request->has('p3' . $p1_start . $p2_start . $p3_start)) {
@@ -169,8 +168,8 @@ class AppraisalFormController extends Controller
 
                       $mainquestion_id = HRAppraisalMainQuestion::select('id')->orderBy('id', 'DESC')->first();
 
-                      
-                      // P4
+
+                      // ---------------------------------------------- P4 ----------------------------------------------
                       for ($p4_start = 1; $p4_start <= $p4_end; $p4_start++) {
 
                         if ($request->has('p4' . $p1_start . $p2_start . $p3_start . $p4_start)) {
@@ -193,15 +192,19 @@ class AppraisalFormController extends Controller
                           }
                         }
                       }
+                      // ---------------------------------------------- P4 ----------------------------------------------
                     }
                   }
                 }
+                // ---------------------------------------------- P3 ----------------------------------------------
               }
             }
           }
+          // ---------------------------------------------- P2 ----------------------------------------------
         }
       }
     }
+    // ---------------------------------------------- P1 ----------------------------------------------
 
     Session::flash('flash_message', 'Successfully Submit Appraisal Form.');
     return redirect()->route('appraisalform.index');
@@ -210,9 +213,9 @@ class AppraisalFormController extends Controller
   /**
    * Display the specified resource.
    */
-  public function show(): View
+  public function show($appraisalform): View
   {
-    // return view('humanresources.hrdept.attendance.show', ['attendance' => $attendance]);
+    return view('humanresources.hrdept.appraisal.form.show', ['id' => $appraisalform]);
   }
 
   /**
