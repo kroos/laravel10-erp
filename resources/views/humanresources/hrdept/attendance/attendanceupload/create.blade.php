@@ -42,6 +42,8 @@
 @endsection
 
 @section('js')
+// this form will send twice thus the job batches will be twice also due to bootstrap validator and laravel validator.
+// so need to use custome validation. just dont use any 3rd party validation method as it will send its own form instead of our ajax as below
 /////////////////////////////////////////////////////////////////////////////////////////
 
 @if( request()->id || session()->exists('lastBatchIdAttPop') )
