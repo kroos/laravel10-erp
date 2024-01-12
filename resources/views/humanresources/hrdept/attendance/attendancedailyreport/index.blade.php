@@ -42,12 +42,12 @@ use App\Models\HumanResources\HRAttendance;
 	{!! Form::close() !!}
 
 
-	@if ($dailyreport_absent->isNotEmpty() || $dailyreport_late->isNotEmpty() || $dailyreport_outstation->isNotEmpty())
+	@if (!empty($dailyreport_absent)|| !empty($dailyreport_late)|| !empty($dailyreport_outstation))
 	<div class="row g-3 mb-3">
 		<table class="table table-hover table-sm align-middle">
 
 			<!-- ABSENT -->
-			@if ($dailyreport_absent->isNotEmpty())
+			@if (!empty($dailyreport_absent))
 			<?php $no = 1; ?>
 			<tr class="top-row">
 				<td colspan="11">
@@ -283,7 +283,7 @@ use App\Models\HumanResources\HRAttendance;
 
 
 			<!-- OUTSTATION -->
-			@if ($dailyreport_outstation->isNotEmpty())
+			@if (!empty($dailyreport_outstation))
 			<?php $no = 1; ?>
 			<tr class="top-row">
 				<td colspan="11">

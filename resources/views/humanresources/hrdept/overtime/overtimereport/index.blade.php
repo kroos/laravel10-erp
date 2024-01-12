@@ -30,6 +30,9 @@ if ($date_start != NULL && $date_end != NULL) {
   $startDate = Carbon::parse($date_start);
   $endDate = Carbon::parse($date_end);
 }
+
+$currentYear = Carbon::now()->year;
+$lastYear = Carbon::now()->subYear()->year;
 ?>
 
 <div class="container">
@@ -56,6 +59,30 @@ if ($date_start != NULL && $date_end != NULL) {
       </select>
     </div>
     <div class="col-auto">
+      <select class="form-control month" id="month" name="month">
+        <option selected="selected" value=""></option>
+        <option value="January">January</option>
+        <option value="February">February</option>
+        <option value="March">March</option>
+        <option value="April">April</option>
+        <option value="May">May</option>
+        <option value="June">June</option>
+        <option value="July">July</option>
+        <option value="August">August</option>
+        <option value="September">September</option>
+        <option value="October">October</option>
+        <option value="November">November</option>
+        <option value="December">December</option>
+      </select>
+    </div>
+    <div class="col-auto">
+      <select class="form-control year" id="year" name="year">
+        <option selected="selected" value=""></option>
+        <option value="{{ $currentYear }}">{{ $currentYear }}</option>
+        <option value="{{ $lastYear }}">{{ $lastYear }}</option>
+      </select>
+    </div>
+    <div class="col-auto">
       {!! Form::submit('SUBMIT', ['class' => 'form-control form-control-sm btn btn-sm btn-outline-secondary']) !!}
     </div>
   </div>
@@ -65,7 +92,7 @@ if ($date_start != NULL && $date_end != NULL) {
   @if ($overtimes != NULL)
   <div class="row g-3 mb-3 text-center">
     <div class="text-center">
-      Overtime Claim Form {{Carbon::parse($date_start)->format('j')}} - {{Carbon::parse($date_end)->format('j')}} {{Carbon::parse($date_end)->format('F')}} {{Carbon::parse($date_end)->format('Y') }} ({{ $title }} of {{Carbon::parse($date_end)->format('F')}} {{Carbon::parse($date_end)->format('Y') }})
+      Overtime Claim Form {{Carbon::parse($date_start)->format('j')}} - {{Carbon::parse($date_end)->format('j')}} {{Carbon::parse($date_end)->format('F')}} {{Carbon::parse($date_end)->format('Y') }} ({{ $title }} of {{ $month }} {{ $year }})
     </div>
   </div>
 
@@ -170,6 +197,8 @@ if ($date_start != NULL && $date_end != NULL) {
         <input type="hidden" name="date_end" id="date_end" value="{{ $date_end }}">
         <input type="hidden" name="branch" id="branch" value="{{ $branch }}">
         <input type="hidden" name="title" id="title" value="{{ $title }}">
+        <input type="hidden" name="month" id="month" value="{{ $month }}">
+        <input type="hidden" name="year" id="year" value="{{ $year }}">
 
         <input type="submit" class="btn btn-sm btn-outline-secondary" value="PRINT" target="_blank">
       </div>
@@ -211,6 +240,20 @@ closeOnSelect: true,
 
 $('#title').select2({
 placeholder: 'Title',
+width: '100px',
+allowClear: false,
+closeOnSelect: true,
+});
+
+$('#month').select2({
+placeholder: 'Month',
+width: '130px',
+allowClear: false,
+closeOnSelect: true,
+});
+
+$('#year').select2({
+placeholder: 'Year',
 width: '100px',
 allowClear: false,
 closeOnSelect: true,

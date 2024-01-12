@@ -4,7 +4,12 @@
 <style>
   .img1 {
     text-align: center;
+    /* border: 1px solid black; */
   }
+
+  /* div {
+    border: 1px solid black;
+  } */
 </style>
 
 <div class="container">
@@ -18,9 +23,31 @@
 
   <input type="hidden" name="department_id" value="{{ $department->id }}">
 
-  <div class="img1 mb-3">
-    <img src="{{ asset('images/appraisal/Bahagian1.jpg') }}" width="800px">
+
+
+  <div class="row">
+    <div class="col-sm-6 img1 mb-3">
+      <b>SAMPLE BAHAGIAN 1</b>
+      <img src="{{ asset('images/appraisal/Bahagian1.jpg') }}" width="620px">
+    </div>
+    <div class="col-sm-6 img1 mb-3">
+      <b>SAMPLE BAHAGIAN 2</b>
+      <img src="{{ asset('images/appraisal/Bahagian2.jpg') }}" width="620px">
+    </div>
   </div>
+
+
+  <div class="row">
+    <div class="col-sm-6 img1 mb-3">
+      <b>SAMPLE BAHAGIAN 3</b>
+      <img src="{{ asset('images/appraisal/Bahagian3.jpg') }}" width="620px">
+    </div>
+    <div class="col-sm-6 img1 mb-3">
+      <b>SAMPLE BAHAGIAN 4</b>
+      <img src="{{ asset('images/appraisal/Bahagian4.jpg') }}" width="620px">
+    </div>
+  </div>
+
 
   <div class="row mb-3">
     <div style="width: 4%">
@@ -38,6 +65,14 @@
 	</div>
 
   {{ Form::close() }}
+
+  <div class="row mt-3">
+    <div class="col-md-12 text-center">
+      <a href="{{ url()->previous() }}">
+        <button class="btn btn-sm btn-outline-secondary">BACK</button>
+      </a>
+    </div>
+  </div>
 
 </div>
 @endsection
