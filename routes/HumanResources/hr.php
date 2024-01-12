@@ -96,7 +96,7 @@ Route::get('/attendancereport/create', [AttendanceReportController::class, 'crea
 Route::get('/attendancereport/store', [AttendanceReportController::class, 'store'])->name('attendancereport.store');
 Route::get('/attendancereportpdf/store', [AttendanceReportPDFController::class, 'store'])->name('attendancereportpdf.store');
 
-Route::get('/attendanceupload', [AttendanceUploadController::class, 'create'])->name('attendanceupload.create');
+Route::get('/attendanceupload/create', [AttendanceUploadController::class, 'create'])->name('attendanceupload.create');
 Route::post('/attendanceupload', [AttendanceUploadController::class, 'store'])->name('attendanceupload.store');
 
 Route::get('/overtimereport', [OvertimeReportController::class, 'index'])->name('overtimereport.index');
