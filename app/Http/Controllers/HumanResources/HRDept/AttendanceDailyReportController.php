@@ -217,6 +217,8 @@ class AttendanceDailyReportController extends Controller
     $saturday = HRRestdayCalendar::where('saturday_date', '=', $selected_date)->select('restday_group_id')->first();
 
     ////////////////////////////////////////////////////////////////////////////////////
+    $dailyreport_absent = NULL;
+    
     if (isset($saturday)) {
       $dailyreport_absent = HRAttendance::join('staffs', 'staffs.id', '=', 'hr_attendances.staff_id')
         ->join('logins', 'hr_attendances.staff_id', '=', 'logins.staff_id')
@@ -326,6 +328,8 @@ class AttendanceDailyReportController extends Controller
 
 
     ////////////////////////////////////////////////////////////////////////////////////
+    $dailyreport_outstation = NULL;
+
     $dailyreport_outstation = HRAttendance::join('staffs', 'staffs.id', '=', 'hr_attendances.staff_id')
       ->join('logins', 'hr_attendances.staff_id', '=', 'logins.staff_id')
       ->join('pivot_staff_pivotdepts', 'staffs.id', '=', 'pivot_staff_pivotdepts.staff_id')

@@ -43,6 +43,7 @@ use App\Http\Controllers\HumanResources\HRDept\AppraisalExcelReportController;
 use App\Http\Controllers\HumanResources\HRDept\AttendanceRemarkController;
 use App\Http\Controllers\HumanResources\HRDept\AppraisalFormController;
 use App\Http\Controllers\HumanResources\HRDept\OutstationDurationController;
+use App\Http\Controllers\HumanResources\HRDept\AppraisalFormMoreFunctionController;
 
 
 Route::resources([
@@ -118,3 +119,6 @@ Route::get('/profile/show/{profile}', [ProfileController::class, 'show'])->name(
 Route::post('/profile/show/{profile}', [ProfileController::class, 'show'])->name('profile.show');
 
 Route::get('/outstationduration', [OutstationDurationController::class, 'index'])->name('outstationduration.index');
+
+Route::get('/appraisalformpdf/print', [AppraisalFormMoreFunctionController::class, 'print'])->name('appraisalformpdf.print');
+Route::get('/appraisalformduplicate/store', [AppraisalFormMoreFunctionController::class, 'store'])->name('appraisalformduplicate.store');
