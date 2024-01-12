@@ -63,7 +63,7 @@ if ($date_start != NULL && $date_end != NULL) {
 <table class="theme">
   <tr>
     <td align="center">
-      Overtime Claim Form {{Carbon::parse($date_start)->format('j')}} - {{Carbon::parse($date_end)->format('j')}} {{Carbon::parse($date_end)->format('F')}} {{Carbon::parse($date_end)->format('Y') }} ({{ $title }} of {{Carbon::parse($date_end)->format('F')}} {{Carbon::parse($date_end)->format('Y') }}) </td>
+      Overtime Claim Form {{Carbon::parse($date_start)->format('j')}} - {{Carbon::parse($date_end)->format('j')}} {{Carbon::parse($date_end)->format('F')}} {{Carbon::parse($date_end)->format('Y') }} ({{ $title }} of {{ $month }} {{ $year }}) </td>
   </tr>
 </table>
 

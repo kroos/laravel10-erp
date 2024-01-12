@@ -258,8 +258,12 @@ class AppraisalFormController extends Controller
   /**
    * Remove the specified resource from storage.
    */
-  public function destroy(): RedirectResponse
+  public function destroy($appraisalform): JsonResponse
   {
-    //
+    $section_id->belongstomanydepartmentpivot()->attach($request->department_id);
+    return response()->json([
+			'message' => 'Data deleted',
+			'status' => 'success'
+		]);
   }
 }

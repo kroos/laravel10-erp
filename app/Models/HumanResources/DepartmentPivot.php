@@ -3,6 +3,7 @@
 namespace App\Models\HumanResources;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 // use Illuminate\Database\Eloquent\Model;
 use App\Models\Model;
 
@@ -17,7 +18,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class DepartmentPivot extends Model
 {
-	use HasFactory;
+	use HasFactory, SoftDeletes;
 	// protected $connection = 'mysql';
 	protected $table = 'pivot_dept_cate_branches';
 
@@ -30,7 +31,7 @@ class DepartmentPivot extends Model
 
 	public function belongstomanysection(): BelongsToMany
 	{
-		return $this->belongsToMany(\App\Models\HumanResources\HRAppraisalSection::class, 'pivot_dept_appraisals', 'department_id', 'section_id')->withTimestamps();
+		return $this->belongsToMany(\App\Models\HumanResources\HRAppraisalSection::class, 'pivot_dept_appraisals', 'department_id', 'section_id')->withPivot('version', 'sort')->withTimestamps();
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////

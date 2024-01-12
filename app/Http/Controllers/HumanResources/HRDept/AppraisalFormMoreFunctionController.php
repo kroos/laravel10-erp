@@ -70,7 +70,7 @@ class AppraisalFormMoreFunctionController extends Controller
    */
   public function index(): View
   {
-    
+    //
   }
 
   /**
@@ -78,7 +78,7 @@ class AppraisalFormMoreFunctionController extends Controller
    */
   public function create($id): View
   {
-    
+    //
   }
 
   /**
@@ -86,7 +86,102 @@ class AppraisalFormMoreFunctionController extends Controller
    */
   public function store(Request $request): RedirectResponse
   {
-dd()
+    // dd($request->id);
+
+    $pivotappraisal = DB::table('pivot_dept_appraisals')
+      ->where('id', $request->id)
+      ->first();
+
+    $appraisals = DB::table('pivot_dept_appraisals')
+      ->where('department_id', $pivotappraisal->department_id)
+      ->where('version', $pivotappraisal->version)
+      ->orderBy('sort', 'ASC')
+      ->orderBy('id', 'ASC')
+      ->get();
+
+    $incremented = NULL;
+
+    // ----------------------------- Pivot & Section -----------------------------
+    foreach ($appraisals as $appraisal) {
+
+      // Find Section
+      $section_ori = HRAppraisalSection::findOrFail($appraisal->section_id);
+
+      // Duplicate Section
+      $section_new = $section_ori->replicate();
+      $section_new->save();
+
+      // Get New Section ID
+      $section_new_id = HRAppraisalSection::select('id')->orderBy('id', 'DESC')->first();
+
+      // Add New Version Number
+      if (!$incremented) {
+        $form_ver = $pivotappraisal->version + 1;
+        $incremented = true;
+      }
+
+      // Duplicate Pivot Appraisal And Set New Version
+      $section_new_id->belongstomanydepartmentpivot()->attach($pivotappraisal->department_id, [
+        'version' => $form_ver,
+      ]);
+
+      // Loop Section Sub
+      $section_subs = HRAppraisalSectionSub::where('section_id', $appraisal->section_id)->get();
+
+
+
+      // ----------------------------- Section Sub -----------------------------
+      foreach ($section_subs as $section_sub) {
+        // Find Section Sub
+        $section_sub_ori = HRAppraisalSectionSub::findOrFail($section_sub->id);
+
+        // Duplicate Section Sub
+        $section_sub_new = $section_sub_ori->replicate();
+        $section_sub_new->section_id = $section_new_id->id;
+        $section_sub_new->save();
+
+        // Get New Section Sub ID
+        $section_sub_new_id = HRAppraisalSectionSub::select('id')->orderBy('id', 'DESC')->first();
+
+        // Loop Section Sub
+        $main_questions = HRAppraisalMainQuestion::where('section_sub_id', $section_sub->id)->get();
+
+
+
+        // ----------------------------- Main Question -----------------------------
+        foreach ($main_questions as $main_question) {
+          // Find Main Question
+          $main_question_ori = HRAppraisalMainQuestion::findOrFail($main_question->id);
+
+          // Duplicate Main Question
+          $main_question_new = $main_question_ori->replicate();
+          $main_question_new->section_sub_id = $section_sub_new_id->id;
+          $main_question_new->save();
+
+          // Get New Main Question ID
+          $main_question_new_id = HRAppraisalMainQuestion::select('id')->orderBy('id', 'DESC')->first();
+
+          // Loop Main Question
+          $questions = HRAppraisalQuestion::where('main_question_id', $main_question->id)->get();
+
+
+
+          // ----------------------------- Question -----------------------------
+          foreach ($questions as $question) {
+            // Find Main Question
+            $question_ori = HRAppraisalQuestion::findOrFail($question->id);
+
+            // Duplicate Main Question
+            $question_new = $question_ori->replicate();
+            $question_new->main_question_id = $main_question_new_id->id;
+            $question_new->save();
+          }
+        }
+      }
+    }
+
+    Session::flash('flash_message', 'Successfully Duplicate Appraisal Form.');
+    return redirect()->route('appraisalform.index');
   }
 
   /**
@@ -94,7 +189,7 @@ dd()
    */
   public function show($appraisalform): View
   {
-    
+    //
   }
 
   /**
@@ -102,7 +197,7 @@ dd()
    */
   public function edit(): View
   {
-    
+    //
   }
 
   /**
@@ -110,7 +205,7 @@ dd()
    */
   public function update(): RedirectResponse
   {
-    
+    //
   }
 
   /**

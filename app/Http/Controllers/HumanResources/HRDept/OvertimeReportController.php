@@ -69,10 +69,12 @@ class OvertimeReportController extends Controller
 
 		$branch = $request->branch;
 		$title = $request->title;
+		$month = $request->month;
+		$year = $request->year;
 		$date_start = $request->date_start;
 		$date_end = $request->date_end;
 
-		$pdf = PDF::loadView('humanresources.hrdept.overtime.overtimereport.printpdf', ['overtimes' => $overtimes, 'branch' => $branch, 'title' => $title, 'date_start' => $date_start, 'date_end' => $date_end]);
+		$pdf = PDF::loadView('humanresources.hrdept.overtime.overtimereport.printpdf', ['overtimes' => $overtimes, 'branch' => $branch, 'title' => $title, 'month' => $month, 'year' => $year, 'date_start' => $date_start, 'date_end' => $date_end]);
 		// return $pdf->download('overtime_report ' . $current_datetime . '.pdf');
 		return $pdf->stream();
 	}
@@ -85,6 +87,8 @@ class OvertimeReportController extends Controller
 		$overtimes = NULL;
 		$branch = NULL;
 		$title = NULL;
+		$month = NULL;
+		$year = NULL;
 		$date_start = NULL;
 		$date_end = NULL;
 
@@ -106,10 +110,12 @@ class OvertimeReportController extends Controller
 
 			$branch = $request->branch;
 			$title = $request->title;
+			$month = $request->month;
+			$year = $request->year;
 			$date_start = $request->date_start;
 			$date_end = $request->date_end;
 		}
-		return view('humanresources.hrdept.overtime.overtimereport.index', ['overtimes' => $overtimes, 'branch' => $branch, 'title' => $title, 'date_start' => $date_start, 'date_end' => $date_end]);
+		return view('humanresources.hrdept.overtime.overtimereport.index', ['overtimes' => $overtimes, 'branch' => $branch, 'title' => $title, 'month' => $month, 'year' => $year, 'date_start' => $date_start, 'date_end' => $date_end]);
 	}
 
 	/**
