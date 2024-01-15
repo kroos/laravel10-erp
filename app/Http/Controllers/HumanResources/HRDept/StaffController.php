@@ -91,7 +91,6 @@ class StaffController extends Controller
 		$signin = $request->only(['password']);
 		$signin += ['username' => Str::of($request->username)->upper()];
 		$signin += ['active' => 1];
-		dd($data, $signin);
 
 		$s = Staff::create($data);
 
