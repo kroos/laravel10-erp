@@ -897,7 +897,7 @@ class AjaxController extends Controller
 	{
 		// dd($request->all());
 		$staff->update(['active' => 0]);
-		$staff->hasmanylogin()->where('active', 1)->update(['active' => 0]);
+		// $staff->hasmanylogin()->where('active', 1)->update(['active' => 0]);
 		return response()->json([
 			'status' => 'success',
 			'message' => 'Staff '.$staff->name.' successfully deactivated',
