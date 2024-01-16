@@ -17,9 +17,10 @@
   tr,
   td {
     border-collapse: collapse;
-    height: 17px;
+    height: 16px;
   }
 
+  
   .table-no-border table,
   .table-no-border tr,
   .table-no-border td {
@@ -1245,7 +1246,7 @@ use App\Models\HumanResources\HROutstation;
         </table>
 
         <?php $i++; ?>
-        <br /><br />
+        <br />
       </div>
     <?php } ?>
   <?php } ?>
