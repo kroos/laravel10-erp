@@ -57,6 +57,23 @@ class AttendanceReportController extends Controller
 	public function store(Request $request): View
 	{
 		// dd($request->all(), $request->staff_id);
+		$validated = $request->validate(
+			[
+				'from' => 'required|date',
+				'to' => 'required|date',
+				'staff_id' => 'required',
+			],
+			[
+				// 'from.required' => 'Please insert year',
+				// 'to.required' => 'Please insert year',
+				// 'staff_id.*.required' => 'Please insert year',
+			],
+			[
+				'from' => 'Begin Date',
+				'to' => 'End Date',
+				'staff_id' => 'Staff',
+			]
+		);
 		$sa1 = HRAttendance::select('staff_id')
 					->whereIn('staff_id', $request->staff_id)
 					->where(function (Builder $query) use ($request){
@@ -68,8 +85,9 @@ class AttendanceReportController extends Controller
 		foreach ($sa1 as $k) {
 			$lp[] = $k->staff_id;
 		}
-		$sa = Login::whereIn('staff_id', $lp)->groupBy('staff_id')
-					->orderBy('active', 'desc')
+		$sa = Login::whereIn('staff_id', $lp)
+					->groupBy('staff_id')
+					// ->orderBy('active', 'desc')
 					->orderBy('username')
 					->get();
 					// ->ddRawSql();

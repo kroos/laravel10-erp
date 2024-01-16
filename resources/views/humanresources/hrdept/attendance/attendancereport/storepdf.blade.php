@@ -20,7 +20,7 @@
     height: 16px;
   }
 
-  
+
   .table-no-border table,
   .table-no-border tr,
   .table-no-border td {
@@ -35,7 +35,7 @@
 </style>
 
 <?php
-ini_set('max_execution_time', 3000);
+ini_set('max_execution_time', 30000);
 
 // use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Builder;

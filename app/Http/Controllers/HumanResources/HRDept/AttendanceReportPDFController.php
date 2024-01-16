@@ -69,7 +69,7 @@ class AttendanceReportPDFController extends Controller
 
     $sa = Login::whereIn('staff_id', $lp)
       ->groupBy('staff_id')
-      ->orderBy('active', 'desc')
+      // ->orderBy('active', 'desc')
       ->orderBy('username')
       ->get();
 

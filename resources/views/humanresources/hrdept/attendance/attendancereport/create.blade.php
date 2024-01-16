@@ -26,17 +26,17 @@ use Illuminate\Database\Eloquent\Builder;
 
 	{{ Form::open(['route' => 'attendancereport.store', 'method' => 'GET',  'id' => 'form', 'class' => 'form-horizontal', 'autocomplete' => 'off', 'files' => true]) }}
 	<div class="row g-3 mb-3">
-		<div class="col-auto" style="position:relative;">
+		<div class="col-auto @error('from') is-invalid @enderror" style="position:relative;">
 			<input type="text" name="from" class="form-control form-control-sm" id="from" value="" placeholder="Date From">
 		</div>
-		<div class="col-auto" style="position:relative;">
+		<div class="col-auto @error('to') is-invalid @enderror" style="position:relative;">
 			<input type="text" name="to" class="form-control form-control-sm" id="to" value="" placeholder="Date To">
 		</div>
 		<div class="col-auto">
 			<input type="submit" class="form-control form-control-sm btn btn-sm btn-outline-secondary" id="to" value="Submit">
 		</div>
 	</div>
-	<div class="g-3 mb-3 py-3 scrollable-div col-sm 5 wrap_checkbox">
+	<div class="g-3 mb-3 py-3 scrollable-div col-sm 5 wrap_checkbox @error('staff_id') is-invalid @enderror">
 	</div>
 	{{ Form::close() }}
 </div>
