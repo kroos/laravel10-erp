@@ -20,6 +20,7 @@
     height: 16px;
   }
 
+  
   .table-no-border table,
   .table-no-border tr,
   .table-no-border td {
