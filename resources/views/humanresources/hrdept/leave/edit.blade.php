@@ -999,6 +999,14 @@ $('#leave_id').on('change', function() {
 					'</div>' +
 					'<div class="form-group row m-1 {{ $errors->has('leave_cat') ? 'has-error' : '' }}" id="wrapperday">' +
 						'<div class="form-group col-sm-8 offset-sm-4 {{ $errors->has('half_type_id') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
+							@if($hrleave->period_day <= 0.5)
+								'<div class="form-check form-check-inline removetest">' +
+									'<input type="radio" name="half_type_id" value="1/' + obj.time_start_am + '/' + obj.time_end_am + '" id="am"  {{ ($hrleave->half_type_id == 1)?'checked=checked':NULL }}>' +
+									'<label for="am" class="form-check-label m-1">' + moment(obj.time_start_am, 'HH:mm:ss').format('h:mm a') + ' to ' + moment(obj.time_end_am, 'HH:mm:ss').format('h:mm a') + '</label> ' +
+									'<input type="radio" name="half_type_id" value="2/' + obj.time_start_pm + '/' + obj.time_end_pm + '" id="pm"  {{ ($hrleave->half_type_id == 2)?'checked=checked':NULL }}>' +
+									'<label for="pm" class="form-check-label m-1">' + moment(obj.time_start_pm, 'HH:mm:ss').format('h:mm a') + ' to ' + moment(obj.time_end_pm, 'HH:mm:ss').format('h:mm a') + '</label> ' +
+								'</div>' +
+							@endif
 						'</div>' +
 					'</div>' +
 					@if( $userneedbackup == 1 )
@@ -1443,6 +1451,14 @@ $('#leave_id').on('change', function() {
 				@if($setHalfDayMC == 1)
 				'<div class="form-group row m-1 {{ $errors->has('leave_cat') ? 'has-error' : '' }}" id="wrapperday">' +
 					'<div class="form-group col-sm-8 offset-sm-4 {{ $errors->has('half_type_id') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
+						@if($hrleave->period_day <= 0.5)
+							'<div class="form-check form-check-inline removetest">' +
+								'<input type="radio" name="half_type_id" value="1/' + obj.time_start_am + '/' + obj.time_end_am + '" id="am"  {{ ($hrleave->half_type_id == 1)?'checked=checked':NULL }}>' +
+								'<label for="am" class="form-check-label m-1">' + moment(obj.time_start_am, 'HH:mm:ss').format('h:mm a') + ' to ' + moment(obj.time_end_am, 'HH:mm:ss').format('h:mm a') + '</label> ' +
+								'<input type="radio" name="half_type_id" value="2/' + obj.time_start_pm + '/' + obj.time_end_pm + '" id="pm"  {{ ($hrleave->half_type_id == 2)?'checked=checked':NULL }}>' +
+								'<label for="pm" class="form-check-label m-1">' + moment(obj.time_start_pm, 'HH:mm:ss').format('h:mm a') + ' to ' + moment(obj.time_end_pm, 'HH:mm:ss').format('h:mm a') + '</label> ' +
+							'</div>' +
+						@endif
 					'</div>' +
 				'</div>' +
 				@endif
@@ -1878,7 +1894,15 @@ $oi = $hrleave->belongstostaff->hasmanyleavereplacement()->where('leave_balance'
 					'</div>' +
 				'</div>' +
 				'<div class="form-group row m-1 {{ $errors->has('leave_cat') ? 'has-error' : '' }}" id="wrapperday">' +
-					'<div class="form-group col-sm-8 offset-sm-4 {{ $errors->has('half_type_id') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
+					'<div class="form-group col-sm-8 offset-sm-4 m-1 {{ $errors->has('half_type_id') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
+						@if($hrleave->period_day <= 0.5)
+							'<div class="form-check form-check-inline removetest">' +
+								'<input type="radio" name="half_type_id" value="1/' + obj.time_start_am + '/' + obj.time_end_am + '" id="am"  {{ ($hrleave->half_type_id == 1)?'checked=checked':NULL }}>' +
+								'<label for="am" class="form-check-label m-1">' + moment(obj.time_start_am, 'HH:mm:ss').format('h:mm a') + ' to ' + moment(obj.time_end_am, 'HH:mm:ss').format('h:mm a') + '</label> ' +
+								'<input type="radio" name="half_type_id" value="2/' + obj.time_start_pm + '/' + obj.time_end_pm + '" id="pm"  {{ ($hrleave->half_type_id == 2)?'checked=checked':NULL }}>' +
+								'<label for="pm" class="form-check-label m-1">' + moment(obj.time_start_pm, 'HH:mm:ss').format('h:mm a') + ' to ' + moment(obj.time_end_pm, 'HH:mm:ss').format('h:mm a') + '</label> ' +
+							'</div>' +
+						@endif
 					'</div>' +
 				'</div>' +
 				@if( $userneedbackup == 1 )
@@ -2480,6 +2504,14 @@ $oi = $hrleave->belongstostaff->hasmanyleavereplacement()->where('leave_balance'
 					'<div class="col-sm-8 removehalfleave" id="halfleave">' +
 					'</div>' +
 					'<div class="form-group col-sm-8 offset-sm-4 {{ $errors->has('half_type_id') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
+						@if($hrleave->period_day <= 0.5)
+							'<div class="form-check form-check-inline removetest">' +
+								'<input type="radio" name="half_type_id" value="1/' + obj.time_start_am + '/' + obj.time_end_am + '" id="am"  {{ ($hrleave->half_type_id == 1)?'checked=checked':NULL }}>' +
+								'<label for="am" class="form-check-label m-1">' + moment(obj.time_start_am, 'HH:mm:ss').format('h:mm a') + ' to ' + moment(obj.time_end_am, 'HH:mm:ss').format('h:mm a') + '</label> ' +
+								'<input type="radio" name="half_type_id" value="2/' + obj.time_start_pm + '/' + obj.time_end_pm + '" id="pm"  {{ ($hrleave->half_type_id == 2)?'checked=checked':NULL }}>' +
+								'<label for="pm" class="form-check-label m-1">' + moment(obj.time_start_pm, 'HH:mm:ss').format('h:mm a') + ' to ' + moment(obj.time_end_pm, 'HH:mm:ss').format('h:mm a') + '</label> ' +
+							'</div>' +
+						@endif
 					'</div>' +
 				'</div>' +
 				@if( $userneedbackup == 1 )
@@ -3144,6 +3176,14 @@ $oi = $hrleave->belongstostaff->hasmanyleavereplacement()->where('leave_balance'
 				@if($setHalfDayMC == 1)
 				'<div class="form-group row m-1 {{ $errors->has('leave_cat') ? 'has-error' : '' }}" id="wrapperday">' +
 					'<div class="form-group col-sm-8 offset-sm-4 {{ $errors->has('half_type_id') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
+						@if($hrleave->period_day <= 0.5)
+							'<div class="form-check form-check-inline removetest">' +
+								'<input type="radio" name="half_type_id" value="1/' + obj.time_start_am + '/' + obj.time_end_am + '" id="am"  {{ ($hrleave->half_type_id == 1)?'checked=checked':NULL }}>' +
+								'<label for="am" class="form-check-label m-1">' + moment(obj.time_start_am, 'HH:mm:ss').format('h:mm a') + ' to ' + moment(obj.time_end_am, 'HH:mm:ss').format('h:mm a') + '</label> ' +
+								'<input type="radio" name="half_type_id" value="2/' + obj.time_start_pm + '/' + obj.time_end_pm + '" id="pm"  {{ ($hrleave->half_type_id == 2)?'checked=checked':NULL }}>' +
+								'<label for="pm" class="form-check-label m-1">' + moment(obj.time_start_pm, 'HH:mm:ss').format('h:mm a') + ' to ' + moment(obj.time_end_pm, 'HH:mm:ss').format('h:mm a') + '</label> ' +
+							'</div>' +
+						@endif
 					'</div>' +
 				'</div>' +
 				@endif
@@ -3620,6 +3660,14 @@ $oi = $hrleave->belongstostaff->hasmanyleavereplacement()->where('leave_balance'
 				'</div>' +
 				'<div class="form-group row m-1 {{ $errors->has('leave_cat') ? 'has-error' : '' }}" id="wrapperday">' +
 					'<div class="form-group col-sm-8 offset-sm-4 {{ $errors->has('half_type_id') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
+						@if($hrleave->period_day <= 0.5)
+							'<div class="form-check form-check-inline removetest">' +
+								'<input type="radio" name="half_type_id" value="1/' + obj.time_start_am + '/' + obj.time_end_am + '" id="am"  {{ ($hrleave->half_type_id == 1)?'checked=checked':NULL }}>' +
+								'<label for="am" class="form-check-label m-1">' + moment(obj.time_start_am, 'HH:mm:ss').format('h:mm a') + ' to ' + moment(obj.time_end_am, 'HH:mm:ss').format('h:mm a') + '</label> ' +
+								'<input type="radio" name="half_type_id" value="2/' + obj.time_start_pm + '/' + obj.time_end_pm + '" id="pm"  {{ ($hrleave->half_type_id == 2)?'checked=checked':NULL }}>' +
+								'<label for="pm" class="form-check-label m-1">' + moment(obj.time_start_pm, 'HH:mm:ss').format('h:mm a') + ' to ' + moment(obj.time_end_pm, 'HH:mm:ss').format('h:mm a') + '</label> ' +
+							'</div>' +
+						@endif
 					'</div>' +
 				'</div>' +
 				@if( $userneedbackup == 1 )
@@ -4151,6 +4199,14 @@ $oi = $hrleave->belongstostaff->hasmanyleavereplacement()->where('leave_balance'
 				'</div>' +
 				'<div class="form-group row m-1 {{ $errors->has('leave_cat') ? 'has-error' : '' }}" id="wrapperday">' +
 					'<div class="form-group col-sm-8 offset-sm-4 {{ $errors->has('half_type_id') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
+						@if($hrleave->period_day <= 0.5)
+							'<div class="form-check form-check-inline removetest">' +
+								'<input type="radio" name="half_type_id" value="1/' + obj.time_start_am + '/' + obj.time_end_am + '" id="am"  {{ ($hrleave->half_type_id == 1)?'checked=checked':NULL }}>' +
+								'<label for="am" class="form-check-label m-1">' + moment(obj.time_start_am, 'HH:mm:ss').format('h:mm a') + ' to ' + moment(obj.time_end_am, 'HH:mm:ss').format('h:mm a') + '</label> ' +
+								'<input type="radio" name="half_type_id" value="2/' + obj.time_start_pm + '/' + obj.time_end_pm + '" id="pm"  {{ ($hrleave->half_type_id == 2)?'checked=checked':NULL }}>' +
+								'<label for="pm" class="form-check-label m-1">' + moment(obj.time_start_pm, 'HH:mm:ss').format('h:mm a') + ' to ' + moment(obj.time_end_pm, 'HH:mm:ss').format('h:mm a') + '</label> ' +
+							'</div>' +
+						@endif
 					'</div>' +
 				'</div>' +
 				@if( $userneedbackup == 1 )

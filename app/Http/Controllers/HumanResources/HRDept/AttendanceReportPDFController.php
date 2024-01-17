@@ -45,36 +45,34 @@ use Session;
 
 class AttendanceReportPDFController extends Controller
 {
-  function __construct()
-  {
-    $this->middleware(['auth']);
-    $this->middleware('highMgmtAccess:1|2|5,14|31', ['only' => ['store']]);
-  }
+	function __construct()
+	{
+		$this->middleware(['auth']);
+		$this->middleware('highMgmtAccess:1|2|5,14|31', ['only' => ['store']]);
+	}
 
-  public function store(Request $request)
-  {
-    // dd($request->all());
-    $sa1 = HRAttendance::select('staff_id')
-      ->whereIn('staff_id', $request->staff_id)
-      ->where(function (Builder $query) use ($request) {
-        $query->whereDate('attend_date', '>=', $request->from)
-          ->whereDate('attend_date', '<=', $request->to);
-      })
-      ->groupBy('hr_attendances.staff_id')
-      ->get();
+	public function store(Request $request)
+	{
+		// dd($request->all());
+		$sa1 = HRAttendance::select('staff_id')
+							->whereIn('staff_id', $request->staff_id)
+							->where(function (Builder $query) use ($request) {
+								$query->whereDate('attend_date', '>=', $request->from)
+								->whereDate('attend_date', '<=', $request->to);
+							})
+							->groupBy('staff_id')
+							->get()
+							->toArray();
 
-    foreach ($sa1 as $k) {
-      $lp[] = $k->staff_id;
-    }
+		$sa = Login::whereIn('staff_id', $sa1)
+					->where('active', 1)
+					// ->groupBy('staff_id')
+					// ->orderBy('active', 'desc')
+					->orderBy('username')
+					->get();
 
-    $sa = Login::whereIn('staff_id', $lp)
-      ->groupBy('staff_id')
-      // ->orderBy('active', 'desc')
-      ->orderBy('username')
-      ->get();
-
-    $pdf = PDF::loadView('humanresources.hrdept.attendance.attendancereport.storepdf', ['sa' => $sa, 'request' => $request]);
-    // return $pdf->download('attendance monthly report ' . $request->from . ' - ' . $request->to . '.pdf');
-    return $pdf->stream();
-  }
+		$pdf = PDF::loadView('humanresources.hrdept.attendance.attendancereport.storepdf', ['sa' => $sa, 'request' => $request]);
+		// return $pdf->download('attendance monthly report ' . $request->from . ' - ' . $request->to . '.pdf');
+		return $pdf->stream();
+	}
 }
