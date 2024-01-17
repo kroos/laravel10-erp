@@ -80,18 +80,19 @@ class AttendanceReportController extends Controller
 						$query->whereDate('attend_date', '>=', $request->from)
 						->whereDate('attend_date', '<=', $request->to);
 					})
-					->groupBy('hr_attendances.staff_id')
-					->get();
-		foreach ($sa1 as $k) {
-			$lp[] = $k->staff_id;
-		}
-		$sa = Login::whereIn('staff_id', $lp)
 					->groupBy('staff_id')
+					->get()
+					->toArray();
+					// ->ddRawSql();
+
+		$sa = Login::whereIn('staff_id', $sa1)
+					->where('active', 1)
+					// ->groupBy('staff_id')
 					// ->orderBy('active', 'desc')
 					->orderBy('username')
 					->get();
 					// ->ddRawSql();
-		// dd($sa1, $lp, $sa);
+		// dd($sa1, $sa);
 		return view('humanresources.hrdept.attendance.attendancereport.store', ['sa' => $sa, 'request' => $request]);
 	}
 
