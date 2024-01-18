@@ -60,7 +60,7 @@ class StaffController extends Controller
 	/**
 	 * Store a newly created resource in storage.
 	 */
-	public function store(StaffRequestStore $request)/*: RedirectResponse*/
+	public function store(StaffRequestStore $request): RedirectResponse
 	{
 		// dd($request->all());
 		$data = $request->only(['ic', 'religion_id', 'gender_id', 'race_id', 'nationality_id', 'marital_status_id', 'mobile', 'phone', 'dob', 'cimb_account', 'epf_account', 'income_tax_no', 'socso_no', 'weight', 'height', 'join', 'div_id', 'restday_group_id', 'leave_flow_id', 'status_id', 'active', 'authorise_id']);

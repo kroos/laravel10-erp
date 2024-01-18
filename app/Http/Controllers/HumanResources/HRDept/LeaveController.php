@@ -27,6 +27,9 @@ use App\Models\HumanResources\HRLeaveApprovalHR;
 
 use Illuminate\Database\Eloquent\Builder;
 
+// load validator
+use Illuminate\Support\Facades\Validator;
+
 // load array helper
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
@@ -115,6 +118,70 @@ class LeaveController extends Controller
 	 */
 	public function update(Request $request, HRLeave $hrleave): RedirectResponse
 	{
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		$validated = $request->validate(
+			[
+				'leave_type_id' => 'required',
+				'reason' => 'required',
+				'date_time_start' => 'required|date_format:Y-m-d',
+				'date_time_end' => 'required_if:leave_type_id,1,2,3,4,5,6,7,10,11,12,13,14|date_format:Y-m-d',
+				// 'leave_cat' => 'required_if:date_time_start,date_time_end',
+				'leave_cat' => [
+									'required',
+									function ($attribute, $value, $fail) use ($request) {
+										if ($request->input('date_time_start') !== $request->input('date_time_end')) {
+											$fail('The "Leave Category" field is required when datestart and dateend have the same value.');
+										}
+									},
+								],
+				'half_type_id' => 'required_if:leave_cat,2',
+				'staff_id' => 'sometimes|required',
+				'amend_note' => 'required',
+				'document' => 'nullable|file|max:5120|mimes:jpeg,jpg,png,bmp,pdf,doc,docs,csv,xls,xlsx',
+				'documentsupport' => 'required_if:document,null',
+				'id' => 'sometimes|required_if:leave_type_id,10|required_if:leave_type_id,4',
+				'time_start' => 'required_if:leave_type_id,9',
+				'time_end' => 'required_if:leave_type_id,9',
+				'akuan' => 'sometimes|required',
+			],
+			[
+				// 'leave_type_id.required' => 'Please insert year',
+				// 'reason.required' => 'Please insert year',
+				// 'date_time_start.*.required' => 'Please insert year',
+				'date_time_end.required_if' => 'The :attribute field is required when :attribute is not Time Off.',
+				// 'leave_cat.*.required' => 'Please insert year',
+				// 'half_type_id.*.required' => 'Please insert year',
+				// 'staff_id.*.required' => 'Please insert year',
+				// 'amend_note.*.required' => 'Please insert year',
+				// 'document.*.required' => 'Please insert year',
+				// 'documentsupport.*.required' => 'Please insert year',
+				// 'id.*.required' => 'Please insert year',
+				'time_start.required_if' => 'The :attribute field is required when Leave Type is Time Off. ',
+				'time_end.required_if' => 'The :attribute field is required when Leave Type is Time Off. ',
+				// 'akuan.*.required' => 'Please insert year',
+			],
+			[
+				'leave_type_id' => 'Leave Type',
+				'reason' => 'Reason',
+				'date_time_start' => 'Date From',
+				'date_time_end' => 'Date To',
+				'leave_cat' => 'Leave Category',
+				'half_type_id' => 'Half Day Time',
+				'staff_id' => 'Backup Person',
+				'amend_note' => 'Amend Note',
+				'document' => 'Upload Supporting Document',
+				'documentsupport' => 'Supporting Document Acknowledgement',
+				'id' => 'Replacement Leave Day',
+				'time_start' => 'Time Start',
+				'time_end' => 'Time End',
+				'akuan' => 'Acknowledgement',
+			]
+		);
+
+		// $validator->sometimes('reason', 'required|max:500', function (Fluent $input) {
+		// 	return $input->games >= 100;
+		// });
+
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// initial setup for create a leave
 		$user = Staff::find($hrleave->staff_id);
@@ -497,13 +564,14 @@ class LeaveController extends Controller
 
 		// change leave to TF from TF
 		if ($request->leave_type_id == 9) {
+			// convert $request->time_start and $request->time_end to mysql format
+			$ts = Carbon::parse($request->date_time_start.' '.$request->time_start);
+			$te = Carbon::parse($request->date_time_start.' '.$request->time_end);
+			// dd($ts, $te);
+
 			// change leave to MC from TF
 			if ($hrleave->leave_type_id == 9)
 			{
-				// convert $request->time_start and $request->time_end to mysql format
-				$ts = Carbon::parse($request->date_time_start.' '.$request->time_start);
-				$te = Carbon::parse($request->date_time_start.' '.$request->time_end);
-
 				if ( $ts->gte($te) ) { // time start less than time end
 					Session::flash('flash_danger', 'Your Time Off application can\'t be processed due to your selection time ('.\Carbon\Carbon::parse($request->date_time_start.' '.$request->time_start)->format('D, j F Y h:i A').' untill '.\Carbon\Carbon::parse($request->date_time_start.' '.$request->time_end)->format('D, j F Y h:i A').') . Please choose time correctly.');
 					$hrleave->update(['leave_status_id' => $b4leavestatus]);
@@ -515,10 +583,6 @@ class LeaveController extends Controller
 			// change leave to TF from OTHERS
 			if (($hrleave->leave_type_id == 1 || $hrleave->leave_type_id == 5) || $hrleave->leave_type_id == 2 || $hrleave->leave_type_id == 7 || ($hrleave->leave_type_id == 4 || $hrleave->leave_type_id == 10) || ($hrleave->leave_type_id == 3 || $hrleave->leave_type_id == 6 || $hrleave->leave_type_id == 9 || $hrleave->leave_type_id == 11 || $hrleave->leave_type_id == 12))
 			{
-				// convert $request->time_start and $request->time_end to mysql format
-				$ts = Carbon::parse($request->date_time_start.' '.$request->time_start);
-				$te = Carbon::parse($request->date_time_start.' '.$request->time_end);
-
 				if ( $ts->gte($te) ) { // time start less than time end
 					Session::flash('flash_danger', 'Your Time Off application can\'t be processed due to your selection time ('.\Carbon\Carbon::parse($request->date_time_start.' '.$request->time_start)->format('D, j F Y h:i A').' untill '.\Carbon\Carbon::parse($request->date_time_start.' '.$request->time_end)->format('D, j F Y h:i A').') . Please choose time correctly.');
 					$hrleave->update(['leave_status_id' => $b4leavestatus]);

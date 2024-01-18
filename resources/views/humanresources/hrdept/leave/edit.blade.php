@@ -508,7 +508,7 @@ $(document).ready(function(){
 		$('#form').bootstrapValidator('addField', $('.datetime').find('[name="date_time_start"]'));
 	} else {																			// other than TF
 		// console.log('else');
-		console.log(moment('{{ Carbon::parse($hrleave->date_time_start) }}').format('HH:mm:ss'));
+		// console.log(moment('{{ Carbon::parse($hrleave->date_time_start) }}').format('HH:mm:ss'));
 		var datenow = '{{ Carbon::parse($hrleave->date_time_start)->format('Y-m-d') }}';
 
 		var data1 = $.ajax({
@@ -608,10 +608,10 @@ $(document).ready(function(){
 						'</div>'
 					);
 					if( moment('{{ Carbon::parse($hrleave->date_time_start)->format('H:i:s') }}').isSame(moment(obj.time_start_am, 'HH:mm:ss')) ) {
-						console.log('ppagi');
+						// console.log('ppagi');
 						$('#am').prop('checked', true);
 					} else {
-						console.log('ptg');
+						// console.log('ptg');
 						$('#pm').prop('checked', true);
 					}
 				}
@@ -619,10 +619,10 @@ $(document).ready(function(){
 		});
 
 		if( moment('{{ Carbon::parse($hrleave->date_time_start)->format('H:i:s') }}').isSame(moment(obj.time_start_am, 'HH:mm:ss')) ) {
-			console.log('ppagi');
+			// console.log('ppagi');
 			$('#am').prop('checked', true);
 		} else {
-			console.log('ptg');
+			// console.log('ptg');
 			$('#pm').prop('checked', true);
 		}
 
@@ -679,7 +679,7 @@ $(document).ready(function(){
 									'{{ Form::label('radio1', 'Full Day Off', ['class' => 'form-check-label m-1 removehalfleave']) }}' +
 								'</div>' +
 								'<div class="form-check form-check-inline removehalfleave" id="appendleavehalf">' +
-									'<input type="radio" name="leave_cat" value="2" id="radio2" class="removehalfleave" {{ ($hrleave->period_day == 0.5)?'checked=checked':NULL }}>' +
+									'<input type="radio" name="leave_cat" value="2" id="radio2" class="removehalfleave">' +
 									'{{ Form::label('radio2', 'Half Day Off', ['class' => 'form-check-label m-1 removehalfleave']) }}' +
 								'</div>' +
 							'</div>' +
@@ -748,7 +748,7 @@ $(document).ready(function(){
 									'{{ Form::label('radio1', 'Full Day Off', ['class' => 'form-check-label m-1 removehalfleave']) }}' +
 								'</div>' +
 								'<div class="form-check form-check-inline removehalfleave" id="appendleavehalf">' +
-									'<input type="radio" name="leave_cat" value="2" id="radio2" class="removehalfleave" {{ ($hrleave->period_day == 0.5)?'checked=checked':NULL }}>' +
+									'<input type="radio" name="leave_cat" value="2" id="radio2" class="removehalfleave">' +
 									'{{ Form::label('radio2', 'Half Day Off', ['class' => 'form-check-label m-1 removehalfleave']) }}' +
 								'</div>' +
 							'</div>' +
@@ -814,7 +814,7 @@ $(document).ready(function(){
 								'{{ Form::label('radio1', 'Full Day Off', ['class' => 'form-check-label m-1 removehalfleave']) }}' +
 							'</div>' +
 							'<div class="form-check form-check-inline removehalfleave" id="appendleavehalf">' +
-								'<input type="radio" name="leave_cat" value="2" id="radio2" class="removehalfleave" {{ ($hrleave->period_day == 0.5)?'checked=checked':NULL }}>' +
+								'<input type="radio" name="leave_cat" value="2" id="radio2" class="removehalfleave">' +
 								'{{ Form::label('radio2', 'Half Day Off', ['class' => 'form-check-label m-1 removehalfleave']) }}' +
 							'</div>' +
 						'</div>' +
@@ -883,7 +883,7 @@ $(document).ready(function(){
 								'{{ Form::label('radio1', 'Full Day Off', ['class' => 'form-check-label m-1 removehalfleave']) }}' +
 							'</div>' +
 							'<div class="form-check form-check-inline removehalfleave" id="appendleavehalf">' +
-								'<input type="radio" name="leave_cat" value="2" id="radio2" class="removehalfleave" {{ ($hrleave->period_day == 0.5)?'checked=checked':NULL }}>' +
+								'<input type="radio" name="leave_cat" value="2" id="radio2" class="removehalfleave">' +
 								'{{ Form::label('radio2', 'Half Day Off', ['class' => 'form-check-label m-1 removehalfleave']) }}' +
 							'</div>' +
 						'</div>' +
@@ -999,14 +999,6 @@ $('#leave_id').on('change', function() {
 					'</div>' +
 					'<div class="form-group row m-1 {{ $errors->has('leave_cat') ? 'has-error' : '' }}" id="wrapperday">' +
 						'<div class="form-group col-sm-8 offset-sm-4 {{ $errors->has('half_type_id') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
-							@if($hrleave->period_day <= 0.5)
-								'<div class="form-check form-check-inline removetest">' +
-									'<input type="radio" name="half_type_id" value="1/' + obj.time_start_am + '/' + obj.time_end_am + '" id="am"  {{ ($hrleave->half_type_id == 1)?'checked=checked':NULL }}>' +
-									'<label for="am" class="form-check-label m-1">' + moment(obj.time_start_am, 'HH:mm:ss').format('h:mm a') + ' to ' + moment(obj.time_end_am, 'HH:mm:ss').format('h:mm a') + '</label> ' +
-									'<input type="radio" name="half_type_id" value="2/' + obj.time_start_pm + '/' + obj.time_end_pm + '" id="pm"  {{ ($hrleave->half_type_id == 2)?'checked=checked':NULL }}>' +
-									'<label for="pm" class="form-check-label m-1">' + moment(obj.time_start_pm, 'HH:mm:ss').format('h:mm a') + ' to ' + moment(obj.time_end_pm, 'HH:mm:ss').format('h:mm a') + '</label> ' +
-								'</div>' +
-							@endif
 						'</div>' +
 					'</div>' +
 					@if( $userneedbackup == 1 )
@@ -1147,7 +1139,7 @@ $('#leave_id').on('change', function() {
 									'{{ Form::label('radio1', 'Full Day Off', ['class' => 'form-check-label m-1 removehalfleave']) }}' +
 								'</div>' +
 								'<div class="form-check form-check-inline removehalfleave" id="appendleavehalf">' +
-									'<input type="radio" name="leave_cat" value="2" id="radio2" class="removehalfleave" {{ ($hrleave->period_day == 0.5)?'checked=checked':NULL }}>' +
+									'<input type="radio" name="leave_cat" value="2" id="radio2" class="removehalfleave">' +
 									'{{ Form::label('radio2', 'Half Day Off', ['class' => 'form-check-label m-1 removehalfleave']) }}' +
 								'</div>' +
 							'</div>' +
@@ -1216,7 +1208,7 @@ $('#leave_id').on('change', function() {
 									'{{ Form::label('radio1', 'Full Day Off', ['class' => 'form-check-label m-1 removehalfleave']) }}' +
 								'</div>' +
 								'<div class="form-check form-check-inline removehalfleave" id="appendleavehalf">' +
-									'<input type="radio" name="leave_cat" value="2" id="radio2" class="removehalfleave" {{ ($hrleave->period_day == 0.5)?'checked=checked':NULL }}>' +
+									'<input type="radio" name="leave_cat" value="2" id="radio2" class="removehalfleave">' +
 									'{{ Form::label('radio2', 'Half Day Off', ['class' => 'form-check-label m-1 removehalfleave']) }}' +
 								'</div>' +
 							'</div>' +
@@ -1283,7 +1275,7 @@ $('#leave_id').on('change', function() {
 									'{{ Form::label('radio1', 'Full Day Off', ['class' => 'form-check-label m-1 removehalfleave']) }}' +
 								'</div>' +
 								'<div class="form-check form-check-inline removehalfleave" id="appendleavehalf">' +
-									'<input type="radio" name="leave_cat" value="2" id="radio2" class="removehalfleave" {{ ($hrleave->period_day == 0.5)?'checked=checked':NULL }}>' +
+									'<input type="radio" name="leave_cat" value="2" id="radio2" class="removehalfleave">' +
 									'{{ Form::label('radio2', 'Half Day Off', ['class' => 'form-check-label m-1 removehalfleave']) }}' +
 								'</div>' +
 							'</div>' +
@@ -1352,7 +1344,7 @@ $('#leave_id').on('change', function() {
 									'{{ Form::label('radio1', 'Full Day Off', ['class' => 'form-check-label m-1 removehalfleave']) }}' +
 								'</div>' +
 								'<div class="form-check form-check-inline removehalfleave" id="appendleavehalf">' +
-									'<input type="radio" name="leave_cat" value="2" id="radio2" class="removehalfleave" {{ ($hrleave->period_day == 0.5)?'checked=checked':NULL }}>' +
+									'<input type="radio" name="leave_cat" value="2" id="radio2" class="removehalfleave">' +
 									'{{ Form::label('radio2', 'Half Day Off', ['class' => 'form-check-label m-1 removehalfleave']) }}' +
 								'</div>' +
 							'</div>' +
@@ -1427,6 +1419,9 @@ $('#leave_id').on('change', function() {
 				$('#form').bootstrapValidator('removeField', $('.time').find('[name="time_end"]'));
 			}
 		});
+		if( $('#from').val() == $('#to').val() ) {
+			$('#form').bootstrapValidator('addField', $('#halfleave').find('[name="leave_cat"]'));
+		}
 	}
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1451,14 +1446,6 @@ $('#leave_id').on('change', function() {
 				@if($setHalfDayMC == 1)
 				'<div class="form-group row m-1 {{ $errors->has('leave_cat') ? 'has-error' : '' }}" id="wrapperday">' +
 					'<div class="form-group col-sm-8 offset-sm-4 {{ $errors->has('half_type_id') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
-						@if($hrleave->period_day <= 0.5)
-							'<div class="form-check form-check-inline removetest">' +
-								'<input type="radio" name="half_type_id" value="1/' + obj.time_start_am + '/' + obj.time_end_am + '" id="am"  {{ ($hrleave->half_type_id == 1)?'checked=checked':NULL }}>' +
-								'<label for="am" class="form-check-label m-1">' + moment(obj.time_start_am, 'HH:mm:ss').format('h:mm a') + ' to ' + moment(obj.time_end_am, 'HH:mm:ss').format('h:mm a') + '</label> ' +
-								'<input type="radio" name="half_type_id" value="2/' + obj.time_start_pm + '/' + obj.time_end_pm + '" id="pm"  {{ ($hrleave->half_type_id == 2)?'checked=checked':NULL }}>' +
-								'<label for="pm" class="form-check-label m-1">' + moment(obj.time_start_pm, 'HH:mm:ss').format('h:mm a') + ' to ' + moment(obj.time_end_pm, 'HH:mm:ss').format('h:mm a') + '</label> ' +
-							'</div>' +
-						@endif
 					'</div>' +
 				'</div>' +
 				@endif
@@ -1570,7 +1557,7 @@ $('#leave_id').on('change', function() {
 									'{{ Form::label('radio1', 'Full Day Off', ['class' => 'form-check-label m-1 removehalfleave']) }}' +
 								'</div>' +
 								'<div class="form-check form-check-inline removehalfleave" id="appendleavehalf">' +
-									'<input type="radio" name="leave_cat" value="2" id="radio2" class="removehalfleave" {{ ($hrleave->period_day == 0.5)?'checked=checked':NULL }}>' +
+									'<input type="radio" name="leave_cat" value="2" id="radio2" class="removehalfleave">' +
 									'{{ Form::label('radio2', 'Half Day Off', ['class' => 'form-check-label m-1 removehalfleave']) }}' +
 								'</div>' +
 							'</div>' +
@@ -1639,7 +1626,7 @@ $('#leave_id').on('change', function() {
 									'{{ Form::label('radio1', 'Full Day Off', ['class' => 'form-check-label m-1 removehalfleave']) }}' +
 								'</div>' +
 								'<div class="form-check form-check-inline removehalfleave" id="appendleavehalf">' +
-									'<input type="radio" name="leave_cat" value="2" id="radio2" class="removehalfleave" {{ ($hrleave->period_day == 0.5)?'checked=checked':NULL }}>' +
+									'<input type="radio" name="leave_cat" value="2" id="radio2" class="removehalfleave">' +
 									'{{ Form::label('radio2', 'Half Day Off', ['class' => 'form-check-label m-1 removehalfleave']) }}' +
 								'</div>' +
 							'</div>' +
@@ -1710,7 +1697,7 @@ $('#leave_id').on('change', function() {
 									'{{ Form::label('radio1', 'Full Day Off', ['class' => 'form-check-label m-1 removehalfleave']) }}' +
 								'</div>' +
 								'<div class="form-check form-check-inline removehalfleave" id="appendleavehalf">' +
-									'<input type="radio" name="leave_cat" value="2" id="radio2" class="removehalfleave" {{ ($hrleave->period_day == 0.5)?'checked=checked':NULL }}>' +
+									'<input type="radio" name="leave_cat" value="2" id="radio2" class="removehalfleave">' +
 									'{{ Form::label('radio2', 'Half Day Off', ['class' => 'form-check-label m-1 removehalfleave']) }}' +
 								'</div>' +
 							'</div>' +
@@ -1779,7 +1766,7 @@ $('#leave_id').on('change', function() {
 									'{{ Form::label('radio1', 'Full Day Off', ['class' => 'form-check-label m-1 removehalfleave']) }}' +
 								'</div>' +
 								'<div class="form-check form-check-inline removehalfleave" id="appendleavehalf">' +
-									'<input type="radio" name="leave_cat" value="2" id="radio2" class="removehalfleave" {{ ($hrleave->period_day == 0.5)?'checked=checked':NULL }}>' +
+									'<input type="radio" name="leave_cat" value="2" id="radio2" class="removehalfleave">' +
 									'{{ Form::label('radio2', 'Half Day Off', ['class' => 'form-check-label m-1 removehalfleave']) }}' +
 								'</div>' +
 							'</div>' +
@@ -1895,14 +1882,6 @@ $oi = $hrleave->belongstostaff->hasmanyleavereplacement()->where('leave_balance'
 				'</div>' +
 				'<div class="form-group row m-1 {{ $errors->has('leave_cat') ? 'has-error' : '' }}" id="wrapperday">' +
 					'<div class="form-group col-sm-8 offset-sm-4 m-1 {{ $errors->has('half_type_id') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
-						@if($hrleave->period_day <= 0.5)
-							'<div class="form-check form-check-inline removetest">' +
-								'<input type="radio" name="half_type_id" value="1/' + obj.time_start_am + '/' + obj.time_end_am + '" id="am"  {{ ($hrleave->half_type_id == 1)?'checked=checked':NULL }}>' +
-								'<label for="am" class="form-check-label m-1">' + moment(obj.time_start_am, 'HH:mm:ss').format('h:mm a') + ' to ' + moment(obj.time_end_am, 'HH:mm:ss').format('h:mm a') + '</label> ' +
-								'<input type="radio" name="half_type_id" value="2/' + obj.time_start_pm + '/' + obj.time_end_pm + '" id="pm"  {{ ($hrleave->half_type_id == 2)?'checked=checked':NULL }}>' +
-								'<label for="pm" class="form-check-label m-1">' + moment(obj.time_start_pm, 'HH:mm:ss').format('h:mm a') + ' to ' + moment(obj.time_end_pm, 'HH:mm:ss').format('h:mm a') + '</label> ' +
-							'</div>' +
-						@endif
 					'</div>' +
 				'</div>' +
 				@if( $userneedbackup == 1 )
@@ -2012,7 +1991,7 @@ $oi = $hrleave->belongstostaff->hasmanyleavereplacement()->where('leave_balance'
 									'{{ Form::label('radio1', 'Full Day Off', ['class' => 'form-check-label m-1 removehalfleave']) }}' +
 								'</div>' +
 								'<div class="form-check form-check-inline removehalfleave" id="appendleavehalf">' +
-									'<input type="radio" name="leave_cat" value="2" id="radio2" class="removehalfleave" {{ ($hrleave->period_day == 0.5)?'checked=checked':NULL }}>' +
+									'<input type="radio" name="leave_cat" value="2" id="radio2" class="removehalfleave">' +
 									'{{ Form::label('radio2', 'Half Day Off', ['class' => 'form-check-label m-1 removehalfleave']) }}' +
 								'</div>' +
 							'</div>' +
@@ -2081,7 +2060,7 @@ $oi = $hrleave->belongstostaff->hasmanyleavereplacement()->where('leave_balance'
 									'{{ Form::label('radio1', 'Full Day Off', ['class' => 'form-check-label m-1 removehalfleave']) }}' +
 								'</div>' +
 								'<div class="form-check form-check-inline removehalfleave" id="appendleavehalf">' +
-									'<input type="radio" name="leave_cat" value="2" id="radio2" class="removehalfleave" {{ ($hrleave->period_day == 0.5)?'checked=checked':NULL }}>' +
+									'<input type="radio" name="leave_cat" value="2" id="radio2" class="removehalfleave">' +
 									'{{ Form::label('radio2', 'Half Day Off', ['class' => 'form-check-label m-1 removehalfleave']) }}' +
 								'</div>' +
 							'</div>' +
@@ -2148,7 +2127,7 @@ $oi = $hrleave->belongstostaff->hasmanyleavereplacement()->where('leave_balance'
 									'{{ Form::label('radio1', 'Full Day Off', ['class' => 'form-check-label m-1 removehalfleave']) }}' +
 								'</div>' +
 								'<div class="form-check form-check-inline removehalfleave" id="appendleavehalf">' +
-									'<input type="radio" name="leave_cat" value="2" id="radio2" class="removehalfleave" {{ ($hrleave->period_day == 0.5)?'checked=checked':NULL }}>' +
+									'<input type="radio" name="leave_cat" value="2" id="radio2" class="removehalfleave">' +
 									'{{ Form::label('radio2', 'Half Day Off', ['class' => 'form-check-label m-1 removehalfleave']) }}' +
 								'</div>' +
 							'</div>' +
@@ -2217,7 +2196,7 @@ $oi = $hrleave->belongstostaff->hasmanyleavereplacement()->where('leave_balance'
 									'{{ Form::label('radio1', 'Full Day Off', ['class' => 'form-check-label m-1 removehalfleave']) }}' +
 								'</div>' +
 								'<div class="form-check form-check-inline removehalfleave" id="appendleavehalf">' +
-									'<input type="radio" name="leave_cat" value="2" id="radio2" class="removehalfleave" {{ ($hrleave->period_day == 0.5)?'checked=checked':NULL }}>' +
+									'<input type="radio" name="leave_cat" value="2" id="radio2" class="removehalfleave">' +
 									'{{ Form::label('radio2', 'Half Day Off', ['class' => 'form-check-label m-1 removehalfleave']) }}' +
 								'</div>' +
 							'</div>' +
@@ -2504,14 +2483,6 @@ $oi = $hrleave->belongstostaff->hasmanyleavereplacement()->where('leave_balance'
 					'<div class="col-sm-8 removehalfleave" id="halfleave">' +
 					'</div>' +
 					'<div class="form-group col-sm-8 offset-sm-4 {{ $errors->has('half_type_id') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
-						@if($hrleave->period_day <= 0.5)
-							'<div class="form-check form-check-inline removetest">' +
-								'<input type="radio" name="half_type_id" value="1/' + obj.time_start_am + '/' + obj.time_end_am + '" id="am"  {{ ($hrleave->half_type_id == 1)?'checked=checked':NULL }}>' +
-								'<label for="am" class="form-check-label m-1">' + moment(obj.time_start_am, 'HH:mm:ss').format('h:mm a') + ' to ' + moment(obj.time_end_am, 'HH:mm:ss').format('h:mm a') + '</label> ' +
-								'<input type="radio" name="half_type_id" value="2/' + obj.time_start_pm + '/' + obj.time_end_pm + '" id="pm"  {{ ($hrleave->half_type_id == 2)?'checked=checked':NULL }}>' +
-								'<label for="pm" class="form-check-label m-1">' + moment(obj.time_start_pm, 'HH:mm:ss').format('h:mm a') + ' to ' + moment(obj.time_end_pm, 'HH:mm:ss').format('h:mm a') + '</label> ' +
-							'</div>' +
-						@endif
 					'</div>' +
 				'</div>' +
 				@if( $userneedbackup == 1 )
@@ -2626,7 +2597,7 @@ $oi = $hrleave->belongstostaff->hasmanyleavereplacement()->where('leave_balance'
 									'{{ Form::label('radio1', 'Full Day Off', ['class' => 'form-check-label m-1 removehalfleave']) }}' +
 								'</div>' +
 								'<div class="form-check form-check-inline removehalfleave" id="appendleavehalf">' +
-									'<input type="radio" name="leave_cat" value="2" id="radio2" class="removehalfleave" {{ ($hrleave->period_day == 0.5)?'checked=checked':NULL }}>' +
+									'<input type="radio" name="leave_cat" value="2" id="radio2" class="removehalfleave">' +
 									'{{ Form::label('radio2', 'Half Day Off', ['class' => 'form-check-label m-1 removehalfleave']) }}' +
 								'</div>' +
 							'</div>' +
@@ -2695,7 +2666,7 @@ $oi = $hrleave->belongstostaff->hasmanyleavereplacement()->where('leave_balance'
 									'{{ Form::label('radio1', 'Full Day Off', ['class' => 'form-check-label m-1 removehalfleave']) }}' +
 								'</div>' +
 								'<div class="form-check form-check-inline removehalfleave" id="appendleavehalf">' +
-									'<input type="radio" name="leave_cat" value="2" id="radio2" class="removehalfleave" {{ ($hrleave->period_day == 0.5)?'checked=checked':NULL }}>' +
+									'<input type="radio" name="leave_cat" value="2" id="radio2" class="removehalfleave">' +
 									'{{ Form::label('radio2', 'Half Day Off', ['class' => 'form-check-label m-1 removehalfleave']) }}' +
 								'</div>' +
 							'</div>' +
@@ -2807,7 +2778,7 @@ $oi = $hrleave->belongstostaff->hasmanyleavereplacement()->where('leave_balance'
 									'{{ Form::label('radio1', 'Full Day Off', ['class' => 'form-check-label m-1 removehalfleave']) }}' +
 								'</div>' +
 								'<div class="form-check form-check-inline removehalfleave" id="appendleavehalf">' +
-									'<input type="radio" name="leave_cat" value="2" id="radio2" class="removehalfleave" {{ ($hrleave->period_day == 0.5)?'checked=checked':NULL }}>' +
+									'<input type="radio" name="leave_cat" value="2" id="radio2" class="removehalfleave">' +
 									'{{ Form::label('radio2', 'Half Day Off', ['class' => 'form-check-label m-1 removehalfleave']) }}' +
 								'</div>' +
 							'</div>' +
@@ -2876,7 +2847,7 @@ $oi = $hrleave->belongstostaff->hasmanyleavereplacement()->where('leave_balance'
 									'{{ Form::label('radio1', 'Full Day Off', ['class' => 'form-check-label m-1 removehalfleave']) }}' +
 								'</div>' +
 								'<div class="form-check form-check-inline removehalfleave" id="appendleavehalf">' +
-									'<input type="radio" name="leave_cat" value="2" id="radio2" class="removehalfleave" {{ ($hrleave->period_day == 0.5)?'checked=checked':NULL }}>' +
+									'<input type="radio" name="leave_cat" value="2" id="radio2" class="removehalfleave">' +
 									'{{ Form::label('radio2', 'Half Day Off', ['class' => 'form-check-label m-1 removehalfleave']) }}' +
 								'</div>' +
 							'</div>' +
@@ -3340,7 +3311,7 @@ $oi = $hrleave->belongstostaff->hasmanyleavereplacement()->where('leave_balance'
 									'{{ Form::label('radio1', 'Full Day Off', ['class' => 'form-check-label m-1 removehalfleave']) }}' +
 								'</div>' +
 								'<div class="form-check form-check-inline removehalfleave" id="appendleavehalf">' +
-									'<input type="radio" name="leave_cat" value="2" id="radio2" class="removehalfleave" {{ ($hrleave->period_day == 0.5)?'checked=checked':NULL }}>' +
+									'<input type="radio" name="leave_cat" value="2" id="radio2" class="removehalfleave">' +
 									'{{ Form::label('radio2', 'Half Day Off', ['class' => 'form-check-label m-1 removehalfleave']) }}' +
 								'</div>' +
 							'</div>' +
@@ -3455,7 +3426,7 @@ $oi = $hrleave->belongstostaff->hasmanyleavereplacement()->where('leave_balance'
 									'{{ Form::label('radio1', 'Full Day Off', ['class' => 'form-check-label m-1 removehalfleave']) }}' +
 								'</div>' +
 								'<div class="form-check form-check-inline removehalfleave" id="appendleavehalf">' +
-									'<input type="radio" name="leave_cat" value="2" id="radio2" class="removehalfleave" {{ ($hrleave->period_day == 0.5)?'checked=checked':NULL }}>' +
+									'<input type="radio" name="leave_cat" value="2" id="radio2" class="removehalfleave">' +
 									'{{ Form::label('radio2', 'Half Day Off', ['class' => 'form-check-label m-1 removehalfleave']) }}' +
 								'</div>' +
 							'</div>' +
@@ -3660,14 +3631,6 @@ $oi = $hrleave->belongstostaff->hasmanyleavereplacement()->where('leave_balance'
 				'</div>' +
 				'<div class="form-group row m-1 {{ $errors->has('leave_cat') ? 'has-error' : '' }}" id="wrapperday">' +
 					'<div class="form-group col-sm-8 offset-sm-4 {{ $errors->has('half_type_id') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
-						@if($hrleave->period_day <= 0.5)
-							'<div class="form-check form-check-inline removetest">' +
-								'<input type="radio" name="half_type_id" value="1/' + obj.time_start_am + '/' + obj.time_end_am + '" id="am"  {{ ($hrleave->half_type_id == 1)?'checked=checked':NULL }}>' +
-								'<label for="am" class="form-check-label m-1">' + moment(obj.time_start_am, 'HH:mm:ss').format('h:mm a') + ' to ' + moment(obj.time_end_am, 'HH:mm:ss').format('h:mm a') + '</label> ' +
-								'<input type="radio" name="half_type_id" value="2/' + obj.time_start_pm + '/' + obj.time_end_pm + '" id="pm"  {{ ($hrleave->half_type_id == 2)?'checked=checked':NULL }}>' +
-								'<label for="pm" class="form-check-label m-1">' + moment(obj.time_start_pm, 'HH:mm:ss').format('h:mm a') + ' to ' + moment(obj.time_end_pm, 'HH:mm:ss').format('h:mm a') + '</label> ' +
-							'</div>' +
-						@endif
 					'</div>' +
 				'</div>' +
 				@if( $userneedbackup == 1 )
@@ -3788,7 +3751,7 @@ $oi = $hrleave->belongstostaff->hasmanyleavereplacement()->where('leave_balance'
 									'{{ Form::label('radio1', 'Full Day Off', ['class' => 'form-check-label m-1 removehalfleave']) }}' +
 								'</div>' +
 								'<div class="form-check form-check-inline removehalfleave" id="appendleavehalf">' +
-									'<input type="radio" name="leave_cat" value="2" id="radio2" class="removehalfleave" {{ ($hrleave->period_day == 0.5)?'checked=checked':NULL }}>' +
+									'<input type="radio" name="leave_cat" value="2" id="radio2" class="removehalfleave">' +
 									'{{ Form::label('radio2', 'Half Day Off', ['class' => 'form-check-label m-1 removehalfleave']) }}' +
 								'</div>' +
 							'</div>' +
@@ -3857,7 +3820,7 @@ $oi = $hrleave->belongstostaff->hasmanyleavereplacement()->where('leave_balance'
 									'{{ Form::label('radio1', 'Full Day Off', ['class' => 'form-check-label m-1 removehalfleave']) }}' +
 								'</div>' +
 								'<div class="form-check form-check-inline removehalfleave" id="appendleavehalf">' +
-									'<input type="radio" name="leave_cat" value="2" id="radio2" class="removehalfleave" {{ ($hrleave->period_day == 0.5)?'checked=checked':NULL }}>' +
+									'<input type="radio" name="leave_cat" value="2" id="radio2" class="removehalfleave">' +
 									'{{ Form::label('radio2', 'Half Day Off', ['class' => 'form-check-label m-1 removehalfleave']) }}' +
 								'</div>' +
 							'</div>' +
@@ -3969,7 +3932,7 @@ $oi = $hrleave->belongstostaff->hasmanyleavereplacement()->where('leave_balance'
 									'{{ Form::label('radio1', 'Full Day Off', ['class' => 'form-check-label m-1 removehalfleave']) }}' +
 								'</div>' +
 								'<div class="form-check form-check-inline removehalfleave" id="appendleavehalf">' +
-									'<input type="radio" name="leave_cat" value="2" id="radio2" class="removehalfleave" {{ ($hrleave->period_day == 0.5)?'checked=checked':NULL }}>' +
+									'<input type="radio" name="leave_cat" value="2" id="radio2" class="removehalfleave">' +
 									'{{ Form::label('radio2', 'Half Day Off', ['class' => 'form-check-label m-1 removehalfleave']) }}' +
 								'</div>' +
 							'</div>' +
@@ -4037,7 +4000,7 @@ $oi = $hrleave->belongstostaff->hasmanyleavereplacement()->where('leave_balance'
 									'{{ Form::label('radio1', 'Full Day Off', ['class' => 'form-check-label m-1 removehalfleave']) }}' +
 								'</div>' +
 								'<div class="form-check form-check-inline removehalfleave" id="appendleavehalf">' +
-									'<input type="radio" name="leave_cat" value="2" id="radio2" class="removehalfleave" {{ ($hrleave->period_day == 0.5)?'checked=checked':NULL }}>' +
+									'<input type="radio" name="leave_cat" value="2" id="radio2" class="removehalfleave">' +
 									'{{ Form::label('radio2', 'Half Day Off', ['class' => 'form-check-label m-1 removehalfleave']) }}' +
 								'</div>' +
 							'</div>' +
@@ -4199,14 +4162,6 @@ $oi = $hrleave->belongstostaff->hasmanyleavereplacement()->where('leave_balance'
 				'</div>' +
 				'<div class="form-group row m-1 {{ $errors->has('leave_cat') ? 'has-error' : '' }}" id="wrapperday">' +
 					'<div class="form-group col-sm-8 offset-sm-4 {{ $errors->has('half_type_id') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
-						@if($hrleave->period_day <= 0.5)
-							'<div class="form-check form-check-inline removetest">' +
-								'<input type="radio" name="half_type_id" value="1/' + obj.time_start_am + '/' + obj.time_end_am + '" id="am"  {{ ($hrleave->half_type_id == 1)?'checked=checked':NULL }}>' +
-								'<label for="am" class="form-check-label m-1">' + moment(obj.time_start_am, 'HH:mm:ss').format('h:mm a') + ' to ' + moment(obj.time_end_am, 'HH:mm:ss').format('h:mm a') + '</label> ' +
-								'<input type="radio" name="half_type_id" value="2/' + obj.time_start_pm + '/' + obj.time_end_pm + '" id="pm"  {{ ($hrleave->half_type_id == 2)?'checked=checked':NULL }}>' +
-								'<label for="pm" class="form-check-label m-1">' + moment(obj.time_start_pm, 'HH:mm:ss').format('h:mm a') + ' to ' + moment(obj.time_end_pm, 'HH:mm:ss').format('h:mm a') + '</label> ' +
-							'</div>' +
-						@endif
 					'</div>' +
 				'</div>' +
 				@if( $userneedbackup == 1 )
@@ -4321,7 +4276,7 @@ $oi = $hrleave->belongstostaff->hasmanyleavereplacement()->where('leave_balance'
 									'{{ Form::label('radio1', 'Full Day Off', ['class' => 'form-check-label m-1 removehalfleave']) }}' +
 								'</div>' +
 								'<div class="form-check form-check-inline removehalfleave" id="appendleavehalf">' +
-									'<input type="radio" name="leave_cat" value="2" id="radio2" class="removehalfleave" {{ ($hrleave->period_day == 0.5)?'checked=checked':NULL }}>' +
+									'<input type="radio" name="leave_cat" value="2" id="radio2" class="removehalfleave">' +
 									'{{ Form::label('radio2', 'Half Day Off', ['class' => 'form-check-label m-1 removehalfleave']) }}' +
 								'</div>' +
 							'</div>' +
@@ -4390,7 +4345,7 @@ $oi = $hrleave->belongstostaff->hasmanyleavereplacement()->where('leave_balance'
 									'{{ Form::label('radio1', 'Full Day Off', ['class' => 'form-check-label m-1 removehalfleave']) }}' +
 								'</div>' +
 								'<div class="form-check form-check-inline removehalfleave" id="appendleavehalf">' +
-									'<input type="radio" name="leave_cat" value="2" id="radio2" class="removehalfleave" {{ ($hrleave->period_day == 0.5)?'checked=checked':NULL }}>' +
+									'<input type="radio" name="leave_cat" value="2" id="radio2" class="removehalfleave">' +
 									'{{ Form::label('radio2', 'Half Day Off', ['class' => 'form-check-label m-1 removehalfleave']) }}' +
 								'</div>' +
 							'</div>' +
@@ -4502,7 +4457,7 @@ $oi = $hrleave->belongstostaff->hasmanyleavereplacement()->where('leave_balance'
 									'{{ Form::label('radio1', 'Full Day Off', ['class' => 'form-check-label m-1 removehalfleave']) }}' +
 								'</div>' +
 								'<div class="form-check form-check-inline removehalfleave" id="appendleavehalf">' +
-									'<input type="radio" name="leave_cat" value="2" id="radio2" class="removehalfleave" {{ ($hrleave->period_day == 0.5)?'checked=checked':NULL }}>' +
+									'<input type="radio" name="leave_cat" value="2" id="radio2" class="removehalfleave">' +
 									'{{ Form::label('radio2', 'Half Day Off', ['class' => 'form-check-label m-1 removehalfleave']) }}' +
 								'</div>' +
 							'</div>' +
@@ -4570,7 +4525,7 @@ $oi = $hrleave->belongstostaff->hasmanyleavereplacement()->where('leave_balance'
 									'{{ Form::label('radio1', 'Full Day Off', ['class' => 'form-check-label m-1 removehalfleave']) }}' +
 								'</div>' +
 								'<div class="form-check form-check-inline removehalfleave" id="appendleavehalf">' +
-									'<input type="radio" name="leave_cat" value="2" id="radio2" class="removehalfleave" {{ ($hrleave->period_day == 0.5)?'checked=checked':NULL }}>' +
+									'<input type="radio" name="leave_cat" value="2" id="radio2" class="removehalfleave">' +
 									'{{ Form::label('radio2', 'Half Day Off', ['class' => 'form-check-label m-1 removehalfleave']) }}' +
 								'</div>' +
 							'</div>' +
