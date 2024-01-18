@@ -502,11 +502,19 @@ class AjaxDBController extends Controller
 
 	public function staffcrossbackup(Request $request): JsonResponse
 	{
-		$s = Staff::where('active', 1)->where('name','LIKE','%'.$request->search.'%')->get();
+		$s = Staff::join('logins', 'staffs.id', '=', 'logins.staff_id')
+					->where('staffs.active', 1)
+					->where('logins.active', 1)
+					->where(function(Builder $query) use ($request) {
+						$query->where('logins.username','LIKE','%'.$request->search.'%')
+						->orWhere('staffs.name', 'LIKE', '%'.$request->search.'%');
+					})
+					->orderBy('username')
+					->get();
 		foreach ($s as $v) {
 				$ls['results'][] = [
 										'id' => $v->id,
-										'text' => Login::where([['active', 1], ['staff_id', $v->id]])->first()?->username.'  '.$v->name
+										'text' => $v->username.'  '.$v->name
 									];
 		}
 		return response()->json($ls);
