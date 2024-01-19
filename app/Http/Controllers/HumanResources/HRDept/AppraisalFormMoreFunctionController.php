@@ -84,10 +84,8 @@ class AppraisalFormMoreFunctionController extends Controller
   /**
    * Store a newly created resource in storage.
    */
-  public function store(Request $request): RedirectResponse
+  public function store(Request $request): JsonResponse
   {
-    // dd($request->id);
-
     $pivotappraisal = DB::table('pivot_dept_appraisals')
       ->where('id', $request->id)
       ->first();
@@ -180,8 +178,10 @@ class AppraisalFormMoreFunctionController extends Controller
       }
     }
 
-    Session::flash('flash_message', 'Successfully Duplicate Appraisal Form.');
-    return redirect()->route('appraisalform.index');
+    return response()->json([
+      'message' => 'Successful Duplicate',
+      'status' => 'success'
+    ]);
   }
 
   /**

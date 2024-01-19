@@ -144,15 +144,26 @@ $lastYear = Carbon::now()->subYear()->year;
           {{ $overtime->department }}
         </td>
         @foreach ($rows as $row)
-        <td class="text-truncate text-center" style="max-width: 48px;">
           <?php
           $ot = HROvertime::join('hr_overtime_ranges', 'hr_overtime_ranges.id', '=', 'hr_overtimes.overtime_range_id')
             ->where('hr_overtimes.ot_date', '=', $row)
             ->where('hr_overtimes.staff_id', '=', $overtime->staff_id)
             ->where('hr_overtimes.active', 1)
-            ->select('hr_overtime_ranges.total_time')
+            ->select('hr_overtimes.assign_staff_id', 'hr_overtime_ranges.total_time')
             ->first();
 
+          $background = "";
+
+          if ($ot) {
+            $department_id = $ot->belongstoassignstaff->belongstomanydepartment()->first()->department_id;
+
+            if ($department_id == '14' || $department_id == '15') {
+              $background = "background-color: #d9d9d9";
+            }
+          }
+          ?>
+        <td class="text-truncate text-center" style="max-width: 48px;<?php echo $background ?>">
+          <?php
           if ($ot) {
             echo $timeString_per_person = (Carbon::parse($ot->total_time))->format('H:i');
 
@@ -189,6 +200,10 @@ $lastYear = Carbon::now()->subYear()->year;
         <td></td>
       </tr>
     </table>
+
+    <div class="row">
+      <div style="width: 25px; height: 25px; background-color: #d9d9d9;"></div>&nbsp;REMARK
+    </div>
 
     {{ Form::open(['route' => ['overtimereport.print'], 'method' => 'GET',  'id' => 'form', 'class' => 'form-horizontal', 'autocomplete' => 'off', 'files' => true]) }}
     <div class="row">

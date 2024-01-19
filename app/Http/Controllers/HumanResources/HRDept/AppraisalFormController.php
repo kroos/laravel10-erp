@@ -117,7 +117,7 @@ class AppraisalFormController extends Controller
           if ($p1_start == 1) {
             $form_ver = $form_ver + 1;
           }
-          
+
           $section_id->belongstomanydepartmentpivot()->attach($request->department_id, [
             'version' => $form_ver,
           ]);
@@ -221,38 +221,76 @@ class AppraisalFormController extends Controller
   /**
    * Show the form for editing the specified resource.
    */
-  public function edit(): View
+  public function edit($appraisalform): View
   {
-    // return view('humanresources.hrdept.attendance.edit', ['attendance' => $attendance]);
+    return view('humanresources.hrdept.appraisal.form.edit', ['id' => $appraisalform]);
   }
 
   /**
    * Update the specified resource in storage.
    */
-  public function update(): RedirectResponse
+  public function update(Request $request): JsonResponse
   {
-    // //dd($request->all());
+    if ($request->update == 'section') {
+      $section = HRAppraisalSection::find($request->id);
 
-    // $exception = (!request()->has('exception') == '1' ? '0' : '1');
+      $section->section = preg_replace('/>\s*</', '><', $request->section);
+      $section->sort = $request->sort;
 
-    // $attendance->update([
-    // 	'daytype_id' => $request->daytype_id,
-    // 	'attendance_type_id' => $request->attendance_type_id,
-    // 	'leave_id' => $request->leave_id,
-    // 	'in' => $request->in,
-    // 	'break' => $request->break,
-    // 	'resume' => $request->resume,
-    // 	'out' => $request->out,
-    // 	'time_work_hour' => $request->time_work_hour,
-    // 	'remarks' => ucwords(Str::of($request->remarks)->lower()),
-    // 	'hr_remarks' => ucwords(Str::of($request->hr_remarks)->lower()),
-    // 	'exception' => $exception,
-    // ]);
+      $section->save();
 
-    // $attendance->save();
+      return response()->json([
+        'message' => 'Successful Update',
+        'status' => 'success'
+      ]);
+    }
 
-    // Session::flash('flash_message', 'Data successfully updated!');
-    // return redirect()->route('attendance.index');
+    
+    if ($request->update == 'section_sub') {
+      $section_sub = HRAppraisalSectionSub::find($request->id);
+
+      $section_sub->section_sub = preg_replace('/>\s*</', '><', $request->section_sub);
+      $section_sub->sort = $request->sort;
+
+      $section_sub->save();
+
+      return response()->json([
+        'message' => 'Successful Update',
+        'status' => 'success'
+      ]);
+    }
+
+
+    if ($request->update == 'main_question') {
+      $main_question = HRAppraisalMainQuestion::find($request->id);
+
+      $main_question->main_question = preg_replace('/>\s*</', '><', $request->main_question);
+      $main_question->sort = $request->sort;
+      $main_question->mark = $request->mark;
+
+      $main_question->save();
+
+      return response()->json([
+        'message' => 'Successful Update',
+        'status' => 'success'
+      ]);
+    }
+
+
+    if ($request->update == 'question') {
+      $question = HRAppraisalQuestion::find($request->id);
+
+      $question->question = preg_replace('/>\s*</', '><', $request->question);
+      $question->sort = $request->sort;
+      $question->mark = $request->mark;
+
+      $question->save();
+
+      return response()->json([
+        'message' => 'Successful Update',
+        'status' => 'success'
+      ]);
+    }
   }
 
   /**
@@ -260,10 +298,26 @@ class AppraisalFormController extends Controller
    */
   public function destroy($appraisalform): JsonResponse
   {
-    $section_id->belongstomanydepartmentpivot()->attach($request->department_id);
+    $datetime = Carbon::now();
+
+    $pivotappraisal = DB::table('pivot_dept_appraisals')
+      ->where('id', $appraisalform)
+      ->first();
+
+    $detachs =  DB::table('pivot_dept_appraisals')
+      ->where('department_id', $pivotappraisal->department_id)
+      ->where('version', $pivotappraisal->version)
+      ->get();
+
+    foreach ($detachs as $detach) {
+      DB::table('pivot_dept_appraisals')
+        ->where('id', $detach->id)
+        ->update(['deleted_at' => $datetime]);
+    }
+
     return response()->json([
-			'message' => 'Data deleted',
-			'status' => 'success'
-		]);
+      'message' => 'Successful Deleted',
+      'status' => 'success'
+    ]);
   }
 }
