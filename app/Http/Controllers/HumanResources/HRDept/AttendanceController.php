@@ -115,6 +115,18 @@ class AttendanceController extends Controller
 
 		$exception = (!request()->has('exception') == '1' ? '0' : '1');
 
+		if ($request->remarks != NULL || $request->remarks != "") {
+			$remarks = ucwords(Str::of($request->remarks)->lower());
+		} else {
+			$remarks = NULL;
+		}
+
+		if ($request->hr_remarks != NULL || $request->hr_remarks != "") {
+			$hr_remarks = ucwords(Str::of($request->hr_remarks)->lower());
+		} else {
+			$hr_remarks = NULL;
+		}
+
 		$attendance->update([
 			'daytype_id' => $request->daytype_id,
 			'attendance_type_id' => $request->attendance_type_id,
@@ -124,8 +136,8 @@ class AttendanceController extends Controller
 			'resume' => $request->resume,
 			'out' => $request->out,
 			'time_work_hour' => $request->time_work_hour,
-			'remarks' => ucwords(Str::of($request->remarks)->lower()),
-			'hr_remarks' => ucwords(Str::of($request->hr_remarks)->lower()),
+			'remarks' => $remarks,
+			'hr_remarks' => $hr_remarks,
 			'exception' => $exception,
 		]);
 
