@@ -109,7 +109,7 @@ $hod_no = 0;
 $director_no = 0;
 $hr_no = 0;
 
-$backup = $hrleave->hasmanyleaveapprovalbackup->first();
+$backup = $hrleave->hasmanyleaveapprovalbackup?->first();
 $supervisor = $hrleave->hasmanyleaveapprovalsupervisor->first();
 $hod = $hrleave->hasmanyleaveapprovalhod->first();
 $director = $hrleave->hasmanyleaveapprovaldir->first();
@@ -477,14 +477,16 @@ $(document).ready(function(){
 				@if($hrleave->leave_type_id != 2 || $hrleave->leave_type_id != 11)
 
 				@endif
-				'<div id="backupwrapper">' +
-					'<div class="form-group row m-1 {{ $errors->has('staff_id') ? 'has-error' : '' }}" id="backupremove">' +
-						'{{ Form::label('backupperson', 'Backup Person : ', ['class' => 'col-sm-4 col-form-label']) }}' +
-						'<div class="col-sm-8 backup">' +
-							'{{ Form::select('staff_id', Staff::where('active', 1)->pluck('name', 'id'), $hrleave->hasmanyleaveapprovalbackup()->first()?->staff_id??NULL, ['id' => 'backupperson', 'class' => 'form-select form-select-sm', 'placeholder' => 'Please Choose']) }}' +
+				@if( $backup )
+					'<div id="backupwrapper">' +
+						'<div class="form-group row m-1 {{ $errors->has('staff_id') ? 'has-error' : '' }}" id="backupremove">' +
+							'{{ Form::label('backupperson', 'Backup Person : ', ['class' => 'col-sm-4 col-form-label']) }}' +
+							'<div class="col-sm-8 backup">' +
+								'{{ Form::select('staff_id', Staff::where('active', 1)->pluck('name', 'id'), $hrleave->hasmanyleaveapprovalbackup()->first()?->staff_id??NULL, ['id' => 'backupperson', 'class' => 'form-select form-select-sm', 'placeholder' => 'Please Choose']) }}' +
+							'</div>' +
 						'</div>' +
 					'</div>' +
-				'</div>' +
+					@endif
 				@endif
 				'<div class="form-group row m-1 {{ $errors->has('document') ? 'has-error' : '' }}">' +
 					'{{ Form::label( 'doc', 'Upload Supporting Document : ', ['class' => 'col-sm-4 col-form-label'] ) }}' +
@@ -574,14 +576,16 @@ $(document).ready(function(){
 					@endif
 
 				'</div>' +
-				'@if( $userneedbackup == 1 )' +
-				'<div class="form-group row m-1 {{ $errors->has('staff_id') ? 'has-error' : '' }}">' +
-					'{{ Form::label('backupperson', 'Replacement : ', ['class' => 'col-sm-4 col-form-label']) }}' +
-					'<div class="col-sm-8 backup">' +
-						'{{ Form::select('staff_id', Staff::where('active', 1)->pluck('name', 'id'), $hrleave->hasmanyleaveapprovalbackup()->first()?->staff_id??NULL, ['id' => 'backupperson', 'class' => 'form-select form-select-sm', 'placeholder' => 'Please Choose']) }}' +
+				@if( $userneedbackup == 1 )
+					@if( $backup )
+					'<div class="form-group row m-1 {{ $errors->has('staff_id') ? 'has-error' : '' }}">' +
+						'{{ Form::label('backupperson', 'Replacement : ', ['class' => 'col-sm-4 col-form-label']) }}' +
+						'<div class="col-sm-8 backup">' +
+							'{{ Form::select('staff_id', Staff::where('active', 1)->pluck('name', 'id'), $hrleave->hasmanyleaveapprovalbackup()->first()?->staff_id??NULL, ['id' => 'backupperson', 'class' => 'form-select form-select-sm', 'placeholder' => 'Please Choose']) }}' +
+						'</div>' +
 					'</div>' +
-				'</div>' +
-				'@endif' +
+					@endif
+				@endif
 				'<div class="form-group row m-1 {{ $errors->has('document') ? 'has-error' : '' }}">' +
 					'{{ Form::label( 'doc', 'Upload Supporting Document : ', ['class' => 'col-sm-4 col-form-label'] ) }}' +
 					'<div class="col-sm-8 supportdoc">' +
@@ -1002,12 +1006,14 @@ $('#leave_id').on('change', function() {
 						'</div>' +
 					'</div>' +
 					@if( $userneedbackup == 1 )
+					@if( $backup )
 					'<div class="form-group row m-1 {{ $errors->has('staff_id') ? 'has-error' : '' }}">' +
 						'{{ Form::label('backupperson', 'Replacement : ', ['class' => 'col-sm-4 col-form-label']) }}' +
 						'<div class="col-sm-8 backup">' +
 							'<select name="staff_id" id="backupperson" class="form-select form-select-sm " placeholder="Please choose" autocomplete="off"></select>' +
 						'</div>' +
 					'</div>' +
+					@endif
 					@endif
 					'<div class="form-group row m-1 {{ $errors->has('document') ? 'has-error' : '' }}">' +
 						'{{ Form::label( 'doc', 'Upload Supporting Document : ', ['class' => 'col-sm-4 col-form-label'] ) }}' +
@@ -1044,12 +1050,14 @@ $('#leave_id').on('change', function() {
 						'</div>' +
 					'</div>' +
 					@if( $userneedbackup == 1 )
-					'<div class="form-group row m-1 {{ $errors->has('staff_id') ? 'has-error' : '' }}">' +
-						'{{ Form::label('backupperson', 'Replacement : ', ['class' => 'col-sm-4 col-form-label']) }}' +
-						'<div class="col-sm-8 backup">' +
-							'<select name="staff_id" id="backupperson" class="form-select form-select-sm " placeholder="Please choose" autocomplete="off"></select>' +
+						@if( $backup )
+						'<div class="form-group row m-1 {{ $errors->has('staff_id') ? 'has-error' : '' }}">' +
+							'{{ Form::label('backupperson', 'Replacement : ', ['class' => 'col-sm-4 col-form-label']) }}' +
+							'<div class="col-sm-8 backup">' +
+								'<select name="staff_id" id="backupperson" class="form-select form-select-sm " placeholder="Please choose" autocomplete="off"></select>' +
+							'</div>' +
 						'</div>' +
-					'</div>' +
+						@endif
 					@endif
 				'</div>'
 			);
@@ -1450,6 +1458,7 @@ $('#leave_id').on('change', function() {
 				'</div>' +
 				@endif
 				@if( $userneedbackup == 99 )
+				@if( $backup )
 				'<div id="backupwrapper">' +
 					'<div class="form-group row m-1 {{ $errors->has('staff_id') ? 'has-error' : '' }}" id="backupremove">' +
 						'{{ Form::label('backupperson', 'Replacement : ', ['class' => 'col-sm-4 col-form-label']) }}' +
@@ -1458,6 +1467,7 @@ $('#leave_id').on('change', function() {
 						'</div>' +
 					'</div>' +
 				'</div>' +
+				@endif
 				@endif
 				'<div class="form-group row m-1 {{ $errors->has('document') ? 'has-error' : '' }}">' +
 					'{{ Form::label( 'doc', 'Upload Supporting Document : ', ['class' => 'col-sm-4 col-form-label'] ) }}' +
@@ -1885,6 +1895,7 @@ $oi = $hrleave->belongstostaff->hasmanyleavereplacement()->where('leave_balance'
 					'</div>' +
 				'</div>' +
 				@if( $userneedbackup == 1 )
+				@if( $backup )
 				'<div id="backupwrapper">' +
 					'<div class="form-group row m-1 {{ $errors->has('staff_id') ? 'has-error' : '' }}" id="backupremove">' +
 						'{{ Form::label('backupperson', 'Replacement : ', ['class' => 'col-sm-4 col-form-label']) }}' +
@@ -1893,6 +1904,7 @@ $oi = $hrleave->belongstostaff->hasmanyleavereplacement()->where('leave_balance'
 						'</div>' +
 					'</div>' +
 				'</div>' +
+				@endif
 				@endif
 			'</div>'
 		);
@@ -2357,12 +2369,14 @@ $oi = $hrleave->belongstostaff->hasmanyleavereplacement()->where('leave_balance'
 					'</div>' +
 				'</div>' +
 			@if( $userneedbackup == 1 )
+			@if( $backup )
 				'<div class="form-group row m-1 {{ $errors->has('staff_id') ? 'has-error' : '' }}">' +
 					'{{ Form::label('backupperson', 'Replacement : ', ['class' => 'col-sm-4 col-form-label']) }}' +
 					'<div class="col-sm-8 backup">' +
 						'<select name="staff_id" id="backupperson" class="form-select form-select-sm" placeholder="Please choose" autocomplete="off"></select>' +
 					'</div>' +
 				'</div>' +
+			@endif
 			@endif
 			'</div>'
 		);
@@ -2486,14 +2500,16 @@ $oi = $hrleave->belongstostaff->hasmanyleavereplacement()->where('leave_balance'
 					'</div>' +
 				'</div>' +
 				@if( $userneedbackup == 1 )
-				'<div id="backupwrapper">' +
-					'<div class="form-group row m-1{{ $errors->has('staff_id') ? 'has-error' : '' }}" id="backupremove">' +
-						'{{ Form::label('backupperson', 'Backup Person : ', ['class' => 'col-sm-4 col-form-label']) }}' +
-						'<div class="col-sm-8 backup">' +
-							'<select name="staff_id" id="backupperson" class="form-select form-select-sm " placeholder="Please choose" autocomplete="off"></select>' +
+					@if ($backup)
+					'<div id="backupwrapper">' +
+						'<div class="form-group row m-1{{ $errors->has('staff_id') ? 'has-error' : '' }}" id="backupremove">' +
+							'{{ Form::label('backupperson', 'Backup Person : ', ['class' => 'col-sm-4 col-form-label']) }}' +
+							'<div class="col-sm-8 backup">' +
+								'<select name="staff_id" id="backupperson" class="form-select form-select-sm " placeholder="Please choose" autocomplete="off"></select>' +
+							'</div>' +
 						'</div>' +
 					'</div>' +
-				'</div>' +
+					@endif
 				@endif
 				'<div class="form-group row m-1 {{ $errors->has('document') ? 'has-error' : '' }}">' +
 					'{{ Form::label( 'doc', 'Upload Supporting Document : ', ['class' => 'col-sm-4 col-form-label'] ) }}' +
@@ -2947,6 +2963,7 @@ $oi = $hrleave->belongstostaff->hasmanyleavereplacement()->where('leave_balance'
 					'</div>' +
 				'</div>' +
 				@if( $userneedbackup == 1 )
+				@if( $backup )
 				'<div id="backupwrapper">' +
 					'<div class="form-group row m-1 {{ $errors->has('staff_id') ? 'has-error' : '' }}" id="backupremove">' +
 						'{{ Form::label('backupperson', 'Backup Person : ', ['class' => 'col-sm-4 col-form-label']) }}' +
@@ -2955,6 +2972,7 @@ $oi = $hrleave->belongstostaff->hasmanyleavereplacement()->where('leave_balance'
 						'</div>' +
 					'</div>' +
 				'</div>' +
+				@endif
 				@endif
 				'<div class="form-group row m-1 {{ $errors->has('document') ? 'has-error' : '' }}">' +
 					'{{ Form::label( 'doc', 'Upload Supporting Document : ', ['class' => 'col-sm-4 col-form-label'] ) }}' +
@@ -3149,9 +3167,9 @@ $oi = $hrleave->belongstostaff->hasmanyleavereplacement()->where('leave_balance'
 					'<div class="form-group col-sm-8 offset-sm-4 {{ $errors->has('half_type_id') ? 'has-error' : '' }} removehalfleave"  id="wrappertest">' +
 						@if($hrleave->period_day <= 0.5)
 							'<div class="form-check form-check-inline removetest">' +
-								'<input type="radio" name="half_type_id" value="1/' + obj.time_start_am + '/' + obj.time_end_am + '" id="am"  {{ ($hrleave->half_type_id == 1)?'checked=checked':NULL }}>' +
+								'<input type="radio" name="half_type_id" value="1/' + obj.time_start_am + '/' + obj.time_end_am + '" id="am">' +
 								'<label for="am" class="form-check-label m-1">' + moment(obj.time_start_am, 'HH:mm:ss').format('h:mm a') + ' to ' + moment(obj.time_end_am, 'HH:mm:ss').format('h:mm a') + '</label> ' +
-								'<input type="radio" name="half_type_id" value="2/' + obj.time_start_pm + '/' + obj.time_end_pm + '" id="pm"  {{ ($hrleave->half_type_id == 2)?'checked=checked':NULL }}>' +
+								'<input type="radio" name="half_type_id" value="2/' + obj.time_start_pm + '/' + obj.time_end_pm + '" id="pm">' +
 								'<label for="pm" class="form-check-label m-1">' + moment(obj.time_start_pm, 'HH:mm:ss').format('h:mm a') + ' to ' + moment(obj.time_end_pm, 'HH:mm:ss').format('h:mm a') + '</label> ' +
 							'</div>' +
 						@endif
@@ -3159,6 +3177,7 @@ $oi = $hrleave->belongstostaff->hasmanyleavereplacement()->where('leave_balance'
 				'</div>' +
 				@endif
 				@if( $userneedbackup == 1 )
+				@if( $backup )
 				'<div id="backupwrapper">' +
 					'<div class="form-group row m-1 {{ $errors->has('staff_id') ? 'has-error' : '' }}" id="backupremove">' +
 						'{{ Form::label('backupperson', 'Backup Person : ', ['class' => 'col-sm-4 col-form-label']) }}' +
@@ -3167,6 +3186,7 @@ $oi = $hrleave->belongstostaff->hasmanyleavereplacement()->where('leave_balance'
 						'</div>' +
 					'</div>' +
 				'</div>' +
+				@endif
 				@endif
 				'<div class="form-group row m-1 {{ $errors->has('document') ? 'has-error' : '' }}">' +
 					'{{ Form::label( 'doc', 'Upload Supporting Document : ', ['class' => 'col-sm-4 col-form-label'] ) }}' +
@@ -3634,6 +3654,7 @@ $oi = $hrleave->belongstostaff->hasmanyleavereplacement()->where('leave_balance'
 					'</div>' +
 				'</div>' +
 				@if( $userneedbackup == 1 )
+				@if( $backup )
 				'<div id="backupwrapper">' +
 					'<div class="form-group row m-1 {{ $errors->has('staff_id') ? 'has-error' : '' }}" id="backupremove">' +
 						'{{ Form::label('backupperson', 'Backup Person : ', ['class' => 'col-sm-4 col-form-label']) }}' +
@@ -3642,6 +3663,7 @@ $oi = $hrleave->belongstostaff->hasmanyleavereplacement()->where('leave_balance'
 						'</div>' +
 					'</div>' +
 				'</div>' +
+				@endif
 				@endif
 				'<div class="form-group row m-1 {{ $errors->has('document') ? 'has-error' : '' }}">' +
 					'{{ Form::label( 'doc', 'Upload Supporting Document : ', ['class' => 'col-sm-4 col-form-label'] ) }}' +
@@ -4165,6 +4187,7 @@ $oi = $hrleave->belongstostaff->hasmanyleavereplacement()->where('leave_balance'
 					'</div>' +
 				'</div>' +
 				@if( $userneedbackup == 1 )
+				@if( $backup )
 				'<div id="backupwrapper">' +
 					'<div class="form-group row m-1 {{ $errors->has('staff_id') ? 'has-error' : '' }}">' +
 						'{{ Form::label('backupperson', 'Backup Person : ', ['class' => 'col-sm-4 col-form-label']) }}' +
@@ -4173,6 +4196,7 @@ $oi = $hrleave->belongstostaff->hasmanyleavereplacement()->where('leave_balance'
 						'</div>' +
 					'</div>' +
 				'</div>' +
+				@endif
 				@endif
 				'<div class="form-group row m-1 {{ $errors->has('document') ? 'has-error' : '' }}">' +
 					'{{ Form::label( 'doc', 'Upload Supporting Document : ', ['class' => 'col-sm-4 col-form-label'] ) }}' +
