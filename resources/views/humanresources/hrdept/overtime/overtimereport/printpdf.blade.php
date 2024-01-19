@@ -43,6 +43,15 @@
     margin: 0.7cm;
     size: A4 landscape;
   }
+
+.remark,
+.remark tr,
+.remark td {
+  border-collapse: collapse;
+    width: 100%;
+    font-size: 12px;
+    font-family: 'Arial', sans-serif;
+}
 </style>
 <?php
 
@@ -120,15 +129,26 @@ if ($date_start != NULL && $date_end != NULL) {
       </div>
     </td>
     @foreach ($rows as $row)
-    <td align="center">
-      <?php
-      $ot = HROvertime::join('hr_overtime_ranges', 'hr_overtime_ranges.id', '=', 'hr_overtimes.overtime_range_id')
-        ->where('hr_overtimes.ot_date', '=', $row)
-        ->where('hr_overtimes.staff_id', '=', $overtime->staff_id)
-        ->where('hr_overtimes.active', 1)
-        ->select('hr_overtime_ranges.total_time')
-        ->first();
+    <?php
+    $ot = HROvertime::join('hr_overtime_ranges', 'hr_overtime_ranges.id', '=', 'hr_overtimes.overtime_range_id')
+      ->where('hr_overtimes.ot_date', '=', $row)
+      ->where('hr_overtimes.staff_id', '=', $overtime->staff_id)
+      ->where('hr_overtimes.active', 1)
+      ->select('hr_overtimes.assign_staff_id', 'hr_overtime_ranges.total_time')
+      ->first();
 
+    $background = "";
+
+    if ($ot) {
+      $department_id = $ot->belongstoassignstaff->belongstomanydepartment()->first()->department_id;
+
+      if ($department_id == '14' || $department_id == '15') {
+        $background = "background-color: #d9d9d9";
+      }
+    }
+    ?>
+    <td align="center" style="<?php echo $background; ?>">
+      <?php
       if ($ot) {
         echo $timeString_per_person = (Carbon::parse($ot->total_time))->format('H:i');
 
@@ -165,6 +185,19 @@ if ($date_start != NULL && $date_end != NULL) {
       &nbsp;
     </td>
     <td></td>
+  </tr>
+</table>
+
+<table style="height: 2px;"></table>
+
+<table class="remark">
+  <tr>
+    <td style="width:24px">
+      <div style="width: 16px; height: 16px; background-color: #d9d9d9;"></div>
+    </td>
+    <td>
+      REMARK
+    </td>
   </tr>
 </table>
 

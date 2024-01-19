@@ -26,6 +26,7 @@
   $form_versions = DB::table('pivot_dept_appraisals')
     ->where('department_id', $department->id)
     ->whereNotNull('version')
+    ->whereNull('deleted_at')
     ->groupBy('department_id')
     ->groupBy('version')
     ->orderBy('version', 'ASC')
@@ -56,15 +57,19 @@
       </a>
     </div>
     <div align="center" style="width: 60px;">
-      <a class="fas fa-pencil" href="" role="button"></a>
+
+
+      <a href="{{ route('appraisalform.edit', ['appraisalform' => $form_version->id]) }}">
+        <button type="submit" class="btn btn-sm btn-outline-secondary">
+          <i class="fas fa-pencil" aria-hidden="true"></i>
+        </button>
+      </a>
+
     </div>
     <div align="center" style="width: 60px;">
-      {{ Form::open(['route' => ['appraisalformduplicate.store'], 'method' => 'GET', 'id' => 'form', 'class' => 'form-horizontal', 'autocomplete' => 'off', 'files' => true]) }}
-      <input type="hidden" name="id" id="id" value="{{ $form_version->id }}">
-      <button type="submit" class="btn btn-sm btn-outline-secondary">
+      <button type="button" class="btn btn-sm btn-outline-secondary appraisal_duplicate" data-id="{{ $form_version->id }}">
         <i class="fas fa-clone" aria-hidden="true"></i>
       </button>
-      {{ Form::close() }}
     </div>
     <div align="center" style="width: 60px;">
       <button type="button" class="btn btn-sm btn-outline-secondary appraisal_delete" data-id="{{ $form_version->id }}">
@@ -81,6 +86,57 @@
 
 @section('js')
 ////////////////////////////////////////////////////////////////////////////////////
+// DUPLICATE APPRAISAL
+$(document).on('click', '.appraisal_duplicate', function(e){
+  var appraisalId = $(this).data('id');
+  SwalAppraisalDuplicate(appraisalId);
+  e.preventDefault();
+});
+
+function SwalAppraisalDuplicate(appraisalId){
+  swal.fire({
+    title: 'DUPLICATE',
+    text: "Do you want to duplicate the appraisal?",
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Yes',
+    showLoaderOnConfirm: true,
+
+    preConfirm: function() {
+      return new Promise(function(resolve) {
+        $.ajax({
+          type: 'GET',
+          url: '{{ url('appraisalformduplicate/store') }}',
+          data: {
+              _token : $('meta[name=csrf-token]').attr('content'),
+              id: appraisalId,
+          },
+          dataType: 'json'
+        })
+        .done(function(response){
+          swal.fire('Duplicated', response.message, response.status)
+          .then(function(){
+            window.location.reload(true);
+          });
+        })
+        .fail(function(){
+          swal.fire('Oops...', 'Something went wrong with ajax !', 'error');
+        })
+      });
+    },
+    allowOutsideClick: false
+  })
+  .then((result) => {
+    if (result.dismiss === swal.DismissReason.cancel) {
+      swal.fire('Cancelled', 'Duplicate has been cancelled', 'info')
+    }
+  });
+}
+
+
+////////////////////////////////////////////////////////////////////////////////////
 // DELETE APPRAISAL
 $(document).on('click', '.appraisal_delete', function(e){
   var appraisalId = $(this).data('id');
@@ -90,13 +146,13 @@ $(document).on('click', '.appraisal_delete', function(e){
 
 function SwalAppraisalDelete(appraisalId){
   swal.fire({
-    title: 'Are you sure?',
-    text: "It will be deleted permanently!",
-    type: 'warning',
+    title: 'DELETE',
+    text: "Do you want to deletet the appraisal?",
+    icon: 'warning',
     showCancelButton: true,
     confirmButtonColor: '#3085d6',
     cancelButtonColor: '#d33',
-    confirmButtonText: 'Yes, delete it!',
+    confirmButtonText: 'Yes',
     showLoaderOnConfirm: true,
 
     preConfirm: function() {
@@ -111,7 +167,7 @@ function SwalAppraisalDelete(appraisalId){
           dataType: 'json'
         })
         .done(function(response){
-          swal.fire('Deleted!', response.message, response.status)
+          swal.fire('Deleted', response.message, response.status)
           .then(function(){
             window.location.reload(true);
           });
@@ -125,7 +181,7 @@ function SwalAppraisalDelete(appraisalId){
   })
   .then((result) => {
     if (result.dismiss === swal.DismissReason.cancel) {
-      swal.fire('Cancelled', 'Your data is safe from delete', 'info')
+      swal.fire('Cancelled', 'Delete has been cancelled', 'info')
     }
   });
 }
