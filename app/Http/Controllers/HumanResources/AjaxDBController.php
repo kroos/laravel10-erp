@@ -1348,7 +1348,7 @@ class AjaxDBController extends Controller
 
 	public function overtimerange(): JsonResponse
 	{
-		$or = HROvertimeRange::where('active', 1)->get();
+		$or = HROvertimeRange::where('active', 1)->orderBy('start', 'ASC')->orderBy('end', 'ASC')->get();
 		foreach ($or as $v) {
 		    $l['results'][] = ['id' => $v->id, 'text' => $v->start.' => '.$v->end];
 		}
