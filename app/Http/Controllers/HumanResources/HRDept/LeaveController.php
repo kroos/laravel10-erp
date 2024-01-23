@@ -125,15 +125,15 @@ class LeaveController extends Controller
 				'reason' => 'required',
 				'date_time_start' => 'required|date_format:Y-m-d',
 				'date_time_end' => 'required_if:leave_type_id,1,2,3,4,5,6,7,10,11,12,13,14|date_format:Y-m-d',
-				// 'leave_cat' => 'required_if:date_time_start,date_time_end',
-				'leave_cat' => [
-									'required',
-									function ($attribute, $value, $fail) use ($request) {
-										if ($request->input('date_time_start') !== $request->input('date_time_end')) {
-											$fail('The "Leave Category" field is required when datestart and dateend have the same value.');
-										}
-									},
-								],
+				'leave_cat' => 'sometimes|required_if:date_time_start,date_time_end',
+				// 'leave_cat' => [
+				// 					'sometimes|required',
+				// 					function ($attribute, $value, $fail) use ($request) {
+				// 						if ($request->input('date_time_start') !== $request->input('date_time_end')) {
+				// 							$fail('The "Leave Category" field is required when datestart and dateend have the same value.');
+				// 						}
+				// 					},
+				// 				],
 				'half_type_id' => 'required_if:leave_cat,2',
 				'staff_id' => 'sometimes|required',
 				'amend_note' => 'required',
