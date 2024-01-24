@@ -65,29 +65,29 @@ $staffs = Staff::join('logins', 'staffs.id', '=', 'logins.staff_id')
         <?php
         if ($me1) {                                        // hod
           if ($deptid == 21) {                                // hod | dept prod A
-            $ha = $k->belongstomanydepartment()->wherePivot('main', 1)->first()->id == $deptid || $k->belongstomanydepartment()->wherePivot('main', 1)->first()->category_id == 2;
+            $ha = $k->belongstomanydepartment()?->wherePivot('main', 1)->first()?->id == $deptid || $k->belongstomanydepartment()?->wherePivot('main', 1)->first()?->category_id == 2;
           } elseif ($deptid == 28) {                              // hod | not dept prod A | dept prod B
-            $ha = $k->belongstomanydepartment()->wherePivot('main', 1)->first()->id == $deptid || $k->belongstomanydepartment()->wherePivot('main', 1)->first()->category_id == 2;
+            $ha = $k->belongstomanydepartment()?->wherePivot('main', 1)->first()?->id == $deptid || $k->belongstomanydepartment()?->wherePivot('main', 1)->first()?->category_id == 2;
           } elseif ($deptid == 14) {                              // hod | not dept prod A | not dept prod B | HR
             $ha = true;
           } elseif ($deptid == 6) {                              // hod | not dept prod A | not dept prod B | not HR | cust serv
-            $ha = $k->belongstomanydepartment()->wherePivot('main', 1)->first()->id == $deptid || $k->belongstomanydepartment()->wherePivot('main', 1)->first()->id == 7;
+            $ha = $k->belongstomanydepartment()?->wherePivot('main', 1)->first()?->id == $deptid || $k->belongstomanydepartment()?->wherePivot('main', 1)->first()?->id == 7;
           } elseif ($deptid == 23) {                              // hod | not dept prod A | not dept prod B | not HR | not cust serv | puchasing
-            $ha = $k->belongstomanydepartment()->wherePivot('main', 1)->first()->id == $deptid || $k->belongstomanydepartment()->wherePivot('main', 1)->first()->id == 16 || $k->belongstomanydepartment()->wherePivot('main', 1)->first()->id == 17;
+            $ha = $k->belongstomanydepartment()?->wherePivot('main', 1)->first()?->id == $deptid || $k->belongstomanydepartment()?->wherePivot('main', 1)->first()?->id == 16 || $k->belongstomanydepartment()?->wherePivot('main', 1)->first()?->id == 17;
           } else {                                      // hod | not dept prod A | not dept prod B | not HR | not cust serv | not puchasing | other dept
-            $ha = $k->belongstomanydepartment()->wherePivot('main', 1)->first()->id == $deptid;
+            $ha = $k->belongstomanydepartment()?->wherePivot('main', 1)->first()?->id == $deptid;
           }
         } elseif ($me2) {                                    // not hod | asst hod
           if ($deptid == 14) {                                  // not hod | not dept prod A | not dept prod B | HR
             $ha = true;
           } elseif ($deptid == 6) {                              // not hod | not dept prod A | not dept prod B | not HR | cust serv
-            $ha = $k->belongstomanydepartment()->wherePivot('main', 1)->first()->id == $deptid || $k->belongstomanydepartment()->wherePivot('main', 1)->first()->id == 7;
+            $ha = $k->belongstomanydepartment()?->wherePivot('main', 1)->first()?->id == $deptid || $k->belongstomanydepartment()?->wherePivot('main', 1)->first()?->id == 7;
           }
         } elseif ($me3) {                                    // not hod | not asst hod | supervisor
           if ($branch == 1) {                                  // not hod | not asst hod | supervisor | branch A
-            $ha = $k->belongstomanydepartment()->wherePivot('main', 1)->first()->id == $deptid || ($k->belongstomanydepartment()->wherePivot('main', 1)->first()->category_id == 2 && $k->belongstomanydepartment()->wherePivot('main', 1)->first()->branch_id == $branch);
+            $ha = $k->belongstomanydepartment()?->wherePivot('main', 1)->first()?->id == $deptid || ($k->belongstomanydepartment()?->wherePivot('main', 1)->first()?->category_id == 2 && $k->belongstomanydepartment()?->wherePivot('main', 1)->first()?->branch_id == $branch);
           } elseif ($branch == 2) {                              // not hod | not asst hod | supervisor | not branch A | branch B
-            $ha = $k->belongstomanydepartment()->wherePivot('main', 1)->first()->id == $deptid || ($k->belongstomanydepartment()->wherePivot('main', 1)->first()->category_id == 2 && $k->belongstomanydepartment()->wherePivot('main', 1)->first()->branch_id == $branch);
+            $ha = $k->belongstomanydepartment()?->wherePivot('main', 1)->first()?->id == $deptid || ($k->belongstomanydepartment()?->wherePivot('main', 1)->first()?->category_id == 2 && $k->belongstomanydepartment()?->wherePivot('main', 1)->first()?->branch_id == $branch);
           }
         } elseif ($me6) {                                    // not hod | not asst hod | not supervisor | director
           $ha = true;
