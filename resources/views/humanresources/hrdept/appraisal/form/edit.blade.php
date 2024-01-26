@@ -5,6 +5,7 @@
   <script src="http://tan.com/js/ckeditor/ckeditor.js"></script>
   <script src="http://tan.com/js/ckeditor/adapters/jquery.js"></script>
 
+  
   <style>
     .img1 {
       text-align: center;

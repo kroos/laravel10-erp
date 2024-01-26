@@ -1,5 +1,6 @@
 <?php
 
+
 namespace App\Http\Controllers\HumanResources\HRDept;
 
 use App\Http\Controllers\Controller;
