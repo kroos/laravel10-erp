@@ -1,5 +1,6 @@
 <?php
 
+
 namespace App\Http\Controllers\HumanResources\HRDept;
 
 use App\Http\Controllers\Controller;
@@ -231,6 +232,7 @@ class AppraisalFormController extends Controller
    */
   public function update(Request $request): JsonResponse
   {
+    // --------------------------------- EDIT ---------------------------------
     if ($request->update == 'section') {
       $section = HRAppraisalSection::find($request->id);
 
@@ -245,7 +247,7 @@ class AppraisalFormController extends Controller
       ]);
     }
 
-    
+
     if ($request->update == 'section_sub') {
       $section_sub = HRAppraisalSectionSub::find($request->id);
 
@@ -288,6 +290,64 @@ class AppraisalFormController extends Controller
 
       return response()->json([
         'message' => 'Successful Update',
+        'status' => 'success'
+      ]);
+    }
+
+    // --------------------------------- ADD ---------------------------------
+    if ($request->add == 'P1') {
+
+      HRAppraisalSection::create([
+        'sort' => $request->sort,
+        'section' => preg_replace('/>\s*</', '><', $request->section),
+      ]);
+
+      return response()->json([
+        'message' => 'Successful Add',
+        'status' => 'success'
+      ]);
+    }
+
+    if ($request->add == 'P2') {
+
+      HRAppraisalSectionSub::create([
+        'section_id' => $request->id,
+        'sort' => $request->sort,
+        'section_sub' => preg_replace('/>\s*</', '><', $request->section_sub),
+      ]);
+
+      return response()->json([
+        'message' => 'Successful Add',
+        'status' => 'success'
+      ]);
+    }
+
+    if ($request->add == 'P3') {
+
+      HRAppraisalMainQuestion::create([
+        'section_sub_id' => $request->id,
+        'mark' => $request->mark,
+        'sort' => $request->sort,
+        'main_question' => preg_replace('/>\s*</', '><', $request->main_question),
+      ]);
+
+      return response()->json([
+        'message' => 'Successful Add',
+        'status' => 'success'
+      ]);
+    }
+
+    if ($request->add == 'P4') {
+
+      HRAppraisalQuestion::create([
+        'main_question_id' => $request->id,
+        'mark' => $request->mark,
+        'sort' => $request->sort,
+        'question' => preg_replace('/>\s*</', '><', $request->question),
+      ]);
+
+      return response()->json([
+        'message' => 'Successful Add',
         'status' => 'success'
       ]);
     }
