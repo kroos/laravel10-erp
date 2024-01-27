@@ -44,6 +44,8 @@ use App\Http\Controllers\HumanResources\HRDept\AttendanceRemarkController;
 use App\Http\Controllers\HumanResources\HRDept\AppraisalFormController;
 use App\Http\Controllers\HumanResources\HRDept\OutstationDurationController;
 use App\Http\Controllers\HumanResources\HRDept\AppraisalFormMoreFunctionController;
+use App\Http\Controllers\HumanResources\HRDept\AppraisalApointController;
+
 
 
 Route::resources([
@@ -83,6 +85,7 @@ Route::resources([
 	'appraisalexcelreport' => AppraisalExcelReportController::class,
 	'attendanceremark' => AttendanceRemarkController::class,
 	'appraisalform' => AppraisalFormController::class,
+	'appraisalapoint' => AppraisalApointController::class,
 ]);
 
 Route::get('/leavereject', [LeaveController::class, 'reject'])->name('hrleave.reject');
