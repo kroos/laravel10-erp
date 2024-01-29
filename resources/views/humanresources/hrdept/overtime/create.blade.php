@@ -43,7 +43,7 @@ $staffs = Staff::join('logins', 'staffs.id', '=', 'logins.staff_id')
     $query->where('staffs.div_id', '!=', 2)
       ->orWhereNull('staffs.div_id');
   })
-  ->select('staffs.id as staffID', 'staffs.*', 'logins.*')
+  ->select('staffs.id as staffID', 'staffs.*', 'logins.username')
   ->orderBy('logins.username', 'asc')
   ->get();
 ?>
