@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="col-sm-12 row">
-@include('sales.navhr')
+@include('sales.salesdept.navhr')
 	<div class="row justify-content-center">
 
 	</div>
