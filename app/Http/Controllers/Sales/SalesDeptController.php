@@ -40,6 +40,6 @@ class SalesDeptController extends Controller
 
 	public function index(): View
 	{
-		return view('sales.index');
+		return view('sales.salesdept.index');
 	}
 }
