@@ -40,6 +40,11 @@ require __DIR__.'/HumanResources/ajax_hr.php';
 require __DIR__.'/Sales/sales.php';
 require __DIR__.'/Sales/ajax_sales.php';
 
+#############################################################################################
+// ipma erp cps (costing department) controller
+require __DIR__.'/Costing/costing.php';
+require __DIR__.'/Costing/ajax_costing.php';
+
 
 
 
