@@ -55,9 +55,10 @@ class SalesController extends Controller
 
 	public function create(): View
 	{
+		return view('sales.sales.create');
 	}
 
-	public function store(Request $request): View
+	public function store(Request $request): RedirectResponse
 	{
 	}
 
@@ -73,7 +74,7 @@ class SalesController extends Controller
 	{
 	}
 
-	public function destroy()
+	public function destroy(): JsonResponse
 	{
 	}
 }
