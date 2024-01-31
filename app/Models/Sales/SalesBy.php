@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Sales;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 // use Illuminate\Database\Eloquent\Model;
 use App\Models\Model;
 
@@ -12,32 +13,32 @@ use App\Models\Model;
 // use Illuminate\Database\Eloquent\Relations\HasOneOrMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 // use Illuminate\Database\Eloquent\Relations\HasManyThrough;
-// use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 // use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-class Customer extends Model
+class SalesBy extends Model
 {
-	use HasFactory;
+	use HasFactory, SoftDeletes;
+
 	// protected $connection = 'mysql';
-	protected $table = 'customers';
+	protected $table = 'sales_by';
 
 	/////////////////////////////////////////////////////////////////////////////////////////
 	// hasmany relationship
-	public function hasmanyleavereplacement(): HasMany
-	{
-		return $this->hasMany(\App\Models\HumanResources\HRLeaveReplacement::class, 'customer_id');
-	}
-
-	public function hasmanyoutstation(): HasMany
-	{
-		return $this->hasMany(\App\Models\HumanResources\HROutstation::class, 'customer_id');
-	}
 
 	public function hasmanysales(): HasMany
 	{
-		return $this->hasMany(\App\Models\Sales\Sales::class, 'customer_id');
+		return $this->hasMany(\App\Models\Sales\Sales::class, 'sales_by_id');
 	}
 
+
+	/////////////////////////////////////////////////////////////////////////////////////////////////////
+	// db relation belongsToMany
+
+	/////////////////////////////////////////////////////////////////////////////////////////////////////
+	//belongsto relationship
+
 	/////////////////////////////////////////////////////////////////////////////////////////
-	// belongsto relationship
 }
+
+
