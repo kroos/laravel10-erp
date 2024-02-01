@@ -35,7 +35,7 @@ class SalesDeptController extends Controller
 	function __construct()
 	{
 		$this->middleware('auth');
-		$this->middleware('highMgmtAccess:2,NULL'/*, ['only' => ['show', 'edit', 'update']]*/);
+		$this->middleware('highMgmtAccess:1|2|5,6|24');
 	}
 
 	public function index(): View

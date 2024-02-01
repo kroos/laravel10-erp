@@ -3,7 +3,7 @@
 namespace App\Models\Sales;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-// use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\SoftDeletes;
 // use Illuminate\Database\Eloquent\Model;
 use App\Models\Model;
 
@@ -16,20 +16,20 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 // use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-class SalesDeliveryBy extends Model
+class Sales extends Model
 {
 	use HasFactory;
 
 	// protected $connection = 'mysql';
-	protected $table = 'sales_delivery_types';
+	protected $table = 'sales_amends';
 
 	/////////////////////////////////////////////////////////////////////////////////////////
 	// hasmany relationship
 
-	public function hasmanysales(): HasMany
-	{
-		return $this->hasMany(\App\Models\Sales\Sales::class, 'deliveryby_id');
-	}
+	// public function hasmanysalesamend(): HasMany
+	// {
+	// 	return $this->hasMany(\App\Models\Sales\SalesAmend::class, 'leave_id');
+	// }
 
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -37,6 +37,15 @@ class SalesDeliveryBy extends Model
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
 	//belongsto relationship
+	public function belongstostaff(): BelongsTo
+	{
+		return $this->belongsTo(\App\Models\Staff::class, 'staff_id');
+	}
+
+	public function belongstosales(): BelongsTo
+	{
+		return $this->hasMany(\App\Models\Sales\Sales::class, 'sales_id');
+	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////
 }
