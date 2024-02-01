@@ -1202,10 +1202,14 @@ use App\Models\HumanResources\HROutstation;
 								{{ $ort }}&nbsp;
 							</td>
 							<td>
-								&nbsp;{{ ($os)?Str::limit(ucwords(Str::lower($os->first()?->belongstocustomer?->customer)), 10, '...'):null }}
+								<div style="width: 75px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+									&nbsp;{{ ($os)?Str::lower($os->first()?->belongstocustomer?->customer):null }}
+								</div>
 							</td>
 							<td>
-								&nbsp;{{ Str::limit(ucwords(Str::lower($v1->remarks. (($v1->hr_remarks)?' | ':''). $v1->hr_remarks)), 40, '...') }}
+								<div style="width: 95%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+									&nbsp;{{ Str::limit(ucwords(Str::lower($v1->remarks. (($v1->hr_remarks)?' | ':''). $v1->hr_remarks)), 40, '...') }}
+								</div>
 							</td>
 							<td align="center">
 								{{ $v1->exception }}
