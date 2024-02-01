@@ -14,6 +14,7 @@ use App\Models\Staff;
 					@if(auth()->user()->belongstostaff->authorise_id == 1)
 					<th>Staff ID</th>
 					@endif
+					<th>No</th>
 					<th>ID</th>
 					<th>Name</th>
 					<th>Group</th>
@@ -46,6 +47,7 @@ $dept = \Auth::user()->belongstostaff->belongstomanydepartment()->wherePivot('ma
 $deptid = $dept->id;
 $branch = $dept->branch_id;
 $category = $dept->category_id;
+$r = 1;
 ?>
 				@foreach(Staff::where('active', 1)->get() as $s)
 <?php
@@ -88,6 +90,7 @@ if ($me1) {																				// hod
 							@if(auth()->user()->belongstostaff->authorise_id == 1)
 							<td>{{ $s->id }}</td>
 							@endif
+							<td>{{ $r++ }}</td>
 							<td><a href="{{ route('staff.show', $s->id) }}" alt="Detail" title="Detail">{{ $s->hasmanylogin()->where('active', 1)->first()?->username }}</a></td>
 							<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-html="true" data-bs-title="
 								<div class='d-flex flex-column align-items-center text-center p-3 py-5'>
@@ -129,6 +132,7 @@ if ($me1) {																				// hod
 					@if(auth()->user()->belongstostaff->authorise_id == 1)
 					<th>Staff ID</th>
 					@endif
+					<th>No</th>
 					<th>ID</th>
 					<th>Name</th>
 					<th>Group</th>
@@ -161,6 +165,7 @@ $dept = \Auth::user()->belongstostaff->belongstomanydepartment()->wherePivot('ma
 $deptid = $dept->id;
 $branch = $dept->branch_id;
 $category = $dept->category_id;
+$t = 1;
 ?>
 				@foreach(Staff::where('active', '<>', 1)->get() as $s)
 <?php
@@ -204,7 +209,8 @@ if ($me1) {																				// hod
 							@if(auth()->user()->belongstostaff->authorise_id == 1)
 							<td>{{ $s->id }}</td>
 							@endif
-							<td><a href="{{ route('staff.show', $s->id) }}" alt="Detail" title="Detail">{{ $s->hasmanylogin()->where('active', '<>', 1)->first()?->username }}</a></td>
+							<td>{{ $t++ }}</td>
+							<td><a href="{{ route('staff.show', $s->id) }}" alt="Detail" title="Detail">{{ $s->hasmanylogin()->where('active', 1)->first()?->username }}</a></td>
 							<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-html="true" data-bs-title="
 								<div class='d-flex flex-column align-items-center text-center p-3 py-5'>
 									<img class='rounded-5 mt-3' width='180px' src='{{ asset('storage/user_profile/' . $s->image) }}'>

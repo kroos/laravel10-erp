@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\HumanResources;
+namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -573,6 +573,20 @@ class AjaxDBController extends Controller
 			$cuti['results'][] = [
 									'id' => $key->id,
 									'text' => $key->location,
+								];
+			// $cuti['pagination'] = ['more' => true];
+		}
+		return response()->json( $cuti );
+	}
+
+	public function customer(Request $request): JsonResponse
+	{
+		// https://select2.org/data-sources/formats
+		$au = Customer::orderBy('customer')->where('customer','LIKE','%'.$request->search.'%')->get();
+		foreach ($au as $key) {
+			$cuti['results'][] = [
+									'id' => $key->id,
+									'text' => $key->customer,
 								];
 			// $cuti['pagination'] = ['more' => true];
 		}
