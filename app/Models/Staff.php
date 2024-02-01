@@ -146,6 +146,16 @@ class Staff extends Authenticatable
 		return $this->belongsToMany(\App\Models\HumanResources\DepartmentPivot::class, 'pivot_staff_pivotdepts', 'staff_id', 'pivot_dept_id')->withPivot('main', 'id')->withTimestamps();
 	}
 
+	public function belongstomanyevaluatee(): BelongsToMany
+	{
+		return $this->belongsToMany(\App\Models\Staff::class, 'pivot_apoint_appraisals', 'evaluator_id', 'evaluatee_id')->withPivot('remark')->withTimestamps();
+	}
+
+	public function belongstomanyevaluator(): BelongsToMany
+	{
+		return $this->belongsToMany(\App\Models\Staff::class, 'pivot_apoint_appraisals', 'evaluatee_id', 'evaluator_id')->withPivot('remark')->withTimestamps();
+	}
+
 	// user got cross backup
 	public function crossbackupto(): BelongsToMany
 	{
