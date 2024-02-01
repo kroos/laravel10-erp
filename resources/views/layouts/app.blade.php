@@ -18,7 +18,7 @@ $currentYear = Carbon::now()->year;
 	<!-- Styles -->
 	<link href="{{ URL::asset('css/app.css') }}" rel="stylesheet">
 </head>
-<body>
+<body class="container-fluid flex align-items-start justify-content-center">
 	<div class="container ">
 		<header class="border-bottom lh-1 py-3">
 			<!-- navigator -->
@@ -139,7 +139,7 @@ $currentYear = Carbon::now()->year;
 		</div>
 	</main>
 	<footer class="py-5 text-center text-body-secondary bg-body-tertiary ">
-		<p>{{ config('app.name') }} made from <a href="https://getbootstrap.com/">Bootstrap</a> & <a href="https://laravel.com">Laravel v.{{ app()->version() }}</a> by <a href="{{ url('/') }}">IT Department</a>.</p>
+		<p>{{ config('app.name') }} made from <a href="">Bootstrap</a> & <a href="">Laravel v.{{ app()->version() }}</a> by <a href="{{ url('/') }}">IPMA Industry Sdn Bhd</a>.</p>
 	</footer>
 </body>
 
