@@ -12,18 +12,23 @@ use App\Models\Model;
 // use Illuminate\Database\Eloquent\Relations\HasOneOrMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 // use Illuminate\Database\Eloquent\Relations\HasManyThrough;
-// use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 // use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-class OptMachineAccessories extends Model
+class OptMachineAccessory extends Model
 {
     use HasFactory;
 	// protected $connection = 'mysql';
 	protected $table = 'option_machine_accessories';
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
-	public function hasmanystaff(): HasMany
+	// {
+	// 	return $this->hasMany(\App\Models\Staff::class, 'race_id');
+	// }
+
+	/////////////////////////////////////////////////////////////////////////////////////////////////////
+	public function belongstomachine(): BelongsTo
 	{
-		return $this->hasMany(\App\Models\Staff::class, 'race_id');
+		return $this->belongsTo(\App\Models\Sales\OptMachine::class, 'machine_id');
 	}
 }

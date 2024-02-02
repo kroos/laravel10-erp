@@ -695,19 +695,24 @@ class AjaxDBController extends Controller
 		return response()->json( $cuti );
 	}
 
-	public function machineaccessories(Request $request): JsonResponse
-	{
-		// https://select2.org/data-sources/formats
-		$au = OptMachineAccessories::where('accessory','LIKE','%'.$request->search.'%')->get();
-		foreach ($au as $key) {
-			$cuti['results'][] = [
-									'id' => $key->id,
-									'text' => $key->accessory,
-								];
-			// $cuti['pagination'] = ['more' => true];
-		}
-		return response()->json( $cuti );
-	}
+	// public function machineaccessories(Request $request): JsonResponse
+	// {
+	// 	// https://select2.org/data-sources/formats
+	// 	foreach ($request->jobdesc as $v) {
+	// 		$r = $v['machine_id'];
+	// 	}
+	// 	// dd($request->jobdesc, $r);
+
+	// 	$au = OptMachineAccessories::where('machine_id', $r)->get();
+	// 	foreach ($au as $key) {
+	// 		$cuti['results'][] = [
+	// 								'id' => $key->id,
+	// 								'text' => $key->accessory,
+	// 							];
+	// 		// $cuti['pagination'] = ['more' => true];
+	// 	}
+	// 	return response()->json( $cuti );
+	// }
 
 	public function category(Request $request): JsonResponse
 	{
