@@ -3,7 +3,7 @@
 namespace App\Models\Sales;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\SoftDeletes;
+// use Illuminate\Database\Eloquent\SoftDeletes;
 // use Illuminate\Database\Eloquent\Model;
 use App\Models\Model;
 
@@ -16,19 +16,19 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 // use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-class SalesBy extends Model
+class OptSalesType extends Model
 {
-	use HasFactory, SoftDeletes;
+	use HasFactory;
 
 	// protected $connection = 'mysql';
-	protected $table = 'sales_by';
+	protected $table = 'option_sales_order_types';
 
 	/////////////////////////////////////////////////////////////////////////////////////////
 	// hasmany relationship
 
 	public function hasmanysales(): HasMany
 	{
-		return $this->hasMany(\App\Models\Sales\Sales::class, 'sales_by_id');
+		return $this->hasMany(\App\Models\Sales\Sales::class, 'sales_type_id');
 	}
 
 

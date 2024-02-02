@@ -3,7 +3,7 @@
 namespace App\Models\Sales;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\SoftDeletes;
+// use Illuminate\Database\Eloquent\SoftDeletes;
 // use Illuminate\Database\Eloquent\Model;
 use App\Models\Model;
 
@@ -16,53 +16,36 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 // use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-class Sales extends Model
+class SalesJobDescription extends Model
 {
-	use HasFactory, SoftDeletes;
+	use HasFactory;
 
 	// protected $connection = 'mysql';
-	protected $table = 'sales';
+	protected $table = 'sales_job_descriptions';
 
 	/////////////////////////////////////////////////////////////////////////////////////////
 	// hasmany relationship
 
-	public function hasmanysalesamend(): HasMany
-	{
-		return $this->hasMany(\App\Models\Sales\SalesAmend::class, 'sales_id');
-	}
-
-	public function hasmanyjobdescription(): HasMany
-	{
-		return $this->hasMany(\App\Models\Sales\SalesJobDescription::class, 'sales_id');
-	}
-
+	// public function hasmanysales(): HasMany
+	// {
+	// 	return $this->hasMany(\App\Models\Sales\Sales::class, 'deliveryby_id');
+	// }
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
 	// db relation belongsToMany
-	public function belongstomanydelivery(): BelongsToMany
-	{
-		return $this->belongsToMany(\App\Models\Sales\SalesDeliveryType::class, 'pivot_sales_sales_delivery', 'sales_id', 'sales_delivery_id')->withTimestamps();
-	}
+	// public function belongstomanysales(): BelongsToMany
+	// {
+	// 	return $this->belongsToMany(\App\Models\Sales\SalesDeliveryType::class, 'pivot_sales_sales_delivery', 'sales_delivery_id', 'sales_id')->withTimestamps();
+	// }
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
 	//belongsto relationship
-	public function belongstostaff(): BelongsTo
+	public function belongstosales(): HasMany
 	{
-		return $this->belongsTo(\App\Models\Staff::class, 'staff_id');
-	}
-
-	public function belongstoordertype(): BelongsTo
-	{
-		return $this->hasMany(\App\Models\Sales\SalesType::class, 'sales_type_id');
-	}
-
-	public function belongstocustomer(): BelongsTo
-	{
-		return $this->hasMany(\App\Models\Customer::class, 'customer_id');
+		return $this->hasMany(\App\Models\Sales\Sales::class, 'sales_id');
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////
-	// hasone relationship
 }
 
 
