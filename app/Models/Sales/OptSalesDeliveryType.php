@@ -16,12 +16,12 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 // use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-class SalesDeliveryType extends Model
+class OptSalesDeliveryType extends Model
 {
 	use HasFactory;
 
 	// protected $connection = 'mysql';
-	protected $table = 'sales_delivery_types';
+	protected $table = 'option_sales_delivery_types';
 
 	/////////////////////////////////////////////////////////////////////////////////////////
 	// hasmany relationship

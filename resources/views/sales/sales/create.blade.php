@@ -24,7 +24,7 @@
 				<div class="form-group row m-2 {{ $errors->has('deliveryby_id') ? 'has-error' : '' }}">
 					{{ Form::label( 'otype', 'Type Of Order : ', ['class' => 'col-sm-4 col-form-label'] ) }}
 					<div class="col-sm-8">
-						@foreach(\App\Models\Sales\SalesType::all() as $key)
+						@foreach(\App\Models\Sales\OptSalesType::all() as $key)
 							<div class="form-check form-check-inline">
 								<label class="form-check-label" for="db{{ $key->id }}">
 									<input class="form-check-input m-1" type="radio" name="deliveryby_id" id="db{{ $key->id }}" value="{{ $key->id }}">
@@ -72,7 +72,7 @@
 				<div class="form-group row m-2 {{ $errors->has('po_number') ? 'has-error' : '' }}">
 					{{ Form::label( 'pon', 'Delivery Instruction : ', ['class' => 'col-sm-4 col-form-label'] ) }}
 					<div class="col-sm-8">
-						@foreach(\App\Models\Sales\SalesDeliveryType::all() as $key)
+						@foreach(\App\Models\Sales\OptSalesDeliveryType::all() as $key)
 							<div class="form-check form-check-inline m-1">
 								<label class="form-check-label" for="dbdid{{ $key->id }}">
 									<input class="form-check-input m-1" type="checkbox" name="sales_delivery_id[]" id="dbdid{{ $key->id }}" value="{{ $key->id }}">
@@ -86,23 +86,51 @@
 
 			</div>
 
-			<h5>Job Description &nbsp; <button type="button" class="btn btn-sm btn-outline-secondary"><i class="fa-solid fa-plus"></i></button> </h5>
+			<h5>Job Description &nbsp; <button type="button" class="btn btn-sm btn-outline-secondary jdesc_add"><i class="fa-thin fa-list-check"></i>Add Job Description</button> </h5>
 			<div class="col-sm-12">
 				<div class="row jdesc_wrap">
-					<div class="row m-1 jdesc_row">
-						<div class="col-auto mr-1 border"><button class="btn btn-sm btn-outline-secondary emergency_remove" type="button"><i class="fas fa-trash" aria-hidden="true"></i></button></div>
-						<div class="col-4 mr-1 form-group {{ $errors->has('jobdesc.*.job_description') ? 'has-error' : '' }}">
-							<textarea name="jobdesc[1][job_description]" id="jdi_1" class="form-control form-control-sm" placeholder="Job Description"></textarea>
+					<div class="row m-1 p-1 jdesc_row">
+
+
+
+
+						<div class="col-sm-12 row">
+							<div class="col-auto m-1 p-1 ">
+								<button type="button" class="btn btn-sm btn-outline-secondary jdesc_remove">
+									<i class="fas fa-trash" aria-hidden="true"></i>
+								</button>
+							</div>
+							<div class="col m-1 p-1  form-group {{ $errors->has('jobdesc.*.job_description') ? 'has-error' : '' }}">
+								<textarea name="jobdesc[1][job_description]" id="jdi_1" class="form-control form-control-sm" placeholder="Job Description"></textarea>
+							</div>
+							<div class="col-auto m-1 p-1  row form-group {{ $errors->has('jobdesc.*.quantity') ? 'has-error' : '' }} {{ $errors->has('jobdesc.*.uom_id') ? 'has-error' : '' }}">
+								<input type="text" name="jobdesc[1][quantity]" id="jdq_1" class="col-3 form-control form-control-sm m-1" placeholder="Quantity">
+								<select name="jobdesc[1][uom_id]" id="jdu_1" class="col-8 form-select form-select-sm m-1" placeholder="UOM"></select>
+							</div>
+							<div class="col-auto m-1 p-1  form-group {{ $errors->has('jobdesc.*.relationship_id') ? 'has-error' : '' }}">
+								<?php $a = 0; ?>
+								@foreach(\App\Models\Sales\OptSalesGetItem::all() as $key)
+									<div class="form-check">
+										<input type="checkbox" name="jobdesc[1][jd_get_item][]" class="form-check-input" value="{{ $key->id }}" id="jdescitem_{{ $key->id }}{{ $a }}">
+										<label class="form-check-label" for="jdescitem_{{ $key->id }}{{ $a }}">{{ $key->get_item }}</label>
+									</div>
+									<?php $a++ ?>
+								@endforeach
+							</div>
 						</div>
-						<div class="col-auto mr-1 form-group {{ $errors->has('staffemergency.*.phone') ? 'has-error' : '' }}">
-							<input type="text" name="staffemergency[1][phone]" id="epp_1" class="form-control form-control-sm" placeholder="Phone">
+						<div class="col-sm-12">
+							<div class="col m-1 p-1  form-group {{ $errors->has('jobdesc.*.remarks') ? 'has-error' : '' }}">
+								<textarea name="jobdesc[1][remarks]" id="jdr_1" class="form-control form-control-sm" placeholder="Remarks"></textarea>
+							</div>
 						</div>
-						<div class="col-auto mr-1 form-group {{ $errors->has('staffemergency.*.relationship_id') ? 'has-error' : '' }}">
-							<select name="staffemergency[1][relationship_id]" id="ere_1" class="form-select form-select-sm" placeholder="Relationship"></select>
-						</div>
-						<div class="col-auto mr-1 form-group {{ $errors->has('staffemergency.*.address') ? 'has-error' : '' }}">
-							<input type="textarea" name="staffemergency[1][address]" id="ead_1" class="form-control form-control-sm" placeholder="Address">
-						</div>
+
+
+
+
+
+
+
+
 					</div>
 				</div>
 			</div>
@@ -187,6 +215,7 @@ $('#cust').select2({
 });
 
 /////////////////////////////////////////////////////////////////////////////////////////
+// special request description
 $('#specReq').change(function() {
 	if(this.checked == true) {
 		if ($('#sreq').length == 0) {
@@ -199,12 +228,31 @@ $('#specReq').change(function() {
 	}
 });
 
-
+/////////////////////////////////////////////////////////////////////////////////////////
+// select2
+$('#jdu_1').select2({
+	placeholder: 'Select',
+	// theme: 'bootstrap5',
+	allowClear: true,
+	closeOnSelect: true,
+	ajax: {
+		url: '{{ route('uom.uom') }}',
+		type: 'POST',
+		dataType: 'json',
+		data: function (params) {
+			var query = {
+				_token: '{!! csrf_token() !!}',
+				search: params.term,
+			}
+			return query;
+		}
+	},
+});
 /////////////////////////////////////////////////////////////////////////////////////////
 // add item
-var crb_max_fields = 5;						//maximum input boxes allowed
-var crb_add_buttons = $(".crossbackup_add");
-var crb_wrappers = $(".crossbackup_wrap");
+var crb_max_fields = 500;						//maximum input boxes allowed
+var crb_add_buttons = $(".jdesc_add");
+var crb_wrappers = $(".jdesc_wrap");
 
 var xcrb = 1;
 $(crb_add_buttons).click(function(){
@@ -214,27 +262,42 @@ $(crb_add_buttons).click(function(){
 	if(xcrb < crb_max_fields){
 		xcrb++;
 		crb_wrappers.append(
-			'<div class="row m-1 p-0 crossbackup_row">' +
-				'<div class="col-sm-1">' +
-					'<button class="btn btn-sm btn-outline-secondary crossbackup_remove" type="button">' +
+			'<div class="row m-1 p-1 jdesc_row">' +
+				'<div class="col-auto m-1 p-1 ">' +
+					'<button type="button" class="btn btn-sm btn-outline-secondary jdesc_remove">' +
 						'<i class="fas fa-trash" aria-hidden="true"></i>' +
 					'</button>' +
 				'</div>' +
-
-				'<div class="col-sm-10 form-group {{ $errors->has('crossbackup.*.backup_staff_id') ? 'has-error' : '' }}">' +
-					'<input type="hidden" name="crossbackup[' + xcrb + '][active]" value="1">' +
-					'<select name="crossbackup[' + xcrb + '][backup_staff_id]" id="sta_' + xcrb + '" class="form-select form-select-sm" placeholder="Cross Backup Personnel"></select>' +
+				'<div class="col m-1 p-1  form-group {{ $errors->has('jobdesc.*.job_description') ? 'has-error' : '' }}">' +
+					'<textarea name="jobdesc[' + xcrb + '][job_description]" id="jdi_' + xcrb + '" class="form-control form-control-sm" placeholder="Job Description"></textarea>' +
+				'</div>' +
+				'<div class="col-auto m-1 p-1  row form-group {{ $errors->has('jobdesc.*.quantity') ? 'has-error' : '' }} {{ $errors->has('jobdesc.*.uom_id') ? 'has-error' : '' }}">' +
+					'<input type="text" name="jobdesc[' + xcrb + '][quantity]" id="jdq_' + xcrb + '" class="col-3 form-control form-control-sm m-1" placeholder="Quantity">' +
+					'<select name="jobdesc[' + xcrb + '][uom_id]" id="jdu_' + xcrb + '" class="col-8 form-select form-select-sm m-1" placeholder="UOM"></select>' +
+				'</div>' +
+				'<div class="col-auto m-1 p-1  form-group {{ $errors->has('jobdesc.*.relationship_id') ? 'has-error' : '' }}">' +
+					<?php $a = 0; ?>
+					@foreach(\App\Models\Sales\OptSalesGetItem::all() as $key)
+						'<div class="form-check">' +
+							'<input type="checkbox" name="jobdesc[' + xcrb + '][jd_get_item][]" class="form-check-input" value="{{ $key->id }}" id="jdescitem_' + xcrb + '{{ $key->id }}{{ $a }}">' +
+							'<label class="form-check-label" for="jdescitem_' + xcrb + '{{ $key->id }}{{ $a }}">{{ $key->get_item }}</label>' +
+						'</div>' +
+						<?php $a++ ?>
+					@endforeach
+				'</div>' +
+				'<div class="col m-1 p-1  form-group {{ $errors->has('jobdesc.*.remarks') ? 'has-error' : '' }}">' +
+					'<textarea name="jobdesc[' + xcrb + '][remarks]" id="jdr_' + xcrb + '" class="form-control form-control-sm" placeholder="Remarks"></textarea>' +
 				'</div>' +
 			'</div>'
 		);
 
-		$('#sta_' + xcrb ).select2({
+		$('#jdu_' + xcrb ).select2({
 			placeholder: 'Please Select',
-			width: '100%',
+			// width: '100%',
 			allowClear: true,
 			closeOnSelect: true,
 			ajax: {
-				url: '{{ route('staffcrossbackup.staffcrossbackup') }}',
+				url: '{{ route('uom.uom') }}',
 				type: 'POST',
 				dataType: 'json',
 				data: function (params) {
@@ -252,7 +315,7 @@ $(crb_add_buttons).click(function(){
 	}
 })
 
-$(crb_wrappers).on("click",".crossbackup_remove", function(e){
+$(crb_wrappers).on("click",".jdesc_remove", function(e){
 	//user click on remove text
 	e.preventDefault();
 	var $row = $(this).parent().parent();

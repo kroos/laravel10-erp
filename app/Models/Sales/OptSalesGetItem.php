@@ -16,27 +16,34 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 // use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-class SalesType extends Model
+class OptSalesGetItem extends Model
 {
 	use HasFactory;
 
 	// protected $connection = 'mysql';
-	protected $table = 'sales_order_types';
+	protected $table = 'option_sales_get_items';
 
 	/////////////////////////////////////////////////////////////////////////////////////////
 	// hasmany relationship
 
-	public function hasmanysales(): HasMany
+	public function hasmanyjobdescription(): HasMany
 	{
-		return $this->hasMany(\App\Models\Sales\Sales::class, 'sales_type_id');
+		return $this->hasMany(\App\Models\Sales\SalesJobDescription::class, 'deliveryby_id');
 	}
-
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
 	// db relation belongsToMany
+	// public function belongstomanysales(): BelongsToMany
+	// {
+	// 	return $this->belongsToMany(\App\Models\Sales\SalesDeliveryType::class, 'pivot_sales_sales_delivery', 'sales_delivery_id', 'sales_id')->withTimestamps();
+	// }
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
 	//belongsto relationship
+	// public function belongstosales(): HasMany
+	// {
+	// 	return $this->hasMany(\App\Models\Sales\Sales::class, 'sales_id');
+	// }
 
 	/////////////////////////////////////////////////////////////////////////////////////////
 }

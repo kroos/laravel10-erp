@@ -28,6 +28,7 @@ use App\Models\HumanResources\HRAttendance;
 use App\Models\HumanResources\OptStatus;
 use App\Models\HumanResources\DepartmentPivot;
 use App\Models\HumanResources\HROvertime;
+use App\Models\HumanResources\HROvertimeRange;
 
 use App\Models\HumanResources\OptAuthorise;
 use App\Models\HumanResources\OptBranch;
@@ -49,8 +50,9 @@ use App\Models\HumanResources\OptRestdayGroup;
 use App\Models\HumanResources\OptTaxExemptionPercentage;
 use App\Models\HumanResources\OptTcms;
 use App\Models\HumanResources\OptWorkingHour;
-use App\Models\HumanResources\HROvertimeRange;
-use App\Models\JobBatch;
+
+use App\Models\Sales\OptUOM;
+use App\Models\Sales\OptSalesGetItem;
 
 use Illuminate\Database\Eloquent\Builder;
 
@@ -634,6 +636,34 @@ class AjaxDBController extends Controller
 		}
 		return response()->json( $cuti );
 	}
+
+	public function uom(Request $request): JsonResponse
+	{
+		// https://select2.org/data-sources/formats
+		$au = OptUOM::where('uom','LIKE','%'.$request->search.'%')->get();
+		foreach ($au as $key) {
+			$cuti['results'][] = [
+									'id' => $key->id,
+									'text' => $key->uom,
+								];
+			// $cuti['pagination'] = ['more' => true];
+		}
+		return response()->json( $cuti );
+	}
+
+	// public function jdescgetitem(Request $request): JsonResponse
+	// {
+	// 	// https://select2.org/data-sources/formats
+	// 	$au = SalesGetItem::where('get_item','LIKE','%'.$request->search.'%')->get();
+	// 	foreach ($au as $key) {
+	// 		$cuti['results'][] = [
+	// 								'id' => $key->id,
+	// 								'text' => $key->get_item,
+	// 							];
+	// 		// $cuti['pagination'] = ['more' => true];
+	// 	}
+	// 	return response()->json( $cuti );
+	// }
 
 	public function status(Request $request): JsonResponse
 	{
