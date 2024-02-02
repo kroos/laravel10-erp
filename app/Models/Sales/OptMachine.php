@@ -19,11 +19,11 @@ class OptMachine extends Model
 {
     use HasFactory;
 	// protected $connection = 'mysql';
-	protected $table = 'option_machine_models';
+	protected $table = 'option_machine';
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
 	public function hasmanymachineacc(): HasMany
 	{
-		return $this->hasMany(\App\Models\Sales\OptMachineAccessories::class, 'race_id');
+		return $this->hasMany(\App\Models\Sales\OptMachineAccessory::class, 'race_id');
 	}
 }

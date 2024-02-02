@@ -60,7 +60,8 @@ class SalesController extends Controller
 
 	public function store(Request $request): RedirectResponse
 	{
-		dd($request->except('_token'));
+		// dd($request->except('_token'));
+
 	}
 
 	public function show(Request $request, Staff $profile): View
