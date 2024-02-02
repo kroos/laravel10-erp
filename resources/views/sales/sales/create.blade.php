@@ -94,20 +94,20 @@
 
 
 
-						<div class="col-sm-12 row">
-							<div class="col-auto m-1 p-1 ">
+						<div class="col-sm-12 row border border-primary">
+							<div class="col-auto m-1 p-1 border border-primary ">
 								<button type="button" class="btn btn-sm btn-outline-secondary jdesc_remove">
 									<i class="fas fa-trash" aria-hidden="true"></i>
 								</button>
 							</div>
-							<div class="col m-1 p-1  form-group {{ $errors->has('jobdesc.*.job_description') ? 'has-error' : '' }}">
+							<div class="col m-1 p-1  border border-primary form-group {{ $errors->has('jobdesc.*.job_description') ? 'has-error' : '' }}">
 								<textarea name="jobdesc[1][job_description]" id="jdi_1" class="form-control form-control-sm" placeholder="Job Description"></textarea>
 							</div>
-							<div class="col-auto m-1 p-1  row form-group {{ $errors->has('jobdesc.*.quantity') ? 'has-error' : '' }} {{ $errors->has('jobdesc.*.uom_id') ? 'has-error' : '' }}">
+							<div class="col-auto m-1 p-1  border border-primary row form-group {{ $errors->has('jobdesc.*.quantity') ? 'has-error' : '' }} {{ $errors->has('jobdesc.*.uom_id') ? 'has-error' : '' }}">
 								<input type="text" name="jobdesc[1][quantity]" id="jdq_1" class="col-3 form-control form-control-sm m-1" placeholder="Quantity">
 								<select name="jobdesc[1][uom_id]" id="jdu_1" class="col-8 form-select form-select-sm m-1" placeholder="UOM"></select>
 							</div>
-							<div class="col-auto m-1 p-1  form-group {{ $errors->has('jobdesc.*.relationship_id') ? 'has-error' : '' }}">
+							<div class="col-auto m-1 p-1  border border-primary form-group {{ $errors->has('jobdesc.*.relationship_id') ? 'has-error' : '' }}">
 								<?php $a = 0; ?>
 								@foreach(\App\Models\Sales\OptSalesGetItem::all() as $key)
 									<div class="form-check">
@@ -118,7 +118,11 @@
 								@endforeach
 							</div>
 						</div>
-						<div class="col-sm-12">
+						<div class="col-sm-12 border border-primary">
+							<select name="jobdesc[1][machine_id]" id="jobdescmach_1" class=" form-select form-select-sm m-1" placeholder="Machine"></select>
+							<select name="jobdesc[1][machine_accessories_id]" id="jobdescmachacc_1" class=" form-select form-select-sm m-1" placeholder="Machine Accessories"></select>
+						</div>
+						<div class="col-sm-12 border border-primary">
 							<div class="col m-1 p-1  form-group {{ $errors->has('jobdesc.*.remarks') ? 'has-error' : '' }}">
 								<textarea name="jobdesc[1][remarks]" id="jdr_1" class="form-control form-control-sm" placeholder="Remarks"></textarea>
 							</div>
@@ -231,7 +235,7 @@ $('#specReq').change(function() {
 /////////////////////////////////////////////////////////////////////////////////////////
 // select2
 $('#jdu_1').select2({
-	placeholder: 'Select',
+	placeholder: 'UOM',
 	// theme: 'bootstrap5',
 	allowClear: true,
 	closeOnSelect: true,
@@ -248,6 +252,52 @@ $('#jdu_1').select2({
 		}
 	},
 });
+
+/////////////////////////////////////////////////////////////////////////////////////////
+// select2
+$('#jobdescmach_1').select2({
+	placeholder: 'Machine',
+	// theme: 'bootstrap5',
+	allowClear: true,
+	closeOnSelect: true,
+	ajax: {
+		url: '{{ route('machine.machine') }}',
+		type: 'POST',
+		dataType: 'json',
+		data: function (params) {
+			var query = {
+				_token: '{!! csrf_token() !!}',
+				search: params.term,
+			}
+			return query;
+		}
+	},
+});
+
+$('#jobdescmachacc_1').select2({
+	placeholder: 'Machine Accessories',
+	// theme: 'bootstrap5',
+	allowClear: true,
+	closeOnSelect: true,
+	ajax: {
+		url: '{{ route('machineaccessories.machineaccessories') }}',
+		type: 'POST',
+		dataType: 'json',
+		data: function (params) {
+			var query = {
+				_token: '{!! csrf_token() !!}',
+				search: params.term,
+			}
+			return query;
+		}
+	},
+});
+
+/////////////////////////////////////////////////////////////////////////////////////////
+// select chained
+$('#jobdescmachacc_1').chainedTo();
+
+
 /////////////////////////////////////////////////////////////////////////////////////////
 // add item
 var crb_max_fields = 500;						//maximum input boxes allowed
