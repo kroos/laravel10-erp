@@ -34,12 +34,14 @@
 						@endforeach
 					</div>
 				</div>
-				<div class="form-group form-check row m-2 {{ $errors->has('date_order') ? 'has-error' : '' }}">
-					<label class="form-check-label col-sm-4 " for="specReq">
-						Special Request
-						<input type="checkbox" name="special_request" class="form-check-input ml-1" value="1" id="specReq">
-					</label>
-					<div class="col-sm-8" id="wraptextarea">
+				<div class="form-group row m-2 {{ $errors->has('special_request') ? 'has-error' : '' }}">
+					<div class="col form-check">
+						<input type="checkbox" name="spec_req" class="form-check-input m-1" value="1" id="specReq">
+						<label class="form-check-label col" for="specReq">
+							Special Request
+						</label>
+					</div>
+					<div class="form-group col-sm-8" id="wraptextarea">
 					</div>
 				</div>
 
@@ -59,7 +61,7 @@
 					</div>
 				</div>
 				<div class="form-group row m-2 {{ $errors->has('urgency') ? 'has-error' : '' }}">
-					{{ Form::label( 'urgency', 'Mark As Urgent : ', ['class' => 'col-sm-4 col-form-label'] ) }}
+					{{ Form::label( 'urgency1', 'Mark As Urgent : ', ['class' => 'col-sm-4 col-form-label'] ) }}
 					<div class="col-sm-8">
 						<div class="form-check">
 							<input type="checkbox" name="urgency" class="form-check-input" value="1" id="urgency1">
@@ -69,9 +71,9 @@
 						</div>
 					</div>
 				</div>
-				<div class="form-group row m-2 {{ $errors->has('po_number') ? 'has-error' : '' }}">
+				<div class="form-group row m-2 {{ $errors->has('sales_delivery_id.*') ? 'has-error' : '' }}">
 					{{ Form::label( 'pon', 'Delivery Instruction : ', ['class' => 'col-sm-4 col-form-label'] ) }}
-					<div class="col-sm-8">
+					<div class="col">
 						@foreach(\App\Models\Sales\OptSalesDeliveryType::all() as $key)
 							<div class="form-check form-check-inline m-1">
 								<label class="form-check-label" for="dbdid{{ $key->id }}">
@@ -83,31 +85,31 @@
 						{{ Form::textarea('special_delivery_instruction', @$value, ['class' => 'form-control form-control-sm m-1', 'id' => 'sdev', 'placeholder' => 'Special Delivery Instruction', 'autocomplete' => 'off']) }}
 					</div>
 				</div>
-
 			</div>
 
-			<h5>Job Description &nbsp; <button type="button" class="btn btn-sm btn-outline-secondary jdesc_add"><i class="fa-thin fa-list-check"></i>Add Job Description</button> </h5>
+			<h5>Job Description &nbsp; <button type="button" class="btn btn-sm btn-outline-secondary jdesc_add"><i class="fa-solid fa-list-check"></i>&nbsp;Add Job Description</button> </h5>
 			<div class="col-sm-12">
 				<div class="row jdesc_wrap">
 					<div class="row m-1 p-1 jdesc_row">
 
-
-
-
-						<div class="col-sm-12 row border border-primary">
-							<div class="col-auto m-1 p-1 border border-primary ">
+						<div class="col-sm-12 row">
+							<div class="col-auto m-1 p-1">
 								<button type="button" class="btn btn-sm btn-outline-secondary jdesc_remove">
 									<i class="fas fa-trash" aria-hidden="true"></i>
 								</button>
 							</div>
-							<div class="col m-1 p-1  border border-primary form-group {{ $errors->has('jobdesc.*.job_description') ? 'has-error' : '' }}">
+							<div class="col m-1 p-1 form-group {{ $errors->has('jobdesc.*.job_description') ? 'has-error' : '' }}">
 								<textarea name="jobdesc[1][job_description]" id="jdi_1" class="form-control form-control-sm" placeholder="Job Description"></textarea>
 							</div>
-							<div class="col-auto m-1 p-1  border border-primary row form-group {{ $errors->has('jobdesc.*.quantity') ? 'has-error' : '' }} {{ $errors->has('jobdesc.*.uom_id') ? 'has-error' : '' }}">
-								<input type="text" name="jobdesc[1][quantity]" id="jdq_1" class="col-3 form-control form-control-sm m-1" placeholder="Quantity">
-								<select name="jobdesc[1][uom_id]" id="jdu_1" class="col-8 form-select form-select-sm m-1" placeholder="UOM"></select>
+							<div class="col-auto m-1 p-1 row form-group {{ $errors->has('jobdesc.*.quantity') ? 'has-error' : '' }} {{ $errors->has('jobdesc.*.uom_id') ? 'has-error' : '' }}">
+								<div class="col">
+									<input type="text" name="jobdesc[1][quantity]" id="jdq_1" class="form-control form-control-sm m-1" placeholder="Quantity">
+								</div>
+								<div class="col">
+									<select name="jobdesc[1][uom_id]" id="jdu_1" class="form-select form-select-sm m-1" placeholder="UOM"></select>
+								</div>
 							</div>
-							<div class="col-auto m-1 p-1  border border-primary form-group {{ $errors->has('jobdesc.*.relationship_id') ? 'has-error' : '' }}">
+							<div class="col-auto m-1 p-1 form-group {{ $errors->has('jobdesc.*.relationship_id') ? 'has-error' : '' }}">
 								<?php $a = 0; ?>
 								@foreach(\App\Models\Sales\OptSalesGetItem::all() as $key)
 									<div class="form-check">
@@ -117,23 +119,27 @@
 									<?php $a++ ?>
 								@endforeach
 							</div>
-						</div>
-						<div class="col-sm-12 border border-primary">
-							<select name="jobdesc[1][machine_id]" id="jobdescmach_1" class=" form-select form-select-sm m-1" placeholder="Machine"></select>
-							<select name="jobdesc[1][machine_accessories_id]" id="jobdescmachacc_1" class=" form-select form-select-sm m-1" placeholder="Machine Accessories"></select>
-						</div>
-						<div class="col-sm-12 border border-primary">
-							<div class="col m-1 p-1  form-group {{ $errors->has('jobdesc.*.remarks') ? 'has-error' : '' }}">
-								<textarea name="jobdesc[1][remarks]" id="jdr_1" class="form-control form-control-sm" placeholder="Remarks"></textarea>
+							<div class="col-sm-12 m-1 p-1 row">
+								<div class="col-sm-5 row m-1 p-1">
+									<div class="col">
+										<select name="jobdesc[1][machine_id]" id="jobdescmach_1" class="form-select form-select-sm m-1" placeholder="Machine"></select>
+									</div>
+									<div class="col">
+										<select name="jobdesc[1][machine_accessories_id]" id="jobdescmachacc_1" class="form-select form-select-sm m-1" placeholder="Machine Accessories">
+											<option value="" ></option>
+											@foreach(\App\Models\Sales\OptMachineAccessory::all() as $k)
+												<option value="{{ $k->id }}" class="{{ $k->machine_id }}">{{ $k->accessory }}</option>
+											@endforeach
+										</select>
+									</div>
+								</div>
+								<div class="col-sm-6 m-1 p-1">
+									<div class="col m-1 p-1  form-group {{ $errors->has('jobdesc.*.remarks') ? 'has-error' : '' }}">
+										<textarea name="jobdesc[1][remarks]" id="jdr_1" class="form-control form-control-sm" placeholder="Remarks"></textarea>
+									</div>
+								</div>
 							</div>
 						</div>
-
-
-
-
-
-
-
 
 					</div>
 				</div>
@@ -226,9 +232,12 @@ $('#specReq').change(function() {
 			$('#wraptextarea').append(
 				'{{ Form::textarea('special_request', @$value, ['class' => 'form-control form-control-sm', 'id' => 'sreq', 'placeholder' => 'Special Request Remarks']) }}'
 			);
+			$('#form').bootstrapValidator('addField', $('#wraptextarea').find('[name="special_request"]'));
+			// $('#wraptextarea').find('[name="special_request"]').css('border', '5px solid black');
 		}
 	} else {
 		$('#sreq').remove();
+		$('#form').bootstrapValidator('removeField', $('#wraptextarea').find('[name="special_request"]'));
 	}
 });
 
@@ -262,7 +271,7 @@ $('#jobdescmach_1').select2({
 	closeOnSelect: true,
 	ajax: {
 		url: '{{ route('machine.machine') }}',
-		type: 'POST',
+		type: 'GET',
 		dataType: 'json',
 		data: function (params) {
 			var query = {
@@ -279,24 +288,15 @@ $('#jobdescmachacc_1').select2({
 	// theme: 'bootstrap5',
 	allowClear: true,
 	closeOnSelect: true,
-	ajax: {
-		url: '{{ route('machineaccessories.machineaccessories') }}',
-		type: 'POST',
-		dataType: 'json',
-		data: function (params) {
-			var query = {
-				_token: '{!! csrf_token() !!}',
-				search: params.term,
-			}
-			return query;
-		}
-	},
 });
 
 /////////////////////////////////////////////////////////////////////////////////////////
 // select chained
-$('#jobdescmachacc_1').chainedTo();
-
+$('#jobdescmachacc_1').chainedTo('#jobdescmach_1');
+// $('#jobdescmachacc_1').remoteChained({
+// 	parents: '#jobdescmach_1',
+// 	url: '{{ route('machineaccessories.machineaccessories') }}',
+// });
 
 /////////////////////////////////////////////////////////////////////////////////////////
 // add item
@@ -312,37 +312,56 @@ $(crb_add_buttons).click(function(){
 	if(xcrb < crb_max_fields){
 		xcrb++;
 		crb_wrappers.append(
-			'<div class="row m-1 p-1 jdesc_row">' +
-				'<div class="col-auto m-1 p-1 ">' +
+			'<div class="col-sm-12 row">' +
+				'<div class="col-auto m-1 p-1">' +
 					'<button type="button" class="btn btn-sm btn-outline-secondary jdesc_remove">' +
 						'<i class="fas fa-trash" aria-hidden="true"></i>' +
 					'</button>' +
 				'</div>' +
-				'<div class="col m-1 p-1  form-group {{ $errors->has('jobdesc.*.job_description') ? 'has-error' : '' }}">' +
+				'<div class="col m-1 p-1 form-group {{ $errors->has('jobdesc.*.job_description') ? 'has-error' : '' }}">' +
 					'<textarea name="jobdesc[' + xcrb + '][job_description]" id="jdi_' + xcrb + '" class="form-control form-control-sm" placeholder="Job Description"></textarea>' +
 				'</div>' +
-				'<div class="col-auto m-1 p-1  row form-group {{ $errors->has('jobdesc.*.quantity') ? 'has-error' : '' }} {{ $errors->has('jobdesc.*.uom_id') ? 'has-error' : '' }}">' +
-					'<input type="text" name="jobdesc[' + xcrb + '][quantity]" id="jdq_' + xcrb + '" class="col-3 form-control form-control-sm m-1" placeholder="Quantity">' +
-					'<select name="jobdesc[' + xcrb + '][uom_id]" id="jdu_' + xcrb + '" class="col-8 form-select form-select-sm m-1" placeholder="UOM"></select>' +
+				'<div class="col-auto m-1 p-1 row form-group {{ $errors->has('jobdesc.*.quantity') ? 'has-error' : '' }} {{ $errors->has('jobdesc.*.uom_id') ? 'has-error' : '' }}">' +
+					'<div class="col">' +
+						'<input type="text" name="jobdesc[' + xcrb + '][quantity]" id="jdq_' + xcrb + '" class="form-control form-control-sm m-1" placeholder="Quantity">' +
+					'</div>' +
+					'<div class="col">' +
+						'<select name="jobdesc[' + xcrb + '][uom_id]" id="jdu_' + xcrb + '" class="form-select form-select-sm m-1" placeholder="UOM"></select>' +
+					'</div>' +
 				'</div>' +
-				'<div class="col-auto m-1 p-1  form-group {{ $errors->has('jobdesc.*.relationship_id') ? 'has-error' : '' }}">' +
-					<?php $a = 0; ?>
+				'<div class="col-auto m-1 p-1 form-group {{ $errors->has('jobdesc.*.relationship_id') ? 'has-error' : '' }}">' +
 					@foreach(\App\Models\Sales\OptSalesGetItem::all() as $key)
 						'<div class="form-check">' +
-							'<input type="checkbox" name="jobdesc[' + xcrb + '][jd_get_item][]" class="form-check-input" value="{{ $key->id }}" id="jdescitem_' + xcrb + '{{ $key->id }}{{ $a }}">' +
-							'<label class="form-check-label" for="jdescitem_' + xcrb + '{{ $key->id }}{{ $a }}">{{ $key->get_item }}</label>' +
+							'<input type="checkbox" name="jobdesc[' + xcrb + '][jd_get_item][]" class="form-check-input" value="{{ $key->id }}" id="' + xcrb + '_jdescitem_{{ $key->id }}">' +
+							'<label class="form-check-label" for="' + xcrb + '_jdescitem_{{ $key->id }}">{{ $key->get_item }}</label>' +
 						'</div>' +
-						<?php $a++ ?>
 					@endforeach
 				'</div>' +
-				'<div class="col m-1 p-1  form-group {{ $errors->has('jobdesc.*.remarks') ? 'has-error' : '' }}">' +
-					'<textarea name="jobdesc[' + xcrb + '][remarks]" id="jdr_' + xcrb + '" class="form-control form-control-sm" placeholder="Remarks"></textarea>' +
+				'<div class="col-sm-12 m-1 p-1 row">' +
+					'<div class="col-sm-5 row m-1 p-1">' +
+						'<div class="col">' +
+							'<select name="jobdesc[' + xcrb + '][machine_id]" id="jobdescmach_' + xcrb + '" class="form-select form-select-sm m-1" placeholder="Machine"></select>' +
+						'</div>' +
+						'<div class="col">' +
+							'<select name="jobdesc[' + xcrb + '][machine_accessories_id]" id="jobdescmachacc_' + xcrb + '" class="form-select form-select-sm m-1" placeholder="Machine Accessories">' +
+								'<option value="" ></option>' +
+								@foreach(\App\Models\Sales\OptMachineAccessory::all() as $k)
+									'<option value="{{ $k->id }}" class="{{ $k->machine_id }}">{{ $k->accessory }}</option>' +
+								@endforeach
+							'</select>' +
+						'</div>' +
+					'</div>' +
+					'<div class="col-sm-6 m-1 p-1">' +
+						'<div class="col m-1 p-1  form-group {{ $errors->has('jobdesc.*.remarks') ? 'has-error' : '' }}">' +
+							'<textarea name="jobdesc[' + xcrb + '][remarks]" id="jdr_' + xcrb + '" class="form-control form-control-sm" placeholder="Remarks"></textarea>' +
+						'</div>' +
+					'</div>' +
 				'</div>' +
 			'</div>'
 		);
 
 		$('#jdu_' + xcrb ).select2({
-			placeholder: 'Please Select',
+			placeholder: 'UOM',
 			// width: '100%',
 			allowClear: true,
 			closeOnSelect: true,
@@ -360,8 +379,37 @@ $(crb_add_buttons).click(function(){
 			},
 		});
 
+		$('#jobdescmach_' + xcrb).select2({
+			placeholder: 'Machine',
+			// theme: 'bootstrap5',
+			allowClear: true,
+			closeOnSelect: true,
+			ajax: {
+				url: '{{ route('machine.machine') }}',
+				type: 'GET',
+				dataType: 'json',
+				data: function (params) {
+					var query = {
+						_token: '{!! csrf_token() !!}',
+						search: params.term,
+					}
+					return query;
+				}
+			},
+		});
+
+		$('#jobdescmachacc_' + xcrb).select2({
+			placeholder: 'Machine Accessories',
+			// theme: 'bootstrap5',
+			allowClear: true,
+			closeOnSelect: true,
+		});
+
+		$('#jobdescmachacc_' + xcrb).chainedTo('#jobdescmach_' + xcrb);
+
+
 		//bootstrap validate
-		$('#form').bootstrapValidator('addField',	$('.crossbackup_row')	.find('[name="crossbackup['+ xcrb +'][backup_staff_id]"]'));
+		$('#form').bootstrapValidator('addField', $('.crossbackup_row').find('[name="crossbackup['+ xcrb +'][backup_staff_id]"]'));
 	}
 })
 
@@ -375,6 +423,99 @@ $(crb_wrappers).on("click",".jdesc_remove", function(e){
 	$('#form').bootstrapValidator('removeField', $option1);
 	xcrb--;
 })
+
+/////////////////////////////////////////////////////////////////////////////////////////
+// validator
+$('#form').bootstrapValidator({
+	feedbackIcons: {
+		valid: '',
+		invalid: '',
+		validating: ''
+	},
+	fields: {
+
+		date_order: {
+			validators: {
+				notEmpty: {
+					message: 'Please insert'
+				},
+			}
+		},
+		customer_id: {
+			validators: {
+				// notEmpty: {
+				// 	message: 'Please choose'
+				// },
+			}
+		},
+		deliveryby_id: {
+			validators: {
+				notEmpty: {
+					message: 'Please choose'
+				},
+			}
+		},
+		special_request: {
+			validators: {
+				notEmpty: {
+					message: 'Please insert'
+				},
+			}
+		},
+		po_number: {
+			validators: {
+				// notEmpty: {
+				// 	message: 'Please insert'
+				// },
+			}
+		},
+		delivery_at: {
+			validators: {
+				// notEmpty: {
+				// 	message: 'Please insert'
+				// },
+			}
+		},
+		urgency: {
+			validators: {
+				// notEmpty: {
+				// 	message: 'Please choose'
+				// },
+			}
+		},
+		'sales_delivery_id[]': {
+			validators: {
+				notEmpty: {
+					message: 'Please choose'
+				},
+			}
+		},
+		special_delivery_instruction: {
+			validators: {
+				// notEmpty: {
+				// 	message: 'Please choose'
+				// },
+			}
+		},
+		@for
+		'sales_delivery_id[]': {
+			validators: {
+				notEmpty: {
+					message: 'Please choose'
+				},
+			}
+		},
+
+	}
+})
+.find('[name="reason"]')
+// .ckeditor()
+// .editor
+	.on('change', function() {
+		// Revalidate the bio field
+	$('#form').bootstrapValidator('revalidateField', 'reason');
+	// console.log($('#reason').val());
+});
 
 
 /////////////////////////////////////////////////////////////////////////////////////////
