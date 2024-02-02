@@ -53,6 +53,8 @@ use App\Models\HumanResources\OptWorkingHour;
 
 use App\Models\Sales\OptUOM;
 use App\Models\Sales\OptSalesGetItem;
+use App\Models\Sales\OptMachine;
+use App\Models\Sales\OptMachineAccessories;
 
 use Illuminate\Database\Eloquent\Builder;
 
@@ -673,6 +675,34 @@ class AjaxDBController extends Controller
 			$cuti['results'][] = [
 									'id' => $key->id,
 									'text' => $key->status,
+								];
+			// $cuti['pagination'] = ['more' => true];
+		}
+		return response()->json( $cuti );
+	}
+
+	public function machine(Request $request): JsonResponse
+	{
+		// https://select2.org/data-sources/formats
+		$au = OptMachine::where('machine','LIKE','%'.$request->search.'%')->get();
+		foreach ($au as $key) {
+			$cuti['results'][] = [
+									'id' => $key->id,
+									'text' => $key->machine,
+								];
+			// $cuti['pagination'] = ['more' => true];
+		}
+		return response()->json( $cuti );
+	}
+
+	public function machineaccessories(Request $request): JsonResponse
+	{
+		// https://select2.org/data-sources/formats
+		$au = OptMachineAccessories::where('accessory','LIKE','%'.$request->search.'%')->get();
+		foreach ($au as $key) {
+			$cuti['results'][] = [
+									'id' => $key->id,
+									'text' => $key->accessory,
 								];
 			// $cuti['pagination'] = ['more' => true];
 		}

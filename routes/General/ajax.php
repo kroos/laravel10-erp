@@ -17,6 +17,8 @@ Route::post('/authorise', [AjaxDBController::class, 'authorise'])->name('authori
 Route::post('/branch', [AjaxDBController::class, 'branch'])->name('branch.branch');
 Route::post('/customer', [AjaxDBController::class, 'customer'])->name('customer.customer');
 Route::post('/uom', [AjaxDBController::class, 'uom'])->name('uom.uom');
+Route::post('/machine', [AjaxDBController::class, 'machine'])->name('machine.machine');
+Route::post('/machineaccessories', [AjaxDBController::class, 'machineaccessories'])->name('machineaccessories.machineaccessories');
 // Route::post('/jdescgetitem', [AjaxDBController::class, 'jdescgetitem'])->name('jdescgetitem.jdescgetitem');
 Route::post('/category', [AjaxDBController::class, 'category'])->name('category.category');
 Route::post('/country', [AjaxDBController::class, 'country'])->name('country.country');
