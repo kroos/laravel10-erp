@@ -15,13 +15,13 @@
 <div class="container">
   @include('humanresources.hrdept.navhr')
 
-  <h4>Appraisal Form : {{ $department->department }}</h4>
+  <h4>Appraisal Form : {{ $category->category }}</h4>
 
   <table height="15px"></table>
 
   {{ Form::open(['route' => ['appraisalform.store'], 'id' => 'form', 'class' => 'form-horizontal', 'autocomplete' => 'off', 'files' => true]) }}
 
-  <input type="hidden" name="department_id" value="{{ $department->id }}">
+  <input type="hidden" name="category_id" value="{{ $category->id }}">
 
 
 

@@ -7,7 +7,15 @@
     border: 1px solid black;
   }
 
-  .scrollable-div {
+  .scrollable-div-1 {
+    /* Set the width height as needed */
+    /*		width: 100%;*/
+    height: 850px;
+    /* Add scrollbars when content overflows */
+    overflow: auto;
+  }
+
+  .scrollable-div-2 {
     /* Set the width height as needed */
     /*		width: 100%;*/
     height: 800px;
@@ -51,7 +59,14 @@ $evaluatees = Staff::join('logins', 'staffs.id', '=', 'logins.staff_id')
   <div class="row">
     <div class="col-6">
 
-a
+    <div class="scrollable-div-1">
+            @foreach($evaluatees as $evaluatee)
+            <div class="form-check mb-1 g-3">
+              <input class="form-check-input" name="evaluetee_id[]" type="checkbox" value="{{ $evaluatee->id }}" id="evaluatee_id{{ $evaluatee->id }}">
+              <label class="form-check-label" for="evaluatee_id{{ $evaluatee->id }}">[{{ $evaluatee->department }}]<br/>{{ $evaluatee->username }} - {{ $evaluatee->name }}</label>
+            </div>
+            @endforeach
+          </div>
 
     </div>
 
@@ -76,11 +91,11 @@ a
           Evaluatee
         </div>
         <div class="col-10">
-          <div class="scrollable-div">
+          <div class="scrollable-div-2">
             @foreach($evaluatees as $evaluatee)
             <div class="form-check mb-1 g-3">
               <input class="form-check-input" name="evaluetee_id[]" type="checkbox" value="{{ $evaluatee->id }}" id="evaluatee_id{{ $evaluatee->id }}">
-              <label class="form-check-label" for="evaluatee_id{{ $evaluatee->id }}">[{{ $evaluatee->department }}] {{ $evaluatee->username }} - {{ $evaluatee->name }}</label>
+              <label class="form-check-label" for="evaluatee_id{{ $evaluatee->id }}">[{{ $evaluatee->department }}]<br/>{{ $evaluatee->username }} - {{ $evaluatee->name }}</label>
             </div>
             @endforeach
           </div>

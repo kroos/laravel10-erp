@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Http\Controllers\HumanResources\HRDept;
 
 use App\Http\Controllers\Controller;
@@ -20,11 +19,11 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 
 // load models
-use App\Models\HumanResources\DepartmentPivot;
 use App\Models\HumanResources\HRAppraisalSection;
 use App\Models\HumanResources\HRAppraisalSectionSub;
 use App\Models\HumanResources\HRAppraisalMainQuestion;
 use App\Models\HumanResources\HRAppraisalQuestion;
+use App\Models\HumanResources\OptAppraisalCategories;
 
 // load paginator
 use Illuminate\Pagination\Paginator;
@@ -58,9 +57,9 @@ class AppraisalFormController extends Controller
    */
   public function index(): View
   {
-    $departments = DepartmentPivot::all();
+    $categorys = OptAppraisalCategories::all();
 
-    return view('humanresources.hrdept.appraisal.form.index', ['departments' => $departments]);
+    return view('humanresources.hrdept.appraisal.form.index', ['categories' => $categorys]);
   }
 
   /**
@@ -68,8 +67,8 @@ class AppraisalFormController extends Controller
    */
   public function create($id): View
   {
-    $department = DepartmentPivot::where('id', $id)->first();
-    return view('humanresources.hrdept.appraisal.form.create', ['department' => $department]);
+    $category = OptAppraisalCategories::where('id', $id)->first();
+    return view('humanresources.hrdept.appraisal.form.create', ['category' => $category]);
   }
 
   /**
@@ -103,8 +102,8 @@ class AppraisalFormController extends Controller
           $section_id = HRAppraisalSection::select('id')->orderBy('id', 'DESC')->first();
 
           // PIVOT DEPT APPRAISAL
-          $form_version = DB::table('pivot_dept_appraisals')
-            ->where('department_id', $request->department_id)
+          $form_version = DB::table('pivot_category_appraisals')
+            ->where('category_id', $request->category_id)
             ->whereNotNull('version')
             ->orderBy('version', 'DESC')
             ->first();
@@ -119,7 +118,7 @@ class AppraisalFormController extends Controller
             $form_ver = $form_ver + 1;
           }
 
-          $section_id->belongstomanydepartmentpivot()->attach($request->department_id, [
+          $section_id->belongstomanycategorypivot()->attach($request->category_id, [
             'version' => $form_ver,
           ]);
 
@@ -360,17 +359,17 @@ class AppraisalFormController extends Controller
   {
     $datetime = Carbon::now();
 
-    $pivotappraisal = DB::table('pivot_dept_appraisals')
+    $pivotappraisal = DB::table('pivot_category_appraisals')
       ->where('id', $appraisalform)
       ->first();
 
-    $detachs =  DB::table('pivot_dept_appraisals')
-      ->where('department_id', $pivotappraisal->department_id)
+    $detachs =  DB::table('pivot_category_appraisals')
+      ->where('category_id', $pivotappraisal->category_id)
       ->where('version', $pivotappraisal->version)
       ->get();
 
     foreach ($detachs as $detach) {
-      DB::table('pivot_dept_appraisals')
+      DB::table('pivot_category_appraisals')
         ->where('id', $detach->id)
         ->update(['deleted_at' => $datetime]);
     }

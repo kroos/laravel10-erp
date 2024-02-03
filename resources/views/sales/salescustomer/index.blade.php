@@ -2,10 +2,12 @@
 
 @section('content')
 <style>
-div, table, tr, td {
-  border: 1px solid black;
-}
-
+  div,
+  table,
+  tr,
+  td {
+    border: 1px solid black;
+  }
 </style>
 
 <?php
@@ -47,20 +49,20 @@ $no = 1;
             {{ $no++ }}
           </td>
           <td>
-            <div>
-            {{ $customer->customer }}
+  
+            <input type="text" readonly value="{{ $customer->customer }}" style="border-style:none; outline:none; background-color:transparent; width:95%; height:100%;" />
           </td>
           <td class="text-center">
-            
+
           </td>
           <td class="text-center">
-            
+
           </td>
           <td class="text-center">
-            
+
           </td>
           <td class="text-center">
-            
+
           </td>
         </tr>
         @endforeach
@@ -77,15 +79,14 @@ $no = 1;
 $.fn.dataTable.moment( 'D MMM YYYY' );
 $.fn.dataTable.moment( 'h:mm a' );
 $('#customer').DataTable({
-	"paging": true,
-	"lengthMenu": [ [25,50,100,-1], [25,50,100,"All"] ],
-	"order": [ 2, 'desc' ],
-	responsive: true
+"paging": true,
+"lengthMenu": [ [25,50,100,-1], [25,50,100,"All"] ],
+"order": [ 1, 'asc' ],
+responsive: true
 });
 
-
 $(function () {
-	$('[data-toggle="tooltip"]').tooltip()
+$('[data-toggle="tooltip"]').tooltip()
 });
 @endsection
 

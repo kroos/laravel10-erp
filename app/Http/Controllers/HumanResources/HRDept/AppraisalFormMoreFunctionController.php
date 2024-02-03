@@ -19,11 +19,11 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 
 // load models
-use App\Models\HumanResources\DepartmentPivot;
 use App\Models\HumanResources\HRAppraisalSection;
 use App\Models\HumanResources\HRAppraisalSectionSub;
 use App\Models\HumanResources\HRAppraisalMainQuestion;
 use App\Models\HumanResources\HRAppraisalQuestion;
+use App\Models\HumanResources\OptAppraisalCategories;
 
 // load paginator
 use Illuminate\Pagination\Paginator;
@@ -86,12 +86,12 @@ class AppraisalFormMoreFunctionController extends Controller
    */
   public function store(Request $request): JsonResponse
   {
-    $pivotappraisal = DB::table('pivot_dept_appraisals')
+    $pivotappraisal = DB::table('pivot_category_appraisals')
       ->where('id', $request->id)
       ->first();
 
-    $appraisals = DB::table('pivot_dept_appraisals')
-      ->where('department_id', $pivotappraisal->department_id)
+    $appraisals = DB::table('pivot_category_appraisals')
+      ->where('category_id', $pivotappraisal->category_id)
       ->where('version', $pivotappraisal->version)
       ->orderBy('sort', 'ASC')
       ->orderBy('id', 'ASC')
@@ -119,7 +119,7 @@ class AppraisalFormMoreFunctionController extends Controller
       }
 
       // Duplicate Pivot Appraisal And Set New Version
-      $section_new_id->belongstomanydepartmentpivot()->attach($pivotappraisal->department_id, [
+      $section_new_id->belongstomanycategorypivot()->attach($pivotappraisal->category_id, [
         'version' => $form_ver,
       ]);
 
