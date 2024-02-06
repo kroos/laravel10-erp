@@ -3,9 +3,9 @@
 @section('content')
 
 <style>
-  div {
+  /* div {
     border: 1px solid black;
-  }
+  } */
 
   .scrollable-div-1 {
     /* Set the width height as needed */
@@ -23,11 +23,29 @@
     /* Add scrollbars when content overflows */
     overflow: auto;
   }
+
+  .hover:hover {
+    background-color: #ffcc00;
+  }
+
+  .pivot_delete {
+    background-color: transparent;
+    border: none;
+    padding: 0;
+    margin: 0;
+  }
 </style>
 
 <?php
 
 use \App\Models\Staff;
+
+$staffs = Staff::join('logins', 'staffs.id', '=', 'logins.staff_id')
+  ->select('logins.username', 'staffs.name', 'staffs.id')
+  ->where('staffs.active', 1)
+  ->where('logins.active', 1)
+  ->orderBy('logins.username', 'ASC')
+  ->get();
 
 $evaluator = Staff::join('logins', 'staffs.id', '=', 'logins.staff_id')
   ->select(DB::raw('CONCAT(username, " - ", name) AS display_name'), 'staffs.id')
@@ -38,8 +56,8 @@ $evaluator = Staff::join('logins', 'staffs.id', '=', 'logins.staff_id')
   ->toArray();
 
 $evaluatees = Staff::join('logins', 'staffs.id', '=', 'logins.staff_id')
-->join('pivot_staff_pivotdepts', 'staffs.id', '=', 'pivot_staff_pivotdepts.staff_id')
-->join('pivot_dept_cate_branches', 'pivot_staff_pivotdepts.pivot_dept_id', '=', 'pivot_dept_cate_branches.id')
+  ->join('pivot_staff_pivotdepts', 'staffs.id', '=', 'pivot_staff_pivotdepts.staff_id')
+  ->join('pivot_dept_cate_branches', 'pivot_staff_pivotdepts.pivot_dept_id', '=', 'pivot_dept_cate_branches.id')
   ->select('logins.username', 'staffs.*', 'pivot_dept_cate_branches.department')
   ->where('staffs.active', 1)
   ->where('logins.active', 1)
@@ -52,27 +70,54 @@ $evaluatees = Staff::join('logins', 'staffs.id', '=', 'logins.staff_id')
 <div class="container">
   @include('humanresources.hrdept.navhr')
 
-  <h4>Appraisal Form</h4>
+  <h4>Appraisal Apoint</h4>
 
   <div class="row">&nbsp;</div>
 
   <div class="row">
     <div class="col-6">
 
-    <div class="scrollable-div-1">
-            @foreach($evaluatees as $evaluatee)
-            <div class="form-check mb-1 g-3">
-              <input class="form-check-input" name="evaluetee_id[]" type="checkbox" value="{{ $evaluatee->id }}" id="evaluatee_id{{ $evaluatee->id }}">
-              <label class="form-check-label" for="evaluatee_id{{ $evaluatee->id }}">[{{ $evaluatee->department }}]<br/>{{ $evaluatee->username }} - {{ $evaluatee->name }}</label>
+      <div class="row">
+        <div class="scrollable-div-1">
+          @foreach($staffs as $staff)
+          <div class="row">
+            <div class="col-11">
+
+              {{ $staff->username }} - {{ $staff->name }}
             </div>
-            @endforeach
           </div>
 
+          <?php
+          $markers = Staff::join('logins', 'staffs.id', '=', 'logins.staff_id')
+            ->join('pivot_apoint_appraisals', 'staffs.id', '=', 'evaluator_id')
+            ->select('logins.username', 'staffs.name', 'pivot_apoint_appraisals.id')
+            ->where('staffs.active', 1)
+            ->where('logins.active', 1)
+            ->whereNull('pivot_apoint_appraisals.deleted_at')
+            ->where('pivot_apoint_appraisals.evaluatee_id', $staff->id)
+            ->orderBy('logins.username', 'ASC')
+            ->get();
+          ?>
+
+          @foreach($markers as $marker)
+          <div class="row hover">
+            <div class="col-11">
+              &nbsp;&nbsp;<i class="bi-x-diamond-fill" style="font-size: 12px;"></i>&nbsp;&nbsp;{{ $marker->username }} - {{ $marker->name }}
+            </div>
+            <div class="col-1">
+              <button type="button" class="pivot_delete" data-id="{{ $marker->id }}">
+                <i class="bi-x-square-fill text-danger" aria-hidden="true"></i>
+              </button>
+            </div>
+          </div>
+          @endforeach
+
+          <div class="mb-3"></div>
+          @endforeach
+        </div>
+      </div>
+
     </div>
-
-
-
-
 
     <div class="col-6">
       {{ Form::open(['route' => ['appraisalapoint.store'], 'id' => 'form', 'class' => 'form-horizontal', 'autocomplete' => 'off', 'files' => true]) }}
@@ -95,7 +140,7 @@ $evaluatees = Staff::join('logins', 'staffs.id', '=', 'logins.staff_id')
             @foreach($evaluatees as $evaluatee)
             <div class="form-check mb-1 g-3">
               <input class="form-check-input" name="evaluetee_id[]" type="checkbox" value="{{ $evaluatee->id }}" id="evaluatee_id{{ $evaluatee->id }}">
-              <label class="form-check-label" for="evaluatee_id{{ $evaluatee->id }}">[{{ $evaluatee->department }}]<br/>{{ $evaluatee->username }} - {{ $evaluatee->name }}</label>
+              <label class="form-check-label" for="evaluatee_id{{ $evaluatee->id }}">[{{ $evaluatee->department }}]<br />{{ $evaluatee->username }} - {{ $evaluatee->name }}</label>
             </div>
             @endforeach
           </div>
@@ -114,10 +159,62 @@ $evaluatees = Staff::join('logins', 'staffs.id', '=', 'logins.staff_id')
 @endsection
 
 @section('js')
+////////////////////////////////////////////////////////////////////////////////////
 $('.form-select').select2({
 placeholder: '',
 width: '100%',
 allowClear: true,
 closeOnSelect: true,
 });
+
+
+////////////////////////////////////////////////////////////////////////////////////
+// DELETE APPRAISAL
+$(document).on('click', '.pivot_delete', function(e){
+  var pivotId = $(this).data('id');
+  SwalPivotDelete(pivotId);
+  e.preventDefault();
+});
+
+function SwalPivotDelete(pivotId){
+  swal.fire({
+    title: 'DELETE',
+    text: "Do you want to delete?",
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Yes',
+    showLoaderOnConfirm: true,
+
+    preConfirm: function() {
+      return new Promise(function(resolve) {
+        $.ajax({
+          type: 'DELETE',
+          url: '{{ url('appraisalapoint') }}' + '/' + pivotId,
+          data: {
+              _token : $('meta[name=csrf-token]').attr('content'),
+              id: pivotId,
+          },
+          dataType: 'json'
+        })
+        .done(function(response){
+          swal.fire('Deleted', response.message, response.status)
+          .then(function(){
+            window.location.reload(true);
+          });
+        })
+        .fail(function(){
+          swal.fire('Oops...', 'Something went wrong with ajax !', 'error');
+        })
+      });
+    },
+    allowOutsideClick: false
+  })
+  .then((result) => {
+    if (result.dismiss === swal.DismissReason.cancel) {
+      swal.fire('Cancelled', 'Delete has been cancelled', 'info')
+    }
+  });
+}
 @endsection
