@@ -14,7 +14,7 @@ use App\Models\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 // use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-// use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Sales extends Model
 {
@@ -41,7 +41,7 @@ class Sales extends Model
 	// db relation belongsToMany
 	public function belongstomanydelivery(): BelongsToMany
 	{
-		return $this->belongsToMany(\App\Models\Sales\SalesDeliveryType::class, 'pivot_sales_sales_delivery', 'sales_id', 'sales_delivery_id')->withTimestamps();
+		return $this->belongsToMany(\App\Models\Sales\OptSalesDeliveryType::class, 'pivot_sales_sales_delivery', 'sales_id', 'sales_delivery_id')->withTimestamps();
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
