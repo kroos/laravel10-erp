@@ -104,7 +104,14 @@ class AppraisalApointController extends Controller
    */
   public function update(Request $request): JsonResponse
   {
-    //
+    DB::table('staffs')
+      ->where('id', $request->id)
+      ->update(['appraisal_category_id' => $request->category_id]);
+
+    return response()->json([
+      'message' => 'Successful Updated',
+      'status' => 'success'
+    ]);
   }
 
   /**

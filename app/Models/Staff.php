@@ -220,6 +220,11 @@ class Staff extends Authenticatable
 		return $this->belongsTo(\App\Models\HumanResources\OptDivision::class, 'div_id');
 	}
 
+	public function belongstoappraisalcategory(): BelongsTo
+	{
+		return $this->belongsTo(\App\Models\HumanResources\OptAppraisalCategories::class, 'appraisal_category_id');
+	}
+
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
 }
 

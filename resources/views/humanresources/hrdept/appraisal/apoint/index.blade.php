@@ -39,13 +39,19 @@
 <?php
 
 use \App\Models\Staff;
+use \App\Models\HumanResources\OptAppraisalCategories;
 
 $staffs = Staff::join('logins', 'staffs.id', '=', 'logins.staff_id')
-  ->select('logins.username', 'staffs.name', 'staffs.id')
+  ->leftjoin('option_appraisal_categories', 'staffs.appraisal_category_id', '=', 'option_appraisal_categories.id')
+  ->select('logins.username', 'staffs.name', 'staffs.id', 'staffs.appraisal_category_id', 'option_appraisal_categories.category')
   ->where('staffs.active', 1)
   ->where('logins.active', 1)
   ->orderBy('logins.username', 'ASC')
   ->get();
+
+$appraisal_category = OptAppraisalCategories::orderBy('category', 'ASC')
+  ->pluck('category', 'id')
+  ->toArray();
 
 $evaluator = Staff::join('logins', 'staffs.id', '=', 'logins.staff_id')
   ->select(DB::raw('CONCAT(username, " - ", name) AS display_name'), 'staffs.id')
@@ -80,12 +86,6 @@ $evaluatees = Staff::join('logins', 'staffs.id', '=', 'logins.staff_id')
       <div class="row">
         <div class="scrollable-div-1">
           @foreach($staffs as $staff)
-          <div class="row">
-            <div class="col-11">
-
-              {{ $staff->username }} - {{ $staff->name }}
-            </div>
-          </div>
 
           <?php
           $markers = Staff::join('logins', 'staffs.id', '=', 'logins.staff_id')
@@ -99,12 +99,62 @@ $evaluatees = Staff::join('logins', 'staffs.id', '=', 'logins.staff_id')
             ->get();
           ?>
 
+          <div class="row hover">
+            <div class="col-12 d-flex justify-content-between align-items-center">
+              <span>{{ $staff->username }} - {{ $staff->name }}</span>
+
+              @if ($staff->appraisal_category_id == NULL)
+                <button type="button" data-bs-toggle="modal" data-bs-target="#form{{ $staff->id }}" data-id="{{ $staff->id }}" class="btn btn-sm py-0 btn-outline-secondary form-button">
+                  -
+                </button>
+                @else
+                <button type="button" data-bs-toggle="modal" data-bs-target="#form{{ $staff->id }}" data-id="{{ $staff->id }}" class="btn btn-sm py-0 btn-outline-success form-button">
+                  {{ $staff->category }}
+                </button>
+                @endif
+
+              <!-- POP UP -->
+              <div class="modal fade" id="form{{ $staff->id }}" aria-labelledby="formlabel{{ $staff->id }}" aria-hidden="true">
+                <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+                  {!! Form::model($staff, [
+                  'route' => ['appraisalapoint.update', $staff->id],
+                  'method' => 'PATCH',
+                  'id' => 'form_update',
+                  'autocomplete' => 'off',
+                  'files' => true,
+                  'class' => 'form-appraisal-category',
+                  'data-id' => $staff->id,
+                  'data-toggle' => 'validator',
+                  ]) !!}
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h1 class="modal-title fs-5" id="formlabel{{ $staff->id }}">Appraisal Form : {{ $staff->username }} - {{ $staff->name }}
+                      </h1>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body align-items-start justify-content-center">
+                      <div class="row mb-1">
+                        <div class="mb-1">
+                          {!! Form::select( 'appraisal_category_id'. $staff->id, $appraisal_category, @$value, ['class' => 'form-control select-input form-select', 'id' => 'appraisal_category_id'. $staff->id, 'placeholder' => 'Please Select'] ) !!}
+                        </div>
+                      </div>
+                    </div>
+                    <div class="modal-footer">
+                      {{ Form::submit('Submit', ['class' => 'btn btn-sm btn-outline-secondary']) }}
+                    </div>
+                  </div>
+                  {{ Form::close() }}
+                </div>
+              </div>
+              <!-- POP UP -->
+
+            </div>
+          </div>
+
           @foreach($markers as $marker)
           <div class="row hover">
-            <div class="col-11">
-              &nbsp;&nbsp;<i class="bi-x-diamond-fill" style="font-size: 12px;"></i>&nbsp;&nbsp;{{ $marker->username }} - {{ $marker->name }}
-            </div>
-            <div class="col-1">
+            <div class="col-12 d-flex justify-content-between align-items-center">
+              <span>&nbsp;&nbsp;<i class="bi-x-diamond-fill" style="font-size: 12px;"></i>&nbsp;&nbsp;{{ $marker->username }} - {{ $marker->name }}</span>
               <button type="button" class="pivot_delete" data-id="{{ $marker->id }}">
                 <i class="bi-x-square-fill text-danger" aria-hidden="true"></i>
               </button>
@@ -120,7 +170,7 @@ $evaluatees = Staff::join('logins', 'staffs.id', '=', 'logins.staff_id')
     </div>
 
     <div class="col-6">
-      {{ Form::open(['route' => ['appraisalapoint.store'], 'id' => 'form', 'class' => 'form-horizontal', 'autocomplete' => 'off', 'files' => true]) }}
+      {{ Form::open(['route' => ['appraisalapoint.store'], 'id' => 'form_store', 'class' => 'form-horizontal', 'autocomplete' => 'off', 'files' => true]) }}
 
       <div class="row mb-3">
         <div class="col-2">
@@ -161,15 +211,26 @@ $evaluatees = Staff::join('logins', 'staffs.id', '=', 'logins.staff_id')
 @section('js')
 ////////////////////////////////////////////////////////////////////////////////////
 $('.form-select').select2({
-placeholder: '',
-width: '100%',
-allowClear: true,
-closeOnSelect: true,
+  placeholder: '',
+  width: '100%',
+  allowClear: true,
+  closeOnSelect: true,
 });
 
+$(document).on('click', '.form-button', function(e){
+  var formid = $(this).data('id');
+
+  $('#appraisal_category_id' + formid).select2({
+    placeholder: '',
+    width: '100%',
+    allowClear: true,
+    closeOnSelect: true,
+    dropdownParent: $('#form' + formid)
+  });
+});
 
 ////////////////////////////////////////////////////////////////////////////////////
-// DELETE APPRAISAL
+// DELETE APOINT APPRAISAL
 $(document).on('click', '.pivot_delete', function(e){
   var pivotId = $(this).data('id');
   SwalPivotDelete(pivotId);
@@ -193,8 +254,8 @@ function SwalPivotDelete(pivotId){
           type: 'DELETE',
           url: '{{ url('appraisalapoint') }}' + '/' + pivotId,
           data: {
-              _token : $('meta[name=csrf-token]').attr('content'),
-              id: pivotId,
+            _token : $('meta[name=csrf-token]').attr('content'),
+            id: pivotId,
           },
           dataType: 'json'
         })
@@ -205,7 +266,7 @@ function SwalPivotDelete(pivotId){
           });
         })
         .fail(function(){
-          swal.fire('Oops...', 'Something went wrong with ajax !', 'error');
+          swal.fire('Error', 'Something wrong with ajax!', 'error');
         })
       });
     },
@@ -217,4 +278,44 @@ function SwalPivotDelete(pivotId){
     }
   });
 }
+
+
+////////////////////////////////////////////////////////////////////////////////////
+// UPDATE APPRAISAL CATEGORY
+$(".form-appraisal-category").on('submit', function (e) {
+  var ids = $(this).data('id');
+
+  e.preventDefault();
+  $.ajax({
+    url: '{{ url('appraisalapoint/update') }}',
+    type: 'PATCH',
+    data: {
+      _token: '{!! csrf_token() !!}',
+      id: ids,
+      category_id: $('#appraisal_category_id' + ids).val(),
+    },
+    dataType: 'json',
+    global: false,
+    async: false,
+    success: function (response) {
+      $('#form').modal('hide');
+      // var row = $('#form').parent().parent();
+      // row.remove();
+      swal.fire({
+        title: 'Success!',
+        text: response.message,
+        icon: response.status
+      }).then((result) => {
+        if (result.isConfirmed) {
+          location.reload();
+        }
+      });
+    },
+    error: function (resp) {
+      const res = resp.responseJSON;
+      $('#form').modal('hide');
+      swal.fire('Error!', res.message, 'error');
+    }
+  });
+});
 @endsection
