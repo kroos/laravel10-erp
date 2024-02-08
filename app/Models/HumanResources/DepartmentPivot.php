@@ -29,11 +29,6 @@ class DepartmentPivot extends Model
 		return $this->belongsToMany(\App\Models\Staff::class, 'pivot_staff_pivotdepts', 'pivot_dept_id', 'staff_id')->withTimestamps();
 	}
 
-	public function belongstomanysection(): BelongsToMany
-	{
-		return $this->belongsToMany(\App\Models\HumanResources\HRAppraisalSection::class, 'pivot_dept_appraisals', 'department_id', 'section_id')->withPivot('version', 'sort')->withTimestamps();
-	}
-
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
 	// db relation belongsTo
 	public function belongstodepartment(): BelongsTo
