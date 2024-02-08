@@ -62,7 +62,6 @@ class SalesController extends Controller
 	public function store(Request $request): RedirectResponse
 	{
 		// dd($request->except('_token'));
-
 		$validated = $request->validate(
 				[
 					'date_order' => 'required|date',
@@ -79,7 +78,7 @@ class SalesController extends Controller
 					'jobdesc.*.uom_id' => 'required',
 					'jobdesc.*.sales_get_item_id' => 'required',
 					'jobdesc.*.machine_id' => 'required',
-					'jobdesc.*.machine_accessories_id' => 'nullable',
+					'jobdesc.*.machine_accessory_id' => 'nullable',
 					'jobdesc.*.job_description' => 'required',
 				],
 				[
@@ -113,9 +112,9 @@ class SalesController extends Controller
 					'jobdesc.*.job_description' => 'Job Description',
 					'jobdesc.*.quantity' => 'Job Description Quantity',
 					'jobdesc.*.uom_id' => 'Job Description UOM ',
-					'jobdesc.*.sales_get_item_id' => 'Job Description Delivery Instruction',
+					'jobdesc.*.sales_get_item_id.*' => 'Job Description Delivery Instruction',
 					'jobdesc.*.machine_id' => 'Job Description Machine',
-					'jobdesc.*.machine_accessories_id' => 'Job Description Machine Accessories',
+					'jobdesc.*.machine_accessory_id' => 'Job Description Machine Accessories',
 					'jobdesc.*.remarks' => 'Job Description Remarks',
 				]
 			);
@@ -128,7 +127,6 @@ class SalesController extends Controller
 		}
 
 		$count = Sales::whereYear('created_at', now()->format('Y'))->get()->count() + 1;
-		// $no
 
 		$data = $request->only(['date_order', 'customer_id', 'deliveryby_id', 'sales_type_id', 'po_number', 'delivery_at', 'urgency']);
 		$data += ['special_delivery_instruction' => ucwords(Str::lower($request->special_delivery_instruction))];
@@ -143,21 +141,29 @@ class SalesController extends Controller
 
 		if ($request->has('sales_delivery_id')) {
 			foreach ($request->sales_delivery_id as $k => $v) {
-				$sal->belongstomanydelivery()->attach($v['sales_delivery_id']);
+				$sal->belongstomanydelivery()->attach($v);
 			}
 		}
 		if ($request->has('jobdesc')) {
 			foreach ($request->jobdesc as $k => $v) {
+				// dump($k, $v);
+				$job_description = ucwords(Str::lower($v['job_description']));
+				$quantity = $v['quantity'];
+				$uom_id = $v['uom_id'];
+				$machine_id = $v['machine_id'];
+				$machine_accessory_id = $v['machine_accessory_id']??NULL;
+				$remarks = ucwords(Str::lower($v['remarks']));
+
 				$sjd = $sal->hasmanyjobdescription()->create([
-							'job_description' => $v['job_description'],
-							'quantity' => $v['quantity'],
-							'uom_id' => $v['uom_id'],
-							'machine_id' => $v['machine_id'],
-							'machine_accessories_id' => $v['machine_accessories_id'],
-							'remarks' => $v['remarks'],
+							'job_description' => $job_description,
+							'quantity' => $quantity,
+							'uom_id' => $uom_id,
+							'machine_id' => $machine_id,
+							'machine_accessory_id' => $machine_accessory_id,
+							'remarks' => $remarks,
 						]);
 				foreach ($v['sales_get_item_id'] as $k1 => $v1) {
-					$sjd->hasmanyjobdescriptiongetitem()->create($v1);
+					$sjd->hasmanyjobdescriptiongetitem()->create(['sales_get_item_id' => $v1]);
 				}
 			}
 		}

@@ -40,7 +40,7 @@ class SalesJobDescriptionGetItem extends Model
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
 	//belongsto relationship
-	public function belongstosales(): HasMany
+	public function belongstosalesjobdescription(): HasMany
 	{
 		return $this->hasMany(\App\Models\Sales\SalesJobDescription::class, 'sales_job_description_id');
 	}

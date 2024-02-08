@@ -72,7 +72,7 @@
 					</div>
 				</div>
 				<div class="form-group row m-2 {{ $errors->has('sales_delivery_id.*') ? 'has-error' : '' }}">
-					{{ Form::label( 'pon', 'Delivery Instruction : ', ['class' => 'col-sm-4 col-form-label'] ) }}
+					{{ Form::label( 'devi', 'Delivery Instruction : ', ['class' => 'col-sm-4 col-form-label'] ) }}
 					<div class="col">
 						@foreach(\App\Models\Sales\OptSalesDeliveryType::all() as $key)
 							<div class="form-check form-check-inline m-1">
@@ -87,7 +87,7 @@
 				</div>
 			</div>
 
-			<h5>Job Description &nbsp; <button type="button" class="btn btn-sm btn-outline-secondary jdesc_add"><i class="fa-solid fa-list-check"></i>&nbsp;Add Job Description</button> </h5>
+			<h5>Job Description</h5>
 			<div class="col-sm-12">
 				<div class="row jdesc_wrap">
 
@@ -104,7 +104,7 @@
 							<div class="col">
 								<input type="text" name="jobdesc[4][quantity]" id="jdq_1" class="form-control form-control-sm m-1" placeholder="Quantity">
 							</div>
-							<div class="col form-group {{ $errors->has('jobdesc.*.uom_id') ? 'has-error' : '' }}">
+							<div class="col form-group align-items-center {{ $errors->has('jobdesc.*.uom_id') ? 'has-error' : '' }}">
 								<select name="jobdesc[4][uom_id]" id="jdu_1" class="form-select form-select-sm m-1" placeholder="UOM"></select>
 							</div>
 						</div>
@@ -120,11 +120,11 @@
 						</div>
 						<div class="col-sm-12 m-1 p-1 row">
 							<div class="col-sm-5 row m-1 p-1 form-group {{ $errors->has('jobdesc.*.machine_id') ? 'has-error' : '' }}">
-								<div class="col">
+								<div class="col align-items-center">
 									<select name="jobdesc[4][machine_id]" id="jobdescmach_1" class="form-select form-select-sm m-1" placeholder="Machine"></select>
 								</div>
-								<div class="col form-group {{ $errors->has('jobdesc.*.machine_accessories_id') ? 'has-error' : '' }}">
-									<select name="jobdesc[4][machine_accessories_id]" id="jobdescmachacc_1" class="form-select form-select-sm m-1" placeholder="Machine Accessories">
+								<div class="col form-group align-items-center {{ $errors->has('jobdesc.*.machine_accessories_id') ? 'has-error' : '' }}">
+									<select name="jobdesc[4][machine_accessory_id]" id="jobdescmachacc_1" class="form-select form-select-sm m-1" placeholder="Machine Accessories">
 										<option value="" ></option>
 										@foreach(\App\Models\Sales\OptMachineAccessory::all() as $k)
 											<option value="{{ $k->id }}" class="{{ $k->machine_id }}">{{ $k->accessory }}</option>
@@ -141,6 +141,7 @@
 					</div>
 
 				</div>
+				<button type="button" class="btn btn-sm btn-outline-secondary jdesc_add"><i class="fa-solid fa-list-check"></i>&nbsp;Add Job Description</button>
 			</div>
 
 		</div>
@@ -184,19 +185,12 @@ $('#sales').DataTable({
 /////////////////////////////////////////////////////////////////////////////////////////
 // date
 $('#nam, #delivery').datetimepicker({
-	icons: {
-		time: "fas fas-regular fa-clock fa-beat",
-		date: "fas fas-regular fa-calendar fa-beat",
-		up: "fa-regular fa-circle-up fa-beat",
-		down: "fa-regular fa-circle-down fa-beat",
-		previous: 'fas fas-regular fa-arrow-left fa-beat',
-		next: 'fas fas-regular fa-arrow-right fa-beat',
-		today: 'fas fas-regular fa-calenday-day fa-beat',
-		clear: 'fas fas-regular fa-broom-wide fa-beat',
-		close: 'fas fas-regular fa-rectangle-xmark fa-beat'
-	},
+
 	format:'YYYY-MM-DD',
 	// useCurrent: false,
+}).on('dp.change', function(e){
+	$('#form').bootstrapValidator('revalidateField', $('[name="date_order"]'));
+	$('#form').bootstrapValidator('revalidateField', $('[name="delivery_at"]'));
 });
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -295,6 +289,14 @@ $('#jobdescmachacc_1').chainedTo('#jobdescmach_1');
 // });
 
 /////////////////////////////////////////////////////////////////////////////////////////
+// jquery escape string
+function fixedEncodeURIComponent(str) {
+	return encodeURIComponent(str).replace(/[!'()*]/g, function(c) {
+		return '%' + c.charCodeAt(0).toString(16);
+	});
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////
 // add item
 var crb_max_fields = 504;						//maximum input boxes allowed
 var crb_add_buttons = $(".jdesc_add");
@@ -325,7 +327,7 @@ $(crb_add_buttons).click(function(){
 						'<select name="jobdesc[' + xcrb + '][uom_id]" id="jdu_' + xcrb + '" class="form-select form-select-sm m-1" placeholder="UOM"></select>' +
 					'</div>' +
 				'</div>' +
-				'<div class="col-auto m-1 p-1 form-group {{ $errors->has('jobdesc.*.sales_get_item_id') ? 'has-error' : '' }}">' +
+				'<div class="col-auto m-1 p-1 form-group {{ $errors->has('jobdesc.*.sales_get_item_id.*') ? 'has-error' : '' }}">' +
 					@foreach(\App\Models\Sales\OptSalesGetItem::all() as $key)
 						'<div class="form-check">' +
 							'<input type="checkbox" name="jobdesc[' + xcrb + '][sales_get_item_id][]" class="form-check-input" value="{{ $key->id }}" id="' + xcrb + '_jdescitem_{{ $key->id }}">' +
@@ -338,8 +340,8 @@ $(crb_add_buttons).click(function(){
 						'<div class="col">' +
 							'<select name="jobdesc[' + xcrb + '][machine_id]" id="jobdescmach_' + xcrb + '" class="form-select form-select-sm m-1" placeholder="Machine"></select>' +
 						'</div>' +
-						'<div class="col form-group {{ $errors->has('jobdesc.*.machine_accessories_id') ? 'has-error' : '' }}">' +
-							'<select name="jobdesc[' + xcrb + '][machine_accessories_id]" id="jobdescmachacc_' + xcrb + '" class="form-select form-select-sm m-1" placeholder="Machine Accessories">' +
+						'<div class="col form-group {{ $errors->has('jobdesc.*.machine_accessory_id') ? 'has-error' : '' }}">' +
+							'<select name="jobdesc[' + xcrb + '][machine_accessory_id]" id="jobdescmachacc_' + xcrb + '" class="form-select form-select-sm m-1" placeholder="Machine Accessory">' +
 								'<option value="" ></option>' +
 								@foreach(\App\Models\Sales\OptMachineAccessory::all() as $k)
 									'<option value="{{ $k->id }}" class="{{ $k->machine_id }}">{{ $k->accessory }}</option>' +
@@ -355,6 +357,8 @@ $(crb_add_buttons).click(function(){
 				'</div>' +
 			'</div>'
 		);
+
+		// $('.form-check').find('[name="jobdesc[' + xcrb + '][sales_get_item_id][]"]').css('border', '3px solid red');
 
 		$('#jdu_' + xcrb ).select2({
 			placeholder: 'UOM',
@@ -408,9 +412,9 @@ $(crb_add_buttons).click(function(){
 		$('#form').bootstrapValidator('addField', $('.form-group').find('[name="jobdesc[' + xcrb + '][job_description]"]'));
 		$('#form').bootstrapValidator('addField', $('.form-group').find('[name="jobdesc[' + xcrb + '][quantity]"]'));
 		$('#form').bootstrapValidator('addField', $('.form-group').find('[name="jobdesc[' + xcrb + '][uom_id]"]'));
-		$('#form').bootstrapValidator('addField', $('.form-check').find('[name="jobdesc[' + xcrb + '][jd_get_item][]"]'));
+		$('#form').bootstrapValidator('addField', $('.form-group').find('[name="jobdesc[' + xcrb + '][sales_get_item_id][]"]'));
 		$('#form').bootstrapValidator('addField', $('.form-group').find('[name="jobdesc[' + xcrb + '][machine_id]"]'));
-		$('#form').bootstrapValidator('addField', $('.form-group').find('[name="jobdesc[' + xcrb + '][machine_accessories_id]"]'));
+		$('#form').bootstrapValidator('addField', $('.form-group').find('[name="jobdesc[' + xcrb + '][machine_accessory_id]"]'));
 		$('#form').bootstrapValidator('addField', $('.form-group').find('[name="jobdesc[' + xcrb + '][remarks]"]'));
 	}
 })
@@ -419,10 +423,22 @@ $(crb_wrappers).on("click",".jdesc_remove", function(e){
 	//user click on remove text
 	e.preventDefault();
 	var $row = $(this).parent().parent();
-	var $option1 = $row.find('[name="crossbackup[' + xcrb + '][backup_staff_id]"]');
+	var $option1 = $row.find('[name="jobdesc[' + xcrb + '][job_description]"]');
+	var $option2 = $row.find('[name="jobdesc[' + xcrb + '][quantity]"]');
+	var $option3 = $row.find('[name="jobdesc[' + xcrb + '][uom_id]"]');
+	var $option4 = $row.find('[name="jobdesc[' + xcrb + '][sales_get_item_id][]"]');
+	var $option5 = $row.find('[name="jobdesc[' + xcrb + '][machine_id]"]');
+	var $option6 = $row.find('[name="jobdesc[' + xcrb + '][machine_accessories_id]"]');
+	var $option7 = $row.find('[name="jobdesc[' + xcrb + '][remarks]"]');
 	$row.remove();
 
 	$('#form').bootstrapValidator('removeField', $option1);
+	$('#form').bootstrapValidator('removeField', $option2);
+	$('#form').bootstrapValidator('removeField', $option3);
+	$('#form').bootstrapValidator('removeField', $option4);
+	$('#form').bootstrapValidator('removeField', $option5);
+	$('#form').bootstrapValidator('removeField', $option6);
+	$('#form').bootstrapValidator('removeField', $option7);
 	xcrb--;
 })
 
@@ -450,7 +466,7 @@ $('#form').bootstrapValidator({
 				// },
 			}
 		},
-		deliveryby_id: {
+		'sales_type_id': {
 			validators: {
 				notEmpty: {
 					message: 'Please choose'
@@ -499,7 +515,7 @@ $('#form').bootstrapValidator({
 				// },
 			}
 		},
-		@for($i = 1; $i < 500; ++$i)
+		@for($i = 4; $i < 504; ++$i)
 		'jobdesc[{{ $i }}][job_description]': {
 			validators: {
 				notEmpty: {
@@ -521,13 +537,17 @@ $('#form').bootstrapValidator({
 				},
 			}
 		},
-		'jobdesc[{{ $i }}][jd_get_item][]': {
-			validators: {
-				notEmpty: {
-					message: 'Please choose'
-				},
-			}
-		},
+		// 'jobdesc[{{ $i }}][sales_get_item_id][]': {
+		// 	validators: {
+		// 		notEmpty: {
+		// 			// message: 'Please choose'
+		// 		},
+		// 		choice: {
+		// 			min: 1,
+		// 			message: 'Please choose 1 - 3 options'
+		// 		}
+		// 	}
+		// },
 		'jobdesc[{{ $i }}][machine_id]': {
 			validators: {
 				notEmpty: {
@@ -535,7 +555,7 @@ $('#form').bootstrapValidator({
 				},
 			}
 		},
-		'jobdesc[{{ $i }}][machine_accessories_id]': {
+		'jobdesc[{{ $i }}][machine_accessory_id]': {
 			validators: {
 				// notEmpty: {
 				// 	message: 'Please choose'
