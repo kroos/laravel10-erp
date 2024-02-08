@@ -20,14 +20,14 @@
 
   <div class="row">&nbsp;</div>
 
-  @foreach ($departments as $department)
+  @foreach ($categories as $category)
 
   <?php
-  $form_versions = DB::table('pivot_dept_appraisals')
-    ->where('department_id', $department->id)
+  $form_versions = DB::table('pivot_category_appraisals')
+    ->where('category_id', $category->id)
     ->whereNotNull('version')
     ->whereNull('deleted_at')
-    ->groupBy('department_id')
+    ->groupBy('category_id')
     ->groupBy('version')
     ->orderBy('version', 'ASC')
     ->get();
@@ -35,8 +35,8 @@
 
   <div class="row mb-2" style="background-color: #f0f0f0; font-size: 20px;">
     <div class="col-sm-12 ">
-      <a class="btn btn-primary btn-sm" href="{{ route('appraisalform.create', ['id' => $department->id]) }}" role="button">+</a>
-      {{ $department->department }}
+      <a class="btn btn-primary btn-sm" href="{{ route('appraisalform.create', ['id' => $category->id]) }}" role="button">+</a>
+      {{ $category->category }}
     </div>
   </div>
 
@@ -47,7 +47,7 @@
       <i class="bi bi-caret-right-fill"></i>
     </div>
     <div class="col-sm-9" style="font-size: 18px;">
-      {{ $department->department }} Version {{ $form_version->version }}
+      {{ $category->category }} Version {{ $form_version->version }}
     </div>
     <div align="center" style="width: 60px;">
       <a href="{{ route('appraisalform.show', ['appraisalform' => $form_version->id]) }}">
@@ -57,14 +57,11 @@
       </a>
     </div>
     <div align="center" style="width: 60px;">
-
-
       <a href="{{ route('appraisalform.edit', ['appraisalform' => $form_version->id]) }}">
         <button type="submit" class="btn btn-sm btn-outline-secondary">
           <i class="fas fa-pencil" aria-hidden="true"></i>
         </button>
       </a>
-
     </div>
     <div align="center" style="width: 60px;">
       <button type="button" class="btn btn-sm btn-outline-secondary appraisal_duplicate" data-id="{{ $form_version->id }}">

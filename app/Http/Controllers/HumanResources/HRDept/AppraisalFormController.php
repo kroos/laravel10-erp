@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Http\Controllers\HumanResources\HRDept;
 
 use App\Http\Controllers\Controller;
@@ -20,11 +19,11 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 
 // load models
-use App\Models\HumanResources\DepartmentPivot;
 use App\Models\HumanResources\HRAppraisalSection;
 use App\Models\HumanResources\HRAppraisalSectionSub;
 use App\Models\HumanResources\HRAppraisalMainQuestion;
 use App\Models\HumanResources\HRAppraisalQuestion;
+use App\Models\HumanResources\OptAppraisalCategories;
 
 // load paginator
 use Illuminate\Pagination\Paginator;
@@ -58,9 +57,9 @@ class AppraisalFormController extends Controller
    */
   public function index(): View
   {
-    $departments = DepartmentPivot::all();
+    $categorys = OptAppraisalCategories::all();
 
-    return view('humanresources.hrdept.appraisal.form.index', ['departments' => $departments]);
+    return view('humanresources.hrdept.appraisal.form.index', ['categories' => $categorys]);
   }
 
   /**
@@ -68,8 +67,8 @@ class AppraisalFormController extends Controller
    */
   public function create($id): View
   {
-    $department = DepartmentPivot::where('id', $id)->first();
-    return view('humanresources.hrdept.appraisal.form.create', ['department' => $department]);
+    $category = OptAppraisalCategories::where('id', $id)->first();
+    return view('humanresources.hrdept.appraisal.form.create', ['category' => $category]);
   }
 
   /**
@@ -88,23 +87,16 @@ class AppraisalFormController extends Controller
 
       if ($request->has('p1' . $p1_start)) {
         foreach ($request->{'p1' . $p1_start} as $key => $val) {
-          if ($val['section'] != NULL) {
-            HRAppraisalSection::create([
-              'sort' => $val['section_sort'],
-              'section' => $val['section'],
-            ]);
-          } else {
-            HRAppraisalSection::create([
-              'sort' => $val['section_sort'],
-              'section' => preg_replace('/>\s*</', '><', $val['section_text']),
-            ]);
-          }
+          HRAppraisalSection::create([
+            'sort' => $val['section_sort'],
+            'section' => preg_replace('/>\s*</', '><', $val['section_text']),
+          ]);
 
           $section_id = HRAppraisalSection::select('id')->orderBy('id', 'DESC')->first();
 
           // PIVOT DEPT APPRAISAL
-          $form_version = DB::table('pivot_dept_appraisals')
-            ->where('department_id', $request->department_id)
+          $form_version = DB::table('pivot_category_appraisals')
+            ->where('category_id', $request->category_id)
             ->whereNotNull('version')
             ->orderBy('version', 'DESC')
             ->first();
@@ -119,7 +111,7 @@ class AppraisalFormController extends Controller
             $form_ver = $form_ver + 1;
           }
 
-          $section_id->belongstomanydepartmentpivot()->attach($request->department_id, [
+          $section_id->belongstomanycategorypivot()->attach($request->category_id, [
             'version' => $form_ver,
           ]);
 
@@ -129,19 +121,11 @@ class AppraisalFormController extends Controller
 
             if ($request->has('p2' . $p1_start . $p2_start)) {
               foreach ($request->{'p2' . $p1_start . $p2_start} as $key => $val) {
-                if ($val['sectionsub'] != NULL) {
-                  HRAppraisalSectionSub::create([
-                    'section_id' => $section_id->id,
-                    'sort' => $val['sectionsub_sort'],
-                    'section_sub' => $val['sectionsub'],
-                  ]);
-                } else {
-                  HRAppraisalSectionSub::create([
-                    'section_id' => $section_id->id,
-                    'sort' => $val['sectionsub_sort'],
-                    'section_sub' => preg_replace('/>\s*</', '><', $val['sectionsub_text']),
-                  ]);
-                }
+                HRAppraisalSectionSub::create([
+                  'section_id' => $section_id->id,
+                  'sort' => $val['sectionsub_sort'],
+                  'section_sub' => preg_replace('/>\s*</', '><', $val['sectionsub_text']),
+                ]);
 
                 $sectionsub_id = HRAppraisalSectionSub::select('id')->orderBy('id', 'DESC')->first();
 
@@ -151,21 +135,12 @@ class AppraisalFormController extends Controller
 
                   if ($request->has('p3' . $p1_start . $p2_start . $p3_start)) {
                     foreach ($request->{'p3' . $p1_start . $p2_start . $p3_start} as $key => $val) {
-                      if ($val['mainquestion'] != NULL) {
-                        HRAppraisalMainQuestion::create([
-                          'section_sub_id' => $sectionsub_id->id,
-                          'sort' => $val['mainquestion_sort'],
-                          'mark' => $val['mainquestion_mark'],
-                          'main_question' => $val['mainquestion'],
-                        ]);
-                      } else {
-                        HRAppraisalMainQuestion::create([
-                          'section_sub_id' => $sectionsub_id->id,
-                          'sort' => $val['mainquestion_sort'],
-                          'mark' => $val['mainquestion_mark'],
-                          'main_question' => preg_replace('/>\s*</', '><', $val['mainquestion_text']),
-                        ]);
-                      }
+                      HRAppraisalMainQuestion::create([
+                        'section_sub_id' => $sectionsub_id->id,
+                        'sort' => $val['mainquestion_sort'],
+                        'mark' => $val['mainquestion_mark'],
+                        'main_question' => preg_replace('/>\s*</', '><', $val['mainquestion_text']),
+                      ]);
 
                       $mainquestion_id = HRAppraisalMainQuestion::select('id')->orderBy('id', 'DESC')->first();
 
@@ -175,21 +150,12 @@ class AppraisalFormController extends Controller
 
                         if ($request->has('p4' . $p1_start . $p2_start . $p3_start . $p4_start)) {
                           foreach ($request->{'p4' . $p1_start . $p2_start . $p3_start . $p4_start} as $key => $val) {
-                            if ($val['question'] != NULL) {
-                              HRAppraisalQuestion::create([
-                                'main_question_id' => $mainquestion_id->id,
-                                'sort' => $val['question_sort'],
-                                'mark' => $val['question_mark'],
-                                'question' => $val['question'],
-                              ]);
-                            } else {
-                              HRAppraisalQuestion::create([
-                                'main_question_id' => $mainquestion_id->id,
-                                'sort' => $val['question_sort'],
-                                'mark' => $val['question_mark'],
-                                'question' => preg_replace('/>\s*</', '><', $val['question_text']),
-                              ]);
-                            }
+                            HRAppraisalQuestion::create([
+                              'main_question_id' => $mainquestion_id->id,
+                              'sort' => $val['question_sort'],
+                              'mark' => $val['question_mark'],
+                              'question' => preg_replace('/>\s*</', '><', $val['question_text']),
+                            ]);
                           }
                         }
                       }
@@ -360,17 +326,17 @@ class AppraisalFormController extends Controller
   {
     $datetime = Carbon::now();
 
-    $pivotappraisal = DB::table('pivot_dept_appraisals')
+    $pivotappraisal = DB::table('pivot_category_appraisals')
       ->where('id', $appraisalform)
       ->first();
 
-    $detachs =  DB::table('pivot_dept_appraisals')
-      ->where('department_id', $pivotappraisal->department_id)
+    $detachs =  DB::table('pivot_category_appraisals')
+      ->where('category_id', $pivotappraisal->category_id)
       ->where('version', $pivotappraisal->version)
       ->get();
 
     foreach ($detachs as $detach) {
-      DB::table('pivot_dept_appraisals')
+      DB::table('pivot_category_appraisals')
         ->where('id', $detach->id)
         ->update(['deleted_at' => $datetime]);
     }
