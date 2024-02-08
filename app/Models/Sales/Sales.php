@@ -53,12 +53,17 @@ class Sales extends Model
 
 	public function belongstoordertype(): BelongsTo
 	{
-		return $this->hasMany(\App\Models\Sales\SalesType::class, 'sales_type_id');
+		return $this->belongsTo(\App\Models\Sales\SalesType::class, 'sales_type_id');
 	}
 
 	public function belongstocustomer(): BelongsTo
 	{
-		return $this->hasMany(\App\Models\Customer::class, 'customer_id');
+		return $this->belongsTo(\App\Models\Customer::class, 'customer_id');
+	}
+
+	public function belongstosalesby(): BelongsTo
+	{
+		return $this->belongsTo(\App\Models\Sales\OptSalesBy::class, 'sales_by_id');
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////

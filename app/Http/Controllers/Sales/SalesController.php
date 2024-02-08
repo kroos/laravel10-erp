@@ -51,7 +51,8 @@ class SalesController extends Controller
 
 	public function index(): View
 	{
-		return view('sales.sales.index');
+		$sales = Sales::all();
+		return view('sales.sales.index', ['sales' => $sales]);
 	}
 
 	public function create(): View
