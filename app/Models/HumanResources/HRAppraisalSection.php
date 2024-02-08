@@ -23,8 +23,8 @@ class HRAppraisalSection extends Model
     protected $table = 'hr_appraisal_sections';
 
     ////////////////////////// belongsToMany //////////////////////////
-    public function belongstomanydepartmentpivot(): BelongsToMany
+    public function belongstomanycategorypivot(): BelongsToMany
 	{
-		return $this->belongsToMany(\App\Models\HumanResources\DepartmentPivot::class, 'pivot_dept_appraisals', 'section_id', 'department_id')->withPivot('version', 'sort')->withTimestamps();
+		return $this->belongsToMany(\App\Models\HumanResources\OptAppraisalCategories::class, 'pivot_category_appraisals', 'section_id', 'category_id')->withPivot('version', 'sort')->withTimestamps();
 	}
 }

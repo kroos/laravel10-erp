@@ -57,12 +57,12 @@
   </style>
 
   <?php
-  $pivotappraisal = DB::table('pivot_dept_appraisals')
+  $pivotappraisal = DB::table('pivot_category_appraisals')
       ->where('id', $id)
       ->first();
-  $department = App\Models\HumanResources\DepartmentPivot::where('id', $pivotappraisal->department_id)->first();
-  $appraisals = DB::table('pivot_dept_appraisals')
-      ->where('department_id', $pivotappraisal->department_id)
+  $category = App\Models\HumanResources\OptAppraisalCategories::where('id', $pivotappraisal->category_id)->first();
+  $appraisals = DB::table('pivot_category_appraisals')
+      ->where('category_id', $pivotappraisal->category_id)
       ->where('version', $pivotappraisal->version)
       ->orderBy('sort', 'ASC')
       ->orderBy('id', 'ASC')
@@ -72,7 +72,7 @@
   <div class="container">
     @include('humanresources.hrdept.navhr')
 
-    <h4>Appraisal Form : {{ $department->department }} Version {{ $pivotappraisal->version }}</h4>
+    <h4>Appraisal Form : {{ $category->category }} Version {{ $pivotappraisal->version }}</h4>
 
     <table height="15px"></table>
 
@@ -148,7 +148,7 @@
                     <div class="modal-content">
                       <div class="modal-header">
                         <h1 class="modal-title fs-5" id="sectionlabel{{ $section->id }}">Appraisal Form :
-                          {{ $department->department }} Version {{ $pivotappraisal->version }}
+                          {{ $category->category }} Version {{ $pivotappraisal->version }}
                         </h1>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                       </div>
@@ -262,7 +262,7 @@
                       <div class="modal-content">
                         <div class="modal-header">
                           <h1 class="modal-title fs-5" id="sectionsublabel{{ $section_sub->id }}">Appraisal Form :
-                            {{ $department->department }} Version {{ $pivotappraisal->version }}
+                            {{ $category->category }} Version {{ $pivotappraisal->version }}
                           </h1>
                           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
@@ -365,7 +365,7 @@
                           <div class="modal-header">
                             <h1 class="modal-title fs-5" id="mainquestionlabel{{ $main_question->id }}">Appraisal Form
                               :
-                              {{ $department->department }} Version {{ $pivotappraisal->version }}
+                              {{ $category->category }} Version {{ $pivotappraisal->version }}
                             </h1>
                             <button type="button" class="btn-close" data-bs-dismiss="modal"
                               aria-label="Close"></button>
@@ -470,7 +470,7 @@
                           <div class="modal-content">
                             <div class="modal-header">
                               <h1 class="modal-title fs-5" id="questionlabel{{ $question->id }}">Appraisal Form :
-                                {{ $department->department }} Version {{ $pivotappraisal->version }}
+                                {{ $category->category }} Version {{ $pivotappraisal->version }}
                               </h1>
                               <button type="button" class="btn-close" data-bs-dismiss="modal"
                                 aria-label="Close"></button>
@@ -570,7 +570,7 @@
                             <div class="modal-header">
                               <h1 class="modal-title fs-5" id="questionlabeladd{{ $main_question->id }}">Appraisal
                                 Form :
-                                {{ $department->department }} Version {{ $pivotappraisal->version }}
+                                {{ $category->category }} Version {{ $pivotappraisal->version }}
                               </h1>
                               <button type="button" class="btn-close" data-bs-dismiss="modal"
                                 aria-label="Close"></button>
@@ -666,7 +666,7 @@
                           <div class="modal-header">
                             <h1 class="modal-title fs-5" id="mainquestionlabeladd{{ $section_sub->id }}">Appraisal
                               Form :
-                              {{ $department->department }} Version {{ $pivotappraisal->version }}
+                              {{ $category->category }} Version {{ $pivotappraisal->version }}
                             </h1>
                             <button type="button" class="btn-close" data-bs-dismiss="modal"
                               aria-label="Close"></button>
@@ -762,7 +762,7 @@
                 <div class="modal-content">
                   <div class="modal-header">
                     <h1 class="modal-title fs-5" id="sectionsublabeladd{{ $section->id }}">Appraisal Form :
-                      {{ $department->department }} Version {{ $pivotappraisal->version }}
+                      {{ $category->category }} Version {{ $pivotappraisal->version }}
                     </h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                   </div>
@@ -860,7 +860,7 @@
                     <div class="modal-content">
                       <div class="modal-header">
                         <h1 class="modal-title fs-5" id="sectionlabel{{ $section->id }}">Appraisal Form :
-                          {{ $department->department }} Version {{ $pivotappraisal->version }}
+                          {{ $category->category }} Version {{ $pivotappraisal->version }}
                         </h1>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                       </div>
@@ -984,7 +984,7 @@
                       <div class="modal-content">
                         <div class="modal-header">
                           <h1 class="modal-title fs-5" id="sectionsublabel{{ $section_sub->id }}">Appraisal Form :
-                            {{ $department->department }} Version {{ $pivotappraisal->version }}
+                            {{ $category->category }} Version {{ $pivotappraisal->version }}
                           </h1>
                           <button type="button" class="btn-close" data-bs-dismiss="modal"
                             aria-label="Close"></button>
@@ -1086,7 +1086,7 @@
                 <div class="modal-content">
                   <div class="modal-header">
                     <h1 class="modal-title fs-5" id="sectionsublabeladd{{ $section->id }}">Appraisal Form :
-                      {{ $department->department }} Version {{ $pivotappraisal->version }}
+                      {{ $category->category }} Version {{ $pivotappraisal->version }}
                     </h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                   </div>
@@ -1185,7 +1185,7 @@
                     <div class="modal-content">
                       <div class="modal-header">
                         <h1 class="modal-title fs-5" id="sectionlabel{{ $section->id }}">Appraisal Form :
-                          {{ $department->department }} Version {{ $pivotappraisal->version }}
+                          {{ $category->category }} Version {{ $pivotappraisal->version }}
                         </h1>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                       </div>
@@ -1280,7 +1280,7 @@
                       <div class="modal-content">
                         <div class="modal-header">
                           <h1 class="modal-title fs-5" id="sectionsublabel{{ $section_sub->id }}">Appraisal Form :
-                            {{ $department->department }} Version {{ $pivotappraisal->version }}
+                            {{ $category->category }} Version {{ $pivotappraisal->version }}
                           </h1>
                           <button type="button" class="btn-close" data-bs-dismiss="modal"
                             aria-label="Close"></button>
@@ -1371,7 +1371,7 @@
                 <div class="modal-content">
                   <div class="modal-header">
                     <h1 class="modal-title fs-5" id="sectionsublabeladd{{ $section->id }}">Appraisal Form :
-                      {{ $department->department }} Version {{ $pivotappraisal->version }}
+                      {{ $category->category }} Version {{ $pivotappraisal->version }}
                     </h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                   </div>
@@ -1470,7 +1470,7 @@
                     <div class="modal-content">
                       <div class="modal-header">
                         <h1 class="modal-title fs-5" id="sectionlabel{{ $section->id }}">Appraisal Form :
-                          {{ $department->department }} Version {{ $pivotappraisal->version }}
+                          {{ $category->category }} Version {{ $pivotappraisal->version }}
                         </h1>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                       </div>
@@ -1573,7 +1573,7 @@
                       <div class="modal-content">
                         <div class="modal-header">
                           <h1 class="modal-title fs-5" id="sectionsublabel{{ $section_sub->id }}">Appraisal Form :
-                            {{ $department->department }} Version {{ $pivotappraisal->version }}
+                            {{ $category->category }} Version {{ $pivotappraisal->version }}
                           </h1>
                           <button type="button" class="btn-close" data-bs-dismiss="modal"
                             aria-label="Close"></button>
@@ -1670,7 +1670,7 @@
                           <div class="modal-header">
                             <h1 class="modal-title fs-5" id="mainquestionlabel{{ $main_question->id }}">Appraisal Form
                               :
-                              {{ $department->department }} Version {{ $pivotappraisal->version }}
+                              {{ $category->category }} Version {{ $pivotappraisal->version }}
                             </h1>
                             <button type="button" class="btn-close" data-bs-dismiss="modal"
                               aria-label="Close"></button>
@@ -1765,7 +1765,7 @@
                           <div class="modal-header">
                             <h1 class="modal-title fs-5" id="mainquestionlabeladd{{ $section_sub->id }}">Appraisal
                               Form :
-                              {{ $department->department }} Version {{ $pivotappraisal->version }}
+                              {{ $category->category }} Version {{ $pivotappraisal->version }}
                             </h1>
                             <button type="button" class="btn-close" data-bs-dismiss="modal"
                               aria-label="Close"></button>
@@ -1856,7 +1856,7 @@
                 <div class="modal-content">
                   <div class="modal-header">
                     <h1 class="modal-title fs-5" id="sectionsublabeladd{{ $section->id }}">Appraisal Form :
-                      {{ $department->department }} Version {{ $pivotappraisal->version }}
+                      {{ $category->category }} Version {{ $pivotappraisal->version }}
                     </h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                   </div>
@@ -1936,7 +1936,7 @@
           <div class="modal-content">
             <div class="modal-header">
               <h1 class="modal-title fs-5" id="sectionlabeladd">Appraisal Form :
-                {{ $department->department }} Version {{ $pivotappraisal->version }}
+                {{ $category->category }} Version {{ $pivotappraisal->version }}
               </h1>
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
