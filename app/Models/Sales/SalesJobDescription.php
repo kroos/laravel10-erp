@@ -26,10 +26,10 @@ class SalesJobDescription extends Model
 	/////////////////////////////////////////////////////////////////////////////////////////
 	// hasmany relationship
 
-	// public function hasmanysales(): HasMany
-	// {
-	// 	return $this->hasMany(\App\Models\Sales\Sales::class, 'deliveryby_id');
-	// }
+	public function hasmanyjobdescriptiongetitem(): HasMany
+	{
+		return $this->hasMany(\App\Models\Sales\SalesJobDescriptionGetItem::class, 'sales_job_description_id');
+	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
 	// db relation belongsToMany

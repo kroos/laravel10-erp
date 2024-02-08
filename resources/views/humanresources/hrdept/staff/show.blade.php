@@ -30,13 +30,23 @@ use \Carbon\Carbon;
 $annl = $staff->hasmanyleaveannual()?->where('year', now()->format('Y'))->first();
 $mcel = $staff->hasmanyleavemc()?->where('year', now()->format('Y'))->first();
 $matl = $staff->hasmanyleavematernity()?->where('year', now()->format('Y'))->first();
-$replt = $staff->hasmanyleavereplacement()?->selectRaw('SUM(leave_total) as total')->where(function(Builder $query){$query->whereDate('date_start', '>=', now()->startOfYear())->whereDate('date_end', '<=', now()->endOfYear());})->get();
-$replb = $staff->hasmanyleavereplacement()?->selectRaw('SUM(leave_balance) as total')->where(function(Builder $query){$query->whereDate('date_start', '>=', now()->startOfYear())->whereDate('date_end', '<=', now()->endOfYear());})->get();
+$replt = $staff->hasmanyleavereplacement()?->selectRaw('SUM(leave_total) as total')
+								->where(function(Builder $query){
+									$query->whereDate('date_start', '>=', now()->startOfYear())
+										->whereDate('date_end', '<=', now()->endOfYear());
+								})
+								->get();
+$replb = $staff->hasmanyleavereplacement()?->selectRaw('SUM(leave_balance) as total')
+								->where(function(Builder $query){
+									$query->whereDate('date_start', '>=', now()->startOfYear())
+										->whereDate('date_end', '<=', now()->endOfYear());
+								})
+								->get();
 $upal = $staff->hasmanyleave()?->selectRaw('SUM(period_day) as total')
 								->where(function(Builder $query){
 									$query->whereDate('date_time_start', '>=', now()->startOfYear())
 										->whereDate('date_time_end', '<=', now()->endOfYear());
-									})
+								})
 								->where(function(Builder $query) {
 									$query->whereIn('leave_status_id', [5,6])
 										->orWhereNull('leave_status_id');

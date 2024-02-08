@@ -86,7 +86,7 @@ $('#1_setting,#2_setting,#3_setting,#4_setting,#6_setting,#7_setting').change(fu
 		type: "PATCH",
 		data : {
 					id: $(this).data('id'),
-					active: $(this).prop('checked'),
+					value1: $(this).prop('checked'),
 					_token: '{!! csrf_token() !!}',
 				},
 		dataType: 'json',
@@ -107,9 +107,6 @@ $('#1_setting,#2_setting,#3_setting,#4_setting,#6_setting,#7_setting').change(fu
 });
 
 $('#5_setting').change(function() {
-	// console.log($(this).prop('checked'));
-	// console.log($(this).val());		// cant rely on value, always give value 1 even if its unchecked
-
 	var dat = $.ajax({
 		url: "{{ url('hrsetting') }}" + "/" + $(this).data('id'),
 		type: "PATCH",

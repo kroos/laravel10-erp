@@ -1808,7 +1808,8 @@ if (typeof jQuery === 'undefined') {
         // The CSS selector for indicating the element consists the field
         // By default, each field is placed inside the <div class="form-group"></div>
         // You should adjust this option if your form group consists of many fields which not all of them need to be validated
-        group: '.form-group , .form-check, .form-row, .form-inline, form-select',
+        // group: '.form-group , .form-check, .form-row, .form-inline, form-select',
+        group: '.form-group , .form-row, .form-inline',
 
         // Live validating option
         // Can be one of 3 values:

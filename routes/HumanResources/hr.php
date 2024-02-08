@@ -45,6 +45,7 @@ use App\Http\Controllers\HumanResources\HRDept\AppraisalFormController;
 use App\Http\Controllers\HumanResources\HRDept\OutstationDurationController;
 use App\Http\Controllers\HumanResources\HRDept\AppraisalFormMoreFunctionController;
 use App\Http\Controllers\HumanResources\HRDept\AppraisalApointController;
+use App\Http\Controllers\HumanResources\HRDept\AppraisalSettingController;
 
 
 
@@ -125,3 +126,6 @@ Route::get('/outstationduration', [OutstationDurationController::class, 'index']
 
 Route::get('/appraisalformpdf/print', [AppraisalFormMoreFunctionController::class, 'print'])->name('appraisalformpdf.print');
 Route::get('/appraisalformduplicate/store', [AppraisalFormMoreFunctionController::class, 'store'])->name('appraisalformduplicate.store');
+
+Route::get('/appraisalsetting/create', [AppraisalSettingController::class, 'create'])->name('appraisalsetting.create');
+Route::patch('/appraisalsetting/update/{appraisalsetting}', [AppraisalSettingController::class, 'update'])->name('appraisalsetting.update');
