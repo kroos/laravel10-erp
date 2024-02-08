@@ -20,7 +20,7 @@ use Illuminate\Support\Facades\DB;
 
 // load models
 use App\Models\Staff;
-use App\Models\JobBatch;
+use App\Models\HumanResources\HRAppraisalSetting;
 
 // load batch and queue
 use Illuminate\Bus\Batch;
@@ -79,40 +79,40 @@ class AppraisalExcelReportController extends Controller
 		// dd(Storage::exists('public/excel/export.csv'));
 		if (Storage::exists('public/excel/export.csv')) {
 			$header[0] = [
-							// '#',
-							'Emp. No',
-							'Staff Name',
-							'Location',
-							'Department',
-							// 'Age',
-							'Date Joined',
-							'Date Confirmed',
-							'Annual Leave Entitlement',
-							'Utilize Annual Leave',
-							'Balance Annual Leave',
-							'MC Entitlement',
-							'Utilize MC',
-							'Balance MC',
-							'Balance NRL',
-							'Utilize UPL',
-							'Utilize MC-UPL',
-							'Absent',
-							'Apparaisal Mark1',
-							'Apparaisal Mark2',
-							'Apparaisal Mark3',
-							'Apparaisal Mark4',
-							'Apparaisal Average Mark',
-							'Late Frequency (0.5m per time)',
-							'UPL Frequency (1day-5day=1m, 6day-10day=2m, >11day=3m)',
-							'MC Frequency (9day-10day=1m, 11day-14day=2m, >15=3m)',
-							'EL w/o Supporting Doc (0.5m per time)',
-							'Absent w/o Notice or didn\'t Refill Form (1m per day)',
-							'Absent As Reject By HR (1m per day)',
-							'Apply Leave 3 Days Not In Advance (0.5m per time)',
-							'UPL (Quarantine)',
-							'Verbal Warning (1m per time)',
-							'Warning Letter Frequency (3-5m per time)'
-						];
+				// '#',
+				'Emp. No',
+				'Staff Name',
+				'Location',
+				'Department',
+				// 'Age',
+				'Date Joined',
+				'Date Confirmed',
+				'Annual Leave Entitlement',
+				'Utilize Annual Leave',
+				'Balance Annual Leave',
+				'MC Entitlement',
+				'Utilize MC',
+				'Balance MC',
+				'Balance NRL',
+				'Utilize UPL',
+				'Utilize MC-UPL',
+				'Absent',
+				'Apparaisal Mark1',
+				'Apparaisal Mark2',
+				'Apparaisal Mark3',
+				'Apparaisal Mark4',
+				'Apparaisal Average Mark',
+				'Late Frequency ('.HRAppraisalSetting::find(1)->value1.'m per time)',
+				'UPL Frequency (1day-5day='.HRAppraisalSetting::find(2)->value1.'m, 6day-10day='.HRAppraisalSetting::find(2)->value2.'m, >11day='.HRAppraisalSetting::find(2)->value3.'m)',
+				'MC Frequency (9day-10day='.HRAppraisalSetting::find(3)->value1.'m, 11day-14day='.HRAppraisalSetting::find(3)->value2.'m, >15='.HRAppraisalSetting::find(3)->value3.'m)',
+				'EL w/o Supporting Doc ('.HRAppraisalSetting::find(4)->value1.'m per time)',
+				'Absent w/o Notice or didn\'t Refill Form ('.HRAppraisalSetting::find(5)->value1.'m per day)',
+				'Absent As Reject By HR ('.HRAppraisalSetting::find(6)->value1.'m per day)',
+				'Apply Leave 3 Days Not In Advance ('.HRAppraisalSetting::find(7)->value1.'m per time)',
+				'UPL (Quarantine)',
+				'Verbal Warning ('.HRAppraisalSetting::find(8)->value1.'m per time)',
+				'Warning Letter Frequency ('.HRAppraisalSetting::find(9)->value1.'m per time)'
+			];
 
 			// (A) READ EXISTING CSV FILE INTO ARRAY
 			$csv = fopen(storage_path('app/public/excel/export.csv'), 'r');

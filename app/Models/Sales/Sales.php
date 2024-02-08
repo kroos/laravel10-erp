@@ -14,7 +14,7 @@ use App\Models\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 // use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-// use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Sales extends Model
 {
@@ -41,7 +41,7 @@ class Sales extends Model
 	// db relation belongsToMany
 	public function belongstomanydelivery(): BelongsToMany
 	{
-		return $this->belongsToMany(\App\Models\Sales\SalesDeliveryType::class, 'pivot_sales_sales_delivery', 'sales_id', 'sales_delivery_id')->withTimestamps();
+		return $this->belongsToMany(\App\Models\Sales\OptSalesDeliveryType::class, 'pivot_sales_sales_delivery', 'sales_id', 'sales_delivery_id')->withTimestamps();
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -53,12 +53,17 @@ class Sales extends Model
 
 	public function belongstoordertype(): BelongsTo
 	{
-		return $this->hasMany(\App\Models\Sales\SalesType::class, 'sales_type_id');
+		return $this->belongsTo(\App\Models\Sales\SalesType::class, 'sales_type_id');
 	}
 
 	public function belongstocustomer(): BelongsTo
 	{
-		return $this->hasMany(\App\Models\Customer::class, 'customer_id');
+		return $this->belongsTo(\App\Models\Customer::class, 'customer_id');
+	}
+
+	public function belongstosalesby(): BelongsTo
+	{
+		return $this->belongsTo(\App\Models\Sales\OptSalesBy::class, 'sales_by_id');
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////

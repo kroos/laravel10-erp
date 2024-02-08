@@ -126,6 +126,8 @@
 			<li><a class="dropdown-item btn btn-sm btn-outline-secondary" href="{{ route('appraisalform.index') }}"><i class="fa-solid fa-user-xmark"></i> Appraisal Form</a></li>
 			<li><hr class="dropdown-divider"></li>
 			<li><a class="dropdown-item btn btn-sm btn-outline-secondary" href="{{ route('appraisalexcelreport.create') }}"><i class="fa-solid fa-award"></i> Appraisal Point</a></li>
+			<li><hr class="dropdown-divider"></li>
+			<li><a class="dropdown-item btn btn-sm btn-outline-secondary" href="{{ route('appraisalsetting.create') }}"><i class="fa-solid fa-wrench fa-beat"></i> Appraisal Point Settings</a></li>
 		</ul>
 	</li>
 	<li class="nav-item dropdown">
