@@ -586,7 +586,10 @@ class AjaxDBController extends Controller
 	public function customer(Request $request): JsonResponse
 	{
 		// https://select2.org/data-sources/formats
-		$au = Customer::orderBy('customer')->where('customer','LIKE','%'.$request->search.'%')->get();
+		$au = Customer::orderBy('customer')
+						->where('customer','LIKE','%'.$request->search.'%')
+						->orWhere('id', $request->id)
+						->get();
 		foreach ($au as $key) {
 			$cuti['results'][] = [
 									'id' => $key->id,
