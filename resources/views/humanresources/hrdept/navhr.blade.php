@@ -17,7 +17,8 @@
 			<li><a class="dropdown-item btn btn-sm btn-outline-secondary" href="{{ route('attendanceupload.create') }}"><i class="fa-regular fa-calendar fa-beat"></i> Attendance Upload</a></li>
 			<li><a class="dropdown-item btn btn-sm btn-outline-secondary" href="{{ route('attendanceremark.index') }}"><i class="fa-regular fa-calendar fa-beat"></i> Attendance Remarks</a></li>
 			<li><hr class="dropdown-divider"></li>
-			<li><a class="dropdown-item btn btn-sm btn-outline-secondary" href="{{ route('excelreport.create') }}"><i class="fa-regular fa-file-excel fa-beat"></i> Excel Report</a></li>
+			<li><a class="dropdown-item btn btn-sm btn-outline-secondary" href="{{ route('excelreport.create') }}"><i class="fa-regular fa-file-excel fa-beat"></i> Generate Payslip Excel Report</a></li>
+			<li><a class="dropdown-item btn btn-sm btn-outline-secondary" href="{{ route('attendancepayslipexcelsetting.create') }}"><i class="fa-regular fa-file-excel fa-beat"></i> Generate Payslip Excel Setting Report</a></li>
 
 		</ul>
 	</li>
