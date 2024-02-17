@@ -9,7 +9,7 @@
 			<thead>
 				<tr>
 					<th>Description</th>
-					<th>Value 1</th>
+					<th>Value</th>
 				</tr>
 			</thead>
 			<tbody>

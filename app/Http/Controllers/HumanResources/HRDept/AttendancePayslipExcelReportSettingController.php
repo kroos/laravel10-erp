@@ -112,7 +112,7 @@ class AttendancePayslipExcelReportSettingController extends Controller
 	 */
 	public function update(Request $request, HRAttendancePayslipSetting $attendancepayslipexcelsetting): JsonResponse
 	{
-		$attendancepayslipexcelsetting->update();
+		$attendancepayslipexcelsetting->update($request->only('value'));
 		return response()->json(['message' => 'Success', 'status' => 'success']);
 	}
 

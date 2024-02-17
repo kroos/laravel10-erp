@@ -916,6 +916,7 @@ class AjaxController extends Controller
 	public function staffactivate(Request $request, Staff $staff): RedirectResponse
 	{
 		$staff->update(['active' => 1]);
+		$staff->hasmanylogin()->update(['active' => 0]);
 		$staff->hasmanylogin()->create([
 											'username' => $request->username,
 											'password' => $request->password,
