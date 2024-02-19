@@ -41,7 +41,6 @@ use Log;
 
 class SalesController extends Controller
 {
-
 	function __construct()
 	{
 		$this->middleware('auth');
@@ -171,19 +170,20 @@ class SalesController extends Controller
 		return redirect()->route('sales.index')->with('flash_message', 'Successfully Add New Customer Order');
 	}
 
-	public function show(Request $request, Staff $profile): View
+	public function show(Sales $sale): View
 	{
 	}
 
-	public function edit(Staff $profile): View
+	public function edit(Sales $sale): View
+	{
+		return view('sales.sales.edit', ['sale' => $sale]);
+	}
+
+	public function update(Request $request, Sales $sale): RedirectResponse
 	{
 	}
 
-	public function update(ProfileRequestUpdate $request, Staff $profile): RedirectResponse
-	{
-	}
-
-	public function destroy(): JsonResponse
+	public function destroy(Sales $sale): JsonResponse
 	{
 	}
 }

@@ -5,7 +5,8 @@
 @include('sales.salesdept.navhr')
 	<div class="row justify-content-center">
 		<h2>Add Customer Order</h2>
-		{{ Form::open(['route' => ['sale.store'], 'id' => 'form', 'class' => 'form-horizontal', 'autocomplete' => 'off', 'files' => true]) }}
+
+		{{ Form::model($sale, ['route' => ['sale.update', $sale->id], 'id' => 'form', 'class' => 'form-horizontal', 'autocomplete' => 'off', 'files' => true]) }}
 		<div class="col-sm-12 row">
 			<div class="col-sm-6">
 
@@ -18,7 +19,7 @@
 				<div class="form-group row m-2 {{ $errors->has('customer_id') ? 'has-error' : '' }}">
 					{{ Form::label( 'cust', 'Customer : ', ['class' => 'col-sm-4 col-form-label'] ) }}
 					<div class="col-sm-8">
-						<select name="customer_id" id="cust" class="form-select form-select-sm" placeholder="Please choose"></select>
+						{{ Form::select('customer_id', [], @$value, ['id' => 'cust', 'class' => 'form-select form-select-sm', 'placeholder' => 'Please choose']) }}
 					</div>
 				</div>
 				<div class="form-group row m-2 {{ $errors->has('deliveryby_id') ? 'has-error' : '' }}">
@@ -185,12 +186,11 @@ $('#sales').DataTable({
 /////////////////////////////////////////////////////////////////////////////////////////
 // date
 $('#nam, #delivery').datetimepicker({
-
 	format:'YYYY-MM-DD',
 	// useCurrent: false,
 }).on('dp.change', function(e){
-	$('#form').bootstrapValidator('revalidateField', $('[name="date_order"]'));
-	$('#form').bootstrapValidator('revalidateField', $('[name="delivery_at"]'));
+	$('#form').bootstrapValidator('revalidateField', 'date_order');
+	$('#form').bootstrapValidator('revalidateField', 'delivery_at');
 });
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -208,10 +208,35 @@ $('#cust').select2({
 			var query = {
 				_token: '{!! csrf_token() !!}',
 				search: params.term,
+				id: {{ $sale->customer_id }}
 			}
 			return query;
 		}
 	},
+});
+
+// Fetch the preselected item, and add to the control
+var studentSelect = $('#cust');
+$.ajax({
+	type: 'POST',
+	url: '{{ route('customer.customer') }}',
+	data: {
+			_token: '{!! csrf_token() !!}',
+			id: {{ $sale->customer_id }}
+	},
+}).then(function (data) {
+	console.log(data.results[0].id, data.results.text);
+	// create the option and append to Select2
+	var option = new Option(data.text, data.id, true, true);
+	studentSelect.append(option).trigger('change');
+
+	// manually trigger the `select2:select` event
+	studentSelect.trigger({
+		type: 'select2:select',
+		params: {
+			data: data
+		}
+	});
 });
 
 /////////////////////////////////////////////////////////////////////////////////////////

@@ -3,7 +3,7 @@
 @section('content')
 <div class="container justify-content-center align-items-start">
 @include('humanresources.hrdept.navhr')
-	<h4 class="align-items-start">Generate Excel Report</h4>
+	<h4 class="align-items-start">Generate Payslip Excel Report</h4>
 	<div class="row justify-content-center">
 		<div class="col-sm-6">
 			{{ Form::open(['route' => ['excelreport.store'], 'id' => 'form', 'class' => 'form-horizontal', 'autocomplete' => 'off', 'files' => true]) }}

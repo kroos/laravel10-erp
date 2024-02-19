@@ -12,12 +12,14 @@
 		<a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Attendance</a>
 		<ul class="dropdown-menu">
 			<li><a class="dropdown-item btn btn-sm btn-outline-secondary" href="{{ route('attendance.index') }}"><i class="fa-regular fa-calendar fa-beat"></i> Attendance List</a></li>
+			<li><a class="dropdown-item btn btn-sm btn-outline-secondary" href="{{ route('attendanceabsentindicator.index') }}"><i class="fa-regular fa-calendar-xmark fa-beat" style="color: #ff0000;"></i> Absent Attendance Indicator</a></li>
 			<li><a class="dropdown-item btn btn-sm btn-outline-secondary" href="{{ route('attendancedailyreport.index') }}"><i class="bi bi-calendar-x"></i> Attendance Daily Report</a></li>
 			<li><a class="dropdown-item btn btn-sm btn-outline-secondary" href="{{ route('attendancereport.create') }}"><i class="fa-regular fa-calendar fa-beat"></i> Attendance Report</a></li>
 			<li><a class="dropdown-item btn btn-sm btn-outline-secondary" href="{{ route('attendanceupload.create') }}"><i class="fa-regular fa-calendar fa-beat"></i> Attendance Upload</a></li>
 			<li><a class="dropdown-item btn btn-sm btn-outline-secondary" href="{{ route('attendanceremark.index') }}"><i class="fa-regular fa-calendar fa-beat"></i> Attendance Remarks</a></li>
 			<li><hr class="dropdown-divider"></li>
-			<li><a class="dropdown-item btn btn-sm btn-outline-secondary" href="{{ route('excelreport.create') }}"><i class="fa-regular fa-file-excel fa-beat"></i> Excel Report</a></li>
+			<li><a class="dropdown-item btn btn-sm btn-outline-secondary" href="{{ route('excelreport.create') }}"><i class="fa-regular fa-file-excel fa-beat"></i> Generate Payslip Excel Report</a></li>
+			<li><a class="dropdown-item btn btn-sm btn-outline-secondary" href="{{ route('attendancepayslipexcelsetting.create') }}"><i class="fa-regular fa-file-excel fa-beat"></i> Generate Payslip Excel Setting Report</a></li>
 
 		</ul>
 	</li>

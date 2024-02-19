@@ -1,14 +1,17 @@
 @extends('layouts.app')
+
 @section('content')
 <div class="container row align-items-start justify-content-center">
 	@include('humanresources.hrdept.navhr')
-	<h4>Staff Outstation Duration</h4>
-	<div id="calendar" class="col-sm-12 m-3"></div>
+	<h4>Attendance Absent Indicator</h4>
+	<div class="col-sm-12 row">
+		<div id="calendar" class="col-sm-12 m-1"></div>
+	</div>
 </div>
 @endsection
 
 @section('js')
-/////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////
 // fullcalendar
 var calendarEl = document.getElementById('calendar');
 var calendar = new FullCalendar.Calendar(calendarEl, {
@@ -25,11 +28,11 @@ var calendar = new FullCalendar.Calendar(calendarEl, {
 	weekNumbers: true,
 	themeSystem: 'bootstrap',
 	events: {
-		url: '{{ route('staffoutstationduration') }}',
+		url: '{{ route('attendanceabsentindicator') }}',
 		method: 'POST',
 		extraParams: {
 			_token: '{!! csrf_token() !!}',
-			staff_id: '117',
+			// staff_id: '117',
 		},
 	},
 	// failure: function() {
@@ -46,7 +49,7 @@ var calendar = new FullCalendar.Calendar(calendarEl, {
 	eventTimeFormat: { // like '14:30:00'
 		hour: '2-digit',
 		minute: '2-digit',
-		second: '2-digit',
+		// second: '2-digit',
 		hour12: true
 	}
 });

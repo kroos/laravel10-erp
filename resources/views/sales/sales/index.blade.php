@@ -8,7 +8,7 @@ use \Carbon\Carbon;
 @include('sales.salesdept.navhr')
 	<div class="row justify-content-center">
 		<div class="table-responsive">
-			<h2>Customer Order &nbsp; <a href="{{ route('sales.create') }}" class="btn btn-sm btn-outline-secondary" > <span class="mdi mdi-point-of-sale"></span>Add Order </a></h2>
+			<h2>Customer Order &nbsp; <a href="{{ route('sale.create') }}" class="btn btn-sm btn-outline-secondary" > <span class="mdi mdi-point-of-sale"></span>Add Order </a></h2>
 			<table class="table table-sm table-hover m-3" id="sales" style="font: 12px sans-serif;">
 				<thead>
 					<tr>
@@ -19,7 +19,8 @@ use \Carbon\Carbon;
 						<th>Special Request</th>
 						<th>Urgency</th>
 						<th>Send Status</th>
-						<th>Approval</th>
+						<th>Approval By</th>
+						<th>#</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -34,9 +35,25 @@ use \Carbon\Carbon;
 							<td {!! ($sale->special_request)?'data-bs-toggle="tooltip" data-bs-custom-class="custom-tooltip" data-bs-html="true" data-bs-title="'.nl2br($sale->special_request).'"':NULL !!}>
 								{!! Str::limit(nl2br($sale->special_request), 10, ' >') !!}
 							</td>
-							<td>{!! ($sale->urgency==1)?'<i class="fa-regular fa-circle-check fa-beat"></i>':'<i class="fa-regular fa-circle-xmark fa-beat"></i>' !!}</td>
-							<td>{!! ($sale->confirm==1)?'<i class="fa-regular fa-share-from-square fa-beat fa-stack-1x"></i>':'<span class="fa-stack" style="vertical-align: top;"><i class="fa-solid fa-ban fa-stack-2x" style="color:Tomato"></i><i class="fa-regular fa-share-from-square fa-beat fa-stack-1x"></i></span>' !!}</td>
-							<td>Approval</td>
+							<td>{!! ($sale->urgency==1)?'<i class="fa-regular fa-circle-check fa-beat fa-1x"></i>':'<i class="fa-regular fa-circle-xmark fa-beat fa-1x"></i>' !!}</td>
+							<td>
+								{!! ($sale->confirm==1)?'Send':Null !!}
+							</td>
+							<td {!! !is_null($sale->approved_by)?'data-bs-toggle="tooltip" data-bs-custom-class="custom-tooltip" data-bs-html="true" data-bs-title="'.$sale->belongstostaff?->name.'"':NULL !!}>
+								{{ Str::words(!is_null($sale->approved_by)?$sale->belongstostaff?->name:NULL, 2, ' >') }}
+							</td>
+							<td>
+								{!!
+									!is_null($sale->approved_by)?
+									NULL:
+									'<a href="'.route('sale.edit', $sale->id).'" class="btn btn-sm btn-outline-secondary">
+										<i class="fa-regular fa-pen-to-square fa-beat"></i>
+									</a>
+									<button class="btn btn-sm btn-outline-secondary" data-id="'.$sale->id.'">
+										<i class="fa-solid fa-trash-can fa-beat" style="color: red;"></i>
+									</button>'
+								!!}
+							</td>
 						</tr>
 					@endforeach
 				</tbody>
