@@ -1,5 +1,6 @@
 @extends('layouts.app')
 
+
 @section('content')
 <style>
   .img1 {

@@ -1,5 +1,6 @@
 @extends('layouts.app')
 
+
 @section('content')
 <?php
 $user = \Auth::user()->belongstostaff->id;
