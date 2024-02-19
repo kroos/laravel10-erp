@@ -211,7 +211,7 @@ $evaluatees = Staff::join('logins', 'staffs.id', '=', 'logins.staff_id')
 @section('js')
 ////////////////////////////////////////////////////////////////////////////////////
 $('.form-select').select2({
-  placeholder: '',
+  placeholder: 'Please Select',
   width: '100%',
   allowClear: true,
   closeOnSelect: true,
@@ -221,7 +221,7 @@ $(document).on('click', '.form-button', function(e){
   var formid = $(this).data('id');
 
   $('#appraisal_category_id' + formid).select2({
-    placeholder: '',
+    placeholder: 'Please Select',
     width: '100%',
     allowClear: true,
     closeOnSelect: true,

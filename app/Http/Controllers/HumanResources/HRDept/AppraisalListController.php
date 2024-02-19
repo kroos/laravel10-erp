@@ -11,9 +11,6 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
 
-// load validation
-// use App\Http\Requests\HumanResources\Attendance\AttendanceRequestUpdate;
-
 // load facade
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
@@ -64,8 +61,7 @@ class AppraisalListController extends Controller
    */
   public function create(): View
   {
-    // $department = DepartmentPivot::where('id', $id)->first();
-    // return view('humanresources.hrdept.appraisal.form.create', ['department' => $department]);
+    //
   }
 
   /**
@@ -73,14 +69,7 @@ class AppraisalListController extends Controller
    */
   public function store(Request $request): RedirectResponse
   {
-
-    foreach ($request->evaluetee_id as $evaluateeid) {
-      $evaluateeid = Staff::find($evaluateeid);
-      $evaluateeid->belongstomanyevaluator()->attach($request->evaluator_id);
-    }
-
-    Session::flash('flash_message', 'Successfully Submit Appraisal Form.');
-    return redirect()->route('appraisalapoint.index');
+    //  
   }
 
   /**
@@ -88,7 +77,7 @@ class AppraisalListController extends Controller
    */
   public function show(): View
   {
-    // return view('humanresources.hrdept.appraisal.form.show', ['id' => $appraisalform]);
+    //
   }
 
   /**
@@ -96,7 +85,7 @@ class AppraisalListController extends Controller
    */
   public function edit(): View
   {
-    // return view('humanresources.hrdept.appraisal.form.edit', ['id' => $appraisalform]);
+    //
   }
 
   /**
@@ -105,11 +94,10 @@ class AppraisalListController extends Controller
   public function update(Request $request): JsonResponse
   {
     $currentDate = Carbon::now();
-    $date = $currentDate->format('Y-m-d');
 
     DB::table('pivot_apoint_appraisals')
       ->whereNull('deleted_at')
-      ->update(['distribute_date' => $date, 'updated_at' => $currentDate]);
+      ->update(['active' => '1', 'updated_at' => $currentDate]);
 
     return response()->json([
       'message' => 'Successful Distributed',
@@ -122,15 +110,6 @@ class AppraisalListController extends Controller
    */
   public function destroy(Request $request): JsonResponse
   {
-    // $datetime = Carbon::now();
-
-    // DB::table('pivot_apoint_appraisals')
-    //   ->where('id', $request->id)
-    //   ->update(['deleted_at' => $datetime]);
-
-    // return response()->json([
-    //   'message' => 'Successful Deleted',
-    //   'status' => 'success'
-    // ]);
+    //
   }
 }

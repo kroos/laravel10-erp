@@ -3,12 +3,12 @@
 @section('content')
 
 <style>
-  table,
+  /* table,
   tr,
   td,
   div {
     border: 1px solid black;
-  }
+  } */
 
 </style>
 
@@ -23,13 +23,10 @@ $staffs = Staff::join('logins', 'staffs.id', '=', 'logins.staff_id')
   ->where('logins.active', 1)
   ->orderBy('logins.username', 'ASC')
   ->get();
-
-
 ?>
 
 <div class="container">
   @include('humanresources.hrdept.navhr')
-
 
   <div class="row mt-3">
     <div class="col-md-2">
@@ -43,10 +40,6 @@ $staffs = Staff::join('logins', 'staffs.id', '=', 'logins.staff_id')
   </div>
 
   <div class="row">&nbsp;</div>
-
-
-
-
 
   <div>
     <table id="staff" class="table table-hover table-sm align-middle" style="font-size:12px">
@@ -107,37 +100,6 @@ $staffs = Staff::join('logins', 'staffs.id', '=', 'logins.staff_id')
     </table>
   </div>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 </div>
 @endsection
 
@@ -147,13 +109,13 @@ $staffs = Staff::join('logins', 'staffs.id', '=', 'logins.staff_id')
 $.fn.dataTable.moment( 'D MMM YYYY' );
 $.fn.dataTable.moment( 'h:mm a' );
 $('#staff').DataTable({
-"paging": false,
-"order": [ 0, 'asc' ],
-responsive: true
+  "paging": false,
+  "order": [ 0, 'asc' ],
+  responsive: true
 });
 
 $(function () {
-$('[data-toggle="tooltip"]').tooltip()
+  $('[data-toggle="tooltip"]').tooltip()
 });
 
 

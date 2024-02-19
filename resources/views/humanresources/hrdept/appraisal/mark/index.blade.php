@@ -9,7 +9,9 @@ $appraisals = DB::table('pivot_apoint_appraisals')
   ->join('staffs', 'staffs.id', '=', 'pivot_apoint_appraisals.evaluatee_id')
   ->where('pivot_apoint_appraisals.evaluator_id', $user)
   ->where('logins.active', 1)
+  ->where('pivot_apoint_appraisals.active', 1)
   ->whereNull('pivot_apoint_appraisals.deleted_at')
+  ->select('pivot_apoint_appraisals.id as apointid', 'staffs.name', 'logins.username', 'staffs.appraisal_category_id')
   ->orderBy('logins.username', 'ASC')
   ->get();
 ?>
@@ -44,8 +46,9 @@ $appraisals = DB::table('pivot_apoint_appraisals')
           <td data-toggle="tooltip" title="{{ $appraisal->name }}">
             <input type="text" readonly value="{{ $appraisal->name }}" style="border-style:none; outline:none; background-color:transparent; width:95%; height:100%;" />
           </td>
+          <!-- IF ERROR : Please Apoint A Form To Every Evaluatees -->
           <td class="text-center">
-            <a href="{{ route('appraisalmark.create', ['id' => $appraisal->appraisal_category_id]) }}" class="btn btn-sm btn-outline-secondary">
+            <a href="{{ route('appraisalmark.create', ['id' => $appraisal->apointid]) }}" class="btn btn-sm btn-outline-secondary">
               <i class="bi bi-pencil-square" style="font-size: 15px;"> PENDING</i>
             </a>
           </td>
@@ -68,13 +71,13 @@ $('#staff').DataTable({
 "paging": false,
 "order": [ 0, 'asc' ],
 "columnDefs": [
-					{ type: 'string', 'targets': [0] },
-					{ type: 'string', 'targets': [1] },
-				],
+                { type: 'string', 'targets': [0] },
+                { type: 'string', 'targets': [1] },
+              ],
 responsive: true
 });
 
 $(function () {
-$('[data-toggle="tooltip"]').tooltip()
+  $('[data-toggle="tooltip"]').tooltip()
 });
 @endsection
