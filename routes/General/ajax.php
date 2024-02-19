@@ -52,7 +52,8 @@ Route::post('/overtimerange', [AjaxDBController::class, 'overtimerange'])->name(
 Route::post('/branchattendancelist', [AjaxDBController::class, 'branchattendancelist'])->name('branchattendancelist');
 Route::post('/outstationattendancestaff', [AjaxDBController::class, 'outstationattendancestaff'])->name('outstationattendancestaff');
 Route::post('/outstationattendancelocation', [AjaxDBController::class, 'outstationattendancelocation'])->name('outstationattendancelocation');
-Route::get('/staffoutstationduration', [AjaxDBController::class, 'staffoutstationduration'])->name('staffoutstationduration');
+Route::post('/staffoutstationduration', [AjaxDBController::class, 'staffoutstationduration'])->name('staffoutstationduration');
+Route::post('/attendanceabsentindicator', [AjaxDBController::class, 'attendanceabsentindicator'])->name('attendanceabsentindicator');
 
 
 

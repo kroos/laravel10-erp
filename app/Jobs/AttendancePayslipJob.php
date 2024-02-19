@@ -22,6 +22,8 @@ use App\Models\HumanResources\HRAttendance;
 use App\Models\HumanResources\HRLeave;
 use App\Models\HumanResources\HROvertime;
 use App\Models\HumanResources\HROvertimeRange;
+use App\Models\HumanResources\OptCategory;
+use App\Models\HumanResources\HRAttendancePayslipSetting;
 
 // load helper
 use App\Helpers\TimeCalculator;
@@ -72,6 +74,9 @@ class AttendancePayslipJob implements ShouldQueue
 			// dd($v1);
 			$login = Login::where([['staff_id', $v1['staff_id']], ['active', 1]])->first()?->username;
 			$name = Staff::find($v1['staff_id'])->name;
+			// $category = Staff::find($v1['staff_id'])->belongstomanydepartment->belongstocategory->category;
+			$cate = Staff::find($v1['staff_id'])->belongstomanydepartment()->wherePivot('main', 1)->first()->category_id;
+			$category = OptCategory::find($cate)->category;
 
 			// find leave in attendance
 			$sattendances = HRAttendance::where(function (Builder $query) use ($request) {
@@ -189,7 +194,6 @@ class AttendancePayslipJob implements ShouldQueue
 				// loop of each staff with attendance to find overtime
 				if (!is_null($sattendance->overtime_id)) {
 					$otot = HROvertime::find($sattendance->overtime_id);
-					// dd($ot1);
 					$ot[$k1][$i] = $otot->belongstoovertimerange->total_time;
 				}
 
@@ -242,17 +246,125 @@ class AttendancePayslipJob implements ShouldQueue
 			// dump($ot[$k1], ' staff_id '.$sattendance->staff_id);
 
 			if (!empty($tf[$k1])) {
-				$tf1 = TimeCalculator::total_time($tf[$k1]);
+				$tf1a = TimeCalculator::total_time($tf[$k1]);
+				$tfa = explode(':', $tf1a);
+				$nft = number_format(($tfa[1] / 60), 2);
+				$tf1 = ($tfa[0] + $nft).' hours - '.$tf1a;
 			} else {
 				$tf1 = null;
 			}
 
 			if (!empty($ot[$k1])) {
-				$ot2 = TimeCalculator::total_time($ot[$k1]);
+				$ot2a = TimeCalculator::total_time($ot[$k1]);
+				$ota = explode(':', $ot2a);
+				$nfo = number_format(($ota[1] / 60), 2);
+				$ot2 = ($ota[0] + $nfo).' hours - '.$ot2a;
 			} else {
 				$ot2 = null;
 			}
-			$records[$k1] = [$login, $name, $al, $nrl, $mc, $upl, $absent, $mcupl, $lateness, $earlyout, $nopayhour, $ml, $hosp, $supl, $compasleave, $marriageLeave, $daywork, $ot1, $ot05, $ot2, $tf1];
+
+
+			// nullified if zero
+			if ($al < 0.5) {
+				$al = null;
+			}
+
+			if ($mc < 0.5) {
+				$mc = null;
+			}
+
+			if ($ml < 0.5) {
+				$ml = null;
+			}
+
+			if ($nrl < 0.5) {
+				$nrl = null;
+			}
+
+			if ($upl < 0.5) {
+				$upl = null;
+			}
+
+			if ($mcupl < 0.5) {
+				$mcupl = null;
+			}
+
+			if ($supl < 0.5) {
+				$supl = null;
+			}
+
+			if ($absent < 0.5) {
+				$absent = null;
+			}
+
+			if ($lateness < 1) {
+				$laten = null;
+			} elseif ($lateness > 0 && $lateness <= 15) {
+				$latemerit = HRAttendancePayslipSetting::find(1)->value;
+				$laten = $latemerit.' ('.$lateness.' minutes)';
+			} elseif ($lateness > 15 && $lateness <= 30) {
+				$latemerit = HRAttendancePayslipSetting::find(2)->value;
+				$laten = $latemerit.' ('.$lateness.' minutes)';
+			} elseif ($lateness > 30 && $lateness <= 45) {
+				$latemerit = HRAttendancePayslipSetting::find(3)->value;
+				$laten = $latemerit.' ('.$lateness.' minutes)';
+			} elseif ($lateness > 45 && $lateness <= 60) {
+				$latemerit = HRAttendancePayslipSetting::find(4)->value;
+				$laten = $latemerit.' ('.$lateness.' minutes)';
+			} elseif ($lateness > 60) {
+				$latemerit = (HRAttendancePayslipSetting::find(4)->value) + (($lateness - 61) * HRAttendancePayslipSetting::find(5)->value);
+				$laten = $latemerit.' ('.$lateness.' minutes)';
+			}
+
+
+			if ($earlyout < 1) {
+				$earl = null;
+			} elseif ($earlyout > 0 && $earlyout <= 15) {
+				$latemerit = HRAttendancePayslipSetting::find(1)->value;
+				$earl = $latemerit.' ('.$earlyout.' minutes)';
+			} elseif ($earlyout > 15 && $earlyout <= 30) {
+				$latemerit = HRAttendancePayslipSetting::find(2)->value;
+				$earl = $latemerit.' ('.$earlyout.' minutes)';
+			} elseif ($earlyout > 30 && $earlyout <= 45) {
+				$latemerit = HRAttendancePayslipSetting::find(3)->value;
+				$earl = $latemerit.' ('.$earlyout.' minutes)';
+			} elseif ($earlyout > 45 && $earlyout <= 60) {
+				$latemerit = HRAttendancePayslipSetting::find(4)->value;
+				$earl = $latemerit.' ('.$earlyout.' minutes)';
+			} elseif ($earlyout > 60) {
+				$latemerit = (HRAttendancePayslipSetting::find(4)->value) + (($earlyout - 61) * HRAttendancePayslipSetting::find(5)->value);
+				$earl = $latemerit.' ('.$earlyout.' minutes)';
+			}
+
+			if ($nopayhour < 0.5) {
+				$nopayhour = null;
+			}
+
+			if ($hosp < 0.5) {
+				$hosp = null;
+			}
+
+			if ($compasleave < 0.5) {
+				$compasleave = null;
+			}
+
+			if ($marriageLeave < 0.5) {
+				$marriageLeave = null;
+			}
+
+			if ($daywork < 0.5) {
+				$daywork = null;
+			}
+
+			if ($ot1 < 0.5) {
+				$ot1 = null;
+			}
+
+			if ($ot05 < 0.5) {
+				$ot05 = null;
+			}
+
+			$records[$k1] = [$login, $name, $category, $al, $nrl, $mc, $upl, $absent, $mcupl, $laten, $earl, $nopayhour, $ml, $hosp, $supl, $compasleave, $marriageLeave, $daywork, $ot1, $ot05, $ot2, $tf1];
 		}
 		// dd($records);
 

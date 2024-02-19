@@ -54,7 +54,12 @@ $i = 1;
 	</div>
 
 	<div class="col-sm-12 table-responsive">
-		<table id="attendance" class="table table-hover table-sm align-middle" style="font-size:12px">
+		<table id="attendance" class="table table-hover table-sm align-middle caption-top" style="font-size:12px">
+			<caption>
+				Legend:
+				<span class="p-1 m-1 fw-bold" style="background-color: #d5f5e3;">Approve Leave</span>
+				<span class="p-1 m-1 fw-bold" style="background-color: #fadbd8;">Pending Leave</span>
+			</caption>
 			<thead>
 				<tr>
 					<th>ID</th>
@@ -3980,6 +3985,59 @@ $i = 1;
 					]);
 				}
 			}
+
+			// checking for aprroved, pending or reject leaves
+			if ($l) {
+				// $leaveApproval = Staff::find($l->staff_id)->belongstoleaveapprovalflow
+				$backup = $l->hasmanyleaveapprovalbackup()?->get();
+				$supervisor = $l->hasmanyleaveapprovalsupervisor()?->get();
+				$hod = $l->hasmanyleaveapprovalhod()?->get();
+				$director = $l->hasmanyleaveapprovaldir()?->get();
+				$hr = $l->hasmanyleaveapprovalhr()?->get();
+				// if ($backup) {
+				// 	if ($backup->first()?->leave_status_id == 5) {
+				// 		$back = true;
+				// 	} else {
+				// 		$back = false;
+				// 	}
+				// }
+				// if ($supervisor) {
+				// 	if ($supervisor->first()?->leave_status_id == 5) {
+				// 		$superv = true;
+				// 	} else {
+				// 		$superv = false;
+				// 	}
+				// }
+				// if ($hod) {
+				// 	if ($hod->first()?->leave_status_id == 5) {
+				// 		$hodi = true;
+				// 	} else {
+				// 		$hodi = false;
+				// 	}
+				// }
+				// if ($director) {
+				// 	if ($director->first()?->leave_status_id == 5) {
+				// 		$direct = true;
+				// 	} else {
+				// 		$direct = false;
+				// 	}
+				// }
+				if ($hr) {
+					if ($hr->first()?->leave_status_id == 5) {
+						$hri = true;
+					} else {
+						$hri = false;
+					}
+				}
+				// if ($back && $superv && $hodi && $direct && $hri) {
+				if ($hri) {
+					$leaveIndicator = 'style="background-color: #d5f5e3;"';
+				} else {
+					$leaveIndicator = 'style="background-color: #fadbd8;"';
+				}
+			}
+
+
 			?>
 
 				<tr>
@@ -3991,7 +4049,7 @@ $i = 1;
 					</td>
 					<td>{{ $dayt }}</td>
 					<td>{!! $ll !!}</td>
-					<td>{!! $lea !!}</td>
+					<td {!! ($l)?$leaveIndicator:null !!}>{!! $lea !!}</td>
 					<td>{{ Carbon::parse($s->attend_date)->format('j M Y') }}</td>
 					<td>
 						<span class="{{ ($in)?'text-info':((Carbon::parse($s->in)->gt($wh->time_start_am))?'text-danger':'') }}">{{ ($in)?'':Carbon::parse($s->in)->format('g:i a') }}</span>
@@ -4071,6 +4129,7 @@ $i = 1;
 			@endforeach
 			</tbody>
 		</table>
+
 	</div>
 </div>
 @endsection

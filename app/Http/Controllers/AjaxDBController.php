@@ -586,7 +586,10 @@ class AjaxDBController extends Controller
 	public function customer(Request $request): JsonResponse
 	{
 		// https://select2.org/data-sources/formats
-		$au = Customer::orderBy('customer')->where('customer','LIKE','%'.$request->search.'%')->get();
+		$au = Customer::orderBy('customer')
+						->where('customer','LIKE','%'.$request->search.'%')
+						->orWhere('id', $request->id)
+						->get();
 		foreach ($au as $key) {
 			$cuti['results'][] = [
 									'id' => $key->id,
@@ -1512,6 +1515,75 @@ class AjaxDBController extends Controller
 			$out[] = [];
 		}
 		return response()->json( $out );
+	}
+
+	public function attendanceabsentindicator(Request $request)
+	{
+		// dd($request->all());
+
+
+		$attendance = HRAttendance::groupBy('attend_date')
+								->orderBy('attend_date', 'DESC')
+								->get();
+
+		foreach ($attendance as $k => $v) {
+			foreach (HRAttendance::whereDate('attend_date', $v->attend_date)->get() as $k1 => $v1) {
+				$in = Carbon::parse($v1->in)->equalTo('00:00:00');
+				$break = Carbon::parse($v1->break)->equalTo('00:00:00');
+				$resume = Carbon::parse($v1->resume)->equalTo('00:00:00');
+				$out = Carbon::parse($v1->out)->equalTo('00:00:00');
+
+				if (
+					$v1->daytype_id == 1 && is_null($v1->attendance_type_id) && is_null($v1->attendance_type_id) && is_null($v1->leave_id) && is_null($v1->outstation_id) && $v1->exception == 0
+					&& (
+						($in && $break && $resume && $out) ||
+						((!$in && $break && $resume && $out) || ($in && !$break && $resume && $out) || ($in && $break && !$resume && $out) || ($in && $break && $resume && !$out)) ||
+						((!$in && !$break && $resume && $out) || ($in && !$break && !$resume && $out) || ($in && $break && !$resume && !$out)) ||
+						((!$in && !$break && !$resume && $out) || ($in && !$break && !$resume && !$out))
+					)
+				)
+				{
+					$check[$k][] = true;
+				}
+				else
+				{
+					$check[$k][] = false;
+				}
+			}
+			if (in_array(true, $check[$k])) {
+				$absent[] = [
+							'title' => 'Please Check Absent/Half Absent For This Date',
+							'start' => $v->attend_date,
+							'end' => $v->attend_date,
+							// 'url' => route('hrleave.show', $v->id),
+							'allDay' => true,
+							// 'extendedProps' => [
+							// 						'department' => 'BioChemistry'
+							// 					],
+							'description' => 'Please Check Absent/Half Absent For This Date',
+							'color' => 'orange',
+							'textColor' => 'white',
+							'borderColor' => 'orange',
+					];
+			} else {
+				$absent[] = [
+							'title' => 'Absent/Half Absent Status Verified',
+							'start' => $v->attend_date,
+							'end' => $v->attend_date,
+							// 'url' => route('hrleave.show', $v->id),
+							'allDay' => true,
+							// 'extendedProps' => [
+							// 						'department' => 'BioChemistry'
+							// 					],
+							'description' => 'Absent/Half Absent Status Verified',
+							'color' => 'green',
+							'textColor' => 'white',
+							'borderColor' => 'green',
+					];
+			}
+		}
+		// return response()->json($attendance);
+		return response()->json($absent);
 	}
 
 

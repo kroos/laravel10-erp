@@ -46,6 +46,8 @@ use App\Http\Controllers\HumanResources\HRDept\OutstationDurationController;
 use App\Http\Controllers\HumanResources\HRDept\AppraisalFormMoreFunctionController;
 use App\Http\Controllers\HumanResources\HRDept\AppraisalApointController;
 use App\Http\Controllers\HumanResources\HRDept\AppraisalSettingController;
+use App\Http\Controllers\HumanResources\HRDept\AttendancePayslipExcelReportSettingController;
+use App\Http\Controllers\HumanResources\HRDept\AttendanceAbsentIndicatorController;
 
 
 
@@ -129,3 +131,10 @@ Route::get('/appraisalformduplicate/store', [AppraisalFormMoreFunctionController
 
 Route::get('/appraisalsetting/create', [AppraisalSettingController::class, 'create'])->name('appraisalsetting.create');
 Route::patch('/appraisalsetting/update/{appraisalsetting}', [AppraisalSettingController::class, 'update'])->name('appraisalsetting.update');
+
+Route::get('/attendancepayslipexcelsetting/create', [AttendancePayslipExcelReportSettingController::class, 'create'])->name('attendancepayslipexcelsetting.create');
+Route::patch('/attendancepayslipexcelsetting/update/{attendancepayslipexcelsetting}', [AttendancePayslipExcelReportSettingController::class, 'update'])->name('attendancepayslipexcelsetting.update');
+
+Route::get('/attendanceabsentindicator/index', [AttendanceAbsentIndicatorController::class, 'index'])->name('attendanceabsentindicator.index');
+
+

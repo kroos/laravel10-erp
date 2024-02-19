@@ -8,7 +8,7 @@ use App\Http\Controllers\Sales\SalesCustomerController;
 Route::get('/salesdept', [SalesDeptController::class, 'index'])->name('salesdept.index');
 
 Route::resources([
-	'sales' => SalesController::class,
+	'sale' => SalesController::class,
 	'salescustomer' => SalesCustomerController::class,
 ]);
 

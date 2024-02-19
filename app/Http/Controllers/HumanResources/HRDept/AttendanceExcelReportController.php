@@ -96,7 +96,7 @@ class AttendanceExcelReportController extends Controller
 
 		if (Storage::exists('public/excel/payslip.csv')) {
 
-			$header[-1] = ['Emp No', 'Name', 'AL', 'NRL', 'MC', 'UPL', 'Absent', 'UPMC', 'Lateness(minute)', 'Early Out(minute)', 'No Pay Hour', 'Maternity', 'Hospitalization', 'Other Leave', 'Compassionate Leave', 'Marriage Leave', 'Day Work', '1.0 OT', '1.5 OT', 'OT', 'TF'];
+			$header[-1] = ['Emp No', 'Name', 'Category', 'AL', 'NRL', 'MC', 'UPL', 'Absent', 'UPMC', 'Lateness(minute)', 'Early Out(minute)', 'No Pay Hour', 'Maternity', 'Hospitalization', 'Other Leave', 'Compassionate Leave', 'Marriage Leave', 'Day Work', '1.0 OT', '1.5 OT', 'OT', 'TF'];
 
 			// (A) READ EXISTING CSV FILE INTO ARRAY
 			$csv = fopen(storage_path('app/public/excel/payslip.csv'), 'r');
