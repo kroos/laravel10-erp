@@ -28,7 +28,7 @@
 						@foreach(\App\Models\Sales\OptSalesType::all() as $key)
 							<div class="form-check form-check-inline">
 								<label class="form-check-label" for="db{{ $key->id }}">
-									<input class="form-check-input m-1" type="radio" name="sales_type_id" id="db{{ $key->id }}" value="{{ $key->id }}">
+									<input class="form-check-input m-1" type="radio" name="sales_type_id" id="db{{ $key->id }}" value="{{ $key->id }}" {{ ($sale->sales_type_id == $key->id)?'checked="checked"':null }}>
 									{{ $key->order_type }}
 								</label>
 							</div>
@@ -37,12 +37,15 @@
 				</div>
 				<div class="form-group row m-2 {{ $errors->has('special_request') ? 'has-error' : '' }}">
 					<div class="col form-check">
-						<input type="checkbox" name="spec_req" class="form-check-input m-1" value="1" id="specReq">
+						<input type="checkbox" name="spec_req" class="form-check-input m-1" value="1" id="specReq" {{ !is_null($sale->special_request)?'checked="checked"':null }}>
 						<label class="form-check-label col" for="specReq">
 							Special Request
 						</label>
 					</div>
 					<div class="form-group col-sm-8" id="wraptextarea">
+						@if(!is_null($sale->special_request))
+							{{ Form::textarea('special_request', @$value, ['class' => 'form-control form-control-sm', 'id' => 'sreq', 'placeholder' => 'Special Request Remarks']) }}
+						@endif
 					</div>
 				</div>
 
@@ -65,7 +68,7 @@
 					{{ Form::label( 'urgency1', 'Mark As Urgent : ', ['class' => 'col-sm-4 col-form-label'] ) }}
 					<div class="col-sm-8">
 						<div class="form-check">
-							<input type="checkbox" name="urgency" class="form-check-input" value="1" id="urgency1">
+							{{ Form::checkbox('urgency', 1, @$value, ['class' => 'form-check-input m-1', 'id' => 'urgency1']) }}
 							<label class="form-check-label col-sm-4 " for="urgency1">
 								Yes
 							</label>
@@ -75,10 +78,16 @@
 				<div class="form-group row m-2 {{ $errors->has('sales_delivery_id.*') ? 'has-error' : '' }}">
 					{{ Form::label( 'devi', 'Delivery Instruction : ', ['class' => 'col-sm-4 col-form-label'] ) }}
 					<div class="col">
+<?php
+$sdt = $sale->belongstomanydelivery()->get();
+foreach($sdt as $t) {
+	$sdts[] = $t->id;
+}
+?>
 						@foreach(\App\Models\Sales\OptSalesDeliveryType::all() as $key)
 							<div class="form-check form-check-inline m-1">
 								<label class="form-check-label" for="dbdid{{ $key->id }}">
-									<input class="form-check-input m-1" type="checkbox" name="sales_delivery_id[]" id="dbdid{{ $key->id }}" value="{{ $key->id }}">
+									<input class="form-check-input m-1" type="checkbox" name="sales_delivery_id[]" id="dbdid{{ $key->id }}" value="{{ $key->id }}" {{ in_array($key->id, $sdts)?'checked="checked"':null }}>
 									{{ $key->delivery_type }}
 								</label>
 							</div>
@@ -91,29 +100,38 @@
 			<h5>Job Description</h5>
 			<div class="col-sm-12">
 				<div class="row jdesc_wrap">
-
+@if($sale->hasmanyjobdescription()->get()->count())
+<?php $m = 4 ?>
+	@foreach($sale->hasmanyjobdescription()->get() as $va => $ke)
 					<div class="col-sm-12 row border border-info mb-3 rounded">
 						<div class="col-auto m-1 p-1">
-							<button type="button" class="btn btn-sm btn-outline-secondary jdesc_remove">
+							<button type="button" class="btn btn-sm btn-outline-secondary jdesc_remove" data-id="{{ $ke->id }}">
 								<i class="fas fa-trash" aria-hidden="true"></i>
 							</button>
 						</div>
 						<div class="col m-1 p-1 form-group {{ $errors->has('jobdesc.*.job_description') ? 'has-error' : '' }}">
-							<textarea name="jobdesc[4][job_description]" id="jdi_1" class="form-control form-control-sm" placeholder="Job Description"></textarea>
+							<textarea name="jobdesc[{{ $m }}][job_description]" id="jdi_{{ $m }}" class="form-control form-control-sm" placeholder="Job Description">{{ $ke->job_description }}</textarea>
 						</div>
 						<div class="col-auto m-1 p-1 row form-group {{ $errors->has('jobdesc.*.quantity') ? 'has-error' : '' }}">
 							<div class="col">
-								<input type="text" name="jobdesc[4][quantity]" id="jdq_1" class="form-control form-control-sm m-1" placeholder="Quantity">
+								<input type="text" name="jobdesc[{{ $m }}][quantity]" id="jdq_{{ $m }}" value="{{ $ke->quantity }}" class="form-control form-control-sm m-1" placeholder="Quantity">
 							</div>
 							<div class="col form-group align-items-center {{ $errors->has('jobdesc.*.uom_id') ? 'has-error' : '' }}">
-								<select name="jobdesc[4][uom_id]" id="jdu_1" class="form-select form-select-sm m-1" placeholder="UOM"></select>
+								<select name="jobdesc[{{ $m }}][uom_id]" id="jdu_{{ $m }}" class="form-select form-select-sm m-1" placeholder="UOM"></select>
 							</div>
 						</div>
 						<div class="col-auto m-1 p-1 form-group {{ $errors->has('jobdesc.*.sales_get_item_id') ? 'has-error' : '' }}">
-							<?php $a = 0; ?>
+<?php
+$a = 0;
+$sgji = $ke->hasmanyjobdescriptiongetitem()->get();
+foreach ($sgji as $c) {
+	$r[$va][] = $c->sales_get_item_id;
+}
+// dump($r[$va], $sgji);
+?>
 							@foreach(\App\Models\Sales\OptSalesGetItem::all() as $key)
 								<div class="form-check">
-									<input type="checkbox" name="jobdesc[4][sales_get_item_id][]" class="form-check-input" value="{{ $key->id }}" id="jdescitem_{{ $key->id }}{{ $a }}">
+									<input type="checkbox" name="jobdesc[{{ $m }}][sales_get_item_id][]" class="form-check-input" value="{{ $key->id }}" id="jdescitem_{{ $key->id }}{{ $a }}" {{ in_array($key->id, $r[$va])?'checked="checked"':null }}>
 									<label class="form-check-label" for="jdescitem_{{ $key->id }}{{ $a }}">{{ $key->get_item }}</label>
 								</div>
 								<?php $a++ ?>
@@ -122,24 +140,27 @@
 						<div class="col-sm-12 m-1 p-1 row">
 							<div class="col-sm-5 row m-1 p-1 form-group {{ $errors->has('jobdesc.*.machine_id') ? 'has-error' : '' }}">
 								<div class="col align-items-center">
-									<select name="jobdesc[4][machine_id]" id="jobdescmach_1" class="form-select form-select-sm m-1" placeholder="Machine"></select>
+									<select name="jobdesc[{{ $m }}][machine_id]" id="jobdescmach_{{ $m }}" class="form-select form-select-sm m-1" placeholder="Machine"></select>
 								</div>
 								<div class="col form-group align-items-center {{ $errors->has('jobdesc.*.machine_accessories_id') ? 'has-error' : '' }}">
-									<select name="jobdesc[4][machine_accessory_id]" id="jobdescmachacc_1" class="form-select form-select-sm m-1" placeholder="Machine Accessories">
+									<select name="jobdesc[{{ $m }}][machine_accessory_id]" id="jobdescmachacc_{{ $m }}" class="form-select form-select-sm m-1" placeholder="Machine Accessories">
 										<option value="" ></option>
 										@foreach(\App\Models\Sales\OptMachineAccessory::all() as $k)
-											<option value="{{ $k->id }}" class="{{ $k->machine_id }}">{{ $k->accessory }}</option>
+											<option value="{{ $k->id }}" class="{{ $k->machine_id }}" {{ ($ke->machine_accessory_id == $k->id)?'selected="selected"':null }}>{{ $k->accessory }}</option>
 										@endforeach
 									</select>
 								</div>
 							</div>
 							<div class="col-sm-6 m-1 p-1">
 								<div class="col m-1 p-1  form-group {{ $errors->has('jobdesc.*.remarks') ? 'has-error' : '' }}">
-									<textarea name="jobdesc[4][remarks]" id="jdr_1" class="form-control form-control-sm" placeholder="Remarks"></textarea>
+									<textarea name="jobdesc[{{ $m }}][remarks]" id="jdr_{{ $m }}" class="form-control form-control-sm" placeholder="Remarks">{{ $ke->remarks }}</textarea>
 								</div>
 							</div>
 						</div>
 					</div>
+	<?php $m++ ?>
+	@endforeach
+@endif
 
 				</div>
 				<button type="button" class="btn btn-sm btn-outline-secondary jdesc_add"><i class="fa-solid fa-list-check"></i>&nbsp;Add Job Description</button>
@@ -155,34 +176,6 @@
 @endsection
 
 @section('js')
-/////////////////////////////////////////////////////////////////////////////////////////
-// tooltip
-$(document).ready(function(){
-	$('[data-bs-toggle="tooltip"]').tooltip();
-});
-
-/////////////////////////////////////////////////////////////////////////////////////////
-// datatables
-$.fn.dataTable.moment( 'D MMM YYYY' );
-$.fn.dataTable.moment( 'YYYY' );
-$.fn.dataTable.moment( 'h:mm a' );
-$('#sales').DataTable({
-	"lengthMenu": [ [30, 60, 100, -1], [30, 60, 100, "All"] ],
-	"columnDefs": [
-		{ type: 'date', 'targets': [1,3] },
-	],
-	"order": [[ 0, 'desc' ]],
-	"responsive": true,
-	"autoWidth": false,
-	fixedHeader: true,
-	dom: 'Bfrtip',
-})
-.on( 'length.dt page.dt order.dt search.dt', function ( e, settings, len ) {
-	$(document).ready(function(){
-		$('[data-bs-toggle="tooltip"]').tooltip();
-	});
-});
-
 /////////////////////////////////////////////////////////////////////////////////////////
 // date
 $('#nam, #delivery').datetimepicker({
@@ -208,7 +201,7 @@ $('#cust').select2({
 			var query = {
 				_token: '{!! csrf_token() !!}',
 				search: params.term,
-				id: {{ $sale->customer_id }}
+				// id: {{ $sale->customer_id }}
 			}
 			return query;
 		}
@@ -225,18 +218,10 @@ $.ajax({
 			id: {{ $sale->customer_id }}
 	},
 }).then(function (data) {
-	console.log(data.results[0].id, data.results.text);
+	console.log(data.results[0].id, data.results[0].text);
 	// create the option and append to Select2
-	var option = new Option(data.text, data.id, true, true);
+	var option = new Option(data.results[0].text, data.results[0].id, true, true);
 	studentSelect.append(option).trigger('change');
-
-	// manually trigger the `select2:select` event
-	studentSelect.trigger({
-		type: 'select2:select',
-		params: {
-			data: data
-		}
-	});
 });
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -258,45 +243,86 @@ $('#specReq').change(function() {
 
 /////////////////////////////////////////////////////////////////////////////////////////
 // select2
-$('#jdu_1').select2({
-	placeholder: 'UOM',
-	// theme: 'bootstrap5',
-	allowClear: true,
-	closeOnSelect: true,
-	ajax: {
-		url: '{{ route('uom.uom') }}',
-		type: 'POST',
-		dataType: 'json',
-		data: function (params) {
-			var query = {
-				_token: '{!! csrf_token() !!}',
-				search: params.term,
-			}
-			return query;
-		}
-	},
-});
+@if($sale->hasmanyjobdescription()->get()->count())
+<?php $mu = 4 ?>
+	@foreach($sale->hasmanyjobdescription()->get() as $va => $ke)
+		$('#jdu_{{$mu}}').select2({
+			placeholder: 'UOM',
+			allowClear: true,
+			closeOnSelect: true,
+			ajax: {
+				url: '{{ route('uom.uom') }}',
+				type: 'POST',
+				dataType: 'json',
+				data: function (params) {
+					var query = {
+						_token: '{!! csrf_token() !!}',
+						search: params.term,
+					}
+					return query;
+				}
+			},
+		});
+		$.ajax({
+			type: 'POST',
+			url: '{{ route('uom.uom') }}',
+			data: {
+					_token: '{!! csrf_token() !!}',
+					id: {{ $ke->uom_id }}
+			},
+		}).then(function (data) {
+			console.log(data.results[0].id, data.results[0].text);
+			// create the option and append to Select2
+			var option = new Option(data.results[0].text, data.results[0].id, true, true);
+			$('#jdu_{{$mu}}').append(option).trigger('change');
+		});
+
+		$('#jobdescmach_{{$mu}}').select2({
+			placeholder: 'Machine',
+			allowClear: true,
+			closeOnSelect: true,
+			ajax: {
+				url: '{{ route('machine.machine') }}',
+				type: 'GET',
+				dataType: 'json',
+				data: function (params) {
+					var query = {
+						_token: '{!! csrf_token() !!}',
+						search: params.term,
+					}
+					return query;
+				}
+			},
+		});
+		$.ajax({
+			type: 'GET',
+			url: '{{ route('machine.machine') }}',
+			data: {
+					_token: '{!! csrf_token() !!}',
+					id: {{ $ke->machine_id }}
+			},
+		}).then(function (data) {
+			console.log(data.results[0].id, data.results[0].text);
+			// create the option and append to Select2
+			var option = new Option(data.results[0].text, data.results[0].id, true, true);
+			$('#jobdescmach_{{$mu}}').append(option).trigger('change');
+		});
+
+
+
+
+
+
+
+
+
+
+		<?php $mu++ ?>
+	@endforeach
+@endif
 
 /////////////////////////////////////////////////////////////////////////////////////////
 // select2
-$('#jobdescmach_1').select2({
-	placeholder: 'Machine',
-	// theme: 'bootstrap5',
-	allowClear: true,
-	closeOnSelect: true,
-	ajax: {
-		url: '{{ route('machine.machine') }}',
-		type: 'GET',
-		dataType: 'json',
-		data: function (params) {
-			var query = {
-				_token: '{!! csrf_token() !!}',
-				search: params.term,
-			}
-			return query;
-		}
-	},
-});
 
 $('#jobdescmachacc_1').select2({
 	placeholder: 'Machine Accessories',
@@ -312,14 +338,6 @@ $('#jobdescmachacc_1').chainedTo('#jobdescmach_1');
 // 	parents: '#jobdescmach_1',
 // 	url: '{{ route('machineaccessories.machineaccessories') }}',
 // });
-
-/////////////////////////////////////////////////////////////////////////////////////////
-// jquery escape string
-function fixedEncodeURIComponent(str) {
-	return encodeURIComponent(str).replace(/[!'()*]/g, function(c) {
-		return '%' + c.charCodeAt(0).toString(16);
-	});
-}
 
 /////////////////////////////////////////////////////////////////////////////////////////
 // add item
