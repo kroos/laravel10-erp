@@ -1,5 +1,6 @@
 <?php
 
+
 namespace App\Models;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -148,12 +149,12 @@ class Staff extends Authenticatable
 
 	public function belongstomanyevaluatee(): BelongsToMany
 	{
-		return $this->belongsToMany(\App\Models\Staff::class, 'pivot_apoint_appraisals', 'evaluator_id', 'evaluatee_id')->withPivot('remark')->withTimestamps();
+		return $this->belongsToMany(\App\Models\Staff::class, 'pivot_apoint_appraisals', 'evaluator_id', 'evaluatee_id')->withPivot('active', 'remark')->withTimestamps();
 	}
 
 	public function belongstomanyevaluator(): BelongsToMany
 	{
-		return $this->belongsToMany(\App\Models\Staff::class, 'pivot_apoint_appraisals', 'evaluatee_id', 'evaluator_id')->withPivot('remark')->withTimestamps();
+		return $this->belongsToMany(\App\Models\Staff::class, 'pivot_apoint_appraisals', 'evaluatee_id', 'evaluator_id')->withPivot('active', 'remark')->withTimestamps();
 	}
 
 	// user got cross backup

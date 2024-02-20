@@ -47,6 +47,7 @@ $currentYear = Carbon::now()->year;
 										<!-- <li><a class="dropdown-item" href="{{ route('holidaycalendar.show', $currentYear) }}"><i class="fa-regular fa-calendar"></i> Holiday</a></li> -->
 										<li><a class="dropdown-item" href="{{ route('leave.index') }}"><i class="fa-solid fa-mug-hot"></i> Apply Leave</a></li>
 										<li><a class="dropdown-item" href="{{ route('outstationattendance.index') }}"><i class="fa-solid fa-user-plus"></i> Outstation Attendance</a></li>
+										<li><a class="dropdown-item" href="{{ route('appraisalmark.index') }}"><i class="fa-solid fa-list"></i> Appraisal</a></li>
 										<form method="POST" action="{{ route('logout') }}">
 											@csrf
 											<li>

@@ -48,6 +48,8 @@ use App\Http\Controllers\HumanResources\HRDept\AppraisalApointController;
 use App\Http\Controllers\HumanResources\HRDept\AppraisalSettingController;
 use App\Http\Controllers\HumanResources\HRDept\AttendancePayslipExcelReportSettingController;
 use App\Http\Controllers\HumanResources\HRDept\AttendanceAbsentIndicatorController;
+use App\Http\Controllers\HumanResources\HRDept\AppraisalListController;
+use App\Http\Controllers\HumanResources\HRDept\AppraisalMarkController;
 
 
 
@@ -89,6 +91,8 @@ Route::resources([
 	'attendanceremark' => AttendanceRemarkController::class,
 	'appraisalform' => AppraisalFormController::class,
 	'appraisalapoint' => AppraisalApointController::class,
+	'appraisallist' => AppraisalListController::class,
+	'appraisalmark' => AppraisalMarkController::class,
 ]);
 
 Route::get('/leavereject', [LeaveController::class, 'reject'])->name('hrleave.reject');
@@ -137,4 +141,4 @@ Route::patch('/attendancepayslipexcelsetting/update/{attendancepayslipexcelsetti
 
 Route::get('/attendanceabsentindicator/index', [AttendanceAbsentIndicatorController::class, 'index'])->name('attendanceabsentindicator.index');
 
-
+Route::get('/appraisalmark/create/{id}', [AppraisalMarkController::class, 'create'])->name('appraisalmark.create');
