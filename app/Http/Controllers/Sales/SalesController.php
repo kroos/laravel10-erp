@@ -167,7 +167,7 @@ class SalesController extends Controller
 				}
 			}
 		}
-		return redirect()->route('sales.index')->with('flash_message', 'Successfully Add New Customer Order');
+		return redirect()->route('sale.index')->with('flash_message', 'Successfully Add New Customer Order');
 	}
 
 	public function show(Sales $sale): View
