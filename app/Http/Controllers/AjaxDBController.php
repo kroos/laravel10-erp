@@ -653,7 +653,13 @@ class AjaxDBController extends Controller
 	public function uom(Request $request): JsonResponse
 	{
 		// https://select2.org/data-sources/formats
-		$au = OptUOM::where('uom','LIKE','%'.$request->search.'%')->get();
+		if ($request->has('search')) {
+			$au = OptUOM::where('uom','LIKE','%'.$request->search.'%')->get();
+		} elseif ($request->has('id')) {
+			$au = OptUOM::where('id', $request->id)->get();
+		} else {
+			$au = OptUOM::all();
+		}
 		foreach ($au as $key) {
 			$cuti['results'][] = [
 									'id' => $key->id,
@@ -695,7 +701,13 @@ class AjaxDBController extends Controller
 	public function machine(Request $request): JsonResponse
 	{
 		// https://select2.org/data-sources/formats
-		$au = OptMachine::where('machine','LIKE','%'.$request->search.'%')->get();
+		if ($request->has('search')) {
+			$au = OptMachine::where('machine','LIKE','%'.$request->search.'%')->get();
+		} elseif ($request->has('id')) {
+			$au = OptMachine::where('id', $request->id)->get();
+		} else {
+			$au = OptMachine::all();
+		}
 		foreach ($au as $key) {
 			$cuti['results'][] = [
 									'id' => $key->id,

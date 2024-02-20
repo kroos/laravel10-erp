@@ -86,7 +86,7 @@ $('#1_setting,#2_setting,#3_setting,#4_setting,#6_setting,#7_setting').change(fu
 		type: "PATCH",
 		data : {
 					id: $(this).data('id'),
-					value1: $(this).prop('checked'),
+					active: $(this).prop('checked'),
 					_token: '{!! csrf_token() !!}',
 				},
 		dataType: 'json',
