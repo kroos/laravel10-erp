@@ -1,6 +1,5 @@
 @extends('layouts.app')
 
-
 @section('content')
 <style>
   .img1 {
@@ -100,7 +99,9 @@ $appraisals = DB::table('pivot_category_appraisals')
 
   <br>
 
-  {{ Form::open(['route' => ['appraisalformpdf.print'], 'method' => 'GET', 'id' => 'form', 'class' => 'form-horizontal', 'autocomplete' => 'off', 'files' => true]) }}
+  {{ Form::open(['route' => ['appraisalmark.store'], 'id' => 'form', 'class' => 'form-horizontal', 'autocomplete' => 'off', 'files' => true]) }}
+
+  <input type="hidden" name="pivot_apoint_id" value="{{ $id }}">
 
   @foreach ($appraisals as $appraisal)
   <?php
@@ -177,10 +178,12 @@ $appraisals = DB::table('pivot_category_appraisals')
     </tr>
 
     @foreach ($questions as $question)
+    <input type="hidden" name="arraymark1[]" value="{{ '1' . $no . $no_sub }}">
+
     <tr>
       <td class="td-border-left-right"></td>
       <td align="center" width="40px" style="vertical-align:text-top;">
-        {!! Form::radio('1' . $no . $no_sub, @$value, @$checked, []) !!}
+        {!! Form::radio('1' . $no . $no_sub, $question->id, @$checked, []) !!}
       </td>
       <td width="50px" style="vertical-align:text-top;">
         {!! $question->mark !!}m -
@@ -252,6 +255,8 @@ $appraisals = DB::table('pivot_category_appraisals')
     </tr>
 
     @foreach ($section_subs as $section_sub)
+    <input type="hidden" name="arraymark2[]" value="{{ '2' . $no }}">
+
     <tr class="tr-td-border">
       <td align="center">
         {{ $no }}
@@ -294,6 +299,8 @@ $appraisals = DB::table('pivot_category_appraisals')
 
   <table width="100%">
     @foreach ($section_subs as $section_sub)
+    <input type="hidden" name="arraymark3[]" value="{{ '3' . $no }}">
+
     <tr>
       <td width="30px">
         {{ $no }})
@@ -345,10 +352,12 @@ $appraisals = DB::table('pivot_category_appraisals')
     </tr>
 
     @foreach ($main_questions as $main_question)
+    <input type="hidden" name="arraymark4[]" value="{{ '4' . $no }}">
+
     <tr>
       <td></td>
       <td width="40px">
-        {!! Form::radio('4' . $no, @$value, @$checked, []) !!}
+        {!! Form::radio('4' . $no, $main_question->id, @$checked, []) !!}
       </td>
       <td>
         {!! $main_question->main_question !!}
