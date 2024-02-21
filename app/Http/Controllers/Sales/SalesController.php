@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\DB;
 // load models
 use App\Models\Staff;
 use App\Models\Sales\Sales;
+use App\Models\Sales\SalesJobDescriptionGetItem;
 
 // load batch and queue
 // use Illuminate\Bus\Batch;
@@ -112,7 +113,7 @@ class SalesController extends Controller
 					'jobdesc.*.job_description' => 'Job Description',
 					'jobdesc.*.quantity' => 'Job Description Quantity',
 					'jobdesc.*.uom_id' => 'Job Description UOM ',
-					'jobdesc.*.sales_get_item_id.*' => 'Job Description Delivery Instruction',
+					'jobdesc.*.sales_get_item_id' => 'Job Description Delivery Instruction',
 					'jobdesc.*.machine_id' => 'Job Description Machine',
 					'jobdesc.*.machine_accessory_id' => 'Job Description Machine Accessories',
 					'jobdesc.*.remarks' => 'Job Description Remarks',
@@ -162,9 +163,7 @@ class SalesController extends Controller
 							'machine_accessory_id' => $machine_accessory_id,
 							'remarks' => $remarks,
 						]);
-				foreach ($v['sales_get_item_id'] as $k1 => $v1) {
-					$sjd->hasmanyjobdescriptiongetitem()->create(['sales_get_item_id' => $v1]);
-				}
+				$sjd->belongstomanysalesgetitem()->attach($v['sales_get_item_id']);
 			}
 		}
 		return redirect()->route('sale.index')->with('flash_message', 'Successfully Add New Customer Order');
@@ -179,7 +178,7 @@ class SalesController extends Controller
 		return view('sales.sales.edit', ['sale' => $sale]);
 	}
 
-	public function update(Request $request, Sales $sale): RedirectResponse
+	public function update(Request $request, Sales $sale)//: RedirectResponse
 	{
 		// dd($request->all());
 
@@ -233,7 +232,7 @@ class SalesController extends Controller
 					'jobdesc.*.job_description' => 'Job Description',
 					'jobdesc.*.quantity' => 'Job Description Quantity',
 					'jobdesc.*.uom_id' => 'Job Description UOM ',
-					'jobdesc.*.sales_get_item_id.*' => 'Job Description Delivery Instruction',
+					'jobdesc.*.sales_get_item_id' => 'Job Description Delivery Instruction',
 					'jobdesc.*.machine_id' => 'Job Description Machine',
 					'jobdesc.*.machine_accessory_id' => 'Job Description Machine Accessories',
 					'jobdesc.*.remarks' => 'Job Description Remarks',
@@ -267,23 +266,24 @@ class SalesController extends Controller
 				$remarks = ucwords(Str::lower($v['remarks']));
 				$id = ($v['id'])??null;
 
-				$sale->hasmanyjobdescription()->updateOrCreate([
-															'id' => $id,
-														],
-														[
-															'job_description' => $job_description,
-															'quantity' => $quantity,
-															'uom_id' => $uom_id,
-															'machine_id' => $machine_id,
-															'machine_accessory_id' => $machine_accessory_id,
-															'remarks' => $remarks,
-														]);
-				foreach ($v['sales_get_item_id'] as $k1 => $v1) {
-					// $sjd->hasmanyjobdescriptiongetitem()->create(['sales_get_item_id' => $v1]);
+				$sales0 = $sale->hasmanyjobdescription()->updateOrCreate([
+																	'id' => $id,
+																],
+																[
+																	'job_description' => $job_description,
+																	'quantity' => $quantity,
+																	'uom_id' => $uom_id,
+																	'machine_id' => $machine_id,
+																	'machine_accessory_id' => $machine_accessory_id,
+																	'remarks' => $remarks,
+															]);
+				// dump($v['sales_get_item_id']);
+				if ($v['sales_get_item_id']) {
+					$sales0->belongstomanysalesgetitem()->sync($v['sales_get_item_id']);
 				}
 			}
 		}
-		return redirect()->route('sale.index')->with('flash_message', 'Successfully Add New Customer Order');
+		return redirect()->route('sale.index')->with('flash_message', 'Successfully Edit Order');
 	}
 
 	public function destroy(Sales $sale): JsonResponse

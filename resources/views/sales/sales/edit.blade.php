@@ -123,11 +123,10 @@ foreach($sdt as $t) {
 						</div>
 						<div class="col-auto m-1 p-1 form-group {{ $errors->has('jobdesc.*.sales_get_item_id') ? 'has-error' : '' }}">
 <?php
-$sgji = $ke->hasmanyjobdescriptiongetitem()->get();
+$sgji = $ke->belongstomanysalesgetitem()->get();
 foreach ($sgji as $c) {
-	$r[$va][] = $c->sales_get_item_id;
+	$r[$va][] = $c->pivot->sales_get_item_id;
 }
-// dump($r[$va], $sgji);
 $trv = $r[$va]??[];
 ?>
 							@foreach(\App\Models\Sales\OptSalesGetItem::all() as $key)
