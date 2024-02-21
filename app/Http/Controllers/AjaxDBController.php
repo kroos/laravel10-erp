@@ -702,7 +702,7 @@ class AjaxDBController extends Controller
 	{
 		// https://select2.org/data-sources/formats
 		if ($request->has('search')) {
-			$au = OptMachine::where('machine','LIKE','%'.$request->search.'%')->get();
+			$au = OptMachine::where('machine','LIKE','%'.$request->search.'%')->orderBy('id')->get();
 		} elseif ($request->has('id')) {
 			$au = OptMachine::where('id', $request->id)->get();
 		} else {

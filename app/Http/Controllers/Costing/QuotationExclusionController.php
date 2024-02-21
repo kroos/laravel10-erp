@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Sales\Costing;
+namespace App\Http\Controllers\Costing;
 
 use App\Http\Controllers\Controller;
 
