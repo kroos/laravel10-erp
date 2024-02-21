@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\DB;
 // load models
 use App\Models\Staff;
 use App\Models\HumanResources\DepartmentPivot;
+use App\Models\HumanResources\HRAppraisalMark;
 
 // load paginator
 use Illuminate\Pagination\Paginator;
@@ -73,13 +74,44 @@ class AppraisalMarkController extends Controller
   public function store(Request $request): RedirectResponse
   {
 
-    foreach ($request->evaluetee_id as $evaluateeid) {
-      $evaluateeid = Staff::find($evaluateeid);
-      $evaluateeid->belongstomanyevaluator()->attach($request->evaluator_id);
+    if ($request->has('arraymark1')) {
+      $marks1 = array_unique($request->input('arraymark1'));
+
+      foreach ($marks1 as $mark1) {
+        HRAppraisalMark::create([
+          'pivot_apoint_id' => $request->pivot_apoint_id,
+          'question_id' => $request->$mark1,
+          'mark' => '2',
+        ]);
+      }
     }
 
+    // if ($request->has('arraymark2')) {
+    //   $marks2 = array_unique($request->input('arraymark2'));
+
+    //   foreach ($marks2 as $mark2) {
+        
+    //   }
+    // }
+
+    // if ($request->has('arraymark3')) {
+    //   $marks3 = array_unique($request->input('arraymark3'));
+
+    //   foreach ($marks3 as $mark3) {
+        
+    //   }
+    // }
+
+    // if ($request->has('arraymark4')) {
+    //   $marks4 = array_unique($request->input('arraymark4'));
+
+    //   foreach ($marks4 as $mark4) {
+        
+    //   }
+    // }
+
     Session::flash('flash_message', 'Successfully Submit Appraisal Form.');
-    return redirect()->route('appraisalapoint.index');
+    return redirect()->route('appraisalmark.index');
   }
 
   /**
@@ -103,17 +135,17 @@ class AppraisalMarkController extends Controller
    */
   public function update(Request $request): JsonResponse
   {
-    $currentDate = Carbon::now();
-    $date = $currentDate->format('Y-m-d');
+    // $currentDate = Carbon::now();
+    // $date = $currentDate->format('Y-m-d');
 
-    DB::table('pivot_apoint_appraisals')
-      ->whereNull('deleted_at')
-      ->update(['distribute_date' => $date, 'updated_at' => $currentDate]);
+    // DB::table('pivot_apoint_appraisals')
+    //   ->whereNull('deleted_at')
+    //   ->update(['distribute_date' => $date, 'updated_at' => $currentDate]);
 
-    return response()->json([
-      'message' => 'Successful Distributed',
-      'status' => 'success'
-    ]);
+    // return response()->json([
+    //   'message' => 'Successful Distributed',
+    //   'status' => 'success'
+    // ]);
   }
 
   /**
@@ -121,15 +153,6 @@ class AppraisalMarkController extends Controller
    */
   public function destroy(Request $request): JsonResponse
   {
-    // $datetime = Carbon::now();
-
-    // DB::table('pivot_apoint_appraisals')
-    //   ->where('id', $request->id)
-    //   ->update(['deleted_at' => $datetime]);
-
-    // return response()->json([
-    //   'message' => 'Successful Deleted',
-    //   'status' => 'success'
-    // ]);
+    //
   }
 }
