@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Sales\Costing;
+namespace App\Http\Controllers\Costing;
 
 // load model
 use \App\Model\QuotQuotation;

@@ -6,7 +6,7 @@
 	<div class="row justify-content-center">
 		<h2>Add Customer Order</h2>
 
-		{{ Form::model($sale, ['route' => ['sale.update', $sale->id], 'id' => 'form', 'class' => 'form-horizontal', 'autocomplete' => 'off', 'files' => true]) }}
+		{{ Form::model($sale, ['route' => ['sale.update', $sale->id], 'method' => 'PATCH', 'id' => 'form', 'class' => 'form-horizontal', 'autocomplete' => 'off', 'files' => true]) }}
 		<div class="col-sm-12 row">
 			<div class="col-sm-6">
 
@@ -103,6 +103,7 @@ foreach($sdt as $t) {
 @if($sale->hasmanyjobdescription()->get()->count())
 <?php $m = 4 ?>
 	@foreach($sale->hasmanyjobdescription()->get() as $va => $ke)
+					<input type="hidden" name="jobdesc[{{ $m }}][id]" value="{{ $ke->id }}">
 					<div class="col-sm-12 row border border-info mb-3 rounded">
 						<div class="col-auto m-1 p-1">
 							<button type="button" class="btn btn-sm btn-outline-secondary jdesc_remove" data-id="{{ $ke->id }}">
@@ -122,19 +123,17 @@ foreach($sdt as $t) {
 						</div>
 						<div class="col-auto m-1 p-1 form-group {{ $errors->has('jobdesc.*.sales_get_item_id') ? 'has-error' : '' }}">
 <?php
-$a = 0;
-$sgji = $ke->hasmanyjobdescriptiongetitem()->get();
+$sgji = $ke->belongstomanysalesgetitem()->get();
 foreach ($sgji as $c) {
-	$r[$va][] = $c->sales_get_item_id;
+	$r[$va][] = $c->pivot->sales_get_item_id;
 }
-// dump($r[$va], $sgji);
+$trv = $r[$va]??[];
 ?>
 							@foreach(\App\Models\Sales\OptSalesGetItem::all() as $key)
 								<div class="form-check">
-									<input type="checkbox" name="jobdesc[{{ $m }}][sales_get_item_id][]" class="form-check-input" value="{{ $key->id }}" id="jdescitem_{{ $key->id }}{{ $a }}" {{ in_array($key->id, $r[$va])?'checked="checked"':null }}>
-									<label class="form-check-label" for="jdescitem_{{ $key->id }}{{ $a }}">{{ $key->get_item }}</label>
+									<input type="checkbox" name="jobdesc[{{ $m }}][sales_get_item_id][]" class="form-check-input" value="{{ $key->id }}" id="jdescitem_{{ $key->id.$m }}" {{ in_array($key->id, $trv)?'checked="checked"':null }}>
+									<label class="form-check-label" for="jdescitem_{{ $key->id.$m }}">{{ $key->get_item }}</label>
 								</div>
-								<?php $a++ ?>
 							@endforeach
 						</div>
 						<div class="col-sm-12 m-1 p-1 row">
@@ -308,32 +307,20 @@ $('#specReq').change(function() {
 			$('#jobdescmach_{{$mu}}').append(option).trigger('change');
 		});
 
+		$('#jobdescmachacc_{{$mu}}').select2({
+			placeholder: 'Machine Accessories',
+			allowClear: true,
+			closeOnSelect: true,
+		});
 
-
-
-
-
-
-
-
+		$('#jobdescmachacc_{{$mu}}').chainedTo('#jobdescmach_{{$mu}}');
 
 		<?php $mu++ ?>
 	@endforeach
 @endif
 
 /////////////////////////////////////////////////////////////////////////////////////////
-// select2
-
-$('#jobdescmachacc_1').select2({
-	placeholder: 'Machine Accessories',
-	// theme: 'bootstrap5',
-	allowClear: true,
-	closeOnSelect: true,
-});
-
-/////////////////////////////////////////////////////////////////////////////////////////
 // select chained
-$('#jobdescmachacc_1').chainedTo('#jobdescmach_1');
 // $('#jobdescmachacc_1').remoteChained({
 // 	parents: '#jobdescmach_1',
 // 	url: '{{ route('machineaccessories.machineaccessories') }}',
@@ -345,7 +332,7 @@ var crb_max_fields = 504;						//maximum input boxes allowed
 var crb_add_buttons = $(".jdesc_add");
 var crb_wrappers = $(".jdesc_wrap");
 
-var xcrb = 4;
+var xcrb = {{ ($sale->hasmanyjobdescription()->get()->count())?$sale->hasmanyjobdescription()->get()->count() + 3:4 }};
 $(crb_add_buttons).click(function(){
 	// e.preventDefault();
 

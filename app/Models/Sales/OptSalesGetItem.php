@@ -11,10 +11,10 @@ use App\Models\Model;
 // use Illuminate\Database\Eloquent\Relations\HasOne;
 // use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 // use Illuminate\Database\Eloquent\Relations\HasOneOrMany;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+// use Illuminate\Database\Eloquent\Relations\HasMany;
 // use Illuminate\Database\Eloquent\Relations\HasManyThrough;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-// use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+// use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class OptSalesGetItem extends Model
 {
@@ -26,17 +26,17 @@ class OptSalesGetItem extends Model
 	/////////////////////////////////////////////////////////////////////////////////////////
 	// hasmany relationship
 
-	public function hasmanyjobdescription(): HasMany
-	{
-		return $this->hasMany(\App\Models\Sales\SalesJobDescription::class, 'deliveryby_id');
-	}
+	// public function hasmanyjobdescription(): HasMany
+	// {
+	// 	return $this->hasMany(\App\Models\Sales\SalesJobDescription::class, 'deliveryby_id');
+	// }
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
 	// db relation belongsToMany
-	// public function belongstomanysales(): BelongsToMany
-	// {
-	// 	return $this->belongsToMany(\App\Models\Sales\SalesDeliveryType::class, 'pivot_sales_sales_delivery', 'sales_delivery_id', 'sales_id')->withTimestamps();
-	// }
+	public function belongstomanysalesjobdesc(): BelongsToMany
+	{
+		return $this->belongsToMany(\App\Models\Sales\SalesJobDescription::class, 'pivot_sales_job_description_get_items', 'sales_get_item_id', 'sales_job_description_id')->withPivot('id')->withTimestamps();
+	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
 	//belongsto relationship

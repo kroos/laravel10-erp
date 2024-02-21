@@ -14,7 +14,7 @@ use App\Models\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 // use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-// use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class SalesJobDescription extends Model
 {
@@ -26,23 +26,23 @@ class SalesJobDescription extends Model
 	/////////////////////////////////////////////////////////////////////////////////////////
 	// hasmany relationship
 
-	public function hasmanyjobdescriptiongetitem(): HasMany
-	{
-		return $this->hasMany(\App\Models\Sales\SalesJobDescriptionGetItem::class, 'sales_job_description_id');
-	}
-
-	/////////////////////////////////////////////////////////////////////////////////////////////////////
-	// db relation belongsToMany
-	// public function belongstomanysales(): BelongsToMany
+	// public function hasmanyjobdescriptiongetitem(): HasMany
 	// {
-	// 	return $this->belongsToMany(\App\Models\Sales\SalesDeliveryType::class, 'pivot_sales_sales_delivery', 'sales_delivery_id', 'sales_id')->withTimestamps();
+	// 	return $this->hasMany(\App\Models\Sales\SalesJobDescriptionGetItem::class, 'sales_job_description_id');
 	// }
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
-	//belongsto relationship
-	public function belongstosales(): HasMany
+	// db relation belongsToMany
+	public function belongstomanysalesgetitem(): BelongsToMany
 	{
-		return $this->hasMany(\App\Models\Sales\Sales::class, 'sales_id');
+		return $this->belongsToMany(\App\Models\Sales\OptSalesGetItem::class, 'pivot_sales_job_description_get_items', 'sales_job_description_id', 'sales_get_item_id')->withPivot('id')->withTimestamps();
+	}
+
+	/////////////////////////////////////////////////////////////////////////////////////////////////////
+	//belongsto relationship
+	public function belongstosales(): BelongsTo
+	{
+		return $this->belongsTo(\App\Models\Sales\Sales::class, 'sales_id');
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////
