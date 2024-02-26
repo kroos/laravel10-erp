@@ -2,17 +2,32 @@
 
 namespace App\Livewire\HumanResources\HRDept;
 
+use Livewire\Attribute\Validate;
+use Illuminate\Support\Str;
+use Livewire\Attributes\Rule;
 use Livewire\Component;
+
 
 class CICategoryEdit extends Component
 {
 	public $cicategory;
 
-	public $category;
+	#[Rule('required|string|min:5', 'Category')]
+	public $category = '';
 
-	public function mount($cicategory)
+	public function mount()
 	{
-		$this->category = $cicategory;
+		$this->category = $this->cicategory->category;
+	}
+
+	public function update()
+	{
+		$this->validate();
+		$this->cicategory->update([
+			'category' => ucwords(Str::lower($this->category))
+		]);
+		$this->reset();
+		return redirect()->route('cicategory.index')->with('message', 'Success Edit Category');
 	}
 
 	public function render()
