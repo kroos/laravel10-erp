@@ -122,6 +122,8 @@ $appraisals = DB::table('pivot_category_appraisals')
 
   <!--------------------------------------- 1 --------------------------------------->
   @if (strpos($section->section, '1') !== false)
+  <input type="hidden" name="section1" value="{{ $section->id }}">
+
   <table width="100%">
     <tr>
       <td>
@@ -180,10 +182,14 @@ $appraisals = DB::table('pivot_category_appraisals')
     @foreach ($questions as $question)
     <input type="hidden" name="arraymark1[]" value="{{ '1' . $no . $no_sub }}">
 
+    <?php
+    $test = '18';
+    ?>
+
     <tr>
       <td class="td-border-left-right"></td>
       <td align="center" width="40px" style="vertical-align:text-top;">
-        {!! Form::radio('1' . $no . $no_sub, $question->id, @$checked, []) !!}
+        {!! Form::radio('1' . $no . $no_sub, $question->id, ($test == $question->id), []) !!}
       </td>
       <td width="50px" style="vertical-align:text-top;">
         {!! $question->mark !!}m -
@@ -216,6 +222,8 @@ $appraisals = DB::table('pivot_category_appraisals')
 
   <!--------------------------------------- 2 --------------------------------------->
   @if (strpos($section->section, '2') !== false)
+  <input type="hidden" name="section2" value="{{ $section->id }}">
+
   <table width="100%">
     <tr>
       <td>
@@ -255,6 +263,8 @@ $appraisals = DB::table('pivot_category_appraisals')
     </tr>
 
     @foreach ($section_subs as $section_sub)
+    <input type="hidden" name="arrayid2[]" value="{{ 'id2' . $no }}">
+    <input type="hidden" name="{{ 'id2' . $no }}" value="{{ $section_sub->id }}">
     <input type="hidden" name="arraymark2[]" value="{{ '2' . $no }}">
 
     <tr class="tr-td-border">
@@ -289,6 +299,8 @@ $appraisals = DB::table('pivot_category_appraisals')
 
   <!--------------------------------------- 3 --------------------------------------->
   @if (strpos($section->section, '3') !== false)
+  <input type="hidden" name="section3" value="{{ $section->id }}">
+
   <table width="100%">
     <tr>
       <td>
@@ -299,6 +311,8 @@ $appraisals = DB::table('pivot_category_appraisals')
 
   <table width="100%">
     @foreach ($section_subs as $section_sub)
+    <input type="hidden" name="arrayid3[]" value="{{ 'id3' . $no }}">
+    <input type="hidden" name="{{ 'id3' . $no }}" value="{{ $section_sub->id }}">
     <input type="hidden" name="arraymark3[]" value="{{ '3' . $no }}">
 
     <tr>
@@ -324,6 +338,8 @@ $appraisals = DB::table('pivot_category_appraisals')
 
   <!--------------------------------------- 4 --------------------------------------->
   @if (strpos($section->section, '4') !== false)
+  <input type="hidden" name="section4" value="{{ $section->id }}">
+
   <table width="100%">
     <tr>
       <td>

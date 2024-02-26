@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\DB;
 // load models
 use App\Models\Staff;
 use App\Models\HumanResources\DepartmentPivot;
+use App\Models\HumanResources\AppraisalPivot;
 
 // load paginator
 use Illuminate\Pagination\Paginator;
@@ -95,10 +96,28 @@ class AppraisalListController extends Controller
   public function update(Request $request): JsonResponse
   {
     $currentDate = Carbon::now();
+    $year = $currentDate->format('Y');
 
-    DB::table('pivot_apoint_appraisals')
+    $latest_year = AppraisalPivot::groupBy('year')
+      ->orderBy('year', 'DESC')
+      ->first()
+      ->year;
+
+    $duplicates = AppraisalPivot::where('year', $latest_year)
+    ->where('year', '!=', $year)
       ->whereNull('deleted_at')
-      ->update(['active' => '1', 'updated_at' => $currentDate]);
+      ->orderBy('evaluator_id', 'ASC')
+      ->groupBy('evaluator_id', 'evaluatee_id')
+      ->get();
+
+    foreach ($duplicates as $duplicate) {
+      AppraisalPivot::create([
+        'evaluator_id' => $duplicate->evaluator_id,
+        'evaluatee_id' => $duplicate->evaluatee_id,
+        'year' => $year,
+        'remark' => $duplicate->remark,
+      ]);
+    }
 
     return response()->json([
       'message' => 'Successful Distributed',
