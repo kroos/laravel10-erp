@@ -50,6 +50,8 @@ use App\Http\Controllers\HumanResources\HRDept\AttendancePayslipExcelReportSetti
 use App\Http\Controllers\HumanResources\HRDept\AttendanceAbsentIndicatorController;
 use App\Http\Controllers\HumanResources\HRDept\AppraisalListController;
 use App\Http\Controllers\HumanResources\HRDept\AppraisalMarkController;
+use App\Http\Controllers\HumanResources\HRDept\ConditionalIncentiveCategoryController;
+use App\Http\Controllers\HumanResources\HRDept\ConditionalIncentiveCategoryItemController;
 
 
 
@@ -93,6 +95,8 @@ Route::resources([
 	'appraisalapoint' => AppraisalApointController::class,
 	'appraisallist' => AppraisalListController::class,
 	'appraisalmark' => AppraisalMarkController::class,
+	'cicategory' => ConditionalIncentiveCategoryController::class,
+	'cicategoryitem' => ConditionalIncentiveCategoryItemController::class,
 ]);
 
 Route::get('/leavereject', [LeaveController::class, 'reject'])->name('hrleave.reject');
