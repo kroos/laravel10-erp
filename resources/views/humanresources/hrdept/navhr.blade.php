@@ -137,7 +137,7 @@
 		<a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Conditional Incentive</a>
 		<ul class="dropdown-menu">
 			<li><a class="dropdown-item btn btn-sm btn-outline-secondary" href="{{ route('cicategory.index') }}"><i class="fa-solid fa-chart-line"></i> Incentive Category</a></li>
-			<li><a class="dropdown-item btn btn-sm btn-outline-secondary" href="{{ route('cicategoryitem.index') }}"><i class="fa-solid fa-chart-line"></i> Incentive Category Item</a></li>
+			<li><a class="dropdown-item btn btn-sm btn-outline-secondary" href="{{ route('cicategoryitem.index') }}"><i class="fa-solid fa-people-line fa-beat"></i> Staff Incentive Category Item</a></li>
 		</ul>
 	</li>
 	<li class="nav-item dropdown">

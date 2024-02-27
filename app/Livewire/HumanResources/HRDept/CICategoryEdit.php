@@ -20,12 +20,21 @@ class CICategoryEdit extends Component
 		$this->category = $this->cicategory->category;
 	}
 
+	public function updated($property, $value)
+	{
+		// dd($property, $value);
+		if ($property == 'category') {
+			$this->category = ucwords(Str::lower($value));
+		}
+	}
+
 	public function update()
 	{
 		$this->validate();
-		$this->cicategory->update([
-			'category' => ucwords(Str::lower($this->category))
-		]);
+		$this->cicategory->update(['category' => $this->category]);
+		// $this->cicategory->update([
+		// 	'category' => ucwords(Str::lower($this->category))
+		// ]);
 		$this->reset();
 		return redirect()->route('cicategory.index')->with('message', 'Success Edit Category');
 	}

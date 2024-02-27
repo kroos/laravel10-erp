@@ -44,11 +44,12 @@ class ConditionalIncentiveCategoryController extends Controller
 	public function index(): View
 	{
 		$cicategories = ConditionalIncentiveCategory::all();
-		return view('humanresources.hrdept.conditionalincentive.index', ['cicategories' => $cicategories]);
+		return view('humanresources.hrdept.conditionalincentive.category.index', ['cicategories' => $cicategories]);
 	}
 
 	public function create(): View
 	{
+		return view('humanresources.hrdept.conditionalincentive.category.create');
 	}
 
 	public function store(Request $request): RedirectResponse
@@ -61,7 +62,7 @@ class ConditionalIncentiveCategoryController extends Controller
 
 	public function edit(ConditionalIncentiveCategory $cicategory): View
 	{
-		return view('humanresources.hrdept.conditionalincentive.edit', ['cicategory' => $cicategory]);
+		return view('humanresources.hrdept.conditionalincentive.category.edit', ['cicategory' => $cicategory]);
 	}
 
 	public function update(Request $request, ConditionalIncentiveCategory $cicategory): RedirectResponse

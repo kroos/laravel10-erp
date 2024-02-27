@@ -20,6 +20,12 @@
 
 @section('js')
 /////////////////////////////////////////////////////////////////////////////////////////
+//tooltip
+$(document).ready(function(){
+	$('[data-bs-toggle="tooltip"]').tooltip();
+});
+
+/////////////////////////////////////////////////////////////////////////////////////////
 // datatables
 $.fn.dataTable.moment( 'D MMM YYYY' );
 $.fn.dataTable.moment( 'h:mm a' );
@@ -32,13 +38,11 @@ $('#category').DataTable({
 	],
 	"order": [ 2, 'desc' ], // sorting the column descending
 	responsive: true
-});
-
-
-$(function () {
-	$('[data-toggle="tooltip"]').tooltip()
-});
-
+}).on( 'length.dt page.dt order.dt search.dt', function ( e, settings, len ) {
+	$(document).ready(function(){
+		$('[data-bs-toggle="tooltip"]').tooltip();
+	});}
+);
 
 /////////////////////////////////////////////////////////////////////////////////////////
 // DELETE

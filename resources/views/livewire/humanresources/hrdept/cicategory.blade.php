@@ -19,6 +19,9 @@
 								@livewire('humanresources.hrdept.cicategoryitem', ['cicategory' => $cicategory])
 							</td>
 							<td class="scope">
+								<a href="{{ route('cicategory.create') }}" class="btn btn-sm btn-outline-secondary">
+									<i class="fa-regular fa-square-plus fa-beat"></i>
+								</a>
 								<a href="{{ route('cicategory.edit', $cicategory->id) }}" class="btn btn-sm btn-outline-secondary">
 									<i class="fa-regular fa-pen-to-square fa-beat"></i>
 								</a>
