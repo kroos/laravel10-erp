@@ -9,11 +9,11 @@
 @endpush
 
 @section('content')
-<div class="container row align-items-start justify-content-center">
+<div class="container align-items-start justify-content-center border border-primary">
 	@include('humanresources.hrdept.navhr')
 	<h2>Conditional Incentive Category</h2>
 
-	<div class="hstack align-items-start justify-content-between gap-0 border border-primary">
+	<div class="row justify-content-between border border-primary">
 		<div class="col-sm-5 border border-primary m-3">
 			<h4>Create Conditional Incentive Category</h4>
 			@livewire('humanresources.hrdept.cicategorycreate')
@@ -24,11 +24,9 @@
 		</div>
 	</div>
 
-
 	<div class="mt-3">
-		@livewire('humanresources.hrdept.cicategory')
+		@livewire('humanresources.hrdept.cicategory', ['cicategories' => $cicategories])
 	</div>
-
 </div>
 @endsection
 

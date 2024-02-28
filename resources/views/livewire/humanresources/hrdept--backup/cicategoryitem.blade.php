@@ -18,7 +18,7 @@
 							</td>
 							<td>{{ $item->point }}</td>
 							<td>
-								<a href="{{ route('cicategoryitem.edit', $item->id) }}" class="btn btn-sm btn-outline-secondary">
+								<a wire:navigate href="{{ route('cicategoryitem.edit', $item->id) }}" class="btn btn-sm btn-outline-secondary">
 									<i class="fa-regular fa-pen-to-square fa-beat"></i>
 								</a>
 								<button type="button" class="btn btn-sm btn-outline-secondary text-danger" wire:click="deltem({{$item->id}})">

@@ -2,16 +2,17 @@
 
 namespace App\Livewire\HumanResources\HRDept;
 
-use Livewire\Component;
-use Illuminate\Support\Str;
-use Livewire\Attributes\On;
-use Livewire\Attributes\Rule;
 use App\Models\HumanResources\ConditionalIncentiveCategory;
-use App\Models\HumanResources\ConditionalIncentiveCategoryItem;
+use Livewire\Attribute\Validate;
+use Illuminate\Support\Str;
+use Livewire\Attributes\Rule;
+use Livewire\Component;
 
 
-class CICategoryItemCreate extends Component
+class CICategoryItemEdit extends Component
 {
+	public $cicategoryitem;
+
 	public $cat;
 
 	#[Rule('required', 'Conditional Incentive Category')]
@@ -21,12 +22,14 @@ class CICategoryItemCreate extends Component
 	public $description;
 
 	#[Rule('required|numeric|integer|min:0|max:100', 'Item Category Incentive Deduction')]
-	public $point = 0;
+	public $point;
 
 	// some function from livewire. see docs
-	#[On('cicategorycreate')]
 	public function mount()
 	{
+		$this->ci_category_id = $this->cicategoryitem->ci_category_id;
+		$this->description = $this->cicategoryitem->description;
+		$this->point = $this->cicategoryitem->point;
 		$this->cat = ConditionalIncentiveCategory::all();
 	}
 
@@ -38,21 +41,20 @@ class CICategoryItemCreate extends Component
 		}
 	}
 
-	public function store()
+	public function update()
 	{
 		$this->validate();
-		ConditionalIncentiveCategoryItem::create([
+		$this->cicategoryitem->update([
 			'ci_category_id' => $this->ci_category_id,
 			'description' => $this->description,
 			'point' => $this->point,
 		]);
 		$this->reset();
-		$this->dispatch('cicategoryitemcreate');
-		// return redirect()->route('cicategory.index')->with('message', 'Success Edit Item Category');
+		return redirect()->route('cicategory.index')->with('message', 'Success Edit Item Category');
 	}
 
 	public function render()
 	{
-		return view('livewire.humanresources.hrdept.cicategoryitemcreate');
+		return view('livewire.humanresources.hrdept.cicategoryitemedit');
 	}
 }

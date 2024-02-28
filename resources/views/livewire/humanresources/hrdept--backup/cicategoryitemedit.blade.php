@@ -1,8 +1,8 @@
 <div>
-	<form wire:submit.prevent="store">
+	<form wire:submit.prevent="update">
 		<div class="row m-2 @error('ci_category_id') is-invalid @enderror">
 			<label for="catId" class="form-label col-sm-3">Category : </label>
-			<select id="catId" class="form-select form-select-sm col-sm-4 @error('ci_category_id') is-invalid @enderror" aria-describedby="in0" wire:model.change="ci_category_id">
+			<select name="" id="catId" class="form-select form-select-sm col-sm-3 @error('ci_category_id') is-invalid @enderror" aria-describedby="in0" wire:model.change="ci_category_id">
 				<option value="">Please choose</option>
 				@foreach ($cat as $k => $v)
 					<option value="{{ $v->id }}">{{ $v->category }}</option>

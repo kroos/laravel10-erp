@@ -4,7 +4,6 @@ namespace App\Livewire\HumanResources\HRDept;
 
 use Livewire\Component;
 use Illuminate\Support\Str;
-use Livewire\Attributes\On;
 use Livewire\Attributes\Rule;
 use App\Models\HumanResources\ConditionalIncentiveCategory;
 use App\Models\HumanResources\ConditionalIncentiveCategoryItem;
@@ -17,14 +16,13 @@ class CICategoryItemCreate extends Component
 	#[Rule('required', 'Conditional Incentive Category')]
 	public $ci_category_id;
 
-	#[Rule('required|string|min:5', 'Item Category Description')]
+	#[Rule('required|string|min:5|regex:/^[a-zA-Z0-9 ]+$/', 'Item Category Description')]
 	public $description;
 
 	#[Rule('required|numeric|integer|min:0|max:100', 'Item Category Incentive Deduction')]
 	public $point = 0;
 
 	// some function from livewire. see docs
-	#[On('cicategorycreate')]
 	public function mount()
 	{
 		$this->cat = ConditionalIncentiveCategory::all();
@@ -47,8 +45,7 @@ class CICategoryItemCreate extends Component
 			'point' => $this->point,
 		]);
 		$this->reset();
-		$this->dispatch('cicategoryitemcreate');
-		// return redirect()->route('cicategory.index')->with('message', 'Success Edit Item Category');
+		return redirect()->route('cicategory.index')->with('message', 'Success Edit Item Category');
 	}
 
 	public function render()

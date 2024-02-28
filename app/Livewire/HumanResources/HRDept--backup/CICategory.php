@@ -1,23 +1,20 @@
 <?php
 namespace App\Livewire\HumanResources\HRDept;
 
-use Livewire\Component;
-use Livewire\Attributes\On;
 use App\Models\HumanResources\ConditionalIncentiveCategory;
+use Livewire\Component;
 
 class CICategory extends Component
 {
-	#[On('cicategorycreate')]
-	public function render()
-	{
-		return view('livewire.humanresources.hrdept.cicategory', [
-			'cicategories' => ConditionalIncentiveCategory::all(),
-		]);
-	}
+	public $cicategories;
+
+	// public function render()
+	// {
+	// 	return view('livewire.humanresources.hrdept.cicategory');
+	// }
 
 	public function del(ConditionalIncentiveCategory $cicategories)
 	{
 		$cicategories->delete();
 	}
-
 }

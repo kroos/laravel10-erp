@@ -26,8 +26,6 @@ class CICategoryCreate extends Component
 		$this->validate();
 		ConditionalIncentiveCategory::create(['category' => $this->category]);
 		$this->reset();
-		$this->dispatch('cicategorycreate');
-		// $this->redirect(route('cicategory.index'), $navigate = true)->with('message', 'Success create Category');
 		// return redirect()->route('cicategory.index')->with('message', 'Success create Category');
 	}
 
