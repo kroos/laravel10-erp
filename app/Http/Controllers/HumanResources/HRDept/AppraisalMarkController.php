@@ -77,7 +77,8 @@ class AppraisalMarkController extends Controller
   public function store(Request $request): RedirectResponse
   {
 
-    // INSERT
+    HRAppraisalMark::where('pivot_apoint_id', '=', $request->pivot_apoint_id)->delete();
+
     if ($request->has('arraymark1')) {
       $marks1 = array_unique($request->input('arraymark1'));
 
@@ -94,7 +95,6 @@ class AppraisalMarkController extends Controller
       }
     }
 
-    // INSERT
     if ($request->has('arraymark2')) {
       $marks2 = array_unique($request->input('arraymark2'));
 
@@ -112,7 +112,6 @@ class AppraisalMarkController extends Controller
       }
     }
 
-    // INSERT
     if ($request->has('arraymark3')) {
       $marks3 = array_unique($request->input('arraymark3'));
 
@@ -130,7 +129,6 @@ class AppraisalMarkController extends Controller
       }
     }
 
-    // INSERT
     if ($request->has('arraymark4')) {
       $marks4 = array_unique($request->input('arraymark4'));
 

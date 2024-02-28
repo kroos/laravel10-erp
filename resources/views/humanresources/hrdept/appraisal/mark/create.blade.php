@@ -41,17 +41,17 @@
 
 use \Carbon\Carbon;
 use App\Models\Staff;
+use App\Models\HumanResources\HRAppraisalMark;
 
-$staff = DB::table('staffs')
-  ->join('pivot_apoint_appraisals', 'pivot_apoint_appraisals.evaluatee_id', '=', 'staffs.id')
+$staff = Staff::join('pivot_apoint_appraisals', 'pivot_apoint_appraisals.evaluatee_id', '=', 'staffs.id')
   ->join('logins', 'logins.staff_id', '=', 'staffs.id')
   ->where('pivot_apoint_appraisals.id', $id)
-  ->select('staffs.id as staffid', 'staffs.*', 'logins.*', 'pivot_apoint_appraisals.*')
+  ->select('staffs.id as staffid', 'staffs.appraisal_category_id as catid', 'staffs.*', 'logins.*',  'pivot_apoint_appraisals.*')
   ->first();
 
 $pivotappraisal = DB::table('pivot_category_appraisals')
   ->join('option_appraisal_categories', 'option_appraisal_categories.id', '=', 'pivot_category_appraisals.category_id')
-  ->where('pivot_category_appraisals.category_id', $staff->appraisal_category_id)
+  ->where('pivot_category_appraisals.category_id', $staff->catid)
   ->orderBy('version', 'DESC')
   ->first();
 
@@ -180,16 +180,16 @@ $appraisals = DB::table('pivot_category_appraisals')
     </tr>
 
     @foreach ($questions as $question)
-    <input type="hidden" name="arraymark1[]" value="{{ '1' . $no . $no_sub }}">
-
     <?php
-    $test = '18';
+    $loop1 = HRAppraisalMark::where('question_id', $question->id)->first();
     ?>
+
+    <input type="hidden" name="arraymark1[]" value="{{ '1' . $no . $no_sub }}">
 
     <tr>
       <td class="td-border-left-right"></td>
       <td align="center" width="40px" style="vertical-align:text-top;">
-        {!! Form::radio('1' . $no . $no_sub, $question->id, ($test == $question->id), []) !!}
+        {!! Form::radio('1' . $no . $no_sub, $question->id, (($loop1->question_id ?? NULL) == $question->id), []) !!}
       </td>
       <td width="50px" style="vertical-align:text-top;">
         {!! $question->mark !!}m -
@@ -263,6 +263,10 @@ $appraisals = DB::table('pivot_category_appraisals')
     </tr>
 
     @foreach ($section_subs as $section_sub)
+    <?php
+    $loop2 = HRAppraisalMark::where('section_sub_id', $section_sub->id)->first();
+    ?>
+
     <input type="hidden" name="arrayid2[]" value="{{ 'id2' . $no }}">
     <input type="hidden" name="{{ 'id2' . $no }}" value="{{ $section_sub->id }}">
     <input type="hidden" name="arraymark2[]" value="{{ '2' . $no }}">
@@ -275,19 +279,19 @@ $appraisals = DB::table('pivot_category_appraisals')
         {!! $section_sub->section_sub !!}
       </td>
       <td align="center">
-        {!! Form::radio('2' . $no, '1', @$checked, []) !!}
+        {!! Form::radio('2' . $no, '1', (($loop2->mark ?? NULL) == '1'), []) !!}
       </td>
       <td align="center">
-        {!! Form::radio('2' . $no, '2', @$checked, []) !!}
+        {!! Form::radio('2' . $no, '2', (($loop2->mark ?? NULL) == '2'), []) !!}
       </td>
       <td align="center">
-        {!! Form::radio('2' . $no, '3', @$checked, []) !!}
+        {!! Form::radio('2' . $no, '3', (($loop2->mark ?? NULL) == '3'), []) !!}
       </td>
       <td align="center">
-        {!! Form::radio('2' . $no, '4', @$checked, []) !!}
+        {!! Form::radio('2' . $no, '4', (($loop2->mark ?? NULL) == '4'), []) !!}
       </td>
       <td align="center">
-        {!! Form::radio('2' . $no, '5', @$checked, []) !!}
+        {!! Form::radio('2' . $no, '5', (($loop2->mark ?? NULL) == '5'), []) !!}
       </td>
     </tr>
     <?php $no++; ?>
@@ -311,6 +315,10 @@ $appraisals = DB::table('pivot_category_appraisals')
 
   <table width="100%">
     @foreach ($section_subs as $section_sub)
+    <?php
+    $loop3 = HRAppraisalMark::where('section_sub_id', $section_sub->id)->first();
+    ?>
+
     <input type="hidden" name="arrayid3[]" value="{{ 'id3' . $no }}">
     <input type="hidden" name="{{ 'id3' . $no }}" value="{{ $section_sub->id }}">
     <input type="hidden" name="arraymark3[]" value="{{ '3' . $no }}">
@@ -325,7 +333,7 @@ $appraisals = DB::table('pivot_category_appraisals')
     </tr>
     <tr>
       <td colspan="2">
-        {!! Form::textarea('3' . $no, @$value, ['style' => 'width:100%;', 'rows' => 4]) !!}
+        {!! Form::textarea('3' . $no, $loop3->remark ?? NULL, ['style' => 'width:100%;', 'rows' => 4]) !!}
       </td>
     </tr>
     <tr height="20px"></tr>
@@ -368,12 +376,16 @@ $appraisals = DB::table('pivot_category_appraisals')
     </tr>
 
     @foreach ($main_questions as $main_question)
+    <?php
+    $loop4 = HRAppraisalMark::where('main_question_id', $main_question->id)->first();
+    ?>
+
     <input type="hidden" name="arraymark4[]" value="{{ '4' . $no }}">
 
     <tr>
       <td></td>
       <td width="40px">
-        {!! Form::radio('4' . $no, $main_question->id, @$checked, []) !!}
+        {!! Form::radio('4' . $no, $main_question->id, (($loop4->main_question_id ?? NULL) == $main_question->id), []) !!}
       </td>
       <td>
         {!! $main_question->main_question !!}
