@@ -10,8 +10,9 @@ class CICategoryItem extends Component
 {
 	public $cicategory;
 
-	#[On('cicategorycreate')]
+
 	#[On('cicategoryitemcreate')]
+	#[On('cicategorycreate')]
 	public function render()
 	{
 		return view('livewire.humanresources.hrdept.cicategoryitem', [

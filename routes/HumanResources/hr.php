@@ -1,57 +1,58 @@
 <?php
 // Continuence from routes/web.php
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\HumanResources\Leave\HRLeaveController;
-use App\Http\Controllers\HumanResources\Profile\ProfileController;
-use App\Http\Controllers\HumanResources\HRDept\HRDeptController;
-use App\Http\Controllers\HumanResources\HRDept\StaffController;
-use App\Http\Controllers\HumanResources\HRDept\AttendanceController;
 use App\Http\Controllers\HumanResources\HRDept\LeaveController;
+use App\Http\Controllers\HumanResources\HRDept\StaffController;
+use App\Http\Controllers\HumanResources\HRDept\AbsentController;
+use App\Http\Controllers\HumanResources\HRDept\HRDeptController;
 use App\Http\Controllers\HumanResources\HRDept\SpouseController;
+use App\Http\Controllers\HumanResources\Leave\HRLeaveController;
+use App\Http\Controllers\HumanResources\HRDept\MCLeaveController;
 use App\Http\Controllers\HumanResources\HRDept\ChildrenController;
-use App\Http\Controllers\HumanResources\HRDept\EmergencyContactController;
-use App\Http\Controllers\HumanResources\HRDept\AttendanceReportController;
-use App\Http\Controllers\HumanResources\HRDept\ReplacementLeaveController;
+use App\Http\Controllers\HumanResources\HRDept\OvertimeController;
+use App\Http\Controllers\HumanResources\Profile\ProfileController;
+use App\Http\Controllers\HumanResources\HRDept\HRMCLeaveController;
 use App\Http\Controllers\HumanResources\HRDept\HRSettingController;
-use App\Http\Controllers\HumanResources\HRDept\WorkingHourController;
-use App\Http\Controllers\HumanResources\HRDept\HolidayCalendarController;
+use App\Http\Controllers\HumanResources\HRDept\AttendanceController;
 use App\Http\Controllers\HumanResources\HRDept\DisciplineController;
+use App\Http\Controllers\HumanResources\HRDept\HRUPLLeaveController;
 use App\Http\Controllers\HumanResources\HRDept\OutstationController;
 use App\Http\Controllers\HumanResources\HRDept\AnnualLeaveController;
-use App\Http\Controllers\HumanResources\HRDept\MCLeaveController;
-use App\Http\Controllers\HumanResources\HRDept\MaternityLeaveController;
-use App\Http\Controllers\HumanResources\HRDept\HRAnnualLeaveController;
-use App\Http\Controllers\HumanResources\HRDept\HRMCLeaveController;
-use App\Http\Controllers\HumanResources\HRDept\HRMaternityLeaveController;
-use App\Http\Controllers\HumanResources\HRDept\HRReplacementLeaveController;
-use App\Http\Controllers\HumanResources\HRDept\HRUPLLeaveController;
+use App\Http\Controllers\HumanResources\HRDept\WorkingHourController;
 use App\Http\Controllers\HumanResources\HRDept\HRMCUPLLeaveController;
-use App\Http\Controllers\HumanResources\HRDept\OvertimeController;
-use App\Http\Controllers\HumanResources\HRDept\AttendanceUploadController;
-use App\Http\Controllers\HumanResources\HRDept\AttendanceDailyReportController;
-use App\Http\Controllers\HumanResources\HRDept\AttendanceExcelReportController;
-use App\Http\Controllers\HumanResources\HRDept\AttendanceReportPDFController;
-use App\Http\Controllers\HumanResources\HRDept\OvertimeReportController;
-use App\Http\Controllers\HumanResources\HRDept\HRLeaveApprovalSupervisorController;
-use App\Http\Controllers\HumanResources\HRDept\HRLeaveApprovalHODController;
-use App\Http\Controllers\HumanResources\HRDept\HRLeaveApprovalDirectorController;
-use App\Http\Controllers\HumanResources\HRDept\HRLeaveApprovalHRController;
-use App\Http\Controllers\HumanResources\HRDept\AbsentController;
-use App\Http\Controllers\HumanResources\OutstationAttendance\OutstationAttendanceController;
-use App\Http\Controllers\HumanResources\HRDept\HROutstationAttendanceController;
-use App\Http\Controllers\HumanResources\HRDept\AppraisalExcelReportController;
-use App\Http\Controllers\HumanResources\HRDept\AttendanceRemarkController;
 use App\Http\Controllers\HumanResources\HRDept\AppraisalFormController;
-use App\Http\Controllers\HumanResources\HRDept\OutstationDurationController;
-use App\Http\Controllers\HumanResources\HRDept\AppraisalFormMoreFunctionController;
-use App\Http\Controllers\HumanResources\HRDept\AppraisalApointController;
-use App\Http\Controllers\HumanResources\HRDept\AppraisalSettingController;
-use App\Http\Controllers\HumanResources\HRDept\AttendancePayslipExcelReportSettingController;
-use App\Http\Controllers\HumanResources\HRDept\AttendanceAbsentIndicatorController;
 use App\Http\Controllers\HumanResources\HRDept\AppraisalListController;
 use App\Http\Controllers\HumanResources\HRDept\AppraisalMarkController;
+use App\Http\Controllers\HumanResources\HRDept\HRAnnualLeaveController;
+use App\Http\Controllers\HumanResources\HRDept\MaternityLeaveController;
+use App\Http\Controllers\HumanResources\HRDept\OvertimeReportController;
+use App\Http\Controllers\HumanResources\HRDept\AppraisalApointController;
+use App\Http\Controllers\HumanResources\HRDept\HolidayCalendarController;
+use App\Http\Controllers\HumanResources\HRDept\AppraisalSettingController;
+use App\Http\Controllers\HumanResources\HRDept\AttendanceRemarkController;
+use App\Http\Controllers\HumanResources\HRDept\AttendanceReportController;
+use App\Http\Controllers\HumanResources\HRDept\AttendanceUploadController;
+use App\Http\Controllers\HumanResources\HRDept\EmergencyContactController;
+use App\Http\Controllers\HumanResources\HRDept\HRMaternityLeaveController;
+use App\Http\Controllers\HumanResources\HRDept\ReplacementLeaveController;
+use App\Http\Controllers\HumanResources\HRDept\HRLeaveApprovalHRController;
+use App\Http\Controllers\HumanResources\HRDept\HRLeaveApprovalHODController;
+use App\Http\Controllers\HumanResources\HRDept\HRReplacementLeaveController;
+use App\Http\Controllers\HumanResources\HRDept\OutstationDurationController;
+use App\Http\Controllers\HumanResources\HRDept\AttendanceReportPDFController;
+use App\Http\Controllers\HumanResources\HRDept\AppraisalExcelReportController;
+use App\Http\Controllers\HumanResources\HRDept\AttendanceDailyReportController;
+use App\Http\Controllers\HumanResources\HRDept\AttendanceExcelReportController;
+use App\Http\Controllers\HumanResources\HRDept\HROutstationAttendanceController;
+use App\Http\Controllers\HumanResources\HRDept\HRLeaveApprovalDirectorController;
+use App\Http\Controllers\HumanResources\HRDept\AppraisalFormMoreFunctionController;
+use App\Http\Controllers\HumanResources\HRDept\AttendanceAbsentIndicatorController;
+use App\Http\Controllers\HumanResources\HRDept\ConditionalIncentiveStaffController;
+use App\Http\Controllers\HumanResources\HRDept\HRLeaveApprovalSupervisorController;
 use App\Http\Controllers\HumanResources\HRDept\ConditionalIncentiveCategoryController;
 use App\Http\Controllers\HumanResources\HRDept\ConditionalIncentiveCategoryItemController;
+use App\Http\Controllers\HumanResources\OutstationAttendance\OutstationAttendanceController;
+use App\Http\Controllers\HumanResources\HRDept\AttendancePayslipExcelReportSettingController;
 
 
 
@@ -97,6 +98,7 @@ Route::resources([
 	'appraisalmark' => AppraisalMarkController::class,
 	'cicategory' => ConditionalIncentiveCategoryController::class,
 	'cicategoryitem' => ConditionalIncentiveCategoryItemController::class,
+	'cicategorystaff' => ConditionalIncentiveStaffController::class,
 ]);
 
 Route::get('/leavereject', [LeaveController::class, 'reject'])->name('hrleave.reject');

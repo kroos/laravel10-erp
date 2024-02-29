@@ -48,7 +48,6 @@ class ConditionalIncentiveCategoryItemController extends Controller
 
 	public function create(): View
 	{
-		return view('humanresources.hrdept.conditionalincentive.categoryitem.create');
 	}
 
 	public function store(Request $request): RedirectResponse

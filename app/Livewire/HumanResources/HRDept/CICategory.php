@@ -7,7 +7,9 @@ use App\Models\HumanResources\ConditionalIncentiveCategory;
 
 class CICategory extends Component
 {
-	#[On('cicategorycreate')]
+	// #[On('cicategorycreate')]
+	protected $listeners = ['cicategorycreate' => 'render'];
+
 	public function render()
 	{
 		return view('livewire.humanresources.hrdept.cicategory', [

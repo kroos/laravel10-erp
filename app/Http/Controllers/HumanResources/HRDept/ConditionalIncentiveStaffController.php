@@ -1,25 +1,23 @@
 <?php
-
 namespace App\Http\Controllers\HumanResources\HRDept;
-
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 // models
-// use App\Models\Staff;
-// use App\Models\HumanResources\ConditionalIncentiveCategory;
+use App\Models\Staff;
+use App\Models\HumanResources\OptWeekDates;
 use App\Models\HumanResources\ConditionalIncentiveCategoryItem;
+// use App\Models\HumanResources\ConditionalIncentiveCategory;
 
 // load db facade
 // use Illuminate\Database\Eloquent\Builder;
 // use Illuminate\Support\Facades\DB;
 
 // for controller output
-use Illuminate\Http\RedirectResponse;
-// use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
+// use Illuminate\Support\Facades\Redirect;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\JsonResponse;
-
 
 // load array helper
 // use Illuminate\Support\Arr;
@@ -27,12 +25,14 @@ use Illuminate\Http\JsonResponse;
 // use Illuminate\Support\Collection;
 // use Illuminate\Support\Facades\Http;
 
+use \Carbon\Carbon;
+use Carbon\CarbonImmutable;
 // use Session;
 // use Throwable;
 // use Exception;
 // use Log;
 
-class ConditionalIncentiveCategoryItemController extends Controller
+class ConditionalIncentiveStaffController extends Controller
 {
 	function __construct()
 	{
@@ -43,7 +43,18 @@ class ConditionalIncentiveCategoryItemController extends Controller
 
 	public function index(): View
 	{
-		return view('humanresources.hrdept.conditionalincentive.categoryitem.index', ['cicategoryitem' => $cicategoryitem]);
+		$staffincentives = Staff::where('active', 1)->get();
+		$cistaff = ConditionalIncentiveCategoryItem::all();
+		foreach ($cistaff as $v) {
+			foreach ($v->belongstomanystaff()->get() as $v1) {
+				$staff[] = $v1->pivot->staff_id;
+			}
+		}
+
+		$staffs = array_unique($staff);
+		$incentivestaffs = Staff::whereIn('id', $staffs)->get();
+
+		return view('humanresources.hrdept.conditionalincentive.staffitem.index', ['incentivestaffs' => $incentivestaffs]);
 	}
 
 	public function create(): View
@@ -60,7 +71,6 @@ class ConditionalIncentiveCategoryItemController extends Controller
 
 	public function edit(ConditionalIncentiveCategoryItem $cicategoryitem): View
 	{
-		return view('humanresources.hrdept.conditionalincentive.categoryitem.edit', ['cicategoryitem' => $cicategoryitem]);
 	}
 
 	public function update(Request $request, ConditionalIncentiveCategoryItem $cicategoryitem): RedirectResponse

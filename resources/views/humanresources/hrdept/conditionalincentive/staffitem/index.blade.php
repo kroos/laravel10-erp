@@ -9,23 +9,46 @@
 @endpush
 
 @section('content')
-<div class="container align-items-start justify-content-center border border-primary">
+<div class="container row align-items-start justify-content-center">
 	@include('humanresources.hrdept.navhr')
-	<h2>Conditional Incentive Category</h2>
+	<h2>Staff with Conditional Incentive</h2>
 
-	<div class="row justify-content-between border border-primary">
-		<div class="col-sm-5 border border-primary m-3">
-			<h4>Create Conditional Incentive Category</h4>
-			@livewire('humanresources.hrdept.cicategorycreate')
-		</div>
-		<div class="col-sm-5 border border-primary m-3">
-			<h4>Create Conditional Incentive Category Item</h4>
-			@livewire('humanresources.hrdept.cicategoryitemcreate')
-		</div>
-	</div>
-
-	<div class="mt-3">
-		@livewire('humanresources.hrdept.cicategory', ['cicategories' => $cicategories])
+	<div class="table-responsive">
+		<table class="table table-sm table-hover">
+			<thead>
+				<tr>
+					<th>Staff</th>
+					<th>Conditional Incentive</th>
+				</tr>
+			</thead>
+			<tbody>
+				@foreach ($incentivestaffs as $incentivestaff)
+				<tr>
+					<td>{{ $incentivestaff->name }}</td>
+					<td>
+						<table class="table table-sm table-hover">
+							<thead>
+								<tr>
+									<th>#</th>
+									<th>Description</th>
+									<th>Incentive Deduction</th>
+								</tr>
+							</thead>
+							<tbody>
+								@foreach ($incentivestaff->belongstomanycicategoryitem()?->get() as $k => $v)
+									<tr>
+										<td>{{ $k + 1 }}</td>
+										<td>{!! nl2br($v->description) !!}</td>
+										<td>MYR {{ $v->point }}</td>
+									</tr>
+								@endforeach
+							</tbody>
+						</table>
+					</td>
+				</tr>
+				@endforeach
+			</tbody>
+		</table>
 	</div>
 </div>
 @endsection

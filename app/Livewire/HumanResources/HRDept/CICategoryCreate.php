@@ -10,8 +10,7 @@ use Livewire\Component;
 
 class CICategoryCreate extends Component
 {
-
-	#[Rule('required|string|min:5|regex:/^[a-zA-Z0-9 ]+$/', 'Category')]
+	#[Rule('required|string|min:5', 'Category')]
 	public $category;
 
 	public function updated($property, $value)
@@ -27,8 +26,8 @@ class CICategoryCreate extends Component
 		ConditionalIncentiveCategory::create(['category' => $this->category]);
 		$this->reset();
 		$this->dispatch('cicategorycreate');
-		// $this->redirect(route('cicategory.index'), $navigate = true)->with('message', 'Success create Category');
-		// return redirect()->route('cicategory.index')->with('message', 'Success create Category');
+		// $this->redirect(route('cicategory.index'), $navigate = true)->with('flash_message', 'Success create Category');
+		// return redirect()->route('cicategory.index')->with('flash_message', 'Success create Category');
 	}
 
 	public function render()

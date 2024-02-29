@@ -38,10 +38,10 @@ class ConditionalIncentiveCategoryItem extends Model
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
 	// db relation belongsToMany
-	// public function belongstomany(): BelongsToMany
-	// {
-	// 	return $this->belongsToMany(\App\Models\HumanResources\HRLeaveAnnual::class, 'pivot_leave_annuals', 'leave_id', 'leave_annual_id')->withTimestamps();
-	// }
+	public function belongstomanystaff(): BelongsToMany
+	{
+		return $this->belongsToMany(\App\Models\Staff::class, 'pivot_staff_ci_category_item', 'cicategory_item_id', 'staff_id')->withPivot('week', 'created_at')->withTimestamps();
+	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
 	//belongsto relationship
@@ -51,5 +51,3 @@ class ConditionalIncentiveCategoryItem extends Model
 	}
 
 }
-
-

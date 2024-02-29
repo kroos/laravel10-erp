@@ -12,8 +12,6 @@ use App\Models\HumanResources\ConditionalIncentiveCategoryItem;
 
 class CICategoryItemCreate extends Component
 {
-	public $cat;
-
 	#[Rule('required', 'Conditional Incentive Category')]
 	public $ci_category_id;
 
@@ -24,7 +22,6 @@ class CICategoryItemCreate extends Component
 	public $point = 0;
 
 	// some function from livewire. see docs
-	#[On('cicategorycreate')]
 	public function mount()
 	{
 		$this->cat = ConditionalIncentiveCategory::all();
@@ -51,8 +48,12 @@ class CICategoryItemCreate extends Component
 		// return redirect()->route('cicategory.index')->with('message', 'Success Edit Item Category');
 	}
 
+	#[On('cicategorycreate')]
+	#[On('cicategoryitemcreate')]
 	public function render()
 	{
-		return view('livewire.humanresources.hrdept.cicategoryitemcreate');
+		return view('livewire.humanresources.hrdept.cicategoryitemcreate', [
+			'cat' => ConditionalIncentiveCategory::all(),
+		]);
 	}
 }
