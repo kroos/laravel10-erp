@@ -76,6 +76,7 @@ class AppraisalMarkController extends Controller
    */
   public function store(Request $request): RedirectResponse
   {
+    $currentDate = Carbon::now();
 
     HRAppraisalMark::where('pivot_apoint_id', '=', $request->pivot_apoint_id)->delete();
 
@@ -144,6 +145,23 @@ class AppraisalMarkController extends Controller
       }
     }
 
+    $total_mark = HRAppraisalMark::where('pivot_apoint_id', $request->pivot_apoint_id)->sum('mark');
+
+    if ($request->has('final')) {
+
+      $full_mark = $request->total_mark1 + $request->total_mark2;
+
+      DB::table('pivot_apoint_appraisals')
+        ->where('id', $request->pivot_apoint_id)
+        ->update([
+          'appraisal_category_id' => $request->appraisal_category_id,
+          'appraisal_category_version' => $request->appraisal_category_version,
+          'full_mark' => $full_mark,
+          'total_mark' => $total_mark,
+          'finalise_date' => $currentDate,
+        ]);
+    }
+
     Session::flash('flash_message', 'Successfully Submit Appraisal Form.');
     return redirect()->route('appraisalmark.index');
   }
@@ -161,7 +179,7 @@ class AppraisalMarkController extends Controller
    */
   public function edit(): View
   {
-    // return view('humanresources.hrdept.appraisal.form.edit', ['id' => $appraisalform]);
+    //
   }
 
   /**
@@ -169,17 +187,7 @@ class AppraisalMarkController extends Controller
    */
   public function update(Request $request): JsonResponse
   {
-    // $currentDate = Carbon::now();
-    // $date = $currentDate->format('Y-m-d');
-
-    // DB::table('pivot_apoint_appraisals')
-    //   ->whereNull('deleted_at')
-    //   ->update(['distribute_date' => $date, 'updated_at' => $currentDate]);
-
-    // return response()->json([
-    //   'message' => 'Successful Distributed',
-    //   'status' => 'success'
-    // ]);
+    //
   }
 
   /**
