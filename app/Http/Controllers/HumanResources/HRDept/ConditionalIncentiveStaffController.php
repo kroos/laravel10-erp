@@ -45,6 +45,7 @@ class ConditionalIncentiveStaffController extends Controller
 	{
 		$staffincentives = Staff::where('active', 1)->get();
 		$cistaff = ConditionalIncentiveCategoryItem::all();
+		$staff = [];
 		foreach ($cistaff as $v) {
 			foreach ($v->belongstomanystaff()->get() as $v1) {
 				$staff[] = $v1->pivot->staff_id;

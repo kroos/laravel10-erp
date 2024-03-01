@@ -5,7 +5,7 @@
 	@include('humanresources.hrdept.navhr')
 	<h2>Edit Conditional Incentive Category</h2>
 
-	@livewire('humanresources.hrdept.cicategoryitemedit', ['cicategoryitem' => $cicategoryitem])
+	@livewire('HumanResources.HRDept.CICategoryItemEdit', ['cicategoryitem' => $cicategoryitem])
 </div>
 	@endsection
 

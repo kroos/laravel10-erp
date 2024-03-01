@@ -21,7 +21,7 @@
 								<a href="{{ route('cicategoryitem.edit', $item->id) }}" class="btn btn-sm btn-outline-secondary">
 									<i class="fa-regular fa-pen-to-square fa-beat"></i>
 								</a>
-								<button type="button" class="btn btn-sm btn-outline-secondary text-danger" wire:click="deltem({{$item->id}})">
+								<button type="button" class="btn btn-sm btn-outline-secondary text-danger" wire:click="deltem({{$item->id}})" wire:confirm="Are you sure?">
 									<i class="fa-solid fa-trash-can fa-beat"></i>
 								</button>
 							</td>

@@ -13,7 +13,7 @@
 	@include('humanresources.hrdept.navhr')
 	<h2>Conditional Incentive Category</h2>
 
-	@livewire('humanresources.hrdept.cicategory')
+	@livewire('HumanResources.HRDept.CICategory')
 
 
 </div>

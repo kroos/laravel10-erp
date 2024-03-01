@@ -40,7 +40,7 @@ class ConditionalIncentiveCategoryItem extends Model
 	// db relation belongsToMany
 	public function belongstomanystaff(): BelongsToMany
 	{
-		return $this->belongsToMany(\App\Models\Staff::class, 'pivot_staff_ci_category_item', 'cicategory_item_id', 'staff_id')->withPivot('week', 'created_at')->withTimestamps();
+		return $this->belongsToMany(\App\Models\Staff::class, 'pivot_staff_ci_category_item', 'cicategory_item_id', 'staff_id')->withPivot('id', 'week', 'created_at')->withTimestamps();
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////

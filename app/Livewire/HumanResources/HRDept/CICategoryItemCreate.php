@@ -22,6 +22,8 @@ class CICategoryItemCreate extends Component
 	public $point = 0;
 
 	// some function from livewire. see docs
+	#[On('cicategoryitemdel')]
+	#[On('cicategorydel')]
 	public function mount()
 	{
 		$this->cat = ConditionalIncentiveCategory::all();
