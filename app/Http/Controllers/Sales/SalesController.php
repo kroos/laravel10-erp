@@ -18,7 +18,6 @@ use Illuminate\Support\Facades\DB;
 // load models
 use App\Models\Staff;
 use App\Models\Sales\Sales;
-use App\Models\Sales\SalesJobDescriptionGetItem;
 
 // load batch and queue
 // use Illuminate\Bus\Batch;
@@ -178,7 +177,7 @@ class SalesController extends Controller
 		return view('sales.sales.edit', ['sale' => $sale]);
 	}
 
-	public function update(Request $request, Sales $sale)//: RedirectResponse
+	public function update(Request $request, Sales $sale): RedirectResponse
 	{
 		// dd($request->all());
 
