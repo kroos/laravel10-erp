@@ -106,8 +106,8 @@ foreach($sdt as $t) {
 					<input type="hidden" name="jobdesc[{{ $m }}][id]" value="{{ $ke->id }}">
 					<div class="col-sm-12 row border border-info mb-3 rounded">
 						<div class="col-auto m-1 p-1">
-							<button type="button" class="btn btn-sm btn-outline-secondary jdesc_remove" data-id="{{ $ke->id }}">
-								<i class="fas fa-trash" aria-hidden="true"></i>
+							<button type="button" class="btn btn-sm btn-outline-secondary jdesc_delete" data-id="{{ $ke->id }}">
+								<i class="fas fa-trash" aria-hidden="true" style="color:red;"></i>
 							</button>
 						</div>
 						<div class="col m-1 p-1 form-group {{ $errors->has('jobdesc.*.job_description') ? 'has-error' : '' }}">
@@ -217,7 +217,7 @@ $.ajax({
 			id: {{ $sale->customer_id }}
 	},
 }).then(function (data) {
-	console.log(data.results[0].id, data.results[0].text);
+	// console.log(data.results[0].id, data.results[0].text);
 	// create the option and append to Select2
 	var option = new Option(data.results[0].text, data.results[0].id, true, true);
 	studentSelect.append(option).trigger('change');
@@ -270,7 +270,7 @@ $('#specReq').change(function() {
 					id: {{ $ke->uom_id }}
 			},
 		}).then(function (data) {
-			console.log(data.results[0].id, data.results[0].text);
+			// console.log(data.results[0].id, data.results[0].text);
 			// create the option and append to Select2
 			var option = new Option(data.results[0].text, data.results[0].id, true, true);
 			$('#jdu_{{$mu}}').append(option).trigger('change');
@@ -301,7 +301,7 @@ $('#specReq').change(function() {
 					id: {{ $ke->machine_id }}
 			},
 		}).then(function (data) {
-			console.log(data.results[0].id, data.results[0].text);
+			// console.log(data.results[0].id, data.results[0].text);
 			// create the option and append to Select2
 			var option = new Option(data.results[0].text, data.results[0].id, true, true);
 			$('#jobdescmach_{{$mu}}').append(option).trigger('change');
@@ -470,7 +470,57 @@ $(crb_wrappers).on("click",".jdesc_remove", function(e){
 	$('#form').bootstrapValidator('removeField', $option6);
 	$('#form').bootstrapValidator('removeField', $option7);
 	xcrb--;
-})
+});
+
+/////////////////////////////////////////////////////////////////////////////////////////
+$('.jdesc_delete').click(function(){
+	// e.preventDefault();
+	var jobdescID = $(this).data('id');
+	console.log(jobdescID);
+	SwalDelete(jobdescID);
+});
+function SwalDelete(jobdescID){
+	swal.fire({
+		title: 'Are you sure?',
+		text: "It will be deleted permanently!",
+		type: 'warning',
+		showCancelButton: true,
+		confirmButtonColor: '#3085d6',
+		cancelButtonColor: '#d33',
+		confirmButtonText: 'Yes, delete it!',
+		showLoaderOnConfirm: true,
+
+		preConfirm: function() {
+			return new Promise(function(resolve) {
+				$.ajax({
+					url: '{{ url('salesjobdescription') }}' + '/' + jobdescID,
+					type: 'DELETE',
+					data: {
+							_token : $('meta[name=csrf-token]').attr('content'),
+							id: jobdescID,
+					},
+					dataType: 'json'
+				})
+				.done(function(response){
+					swal.fire('Deleted!', response.message, response.status)
+					.then(function(){
+						window.location.reload(true);
+					});
+					//$('#delete_product_' + jobdescID).parent().parent().remove();
+				})
+				.fail(function(){
+					swal.fire('Oops...', 'Something went wrong with ajax !', 'error');
+				})
+			});
+		},
+		allowOutsideClick: false
+	})
+	.then((result) => {
+		if (result.dismiss === swal.DismissReason.cancel) {
+			swal.fire('Cancelled', 'Your data is safe from delete', 'info')
+		}
+	});
+}
 
 /////////////////////////////////////////////////////////////////////////////////////////
 // validator

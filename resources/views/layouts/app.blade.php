@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en" data-bs-theme="auto">
 <?php
 use \Carbon\Carbon;
@@ -17,7 +17,7 @@ $currentYear = Carbon::now()->year;
 	<meta name="csrf-token" content="{{ csrf_token() }}">
 	<!-- Styles -->
 	<link href="{{ URL::asset('css/app.css') }}" rel="stylesheet">
-	@livewireStyles
+	@stack('styles')
 </head>
 <body class="container-fluid flex align-items-start justify-content-center">
 	<div class="container ">
@@ -168,6 +168,6 @@ $currentYear = Carbon::now()->year;
 	@section('nonjquery')
 	@show
 </script>
-@livewireScripts
+@stack('scripts')
 </html>
 

@@ -25,12 +25,6 @@ class Sales extends Model
 
 	/////////////////////////////////////////////////////////////////////////////////////////
 	// hasmany relationship
-
-	public function hasmanysalesamend(): HasMany
-	{
-		return $this->hasMany(\App\Models\Sales\SalesAmend::class, 'sales_id');
-	}
-
 	public function hasmanyjobdescription(): HasMany
 	{
 		return $this->hasMany(\App\Models\Sales\SalesJobDescription::class, 'sales_id');

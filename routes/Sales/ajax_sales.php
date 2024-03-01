@@ -1,11 +1,12 @@
 <?php
 // Continuence from routes/web.php
-use App\Http\Controllers\CPS\AjaxController;
-use App\Http\Controllers\CPS\AjaxDBController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Sales\AjaxController;
 
 // Ajax Controller : to CRUD data on the DB
-// Route::patch('/leavecancel/{hrleave}', [AjaxController::class, 'leavecancel'])->name('leavecancel.leavecancel');
+Route::patch('/saleamend/{saleamend}', [AjaxController::class, 'saleamend'])->name('saleamend');
+Route::patch('/saleapproved/{saleapproved}', [AjaxController::class, 'saleapproved'])->name('saleapproved');
+Route::patch('/salesend/{salesend}', [AjaxController::class, 'salesend'])->name('salesend');
 
 
 

@@ -169,6 +169,11 @@ class Staff extends Authenticatable
 		return $this->belongsToMany(Staff::class, 'pivot_cross_backups', 'backup_staff_id', 'staff_id')->withPivot('active')->withTimestamps();
 	}
 
+	public function belongstomanycicategoryitem(): BelongsToMany
+	{
+		return $this->belongsToMany(\App\Models\HumanResources\ConditionalIncentiveCategoryItem::class, 'pivot_staff_ci_category_item', 'staff_id', 'cicategory_item_id')->withPivot('week', 'created_at')->withTimestamps();
+	}
+
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
 	// db relation BelongsTo
 	public function belongstoleaveapprovalflow(): BelongsTo
@@ -228,5 +233,3 @@ class Staff extends Authenticatable
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
 }
-
-
