@@ -3,7 +3,7 @@
 namespace App\Models\HumanResources;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\SoftDeletes;
+// use Illuminate\Database\Eloquent\SoftDeletes;
 // use Illuminate\Database\Eloquent\Model;
 use App\Models\Model;
 
@@ -18,7 +18,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class HRAppraisalMark extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory;
     // protected $connection = 'mysql';
     protected $table = 'hr_appraisal_marks';
 

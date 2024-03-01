@@ -34,9 +34,7 @@ $staffs = Staff::join('logins', 'staffs.id', '=', 'logins.staff_id')
       <h4>Appraisal List</h4>
     </div>
     <div class="col-md-10">
-      <button type="button" class="btn btn-sm btn-outline-secondary distribute">
-        DISTRIBUTE
-      </button>
+  
     </div>
   </div>
 

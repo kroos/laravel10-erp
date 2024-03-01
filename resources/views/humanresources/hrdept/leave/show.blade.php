@@ -410,7 +410,7 @@ if ($leave_status_temp == 'Approved' || $leave_status_temp == 'Waived') {
   <div class="table">
     <div class="table-row">
       <div class="table-cell-hidden text-center" style="width: 100%;">
-        <a href="{{ url()->previous() }}"><button class="btn btn-sm btn-outline-secondary" id="back">Back</button></a>
+        <!-- <a href="{{ url()->previous() }}"> --> <a href=""><button onclick="goBack()" class="btn btn-sm btn-outline-secondary" id="back">Back</button></a> 
         <a href=""><button onclick="printPage()" class="btn btn-sm btn-outline-secondary" id="printPageButton">Print</button></a>
       </div>
     </div>
@@ -426,7 +426,7 @@ function printPage() {
 window.print();
 }
 
-function back() {
+function goBack() {
 window.history.back();
 }
 @endsection

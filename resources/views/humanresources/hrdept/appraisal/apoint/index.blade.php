@@ -11,7 +11,7 @@
   .scrollable-div-1 {
     /* Set the width height as needed */
     /*		width: 100%;*/
-    height: 850px;
+    height: 800px;
     /* Add scrollbars when content overflows */
     overflow: auto;
   }
@@ -84,6 +84,14 @@ $evaluatees = Staff::join('logins', 'staffs.id', '=', 'logins.staff_id')
   <div class="row">
     <div class="col-6">
 
+      <div class="row mb-3">
+        <div class="col-12">
+          <button type="button" class="btn btn-sm btn-outline-secondary distribute">
+            OPEN APPRAISAL
+          </button>
+        </div>
+      </div>
+
       <div class="row">
         <div class="scrollable-div-1">
           @foreach($staffs as $staff)
@@ -96,6 +104,7 @@ $evaluatees = Staff::join('logins', 'staffs.id', '=', 'logins.staff_id')
             ->where('logins.active', 1)
             ->whereNull('pivot_apoint_appraisals.deleted_at')
             ->where('pivot_apoint_appraisals.evaluatee_id', $staff->id)
+            ->whereNull('pivot_apoint_appraisals.finalise_date')
             ->orderBy('logins.username', 'ASC')
             ->get();
           ?>
@@ -105,14 +114,14 @@ $evaluatees = Staff::join('logins', 'staffs.id', '=', 'logins.staff_id')
               <span>{{ $staff->username }} - {{ $staff->name }}</span>
 
               @if ($staff->appraisal_category_id == NULL)
-                <button type="button" data-bs-toggle="modal" data-bs-target="#form{{ $staff->id }}" data-id="{{ $staff->id }}" class="btn btn-sm py-0 btn-outline-secondary form-button">
-                  -
-                </button>
-                @else
-                <button type="button" data-bs-toggle="modal" data-bs-target="#form{{ $staff->id }}" data-id="{{ $staff->id }}" class="btn btn-sm py-0 btn-outline-success form-button">
-                  {{ $staff->category }}
-                </button>
-                @endif
+              <button type="button" data-bs-toggle="modal" data-bs-target="#form{{ $staff->id }}" data-id="{{ $staff->id }}" class="btn btn-sm py-0 btn-outline-secondary form-button">
+                -
+              </button>
+              @else
+              <button type="button" data-bs-toggle="modal" data-bs-target="#form{{ $staff->id }}" data-id="{{ $staff->id }}" class="btn btn-sm py-0 btn-outline-success form-button">
+                {{ $staff->category }}
+              </button>
+              @endif
 
               <!-- POP UP -->
               <div class="modal fade" id="form{{ $staff->id }}" aria-labelledby="formlabel{{ $staff->id }}" aria-hidden="true">
@@ -230,6 +239,7 @@ $(document).on('click', '.form-button', function(e){
   });
 });
 
+
 ////////////////////////////////////////////////////////////////////////////////////
 // DELETE APOINT APPRAISAL
 $(document).on('click', '.pivot_delete', function(e){
@@ -316,6 +326,52 @@ $(".form-appraisal-category").on('submit', function (e) {
       const res = resp.responseJSON;
       $('#form').modal('hide');
       swal.fire('Error!', res.message, 'error');
+    }
+  });
+});
+
+
+////////////////////////////////////////////////////////////////////////////////////
+// DISTRIBUTE APPRAISAL
+$(document).on('click', '.distribute', function(e){
+
+  e.preventDefault();
+  swal.fire({
+    title: 'DISTRIBUTE',
+    text: "Do you want to distribute current year appraisal?",
+    icon: 'info',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Yes',
+    showLoaderOnConfirm: true,
+
+    preConfirm: function() {
+      return new Promise(function(resolve) {
+        $.ajax({
+          type: 'PATCH',
+          url: '{{ url('appraisallist/update') }}',
+          data: {
+            _token : $('meta[name=csrf-token]').attr('content'),
+          },
+          dataType: 'json'
+        })
+        .done(function(response){
+          swal.fire('Distributed', response.message, response.status)
+          .then(function(){
+            window.location.reload(true);
+          });
+        })
+        .fail(function(){
+          swal.fire('Error', 'Something wrong with ajax!', 'error');
+        })
+      });
+    },
+    allowOutsideClick: false
+  })
+  .then((result) => {
+    if (result.dismiss === swal.DismissReason.cancel) {
+      swal.fire('Cancelled', 'Process has been cancelled', 'info')
     }
   });
 });
