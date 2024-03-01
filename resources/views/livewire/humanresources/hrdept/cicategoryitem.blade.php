@@ -1,6 +1,6 @@
 <div>
 	<div class="table-responsive">
-		<table class="table table-sm table-hover">
+		<table class="table table-sm table-hover" style="font-size: 12px;">
 			<thead>
 				<tr>
 					<th>Item Description</th>

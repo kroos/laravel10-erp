@@ -43,7 +43,6 @@ class ConditionalIncentiveStaffController extends Controller
 
 	public function index(): View
 	{
-		$staffincentives = Staff::where('active', 1)->get();
 		$cistaff = ConditionalIncentiveCategoryItem::all();
 		$staff = [];
 		foreach ($cistaff as $v) {
@@ -58,27 +57,33 @@ class ConditionalIncentiveStaffController extends Controller
 		return view('humanresources.hrdept.conditionalincentive.staffitem.index', ['incentivestaffs' => $incentivestaffs]);
 	}
 
-	public function create(): View
-	{
-	}
+	// public function create(): View
+	// {
+	// 	//
+	// }
 
-	public function store(Request $request): RedirectResponse
-	{
-	}
+	// public function store(Request $request): RedirectResponse
+	// {
+	// 	//
+	// }
 
-	public function show(ConditionalIncentiveCategoryItem $cicategoryitem): View
-	{
-	}
+	// public function show(ConditionalIncentiveCategoryItem $cicategoryitem): View
+	// {
+	// 	//
+	// }
 
-	public function edit(ConditionalIncentiveCategoryItem $cicategoryitem): View
-	{
-	}
+	// public function edit(ConditionalIncentiveCategoryItem $cicategoryitem): View
+	// {
+	// 	//
+	// }
 
-	public function update(Request $request, ConditionalIncentiveCategoryItem $cicategoryitem): RedirectResponse
-	{
-	}
+	// public function update(Request $request, ConditionalIncentiveCategoryItem $cicategoryitem): RedirectResponse
+	// {
+	// 	//
+	// }
 
-	public function destroy(Request $request, ConditionalIncentiveCategoryItem $cicategoryitem): JsonResponse
-	{
-	}
+	// public function destroy(Request $request, ConditionalIncentiveCategoryItem $cicategoryitem): JsonResponse
+	// {
+	// 	//
+	// }
 }

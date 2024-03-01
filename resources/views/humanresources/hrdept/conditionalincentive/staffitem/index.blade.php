@@ -14,15 +14,11 @@
 	<h2>Staff with Conditional Incentive</h2>
 
 	<div class="hstack align-items-start justify-content-between">
-		<div class="col-sm-5 m-3">
+		<div class="col-sm-12 m-3">
 			<h4>Create Incentive With Staff</h4>
 			@livewire('HumanResources.HRDept.CICategoryItemStaffCreate')
 		</div>
-		<div class="col-sm-5 m-3">
-			<h4></h4>
-		</div>
 	</div>
-
 
 	@livewire('HumanResources.HRDept.CICategoryItemStaff')
 </div>
@@ -43,11 +39,11 @@ $.fn.dataTable.moment( 'h:mm a' );
 $('#category').DataTable({
 	"paging": true,
 	"lengthMenu": [ [25,50,100,-1], [25,50,100,"All"] ],
-	"columnDefs": [
-					{ type: 'date', 'targets': [2] },
-					{ type: 'time', 'targets': [3] },
-	],
-	"order": [ 2, 'desc' ], // sorting the column descending
+	// "columnDefs": [
+	// 				{ type: 'date', 'targets': [2] },
+	// 				{ type: 'time', 'targets': [3] },
+	// ],
+	"order": [ 0, 'desc' ], // sorting the column descending
 	responsive: true
 }).on( 'length.dt page.dt order.dt search.dt', function ( e, settings, len ) {
 	$(document).ready(function(){

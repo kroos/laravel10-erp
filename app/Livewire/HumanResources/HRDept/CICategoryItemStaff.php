@@ -5,14 +5,11 @@ namespace App\Livewire\HumanResources\HRDept;
 use App\Models\Staff;
 use Livewire\Component;
 use App\Models\HumanResources\ConditionalIncentiveCategoryItem;
+use Livewire\Attributes\On;
 
 class CICategoryItemStaff extends Component
 {
-
-	public function mount()
-	{
-	}
-
+	#[On('cicategoryitemstaffcreate')]
 	public function render()
 	{
 		$cistaff = ConditionalIncentiveCategoryItem::all();
@@ -24,7 +21,13 @@ class CICategoryItemStaff extends Component
 		}
 
 		$staffs = array_unique($staff);
-		$incentivestaffs = Staff::whereIn('id', $staffs)->get();
+		$incentivestaffs = Staff::select('staffs.id', 'logins.username', 'staffs.name')->join('logins', 'staffs.id', '=', 'logins.staff_id')->orderBy('logins.username')->whereIn('staffs.id', $staffs)->where('logins.active', 1)->get();
 		return view('livewire.humanresources.hrdept.cicategoryitemstaff', ['incentivestaffs' => $incentivestaffs]);
+	}
+
+	public function delstaffitem($array)
+	{
+		$st = explode('_', $array);
+		Staff::find($st[0])->belongstomanycicategoryitem()->detach($st[1]);
 	}
 }
