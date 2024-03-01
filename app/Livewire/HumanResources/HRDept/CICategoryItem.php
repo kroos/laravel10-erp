@@ -23,6 +23,7 @@ class CICategoryItem extends Component
 	public function deltem($id)
 	{
 		ConditionalIncentiveCategoryItem::find($id)->delete();
+		$this->dispatch('cicategoryitemdel');
 	}
 
 }

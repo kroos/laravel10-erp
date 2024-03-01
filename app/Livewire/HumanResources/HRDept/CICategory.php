@@ -7,9 +7,7 @@ use App\Models\HumanResources\ConditionalIncentiveCategory;
 
 class CICategory extends Component
 {
-	// #[On('cicategorycreate')]
-	protected $listeners = ['cicategorycreate' => 'render'];
-
+	#[On('cicategorycreate')]
 	public function render()
 	{
 		return view('livewire.humanresources.hrdept.cicategory', [
@@ -20,6 +18,7 @@ class CICategory extends Component
 	public function del(ConditionalIncentiveCategory $cicategories)
 	{
 		$cicategories->delete();
+		$this->dispatch('cicategorydel');
 	}
 
 }
