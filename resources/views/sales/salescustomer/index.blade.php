@@ -2,12 +2,12 @@
 
 @section('content')
 <style>
-  div,
+  /* div,
   table,
   tr,
   td {
     border: 1px solid black;
-  }
+  } */
 </style>
 
 <?php
@@ -39,7 +39,7 @@ $no = 1;
           <th class="text-center" style="width: 100px;">Phone No</th>
 
 
-          <th class="text-center" style="width: 40px;"></th>
+          <th class="text-center" style="width: 120px;"></th>
         </tr>
       </thead>
       <tbody>
@@ -48,21 +48,30 @@ $no = 1;
           <td class="text-center">
             {{ $no++ }}
           </td>
-          <td>
-  
+          <td data-toggle="tooltip" title="{{ $customer->customer }}">
             <input type="text" readonly value="{{ $customer->customer }}" style="border-style:none; outline:none; background-color:transparent; width:95%; height:100%;" />
           </td>
-          <td class="text-center">
-
+          <td data-toggle="tooltip" title="{{ $customer->contact }}">
+            <input type="text" readonly value="{{ $customer->contact }}" style="border-style:none; outline:none; background-color:transparent; width:95%; height:100%;" />
+          </td>
+          <td data-toggle="tooltip" title="{{ $customer->address }}">
+            <input type="text" readonly value="{{ $customer->address }}" style="border-style:none; outline:none; background-color:transparent; width:97%; height:100%;" />
+          </td>
+          <td class="text-center" data-toggle="tooltip" title="{{ $customer->phone }}">
+            <input type="text" readonly value="{{ $customer->phone }}" style="border-style:none; outline:none; background-color:transparent; width:97%; height:100%;" />
           </td>
           <td class="text-center">
-
-          </td>
-          <td class="text-center">
-
-          </td>
-          <td class="text-center">
-
+            <a href="{{ route('salescustomer.show', $customer->id) }}" class="btn btn-sm btn-outline-secondary" data-toggle="tooltip" title="View">
+              <i class="bi bi-file-earmark-text" style="font-size: 15px;"></i>
+            </a>
+            &nbsp;
+            <a href="{{ route('salescustomer.edit', $customer->id) }}" class="btn btn-sm btn-outline-secondary" data-toggle="tooltip" title="Edit">
+              <i class="bi bi-pencil-square" style="font-size: 15px;"></i>
+            </a>
+            &nbsp;
+            <a href="{{ route('salescustomer.edit', $customer->id) }}" class="btn btn-sm btn-outline-secondary" data-toggle="tooltip" title="Delete">
+              <i class="bi bi-trash3-fill" style="font-size: 15px;"></i>
+            </a>
           </td>
         </tr>
         @endforeach
