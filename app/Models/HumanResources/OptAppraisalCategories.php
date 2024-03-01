@@ -33,4 +33,9 @@ class OptAppraisalCategories extends Model
 	{
 		return $this->hasMany(\App\Models\Staff::class, 'appraisal_category_id');
 	}
+
+	public function hasmanyappraisal(): HasMany
+	{
+		return $this->hasMany(\App\Models\HumanResources\AppraisalPivot::class, 'appraisal_category_id');
+	}
 }

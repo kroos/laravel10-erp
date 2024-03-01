@@ -22,6 +22,9 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Staff;
 use App\Models\HumanResources\DepartmentPivot;
 use App\Models\HumanResources\HRAppraisalMark;
+use App\Models\HumanResources\HRAppraisalSectionSub;
+use App\Models\HumanResources\HRAppraisalMainQuestion;
+use App\Models\HumanResources\HRAppraisalQuestion;
 
 // load paginator
 use Illuminate\Pagination\Paginator;
@@ -73,42 +76,91 @@ class AppraisalMarkController extends Controller
    */
   public function store(Request $request): RedirectResponse
   {
+    $currentDate = Carbon::now();
+
+    HRAppraisalMark::where('pivot_apoint_id', '=', $request->pivot_apoint_id)->delete();
 
     if ($request->has('arraymark1')) {
       $marks1 = array_unique($request->input('arraymark1'));
 
       foreach ($marks1 as $mark1) {
-        HRAppraisalMark::create([
-          'pivot_apoint_id' => $request->pivot_apoint_id,
-          'question_id' => $request->$mark1,
-          'mark' => '2',
-        ]);
+        if ($request->$mark1 != NULL) {
+
+          HRAppraisalMark::create([
+            'pivot_apoint_id' => $request->pivot_apoint_id,
+            'section_id' => $request->section1,
+            'question_id' => $request->$mark1,
+            'mark' => HRAppraisalQuestion::find($request->$mark1)->mark,
+          ]);
+        }
       }
     }
 
-    // if ($request->has('arraymark2')) {
-    //   $marks2 = array_unique($request->input('arraymark2'));
+    if ($request->has('arraymark2')) {
+      $marks2 = array_unique($request->input('arraymark2'));
 
-    //   foreach ($marks2 as $mark2) {
-        
-    //   }
-    // }
+      foreach ($marks2 as $mark2) {
+        if ($request->$mark2 != NULL) {
+          $id2 = 'id' . $mark2;
 
-    // if ($request->has('arraymark3')) {
-    //   $marks3 = array_unique($request->input('arraymark3'));
+          HRAppraisalMark::create([
+            'pivot_apoint_id' => $request->pivot_apoint_id,
+            'section_id' => $request->section2,
+            'section_sub_id' => $request->$id2,
+            'mark' => $request->$mark2,
+          ]);
+        }
+      }
+    }
 
-    //   foreach ($marks3 as $mark3) {
-        
-    //   }
-    // }
+    if ($request->has('arraymark3')) {
+      $marks3 = array_unique($request->input('arraymark3'));
 
-    // if ($request->has('arraymark4')) {
-    //   $marks4 = array_unique($request->input('arraymark4'));
+      foreach ($marks3 as $mark3) {
+        if ($request->$mark3 != NULL) {
+          $id3 = 'id' . $mark3;
 
-    //   foreach ($marks4 as $mark4) {
-        
-    //   }
-    // }
+          HRAppraisalMark::create([
+            'pivot_apoint_id' => $request->pivot_apoint_id,
+            'section_id' => $request->section3,
+            'section_sub_id' => $request->$id3,
+            'remark' => $request->$mark3,
+          ]);
+        }
+      }
+    }
+
+    if ($request->has('arraymark4')) {
+      $marks4 = array_unique($request->input('arraymark4'));
+
+      foreach ($marks4 as $mark4) {
+        if ($request->$mark4 != NULL) {
+
+          HRAppraisalMark::create([
+            'pivot_apoint_id' => $request->pivot_apoint_id,
+            'section_id' => $request->section4,
+            'main_question_id' => $request->$mark4,
+          ]);
+        }
+      }
+    }
+
+    $total_mark = HRAppraisalMark::where('pivot_apoint_id', $request->pivot_apoint_id)->sum('mark');
+
+    if ($request->has('final')) {
+
+      $full_mark = $request->total_mark1 + $request->total_mark2;
+
+      DB::table('pivot_apoint_appraisals')
+        ->where('id', $request->pivot_apoint_id)
+        ->update([
+          'appraisal_category_id' => $request->appraisal_category_id,
+          'appraisal_category_version' => $request->appraisal_category_version,
+          'full_mark' => $full_mark,
+          'total_mark' => $total_mark,
+          'finalise_date' => $currentDate,
+        ]);
+    }
 
     Session::flash('flash_message', 'Successfully Submit Appraisal Form.');
     return redirect()->route('appraisalmark.index');
@@ -127,7 +179,7 @@ class AppraisalMarkController extends Controller
    */
   public function edit(): View
   {
-    // return view('humanresources.hrdept.appraisal.form.edit', ['id' => $appraisalform]);
+    //
   }
 
   /**
@@ -135,17 +187,7 @@ class AppraisalMarkController extends Controller
    */
   public function update(Request $request): JsonResponse
   {
-    // $currentDate = Carbon::now();
-    // $date = $currentDate->format('Y-m-d');
-
-    // DB::table('pivot_apoint_appraisals')
-    //   ->whereNull('deleted_at')
-    //   ->update(['distribute_date' => $date, 'updated_at' => $currentDate]);
-
-    // return response()->json([
-    //   'message' => 'Successful Distributed',
-    //   'status' => 'success'
-    // ]);
+    //
   }
 
   /**

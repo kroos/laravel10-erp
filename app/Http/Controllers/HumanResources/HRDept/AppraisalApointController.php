@@ -73,13 +73,15 @@ class AppraisalApointController extends Controller
    */
   public function store(Request $request): RedirectResponse
   {
+    $now = Carbon::now();
+    $year = $now->format('Y');
 
     foreach ($request->evaluetee_id as $evaluateeid) {
       $evaluateeid = Staff::find($evaluateeid);
-      $evaluateeid->belongstomanyevaluator()->attach($request->evaluator_id);
+      $evaluateeid->belongstomanyevaluator()->attach($request->evaluator_id, ['year' => $year]);
     }
 
-    Session::flash('flash_message', 'Successfully Submit Appraisal Form.');
+    Session::flash('flash_message', 'Successfully Apoint.');
     return redirect()->route('appraisalapoint.index');
   }
 
