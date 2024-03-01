@@ -3,11 +3,11 @@
 	<div class="hstack align-items-start justify-content-between">
 		<div class="col-sm-5 m-3">
 			<h4>Create Conditional Incentive Category</h4>
-			@livewire('humanresources.hrdept.cicategorycreate')
+			@livewire('HumanResources.HRDept.CICategoryCreate')
 		</div>
 		<div class="col-sm-5 m-3">
 			<h4>Create Conditional Incentive Category Item</h4>
-			@livewire('humanresources.hrdept.cicategoryitemcreate')
+			@livewire('HumanResources.HRDept.CICategoryItemCreate')
 		</div>
 	</div>
 	<div class="table-responsive mt-3">
@@ -27,7 +27,7 @@
 							<td class="scope">{{ $index + 1 }}</td>
 							<td class="scope">{{ $cicategory->category }}</td>
 							<td>
-								@livewire('humanresources.hrdept.cicategoryitem', ['cicategory' => $cicategory], key($cicategory->id.now()))
+								@livewire('HumanResources.HRDept.CICategoryItem', ['cicategory' => $cicategory], key($cicategory->id.now()))
 							</td>
 							<td class="scope">
 								<a href="{{ route('cicategory.edit', $cicategory->id) }}" class="btn btn-sm btn-outline-secondary">

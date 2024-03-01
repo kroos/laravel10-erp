@@ -171,7 +171,7 @@ class Staff extends Authenticatable
 
 	public function belongstomanycicategoryitem(): BelongsToMany
 	{
-		return $this->belongsToMany(\App\Models\HumanResources\ConditionalIncentiveCategoryItem::class, 'pivot_staff_ci_category_item', 'staff_id', 'cicategory_item_id')->withPivot('week', 'created_at')->withTimestamps();
+		return $this->belongsToMany(\App\Models\HumanResources\ConditionalIncentiveCategoryItem::class, 'pivot_staff_ci_category_item', 'staff_id', 'cicategory_item_id')->withPivot('id', 'week', 'created_at')->withTimestamps();
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////

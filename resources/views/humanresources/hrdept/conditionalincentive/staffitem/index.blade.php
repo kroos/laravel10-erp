@@ -13,43 +13,14 @@
 	@include('humanresources.hrdept.navhr')
 	<h2>Staff with Conditional Incentive</h2>
 
-	<div class="table-responsive">
-		<table class="table table-sm table-hover">
-			<thead>
-				<tr>
-					<th>Staff</th>
-					<th>Conditional Incentive</th>
-				</tr>
-			</thead>
-			<tbody>
-				@foreach ($incentivestaffs as $incentivestaff)
-				<tr>
-					<td>{{ $incentivestaff->name }}</td>
-					<td>
-						<table class="table table-sm table-hover">
-							<thead>
-								<tr>
-									<th>#</th>
-									<th>Description</th>
-									<th>Incentive Deduction</th>
-								</tr>
-							</thead>
-							<tbody>
-								@foreach ($incentivestaff->belongstomanycicategoryitem()?->get() as $k => $v)
-									<tr>
-										<td>{{ $k + 1 }}</td>
-										<td>{!! nl2br($v->description) !!}</td>
-										<td>MYR {{ $v->point }}</td>
-									</tr>
-								@endforeach
-							</tbody>
-						</table>
-					</td>
-				</tr>
-				@endforeach
-			</tbody>
-		</table>
+	<div class="hstack align-items-start justify-content-between">
+		<div class="col-sm-12 m-3">
+			<h4>Create Incentive With Staff</h4>
+			@livewire('HumanResources.HRDept.CICategoryItemStaffCreate')
+		</div>
 	</div>
+
+	@livewire('HumanResources.HRDept.CICategoryItemStaff')
 </div>
 @endsection
 
@@ -68,11 +39,11 @@ $.fn.dataTable.moment( 'h:mm a' );
 $('#category').DataTable({
 	"paging": true,
 	"lengthMenu": [ [25,50,100,-1], [25,50,100,"All"] ],
-	"columnDefs": [
-					{ type: 'date', 'targets': [2] },
-					{ type: 'time', 'targets': [3] },
-	],
-	"order": [ 2, 'desc' ], // sorting the column descending
+	// "columnDefs": [
+	// 				{ type: 'date', 'targets': [2] },
+	// 				{ type: 'time', 'targets': [3] },
+	// ],
+	"order": [ 0, 'desc' ], // sorting the column descending
 	responsive: true
 }).on( 'length.dt page.dt order.dt search.dt', function ( e, settings, len ) {
 	$(document).ready(function(){
