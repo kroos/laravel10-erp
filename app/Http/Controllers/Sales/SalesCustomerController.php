@@ -51,7 +51,7 @@ class SalesCustomerController extends Controller
    */
   public function create(): View
   {
-    // 
+    return view('sales.salescustomer.create');
   }
 
   /**
@@ -59,16 +59,17 @@ class SalesCustomerController extends Controller
    */
   public function store(Request $request): RedirectResponse
   {
-    // $now = Carbon::now();
-    // $year = $now->format('Y');
+    Customer::create([
+      'customer' => $request->customer,
+      'contact' => $request->contact,
+      'address' => $request->address,
+      'phone' => $request->phone,
+      'fax' => $request->fax,
+      'area' => $request->area,
+    ]);
 
-    // foreach ($request->evaluetee_id as $evaluateeid) {
-    //   $evaluateeid = Staff::find($evaluateeid);
-    //   $evaluateeid->belongstomanyevaluator()->attach($request->evaluator_id, ['year' => $year]);
-    // }
-
-    // Session::flash('flash_message', 'Successfully Apoint.');
-    // return redirect()->route('appraisalapoint.index');
+    Session::flash('flash_message', 'Successfully Submit.');
+    return redirect()->route('salescustomer.index');
   }
 
   /**
@@ -111,11 +112,7 @@ class SalesCustomerController extends Controller
    */
   public function destroy(Request $request): JsonResponse
   {
-    $datetime = Carbon::now();
-
-    DB::table('pivot_apoint_appraisals')
-      ->where('id', $request->id)
-      ->update(['deleted_at' => $datetime]);
+    Customer::find($request->id)->delete();
 
     return response()->json([
       'message' => 'Successful Deleted',

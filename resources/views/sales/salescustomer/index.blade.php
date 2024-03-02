@@ -37,8 +37,6 @@ $no = 1;
           <th class="text-center" style="width: 150px;">Contact</th>
           <th class="text-center">Address</th>
           <th class="text-center" style="width: 100px;">Phone No</th>
-
-
           <th class="text-center" style="width: 120px;"></th>
         </tr>
       </thead>
@@ -69,9 +67,9 @@ $no = 1;
               <i class="bi bi-pencil-square" style="font-size: 15px;"></i>
             </a>
             &nbsp;
-            <a href="{{ route('salescustomer.edit', $customer->id) }}" class="btn btn-sm btn-outline-secondary" data-toggle="tooltip" title="Delete">
-              <i class="bi bi-trash3-fill" style="font-size: 15px;"></i>
-            </a>
+            <button type="button" class="btn btn-sm btn-outline-secondary customer_delete" data-id="{{ $customer->id }}">
+              <i class="bi bi-trash3-fill" aria-hidden="true" style="font-size: 15px;"></i>
+            </button>
           </td>
         </tr>
         @endforeach
@@ -97,8 +95,58 @@ responsive: true
 $(function () {
 $('[data-toggle="tooltip"]').tooltip()
 });
+
+
+////////////////////////////////////////////////////////////////////////////////////
+// DELETE CUSTOMER
+$(document).on('click', '.customer_delete', function(e){
+  var customerId = $(this).data('id');
+  SwalCustomerDelete(customerId);
+  e.preventDefault();
+});
+
+function SwalCustomerDelete(customerId){
+  swal.fire({
+    title: 'DELETE',
+    text: "Do you want to deletet the customer?",
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Yes',
+    showLoaderOnConfirm: true,
+
+    preConfirm: function() {
+      return new Promise(function(resolve) {
+        $.ajax({
+          type: 'DELETE',
+          url: '{{ url('salescustomer') }}' + '/' + customerId,
+          data: {
+              _token : $('meta[name=csrf-token]').attr('content'),
+              id: customerId,
+          },
+          dataType: 'json'
+        })
+        .done(function(response){
+          swal.fire('Deleted', response.message, response.status)
+          .then(function(){
+            window.location.reload(true);
+          });
+        })
+        .fail(function(){
+          swal.fire('Oops...', 'Something went wrong with ajax !', 'error');
+        })
+      });
+    },
+    allowOutsideClick: false
+  })
+  .then((result) => {
+    if (result.dismiss === swal.DismissReason.cancel) {
+      swal.fire('Cancelled', 'Delete has been cancelled', 'info')
+    }
+  });
+}
 @endsection
 
 @section('nonjquery')
-/////////////////////////////////////////////////////////////////////////////////////////
 @endsection
