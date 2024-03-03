@@ -19,11 +19,11 @@ $no = 1;
 
   <div class="row mt-3">
     <div class="col-md-2">
-      <h4>Edit Customer</h4>
+      <h4>Add Customer</h4>
     </div>
   </div>
 
-  {{ Form::model($customer, ['route' => ['salescustomer.update', $customer->id], 'method' => 'PATCH', 'id' => 'form', 'class' => 'form-horizontal', 'autocomplete' => 'off', 'files' => true]) }}
+  {{ Form::open(['route' => ['salescustomer.store'], 'id' => 'form', 'class' => 'form-horizontal', 'autocomplete' => 'off', 'files' => true]) }}
 
   <div class="row mt-4">
     <div class="col-md-2">
@@ -81,7 +81,7 @@ $no = 1;
 
   <div class="row mt-3">
     <div class="col-md-12 text-center">
-      {!! Form::submit('Update', ['class' => 'btn btn-sm btn-outline-secondary']) !!}
+      {!! Form::submit('Submit', ['class' => 'btn btn-sm btn-outline-secondary']) !!}
     </div>
   </div>
 

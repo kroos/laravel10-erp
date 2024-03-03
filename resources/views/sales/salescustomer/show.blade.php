@@ -24,61 +24,61 @@ $no = 1;
   </div>
 
   <div class="row mt-4">
-    <div class="col-md-2" style="background-color: #e6e6e6">
+    <div class="col-md-2">
       Customer
     </div>
     <div class="col-md-10">
-      {{ $customer->customer }}
+      {{ Form::text('customer', $customer->customer, ['class' => 'form-control form-control-sm', 'id' => 'customer', 'readonly' => 'readonly']) }}
     </div>
   </div>
 
   <div class="row mt-3">
-    <div class="col-md-2" style="background-color: #e6e6e6">
+    <div class="col-md-2">
       Contact
     </div>
     <div class="col-md-10">
-      {{ $customer->contact }}
+      {{ Form::text('customer', $customer->contact, ['class' => 'form-control form-control-sm', 'id' => 'customer', 'readonly' => 'readonly']) }}
     </div>
   </div>
 
   <div class="row mt-3">
-    <div class="col-md-2" style="background-color: #e6e6e6">
+    <div class="col-md-2">
       Phone
     </div>
     <div class="col-md-10">
-      {{ $customer->phone }}
+      {{ Form::text('customer', $customer->phone, ['class' => 'form-control form-control-sm', 'id' => 'customer', 'readonly' => 'readonly']) }}
     </div>
   </div>
 
   <div class="row mt-3">
-    <div class="col-md-2" style="background-color: #e6e6e6">
+    <div class="col-md-2">
       Fax
     </div>
     <div class="col-md-10">
-      {{ $customer->fax }}
+      {{ Form::text('customer', $customer->fax, ['class' => 'form-control form-control-sm', 'id' => 'customer', 'readonly' => 'readonly']) }}
     </div>
   </div>
 
   <div class="row mt-3">
-    <div class="col-md-2" style="background-color: #e6e6e6">
+    <div class="col-md-2">
       Area
     </div>
     <div class="col-md-10">
-      {{ $customer->area }}
+      {{ Form::text('customer', $customer->area, ['class' => 'form-control form-control-sm', 'id' => 'customer', 'readonly' => 'readonly']) }}
     </div>
   </div>
 
   <div class="row mt-3">
-    <div class="col-md-2" style="background-color: #e6e6e6">
+    <div class="col-md-2">
       Address
     </div>
     <div class="col-md-10">
-      {{ $customer->address }}
+      {{ Form::textarea('address', $customer->address, ['class' => 'form-control form-control-sm', 'id' => 'address', 'readonly' => 'readonly', 'rows' => '3']) }}
     </div>
   </div>
 
   <div class="row mt-3">
-    <div class="col-md-12 text-center" >
+    <div class="col-md-12 text-center">
       <a href="">
         <button onclick="goBack()" class="btn btn-sm btn-outline-secondary" id="back">
           Back
