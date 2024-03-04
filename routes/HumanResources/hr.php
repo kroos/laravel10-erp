@@ -51,6 +51,7 @@ use App\Http\Controllers\HumanResources\HRDept\ConditionalIncentiveStaffControll
 use App\Http\Controllers\HumanResources\HRDept\HRLeaveApprovalSupervisorController;
 use App\Http\Controllers\HumanResources\HRDept\ConditionalIncentiveCategoryController;
 use App\Http\Controllers\HumanResources\HRDept\ConditionalIncentiveCategoryItemController;
+use App\Http\Controllers\HumanResources\HRDept\ConditionalIncentiveStaffCheckingController;
 use App\Http\Controllers\HumanResources\OutstationAttendance\OutstationAttendanceController;
 use App\Http\Controllers\HumanResources\HRDept\AttendancePayslipExcelReportSettingController;
 
@@ -99,6 +100,7 @@ Route::resources([
 	'cicategory' => ConditionalIncentiveCategoryController::class,
 	'cicategoryitem' => ConditionalIncentiveCategoryItemController::class,
 	'cicategorystaff' => ConditionalIncentiveStaffController::class,
+	'cicategorystaffcheck' => ConditionalIncentiveStaffCheckingController::class,
 ]);
 
 Route::get('/leavereject', [LeaveController::class, 'reject'])->name('hrleave.reject');
