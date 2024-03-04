@@ -33,7 +33,7 @@ use Carbon\Carbon;
 													{!! nl2br($v->description) !!}
 												</td>
 												<td>
-													<table class="table table-sm table-hover  border border-primary" style="font-size: 12px;">
+													<table class="table table-sm table-hover" style="font-size: 12px;">
 														<thead>
 															<tr>
 																<th>Week</th>
@@ -41,25 +41,29 @@ use Carbon\Carbon;
 															</tr>
 														</thead>
 														<tbody>
+															<form wire:submit.prevent="store">
 															@foreach ($weeks as $k3 => $week)
 																<tr wire:key="{{ $k1.$k2.$k3.now() }}">
 																	<td>
-																		<form wire:submit.prevent="store">
-																			<input type="hidden" value="{{ $incentivestaff->id }}" wire.model="staff_category_item_id">
-																			<div class="form-check">
-																				<label for="check_{{ $k1.$k2.$k3.$week->id }}" class="form-check-label">
-																					<input type="checkbox" value="{{ $week->id }}" wire:model="checked" id="check_{{ $k1.$k2.$k3.$week->id }}" class="form-check-label">
-																					{{ $week->week }}
-																				</label>
-																			</div>
-																			<button type="submit" class="btn btn-sm btn-outline-secondary">Submit</button>
-																		</form>
+																		<input type="hidden" value="{{ $incentivestaff->id }}" wire.model="staff_category_item_id">
+																		<div class="form-check">
+																			<label for="check_{{ $k1.$k2.$k3.$week->id }}" class="form-check-label">
+																				<input type="checkbox" value="{{ $week->id }}" wire:model="checked" id="check_{{ $k1.$k2.$k3.$week->id }}" class="form-check-label">
+																				{{ $week->week }}
+																			</label>
+																		</div>
 																	</td>
 																	<td>
 																		{{ Carbon::parse($week->date_from)->format('j F Y') }}-{{ Carbon::parse($week->date_to)->format('j F Y') }}
 																	</td>
 																</tr>
-															@endforeach
+																@endforeach
+															</form>
+															<tr>
+																<td colspan="2" class=" justify-content-center border border-primary">
+																	<button type="submit" class="btn btn-sm btn-outline-secondary">Submit</button>
+																</td>
+															</tr>
 														</tbody>
 													</table>
 												</td>
