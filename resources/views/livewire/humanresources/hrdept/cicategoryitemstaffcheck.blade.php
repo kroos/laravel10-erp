@@ -42,13 +42,13 @@ use Carbon\Carbon;
 														</thead>
 														<tbody>
 															<form wire:submit.prevent="store">
-															@foreach ($weeks as $k3 => $week)
+																@foreach ($weeks as $k3 => $week)
 																<tr wire:key="{{ $k1.$k2.$k3.now() }}">
 																	<td>
 																		<input type="hidden" value="{{ $incentivestaff->id }}" wire.model="staff_category_item_id">
 																		<div class="form-check">
 																			<label for="check_{{ $k1.$k2.$k3.$week->id }}" class="form-check-label">
-																				<input type="checkbox" value="{{ $week->id }}" wire:model="checked" id="check_{{ $k1.$k2.$k3.$week->id }}" class="form-check-label">
+																				<input type="checkbox" value="{{ $week->id }}" wire:model="checked.{{ $k1 }}.{{ $k2 }}.{{ $k3 }}" id="check_{{ $k1.$k2.$k3.$week->id }}" class="form-check-label">
 																				{{ $week->week }}
 																			</label>
 																		</div>
@@ -58,12 +58,12 @@ use Carbon\Carbon;
 																	</td>
 																</tr>
 																@endforeach
+																<tr>
+																	<td colspan="2" class="text-center">
+																		<button type="submit" class="btn btn-sm btn-outline-secondary">Submit</button>
+																	</td>
+																</tr>
 															</form>
-															<tr>
-																<td colspan="2" class=" justify-content-center border border-primary">
-																	<button type="submit" class="btn btn-sm btn-outline-secondary">Submit</button>
-																</td>
-															</tr>
 														</tbody>
 													</table>
 												</td>
