@@ -13,15 +13,15 @@ use App\Models\Model;
 // use Illuminate\Database\Eloquent\Relations\HasOneOrMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 // use Illuminate\Database\Eloquent\Relations\HasManyThrough;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+// use Illuminate\Database\Eloquent\Relations\BelongsTo;
+// use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-class ConditionalIncentiveCategoryItem extends Model
+class ConditionalIncentiveStaffItemWeek extends Model
 {
 	use HasFactory;
 
 	// protected $connection = 'mysql';
-	protected $table = 'ci_category_items';
+	protected $table = 'ci_staffcicategoryitemcheck';
 
 	/////////////////////////////////////////////////////////////////////////////////////////
 	// hasmany relationship
@@ -31,23 +31,23 @@ class ConditionalIncentiveCategoryItem extends Model
 	// 	return $this->hasMany(\App\Models\HumanResources\HRLeaveReplacement::class, 'leave_id');
 	// }
 
-	// public function hasmanyconditionalincentiveitem(): HasMany
-	// {
-	// 	return $this->hasMany(\App\Models\HumanResources\HRLeaveAmend::class, 'leave_id');
-	// }
+	public function hasmanyweek(): HasMany
+	{
+		return $this->hasMany(\App\Models\HumanResources\OptWeekDates::class, 'week_id');
+	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
 	// db relation belongsToMany
-	public function belongstomanystaff(): BelongsToMany
-	{
-		return $this->belongsToMany(\App\Models\Staff::class, 'pivot_staff_ci_category_item', 'cicategory_item_id', 'staff_id')->withPivot('id', 'created_at')->withTimestamps();
-	}
+	// public function belongstomany(): BelongsToMany
+	// {
+	// 	return $this->belongsToMany(\App\Models\HumanResources\HRLeaveAnnual::class, 'pivot_leave_annuals', 'leave_id', 'leave_annual_id')->withTimestamps();
+	// }
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
 	//belongsto relationship
-	public function belongstocicategory(): BelongsTo
-	{
-		return $this->belongsTo(\App\Models\HumanResources\ConditionalIncentiveCategory::class, 'ci_category_id');
-	}
+	// public function belongstostaff(): BelongsTo
+	// {
+	// 	return $this->belongsTo(\App\Models\Staff::class, 'staff_id');
+	// }
 
 }
