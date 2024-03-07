@@ -25,25 +25,25 @@ use Illuminate\Http\JsonResponse;
 // use Illuminate\Support\Collection;
 // use Illuminate\Support\Facades\Http;
 
-use \Carbon\Carbon;
-use Carbon\CarbonImmutable;
+// use \Carbon\Carbon;
+// use Carbon\CarbonImmutable;
 // use Session;
 // use Throwable;
 // use Exception;
 // use Log;
 
-class ConditionalIncentiveStaffCheckingController extends Controller
+class ConditionalIncentiveStaffCheckingReportController extends Controller
 {
 	function __construct()
 	{
 		$this->middleware(['auth']);
-		$this->middleware('highMgmtAccess:1|2|4|5,14|21|28|31', ['only' => ['index', 'show']]);
+		$this->middleware('highMgmtAccess:1|2|5,14|31', ['only' => ['index', 'show']]);
 		$this->middleware('highMgmtAccessLevel1:1|5,14', ['only' => ['create', 'store', 'edit', 'update', 'destroy']]);
 	}
 
 	public function index(): View
 	{
-		return view('humanresources.hrdept.conditionalincentive.staffcheck.index');
+		return view('humanresources.hrdept.conditionalincentive.staffcheckreport.index');
 	}
 
 	// public function create(): View

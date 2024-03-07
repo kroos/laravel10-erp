@@ -52,6 +52,7 @@ use App\Http\Controllers\HumanResources\HRDept\HRLeaveApprovalSupervisorControll
 use App\Http\Controllers\HumanResources\HRDept\ConditionalIncentiveCategoryController;
 use App\Http\Controllers\HumanResources\HRDept\ConditionalIncentiveCategoryItemController;
 use App\Http\Controllers\HumanResources\HRDept\ConditionalIncentiveStaffCheckingController;
+use App\Http\Controllers\HumanResources\HRDept\ConditionalIncentiveStaffCheckingReportController;
 use App\Http\Controllers\HumanResources\OutstationAttendance\OutstationAttendanceController;
 use App\Http\Controllers\HumanResources\HRDept\AttendancePayslipExcelReportSettingController;
 
@@ -150,3 +151,5 @@ Route::patch('/attendancepayslipexcelsetting/update/{attendancepayslipexcelsetti
 Route::get('/attendanceabsentindicator/index', [AttendanceAbsentIndicatorController::class, 'index'])->name('attendanceabsentindicator.index');
 
 Route::get('/appraisalmark/create/{id}', [AppraisalMarkController::class, 'create'])->name('appraisalmark.create');
+
+Route::get('/cicategorystaffcheckreport', [ConditionalIncentiveStaffCheckingReportController::class, 'index'])->name('cicategorystaffcheckreport.index');
