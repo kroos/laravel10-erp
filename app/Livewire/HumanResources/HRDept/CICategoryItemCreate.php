@@ -13,10 +13,10 @@ use App\Models\HumanResources\ConditionalIncentiveCategoryItem;
 class CICategoryItemCreate extends Component
 {
 	#[Rule('required', 'Conditional Incentive Category')]
-	public $ci_category_id;
+	public $ci_category_id = '';
 
 	#[Rule('required|string|min:5', 'Item Category Description')]
-	public $description;
+	public $description = '';
 
 	#[Rule('required|numeric|integer|min:0|max:100', 'Item Category Incentive Deduction')]
 	public $point = 0;

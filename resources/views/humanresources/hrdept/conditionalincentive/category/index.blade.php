@@ -14,17 +14,11 @@
 	<h2>Conditional Incentive Category</h2>
 
 	@livewire('HumanResources.HRDept.CICategory')
-
-
 </div>
 @endsection
 
-
 @section('js')
-
 @endsection
 
-
 @section('nonjquery')
-
 @endsection
