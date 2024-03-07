@@ -2,83 +2,84 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use Log;
+use Session;
 
 // for controller output
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Redirect;
-use Illuminate\View\View;
+use Exception;
+use Throwable;
+use \Carbon\Carbon;
+use App\Models\Login;
 
 // load model
-use App\Models\Setting;
-
 use App\Models\Staff;
-use App\Models\Login;
+
+use App\Models\Setting;
 use App\Models\Customer;
-use App\Models\HumanResources\HRLeave;
-use App\Models\HumanResources\HROutstation;
-use App\Models\HumanResources\HROutstationAttendance;
-use App\Models\HumanResources\HRHolidayCalendar;
-use App\Models\HumanResources\HRLeaveEntitlement;
-use App\Models\HumanResources\HRLeaveApprovalBackup;
-use App\Models\HumanResources\HRLeaveApprovalSupervisor;
-use App\Models\HumanResources\HRAttendance;
-use App\Models\HumanResources\OptStatus;
-use App\Models\HumanResources\DepartmentPivot;
-use App\Models\HumanResources\HROvertime;
-use App\Models\HumanResources\HROvertimeRange;
-
-use App\Models\HumanResources\OptAuthorise;
-use App\Models\HumanResources\OptBranch;
-use App\Models\HumanResources\OptCategory;
-use App\Models\HumanResources\OptCountry;
-use App\Models\HumanResources\OptDayType;
-use App\Models\HumanResources\OptDepartment;
-use App\Models\HumanResources\OptDivision;
-use App\Models\HumanResources\OptEducationLevel;
-use App\Models\HumanResources\OptGender;
-use App\Models\HumanResources\OptHealthStatus;
-use App\Models\HumanResources\OptLeaveStatus;
-use App\Models\HumanResources\OptLeaveType;
-use App\Models\HumanResources\OptMaritalStatus;
-use App\Models\HumanResources\OptRace;
-use App\Models\HumanResources\OptRelationship;
-use App\Models\HumanResources\OptReligion;
-use App\Models\HumanResources\OptRestdayGroup;
-use App\Models\HumanResources\OptTaxExemptionPercentage;
-use App\Models\HumanResources\OptTcms;
-use App\Models\HumanResources\OptWorkingHour;
-
-use App\Models\Sales\OptUOM;
-use App\Models\Sales\OptSalesGetItem;
-use App\Models\Sales\OptMachine;
-use App\Models\Sales\OptMachineAccessories;
-
-use Illuminate\Database\Eloquent\Builder;
-
-// load helper
-use App\Helpers\UnavailableDateTime;
-
-// load array helper
+use \Carbon\CarbonPeriod;
+use Illuminate\View\View;
+use \Carbon\CarbonInterval;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
+use App\Models\Sales\OptUOM;
+use Illuminate\Http\Request;
+use App\Models\Sales\OptMachine;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Bus;
+use App\Helpers\UnavailableDateTime;
+use App\Http\Controllers\Controller;
+
+use App\Models\Sales\OptSalesGetItem;
+use Illuminate\Http\RedirectResponse;
+use App\Models\HumanResources\HRLeave;
+use App\Models\HumanResources\OptRace;
+use App\Models\HumanResources\OptTcms;
+use App\Models\HumanResources\OptBranch;
+use App\Models\HumanResources\OptGender;
+use App\Models\HumanResources\OptStatus;
+use Illuminate\Support\Facades\Redirect;
+use App\Models\HumanResources\HROvertime;
+use App\Models\HumanResources\OptCountry;
+use App\Models\HumanResources\OptDayType;
+use Illuminate\Database\Eloquent\Builder;
+use App\Models\HumanResources\OptCategory;
+use App\Models\HumanResources\OptDivision;
+use App\Models\HumanResources\OptReligion;
+use App\Models\HumanResources\HRAttendance;
+use App\Models\HumanResources\HROutstation;
+use App\Models\HumanResources\OptAuthorise;
+use App\Models\HumanResources\OptLeaveType;
+
+use App\Models\HumanResources\OptWeekDates;
+use App\Models\Sales\OptMachineAccessories;
+use App\Models\HumanResources\OptDepartment;
+use App\Models\HumanResources\OptLeaveStatus;
+
+use App\Models\HumanResources\OptWorkingHour;
+
+// load helper
+use App\Models\HumanResources\DepartmentPivot;
+
+// load array helper
+use App\Models\HumanResources\HROvertimeRange;
+use App\Models\HumanResources\OptHealthStatus;
+use App\Models\HumanResources\OptRelationship;
 
 // load batch and queue
-use Illuminate\Support\Facades\Bus;
+use App\Models\HumanResources\OptRestdayGroup;
 // use Illuminate\Bus\Batch;
 
 // load Carbon
-use \Carbon\Carbon;
-use \Carbon\CarbonPeriod;
-use \Carbon\CarbonInterval;
+use App\Models\HumanResources\OptMaritalStatus;
+use App\Models\HumanResources\HRHolidayCalendar;
+use App\Models\HumanResources\OptEducationLevel;
 
-use Session;
-use Throwable;
-use Exception;
-use Log;
+use App\Models\HumanResources\HRLeaveEntitlement;
+use App\Models\HumanResources\HRLeaveApprovalBackup;
+use App\Models\HumanResources\HROutstationAttendance;
+use App\Models\HumanResources\HRLeaveApprovalSupervisor;
+use App\Models\HumanResources\OptTaxExemptionPercentage;
 
 class AjaxDBController extends Controller
 {
@@ -664,6 +665,26 @@ class AjaxDBController extends Controller
 			$cuti['results'][] = [
 									'id' => $key->id,
 									'text' => $key->uom,
+								];
+			// $cuti['pagination'] = ['more' => true];
+		}
+		return response()->json( $cuti );
+	}
+
+	public function week_dates(Request $request): JsonResponse
+	{
+		// https://select2.org/data-sources/formats
+		if ($request->has('search')) {
+			$au = OptWeekDates::where('week','LIKE','%'.$request->search.'%')->get();
+		} elseif ($request->has('id')) {
+			$au = OptWeekDates::where('id', $request->id)->get();
+		} else {
+			$au = OptWeekDates::whereDate('date_from', '>=', now()->startOfYear())->whereDate('date_to', '<=', now()->endOfWeek())->get();
+		}
+		foreach ($au as $key) {
+			$cuti['results'][] = [
+									'id' => $key->id,
+									'text' => $key->week.' ('.Carbon::parse($key->date_from)->format('j M Y').' -> '.Carbon::parse($key->date_to)->format('j M Y').')',
 								];
 			// $cuti['pagination'] = ['more' => true];
 		}
@@ -1641,6 +1662,40 @@ class AjaxDBController extends Controller
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	// used by queue batches
 	public function progress(Request $request): JsonResponse
 	{
@@ -1663,4 +1718,3 @@ class AjaxDBController extends Controller
 		]);
 	}
 }
-

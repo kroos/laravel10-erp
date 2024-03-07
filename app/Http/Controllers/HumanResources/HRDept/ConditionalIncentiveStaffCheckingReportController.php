@@ -41,20 +41,29 @@ class ConditionalIncentiveStaffCheckingReportController extends Controller
 		$this->middleware('highMgmtAccessLevel1:1|5,14', ['only' => ['create', 'store', 'edit', 'update', 'destroy']]);
 	}
 
-	public function index(): View
+	// public function index(): View
+	// {
+	// }
+
+	public function create(): View
 	{
-		return view('humanresources.hrdept.conditionalincentive.staffcheckreport.index');
+		return view('humanresources.hrdept.conditionalincentive.staffcheckreport.create');
 	}
 
-	// public function create(): View
-	// {
-	// 	//
-	// }
+	public function store(Request $request)// : RedirectResponse
+	{
+		$cistaff = ConditionalIncentiveCategoryItem::all();
+		$staff = [];
+		foreach ($cistaff as $v) {
+			foreach ($v->belongstomanystaff()->get() as $v1) {
+				$staff[] = $v1->pivot->staff_id;
+			}
+		}
 
-	// public function store(Request $request): RedirectResponse
-	// {
-	// 	//
-	// }
+		$staffs = array_unique($staff);
+		$incentivestaffs = Staff::select('staffs.id', 'logins.username', 'staffs.name')->join('logins', 'staffs.id', '=', 'logins.staff_id')->orderBy('logins.username')->whereIn('staffs.id', $staffs)->where('logins.active', 1)->get();
+
+	}
 
 	// public function show(ConditionalIncentiveCategoryItem $cicategoryitem): View
 	// {
