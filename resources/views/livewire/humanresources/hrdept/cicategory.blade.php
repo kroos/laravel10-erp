@@ -1,5 +1,4 @@
 <div>
-
 	<div class="hstack align-items-start justify-content-between">
 		<div class="col-sm-5 m-3">
 			<h4>Create Conditional Incentive Category</h4>
@@ -44,3 +43,36 @@
 		</table>
 	</div>
 </div>
+
+@script
+<script>
+	jQuery.noConflict ();
+	(function($){
+		/////////////////////////////////////////////////////////////////////////////////////////
+		//tooltip
+		//$(document).ready(function(){
+			$('[data-bs-toggle="tooltip"]').tooltip();
+		//});
+
+		/////////////////////////////////////////////////////////////////////////////////////////
+		// datatables
+		$.fn.dataTable.moment( 'D MMM YYYY' );
+		$.fn.dataTable.moment( 'h:mm a' );
+		$('#category').DataTable({
+			"paging": true,
+			"lengthMenu": [ [25,50,100,-1], [25,50,100,"All"] ],
+			// "columnDefs": [
+			// 	{ type: 'date', 'targets': [2] },
+			// 	{ type: 'time', 'targets': [3] },
+			// ],
+			"order": [ 0, 'asc' ], // sorting the column descending
+			responsive: true
+		}).on( 'length.dt page.dt order.dt search.dt', function ( e, settings, len ) {
+			$(document).ready(function() {
+				$('[data-bs-toggle="tooltip"]').tooltip();
+			});}
+		);
+
+	})(jQuery);
+</script>
+@endscript
