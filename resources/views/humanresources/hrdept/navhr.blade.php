@@ -138,6 +138,8 @@
 		<ul class="dropdown-menu">
 			<li><a class="dropdown-item btn btn-sm btn-outline-secondary" href="{{ route('cicategory.index') }}"><i class="fa-solid fa-chart-line"></i> Incentive Category</a></li>
 			<li><a class="dropdown-item btn btn-sm btn-outline-secondary" href="{{ route('cicategorystaff.index') }}"><i class="fa-solid fa-people-line fa-beat"></i> Staff Incentive Category Item</a></li>
+			<li><a class="dropdown-item btn btn-sm btn-outline-secondary" href="{{ route('cicategorystaffcheck.index') }}"><i class="fa-solid fa-person-circle-check fa-beat"></i> Incentive Checking</a></li>
+			<li><a class="dropdown-item btn btn-sm btn-outline-secondary" href="{{ route('cicategorystaffcheckreport.index') }}"><i class="fa-solid fa-chalkboard-user fa-beat"></i> Incentive Checking Report</a></li>
 		</ul>
 	</li>
 	<li class="nav-item dropdown">

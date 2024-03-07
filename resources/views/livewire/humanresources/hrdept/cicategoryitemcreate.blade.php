@@ -3,10 +3,10 @@
 		<div class="row m-2 @error('ci_category_id') is-invalid @enderror">
 			<label for="catId" class="form-label col-sm-3">Category : </label>
 			<div class="col-sm-9">
-				<select id="catId" class="form-select form-select-sm col-sm-5 @error('ci_category_id') is-invalid @enderror" aria-describedby="in0" wire:model.change="ci_category_id">
+				<select id="catId" class="form-select form-select-sm col-sm-5 @error('ci_category_id') is-invalid @enderror" aria-describedby="in0" wire:model="ci_category_id">
 					<option value="">Please choose</option>
 					@foreach ($cat as $k => $v)
-						<option value="{{ $v->id }}">{{ $v->category }}</option>
+					<option value="{{ $v->id }}">{{ $v->category }}</option>
 					@endforeach
 				</select>
 				@error('ci_category_id') <div id="in0" class="invalid-feedback">{{ $message }}</div> @enderror
@@ -37,8 +37,9 @@
 
 @script
 <script>
-jQuery.noConflict ();
+	jQuery.noConflict ();
 	(function($){
+		/////////////////////////////////////////////////////////////////////////////////////////
 		$('#catId').select2({
 			placeholder: 'Please Select',
 			// width: '100%',
@@ -46,31 +47,6 @@ jQuery.noConflict ();
 			closeOnSelect: true,
 		});
 
-/////////////////////////////////////////////////////////////////////////////////////////
-//tooltip
-$(document).ready(function(){
-	$('[data-bs-toggle="tooltip"]').tooltip();
-});
-
-/////////////////////////////////////////////////////////////////////////////////////////
-// datatables
-$.fn.dataTable.moment( 'D MMM YYYY' );
-$.fn.dataTable.moment( 'h:mm a' );
-$('#category').DataTable({
-	"paging": true,
-	"lengthMenu": [ [25,50,100,-1], [25,50,100,"All"] ],
-	"columnDefs": [
-					{ type: 'date', 'targets': [2] },
-					{ type: 'time', 'targets': [3] },
-	],
-	"order": [ 2, 'desc' ], // sorting the column descending
-	responsive: true
-}).on( 'length.dt page.dt order.dt search.dt', function ( e, settings, len ) {
-	$(document).ready(function(){
-		$('[data-bs-toggle="tooltip"]').tooltip();
-	});}
-);
-
 	})(jQuery);
 </script>
-@endscript
+	@endscript

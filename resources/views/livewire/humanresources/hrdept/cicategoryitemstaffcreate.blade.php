@@ -7,7 +7,7 @@
 					<div class="col-sm-9 vh-100 overflow-y-auto" >
 						@foreach ($staffs as $staff)
 							<div class="form-check" wire:key="{{ $staff->id.now() }}" style="font-size: 12px;">
-								<input wire:model.change="staff_id" class="form-check-input" type="checkbox" value="{{ $staff->id }}" id="staffs_{{ $staff->id }}">
+								<input wire:model="staff_id" class="form-check-input" type="checkbox" value="{{ $staff->id }}" id="staffs_{{ $staff->id }}">
 								<label class="form-check-label" for="staffs_{{ $staff->id }}">
 									{{ $staff->username.'  '.$staff->name }}
 								</label>
