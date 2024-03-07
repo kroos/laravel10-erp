@@ -1,9 +1,9 @@
 @extends('layouts.app')
 
 @section('content')
-<script src="http://tan.com/js/app.js"></script>
+<!-- <script src="http://tan.com/js/app.js"></script>
 <script src="http://tan.com/js/ckeditor/ckeditor.js"></script>
-<script src="http://tan.com/js/ckeditor/adapters/jquery.js"></script>
+<script src="http://tan.com/js/ckeditor/adapters/jquery.js"></script> -->
 
 <style>
   .img1 {
@@ -125,7 +125,7 @@ $appraisals = DB::table('pivot_category_appraisals')
     <tr>
       <td>
 
-        <button type="button" id="myButton" data-bs-toggle="modal" data-bs-target="#section{{ $section->id }}" data-id="{{ $section->id }}" data-name="section_text" onclick="myFunction(this)">
+        <button type="button" id="myButton" class="myButton" data-bs-toggle="modal" data-bs-target="#section{{ $section->id }}" data-id="{{ $section->id }}" data-name="section_text">
           {!! $section->section !!}
         </button>
 
@@ -200,7 +200,7 @@ $appraisals = DB::table('pivot_category_appraisals')
       </td>
       <td colspan="3" class="td-border-right">
 
-        <button type="button" id="myButton" data-bs-toggle="modal" data-bs-target="#section_sub{{ $section_sub->id }}" data-id="{{ $section_sub->id }}" data-name="section_sub_text" onclick="myFunction(this)">
+        <button type="button" id="myButton" class="myButton" data-bs-toggle="modal" data-bs-target="#section_sub{{ $section_sub->id }}" data-id="{{ $section_sub->id }}" data-name="section_sub_text">
           {!! $section_sub->section_sub !!}
         </button>
 
@@ -263,7 +263,7 @@ $appraisals = DB::table('pivot_category_appraisals')
       </td>
       <td colspan="3" class="td-border-right">
 
-        <button type="button" id="myButton" data-bs-toggle="modal" data-bs-target="#main_question{{ $main_question->id }}" data-id="{{ $main_question->id }}" data-name="main_question_text" onclick="myFunction(this)">
+        <button type="button" id="myButton" class="myButton" data-bs-toggle="modal" data-bs-target="#main_question{{ $main_question->id }}" data-id="{{ $main_question->id }}" data-name="main_question_text">
           {!! $main_question->main_question !!}
         </button>
 
@@ -326,7 +326,7 @@ $appraisals = DB::table('pivot_category_appraisals')
       </td>
       <td class="td-border-right">
 
-        <button type="button" id="myButton" data-bs-toggle="modal" data-bs-target="#question{{ $question->id }}" data-id="{{ $question->id }}" data-name="question_text" onclick="myFunction(this)">
+        <button type="button" id="myButton" class="myButton" data-bs-toggle="modal" data-bs-target="#question{{ $question->id }}" data-id="{{ $question->id }}" data-name="question_text">
           {!! $question->question !!}
         </button>
 
@@ -389,7 +389,7 @@ $appraisals = DB::table('pivot_category_appraisals')
       <td class="td-border-right">
         <div class="row mb-3">
           <div style="width: 10%">
-            <button type="button" data-bs-toggle="modal" data-bs-target="#question_add{{ $main_question->id }}" data-id="{{ $main_question->id }}" data-name="question_text_add" onclick="myFunction(this)" class="col-auto btn btn-sm btn-outline-secondary">
+            <button type="button" data-bs-toggle="modal" data-bs-target="#question_add{{ $main_question->id }}" data-id="{{ $main_question->id }}" data-name="question_text_add" class="col-auto btn btn-sm btn-outline-secondary myButton">
               P4 <i class="fas fa-plus" aria-hidden="true"></i>
             </button>
           </div>
@@ -444,7 +444,7 @@ $appraisals = DB::table('pivot_category_appraisals')
       <td class="td-border-right" colspan="3">
         <div class="row mb-3">
           <div style="width: 10%">
-            <button type="button" data-bs-toggle="modal" data-bs-target="#main_question_add{{ $section_sub->id }}" data-id="{{ $section_sub->id }}" data-name="main_question_text_add" onclick="myFunction(this)" class="col-auto btn btn-sm btn-outline-secondary">
+            <button type="button" data-bs-toggle="modal" data-bs-target="#main_question_add{{ $section_sub->id }}" data-id="{{ $section_sub->id }}" data-name="main_question_text_add" class="col-auto btn btn-sm btn-outline-secondary myButton">
               P3 <i class="fas fa-plus" aria-hidden="true"></i>
             </button>
           </div>
@@ -499,7 +499,7 @@ $appraisals = DB::table('pivot_category_appraisals')
 
   <div class="row mb-3">
     <div style="width: 10%">
-      <button type="button" data-bs-toggle="modal" data-bs-target="#section_sub_add{{ $section->id }}" data-id="{{ $section->id }}" data-name="section_sub_text_add" onclick="myFunction(this)" class="col-auto btn btn-sm btn-outline-secondary">
+      <button type="button" data-bs-toggle="modal" data-bs-target="#section_sub_add{{ $section->id }}" data-id="{{ $section->id }}" data-name="section_sub_text_add" class="col-auto btn btn-sm btn-outline-secondary myButton">
         P2 <i class="fas fa-plus" aria-hidden="true"></i>
       </button>
     </div>
@@ -552,7 +552,7 @@ $appraisals = DB::table('pivot_category_appraisals')
   <table width="100%">
     <tr>
       <td>
-        <button type="button" id="myButton" data-bs-toggle="modal" data-bs-target="#section{{ $section->id }}" data-id="{{ $section->id }}" data-name="section_text" onclick="myFunction(this)">
+        <button type="button" id="myButton" class="myButton" data-bs-toggle="modal" data-bs-target="#section{{ $section->id }}" data-id="{{ $section->id }}" data-name="section_text">
           {!! $section->section !!}
         </button>
 
@@ -638,7 +638,7 @@ $appraisals = DB::table('pivot_category_appraisals')
       </td>
       <td>
 
-        <button type="button" id="myButton" data-bs-toggle="modal" data-bs-target="#section_sub{{ $section_sub->id }}" data-id="{{ $section_sub->id }}" data-name="section_sub_text" onclick="myFunction(this)">
+        <button type="button" id="myButton" class="myButton" data-bs-toggle="modal" data-bs-target="#section_sub{{ $section_sub->id }}" data-id="{{ $section_sub->id }}" data-name="section_sub_text">
           {!! $section_sub->section_sub !!}
         </button>
 
@@ -708,7 +708,7 @@ $appraisals = DB::table('pivot_category_appraisals')
 
   <div class="row mb-3">
     <div style="width: 10%">
-      <button type="button" data-bs-toggle="modal" data-bs-target="#section_sub_add{{ $section->id }}" data-id="{{ $section->id }}" data-name="section_sub_text_add" onclick="myFunction(this)" class="col-auto btn btn-sm btn-outline-secondary">
+      <button type="button" data-bs-toggle="modal" data-bs-target="#section_sub_add{{ $section->id }}" data-id="{{ $section->id }}" data-name="section_sub_text_add" class="col-auto btn btn-sm btn-outline-secondary myButton">
         P2 <i class="fas fa-plus" aria-hidden="true"></i>
       </button>
     </div>
@@ -762,7 +762,7 @@ $appraisals = DB::table('pivot_category_appraisals')
     <tr>
       <td>
 
-        <button type="button" id="myButton" data-bs-toggle="modal" data-bs-target="#section{{ $section->id }}" data-id="{{ $section->id }}" data-name="section_text" onclick="myFunction(this)">
+        <button type="button" id="myButton" class="myButton" data-bs-toggle="modal" data-bs-target="#section{{ $section->id }}" data-id="{{ $section->id }}" data-name="section_text">
           {!! $section->section !!}
         </button>
 
@@ -819,7 +819,7 @@ $appraisals = DB::table('pivot_category_appraisals')
       </td>
       <td>
 
-        <button type="button" id="myButton" data-bs-toggle="modal" data-bs-target="#section_sub{{ $section_sub->id }}" data-id="{{ $section_sub->id }}" data-name="section_sub_text" onclick="myFunction(this)">
+        <button type="button" id="myButton" class="myButton" data-bs-toggle="modal" data-bs-target="#section_sub{{ $section_sub->id }}" data-id="{{ $section_sub->id }}" data-name="section_sub_text">
           {!! $section_sub->section_sub !!}
         </button>
 
@@ -878,7 +878,7 @@ $appraisals = DB::table('pivot_category_appraisals')
 
   <div class="row mb-3">
     <div style="width: 10%">
-      <button type="button" data-bs-toggle="modal" data-bs-target="#section_sub_add{{ $section->id }}" data-id="{{ $section->id }}" data-name="section_sub_text_add" onclick="myFunction(this)" class="col-auto btn btn-sm btn-outline-secondary">
+      <button type="button" data-bs-toggle="modal" data-bs-target="#section_sub_add{{ $section->id }}" data-id="{{ $section->id }}" data-name="section_sub_text_add" class="col-auto btn btn-sm btn-outline-secondary myButton">
         P2 <i class="fas fa-plus" aria-hidden="true"></i>
       </button>
     </div>
@@ -932,7 +932,7 @@ $appraisals = DB::table('pivot_category_appraisals')
     <tr>
       <td>
 
-        <button type="button" id="myButton" data-bs-toggle="modal" data-bs-target="#section{{ $section->id }}" data-id="{{ $section->id }}" data-name="section_text" onclick="myFunction(this)">
+        <button type="button" id="myButton" class="myButton" data-bs-toggle="modal" data-bs-target="#section{{ $section->id }}" data-id="{{ $section->id }}" data-name="section_text">
           {!! $section->section !!}
         </button>
 
@@ -997,7 +997,7 @@ $appraisals = DB::table('pivot_category_appraisals')
       </td>
       <td colspan="2">
 
-        <button type="button" id="myButton" data-bs-toggle="modal" data-bs-target="#section_sub{{ $section_sub->id }}" data-id="{{ $section_sub->id }}" data-name="section_sub_text" onclick="myFunction(this)">
+        <button type="button" id="myButton" class="myButton" data-bs-toggle="modal" data-bs-target="#section_sub{{ $section_sub->id }}" data-id="{{ $section_sub->id }}" data-name="section_sub_text">
           {!! $section_sub->section_sub !!}
         </button>
 
@@ -1053,7 +1053,7 @@ $appraisals = DB::table('pivot_category_appraisals')
       </td>
       <td>
 
-        <button type="button" id="myButton" data-bs-toggle="modal" data-bs-target="#main_question{{ $main_question->id }}" data-id="{{ $main_question->id }}" data-name="main_question_text" onclick="myFunction(this)">
+        <button type="button" id="myButton" class="myButton" data-bs-toggle="modal" data-bs-target="#main_question{{ $main_question->id }}" data-id="{{ $main_question->id }}" data-name="main_question_text">
           {!! $main_question->main_question !!}
         </button>
 
@@ -1112,7 +1112,7 @@ $appraisals = DB::table('pivot_category_appraisals')
       <td>
         <div class="row mb-3">
           <div style="width: 10%">
-            <button type="button" data-bs-toggle="modal" data-bs-target="#main_question_add{{ $section_sub->id }}" data-id="{{ $section_sub->id }}" data-name="main_question_text_add" onclick="myFunction(this)" class="col-auto btn btn-sm btn-outline-secondary">
+            <button type="button" data-bs-toggle="modal" data-bs-target="#main_question_add{{ $section_sub->id }}" data-id="{{ $section_sub->id }}" data-name="main_question_text_add" class="col-auto btn btn-sm btn-outline-secondary myButton">
               P3 <i class="fas fa-plus" aria-hidden="true"></i>
             </button>
           </div>
@@ -1162,7 +1162,7 @@ $appraisals = DB::table('pivot_category_appraisals')
 
   <div class="row mb-3">
     <div style="width: 10%">
-      <button type="button" data-bs-toggle="modal" data-bs-target="#section_sub_add{{ $section->id }}" data-id="{{ $section->id }}" data-name="section_sub_text_add" onclick="myFunction(this)" class="col-auto btn btn-sm btn-outline-secondary">
+      <button type="button" data-bs-toggle="modal" data-bs-target="#section_sub_add{{ $section->id }}" data-id="{{ $section->id }}" data-name="section_sub_text_add" class="col-auto btn btn-sm btn-outline-secondary myButton">
         P2 <i class="fas fa-plus" aria-hidden="true"></i>
       </button>
     </div>
@@ -1253,11 +1253,18 @@ $appraisals = DB::table('pivot_category_appraisals')
   </div>
 
 </div>
+@endsection
 
-<script>
-  function myFunction(button) {
-    var Id = button.getAttribute('data-id');
-    var Name = button.getAttribute('data-name');
+
+@section('js')
+/////////////////////////////////////////////////////////////////////////////////////////
+// CKEDITOR
+$(document).ready(function() {
+  $(".myButton").on('click', function (e) {
+
+    e.preventDefault();
+    var Id = $(this).data('id');
+    var Name = $(this).data('name');
     var editor = Name + Id;
 
     CKEDITOR.replace(editor, {
@@ -1282,34 +1289,34 @@ $appraisals = DB::table('pivot_category_appraisals')
         },
       ]
     });
-  }
-
-  CKEDITOR.replace('section_text_add', {
-    toolbar: [{
-        name: 'clipboard',
-        items: ['Cut', 'Copy', 'Paste', '-', 'Undo', 'Redo']
-      },
-      {
-        name: 'basicstyles',
-        items: ['Bold', 'Italic', 'Underline', '-']
-      },
-      {
-        name: 'paragraph',
-        items: ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'JustifyLeft',
-          'JustifyCenter',
-          'JustifyRight', 'JustifyBlock'
-        ]
-      },
-      {
-        name: 'styles',
-        items: ['Styles', 'Format', 'Font', 'FontSize']
-      },
-    ]
   });
-</script>
-@endsection
+});
 
-@section('js')
+
+CKEDITOR.replace('section_text_add', {
+  toolbar: [{
+      name: 'clipboard',
+      items: ['Cut', 'Copy', 'Paste', '-', 'Undo', 'Redo']
+    },
+    {
+      name: 'basicstyles',
+      items: ['Bold', 'Italic', 'Underline', '-']
+    },
+    {
+      name: 'paragraph',
+      items: ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'JustifyLeft',
+        'JustifyCenter',
+        'JustifyRight', 'JustifyBlock'
+      ]
+    },
+    {
+      name: 'styles',
+      items: ['Styles', 'Format', 'Font', 'FontSize']
+    },
+  ]
+});
+
+
 /////////////////////////////////////////////////////////////////////////////////////////
 // ADD AJAX SECTION
 $(".form_section_add").on('submit', function (e) {
