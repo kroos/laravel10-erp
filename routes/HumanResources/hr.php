@@ -152,4 +152,5 @@ Route::get('/attendanceabsentindicator/index', [AttendanceAbsentIndicatorControl
 
 Route::get('/appraisalmark/create/{id}', [AppraisalMarkController::class, 'create'])->name('appraisalmark.create');
 
-Route::get('/cicategorystaffcheckreport', [ConditionalIncentiveStaffCheckingReportController::class, 'index'])->name('cicategorystaffcheckreport.index');
+Route::get('/cicategorystaffcheckreport/create', [ConditionalIncentiveStaffCheckingReportController::class, 'create'])->name('cicategorystaffcheckreport.create');
+Route::post('/cicategorystaffcheckreport/store', [ConditionalIncentiveStaffCheckingReportController::class, 'store'])->name('cicategorystaffcheckreport.store');

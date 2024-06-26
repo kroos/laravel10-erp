@@ -20,7 +20,8 @@
 				<tr>
 					<th class="text-center" style="max-width: 30px;">ID</th>
 					<th style="max-width: 120px;">Name</th>
-					<th class="text-center" style="max-width: 55px;">Date</th>
+					<th class="text-center" style="max-width: 55px;">Misonduct<br />Date</th>
+					<th class="text-center" style="max-width: 55px;">Created<br />Date</th>
 					<th class="text-center" style="max-width: 80px;">Department</th>
 					<th style="max-width: 110px;">Disciplinary Action</th>
 					<th style="max-width: 200px;">Violation</th>
@@ -42,7 +43,9 @@
 						{{ $discipline->belongstostaff?->name }}
 					</td>
 					<td class="text-center">
-						{{ \Carbon\Carbon::parse($discipline->date)->format('j M Y') }}
+						{{ \Carbon\Carbon::parse($discipline->misconduct_date)->format('j M Y') }}
+					</td><td class="text-center">
+						{{ \Carbon\Carbon::parse($discipline->action_taken_date)->format('j M Y') }}
 					</td>
 					<td class="text-center">
 						{{ $discipline->belongstostaff?->belongstomanydepartment()?->wherePivot('main', 1)->first()->code }}

@@ -30,21 +30,21 @@
 	<div class="form-group row m-3 {{ $errors->has('attendance_remarks') ? 'has-error' : NULL }}">
 		{{Form::label('ar', 'Attendance Remarks : ', ['class' => 'col-sm-4 form-label'])}}
 		<div class="col-md-8">
-			<textarea name="attendance_remarks" id="ar" class="form-control form-control-sm" value="{{ old('attendance_remarks') }}" placeholder="Attendance Remarks"></textarea>
+			<textarea name="attendance_remarks" id="ar" class="form-control form-control-sm" value="{{ old('attendance_remarks') }}" placeholder="Attendance Remarks (Remark Display For All)"></textarea>
 		</div>
 	</div>
 
 	<div class="form-group row m-3 {{ $errors->has('hr_attendance_remarks') ? 'has-error' : NULL }}">
 		{{Form::label('hrar', 'HR Attendance Remarks : ', ['class' => 'col-sm-4 form-label'])}}
 		<div class="col-md-8">
-			<textarea name="hr_attendance_remarks" id="hrar" class="form-control form-control-sm" value="{{ old('hr_attendance_remarks') }}" placeholder="HR Attendance Remarks"></textarea>
+			<textarea name="hr_attendance_remarks" id="hrar" class="form-control form-control-sm" value="{{ old('hr_attendance_remarks') }}" placeholder="HR Attendance Remarks (Remark Display Only For HR, Admin And Director)"></textarea>
 		</div>
 	</div>
 
 	<div class="form-group row m-3 {{ $errors->has('remarks') ? 'has-error' : NULL }}">
 		{{Form::label('rem', 'Remarks : ', ['class' => 'col-sm-4 form-label'])}}
 		<div class="col-md-8">
-			<textarea name="remarks" id="rem" class="form-control form-control-sm" value="{{ old('remarks') }}" placeholder="Remarks"></textarea>
+			<textarea name="remarks" id="rem" class="form-control form-control-sm" value="{{ old('remarks') }}" placeholder="Remarks (Remark Database : Can Just Leave It Blank)"></textarea>
 		</div>
 	</div>
 

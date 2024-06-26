@@ -102,7 +102,6 @@ class AttendanceRemarkController extends Controller
 			'date_to' => $request->date_to,
 			'attendance_remarks' => ucwords(Str::lower($request->attendance_remarks)),
 			'hr_attendance_remarks' => ucwords(Str::lower($request->hr_attendance_remarks)),
-			'hr_attendance_remarks' => ucwords(Str::lower($request->hr_attendance_remarks)),
 			'remarks' => ucwords(Str::lower($request->remarks)),
 		]);
 		return redirect()->route('attendanceremark.index')->with('flash_message', 'Success add remarks attendance');

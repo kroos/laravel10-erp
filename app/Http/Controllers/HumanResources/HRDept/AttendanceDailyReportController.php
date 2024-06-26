@@ -189,8 +189,7 @@ class AttendanceDailyReportController extends Controller
       ->where('logins.active', '=', 1)
       ->where('pivot_staff_pivotdepts.main', '=', 1)
       ->select('hr_attendances.attend_date', 'option_branches.code', 'pivot_dept_cate_branches.department', 'option_restday_groups.group', 'logins.username', 'staffs.name', 'hr_attendances.outstation_id', 'hr_attendances.remarks', 'hr_attendances.attendance_type_id')
-      ->orderBy('option_branches.code', 'ASC')
-      ->orderBy('pivot_dept_cate_branches.department', 'ASC')
+      ->orderBy('hr_attendances.outstation_id', 'ASC')
       ->orderBy('logins.username', 'ASC')
       ->get();
 
@@ -216,9 +215,24 @@ class AttendanceDailyReportController extends Controller
 
     $saturday = HRRestdayCalendar::where('saturday_date', '=', $selected_date)->select('restday_group_id')->first();
 
+    $update_remarks = HRAttendance::whereNotNull('leave_id')->where('attend_date', $selected_date)->get();
+
+    foreach ($update_remarks as $loop_absent) {
+      if ($loop_absent->leave_id != NULL && $loop_absent->remarks == NULL) {
+
+        $leave = HRLeave::where('hr_leaves.id', $loop_absent->leave_id)->select('hr_leaves.reason')->first();
+
+        HRAttendance::where('id', $loop_absent->id)
+          ->update([
+            'remarks' => $leave->reason,
+          ]);
+      }
+    }
+
+
     ////////////////////////////////////////////////////////////////////////////////////
     $dailyreport_absent = NULL;
-    
+
     if (isset($saturday)) {
       $dailyreport_absent = HRAttendance::join('staffs', 'staffs.id', '=', 'hr_attendances.staff_id')
         ->join('logins', 'hr_attendances.staff_id', '=', 'logins.staff_id')
@@ -344,8 +358,7 @@ class AttendanceDailyReportController extends Controller
       ->where('logins.active', '=', 1)
       ->where('pivot_staff_pivotdepts.main', '=', 1)
       ->select('hr_attendances.attend_date', 'option_branches.code', 'pivot_dept_cate_branches.department', 'option_restday_groups.group', 'logins.username', 'staffs.name', 'hr_attendances.outstation_id', 'hr_attendances.remarks', 'hr_attendances.attendance_type_id')
-      ->orderBy('option_branches.code', 'ASC')
-      ->orderBy('pivot_dept_cate_branches.department', 'ASC')
+      ->orderBy('hr_attendances.outstation_id', 'ASC')
       ->orderBy('logins.username', 'ASC')
       ->get();
 

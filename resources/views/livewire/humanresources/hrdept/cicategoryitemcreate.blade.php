@@ -34,19 +34,3 @@
 		</div>
 	</form>
 </div>
-
-@script
-<script>
-	jQuery.noConflict ();
-	(function($){
-		/////////////////////////////////////////////////////////////////////////////////////////
-		$('#catId').select2({
-			placeholder: 'Please Select',
-			// width: '100%',
-			allowClear: true,
-			closeOnSelect: true,
-		});
-
-	})(jQuery);
-</script>
-	@endscript

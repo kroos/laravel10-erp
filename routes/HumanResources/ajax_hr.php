@@ -1,7 +1,6 @@
 <?php
 // Continuence from routes/web.php
 use App\Http\Controllers\HumanResources\AjaxController;
-use App\Http\Controllers\HumanResources\AjaxDBController;
 use Illuminate\Support\Facades\Route;
 
 // Ajax Controller : to CRUD data on the DB

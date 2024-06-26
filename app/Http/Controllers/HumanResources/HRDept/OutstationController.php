@@ -31,8 +31,8 @@ class OutstationController extends Controller
 	function __construct()
 	{
 		$this->middleware(['auth']);
-		$this->middleware('highMgmtAccess:1|2|5,6|14', ['only' => ['create', 'store', 'index', 'show']]);                                  // all high management
-		$this->middleware('highMgmtAccessLevel1:1|5,14', ['only' => ['edit', 'update', 'destroy']]);       // only hod and asst hod HR can access
+		$this->middleware('highMgmtAccess:1|2|5,6|14', ['only' => ['create', 'store', 'index', 'show', 'edit', 'update']]);                                  // all high management
+		$this->middleware('highMgmtAccessLevel1:1|5,14', ['only' => ['destroy']]);       // only hod and asst hod HR can access
 	}
 
 	/**

@@ -12,11 +12,11 @@
 				@if($cicategory->count())
 					@foreach($cicategory->hasmanycicategoryitem()->get() as $item)
 						<tr>
-							<td {!! ($item->description)?'data-bs-toggle="tooltip" data-bs-custom-class="custom-tooltip" data-bs-html="true" data-bs-title="'.$item->description.'"':null !!}
-							>
-								{{ Str::limit($item->description, 9, ' >') }}
+							<td class="w-75" {!! ($item->description)?'data-bs-toggle="tooltip" data-bs-custom-class="custom-tooltip" data-bs-html="true" data-bs-title="'.$item->description.'"':null !!}>
+								{{-- {{ Str::limit($item->description, 9, ' >') }} --}}
+								{{ $item->description }}
 							</td>
-							<td>{{ $item->point }}</td>
+							<td>RM{{ $item->point }}</td>
 							<td>
 								<a href="{{ route('cicategoryitem.edit', $item->id) }}" class="btn btn-sm btn-outline-secondary">
 									<i class="fa-regular fa-pen-to-square fa-beat"></i>

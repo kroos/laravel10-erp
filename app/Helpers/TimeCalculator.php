@@ -25,4 +25,6 @@ class TimeCalculator
 		$hh += floor( $mm / 60 ); $mm = $mm % 60;
 		return sprintf('%02d:%02d:%02d', $hh, $mm, $ss);
 	}
+
+
 }

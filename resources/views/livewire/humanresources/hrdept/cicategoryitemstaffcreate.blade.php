@@ -49,11 +49,11 @@
 															@if($cicategory->count())
 																@foreach($cicategory->hasmanycicategoryitem()->get() as $item)
 																	<tr wire:key="{{ $item->id.now() }}">
-																		<td {!! ($item->description)?'data-bs-toggle="tooltip" data-bs-custom-class="custom-tooltip" data-bs-html="true" data-bs-title="'.$item->description.'"':null !!}
-																		>
+																		<td {!! ($item->description)?'data-bs-toggle="tooltip" data-bs-custom-class="custom-tooltip" data-bs-html="true" data-bs-title="'.$item->description.'"':null !!}>
 																			<label for="categoryitem_{{ $item->id }}">
 																				<input type="checkbox" value="{{ $item->id }}" id="categoryitem_{{ $item->id }}" wire:model.change="cicategory_item_id">
-																				{{ Str::limit($item->description, 9, ' >') }}
+																				{{-- {{ Str::limit($item->description, 9, ' >') }} --}}
+																				{{ $item->description }}
 																			</label>
 																		</td>
 																		<td>
@@ -85,3 +85,36 @@
 		</div>
 	</form>
 </div>
+
+@script
+<script>
+	jQuery.noConflict ();
+	(function($){
+		/////////////////////////////////////////////////////////////////////////////////////////
+		//tooltip
+//		$(document).ready(function(){
+//			$('[data-bs-toggle="tooltip"]').tooltip();
+//		});
+
+		/////////////////////////////////////////////////////////////////////////////////////////
+		// datatables
+//		$.fn.dataTable.moment( 'D MMM YYYY' );
+//		$.fn.dataTable.moment( 'h:mm a' );
+//		$('#category').DataTable({
+//			"paging": true,
+//			"lengthMenu": [ [25,50,100,-1], [25,50,100,"All"] ],
+//			// "columnDefs": [
+//			// 	{ type: 'date', 'targets': [2] },
+//			// 	{ type: 'time', 'targets': [3] },
+//			// ],
+//			"order": [ 0, 'asc' ], // sorting the column descending
+//			responsive: true
+//		}).on( 'length.dt page.dt order.dt search.dt', function ( e, settings, len ) {
+//			$(document).ready(function() {
+//				$('[data-bs-toggle="tooltip"]').tooltip();
+//			});}
+//		);
+
+	})(jQuery);
+</script>
+@endscript

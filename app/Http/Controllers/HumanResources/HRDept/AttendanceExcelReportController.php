@@ -147,9 +147,6 @@ class AttendanceExcelReportController extends Controller
 			]
 		);
 
-		$from = Carbon::parse($request->from)->format('j F Y');
-		$to = Carbon::parse($request->to)->format('j F Y');
-
 		// get staff which is in attendance for a particular date
 		$hratt = HRAttendance::select('staff_id')
 				->where(function (Builder $query) use ($request) {

@@ -59,7 +59,6 @@ class AppraisalMarkController extends Controller
   public function index(): View
   {
     $departments = DepartmentPivot::all();
-
     return view('humanresources.hrdept.appraisal.mark.index', ['departments' => $departments]);
   }
 

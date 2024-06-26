@@ -11,6 +11,7 @@ use Illuminate\Http\JsonResponse;
 
 // models
 use App\Models\Staff;
+use App\Models\HumanResources\HROutstation;
 use App\Models\HumanResources\HROutstationAttendance;
 
 // load db facade
@@ -47,11 +48,25 @@ class OutstationAttendanceController extends Controller
 	 */
 	public function index(): View
 	{
-			$ip = file_get_contents(env('API_IP_ADDRESS'));
-			// $ip = request()->ip();
-			$data = \Location::get($ip);
-			// dd($ip, $data);
-			return view('humanresources.outstationattendance.index', ['data' => $data]);
+		$locations = HROutstation::where('staff_id', \Auth::user()->belongstostaff->id)
+												->where(function (Builder $query) {
+													$query->whereDate('date_from', '<=', now())
+														->whereDate('date_to', '>=', now());
+												})
+												->where('active', 1)
+												->get();
+		$m = HROutstationAttendance::whereDate('date_attend', now())
+												->where('staff_id', \Auth::user()->belongstostaff->id)
+												->whereNotNull('outstation_id')
+												// ->whereNull('out')
+												// ->ddrawsql();
+												->get();
+												// dump($m->count());
+
+		return view('humanresources.outstationattendance.index', [
+			'locations' => $locations,
+			'm' => $m
+		]);
 	}
 
 	/**
@@ -67,23 +82,42 @@ class OutstationAttendanceController extends Controller
 	 */
 	public function store(Request $request): RedirectResponse
 	{
-		$validated = $request->validate([
+		// dd($request->all());
+		$request->validate([
 				'outstation_id' => 'required',
+				'latitude' => 'required',
+				'longitude' => 'required',
+				'accuracy' => 'required|lt:25',
 			],
 			[
-				'outstation_id.required' => 'Please choose your location',
+				'outstation_id.required' => 'Please choose your :attribute',
+				'latitude.required' => 'Please make sure you click on "allow" when the system accessing your location.',
+				'longitude.required' => 'Please make sure you click on "allow" when the system accessing your location.',
+				'accuracy.required' => 'Please make sure you click on "allow" when the system accessing your location.',
+				'accuracy.lt:25' => 'Please refresh this page untill you get :attribute below than 25.',
 			],
 			[
 				'outstation_id' => 'Location',
-			]
-		);
-		$ip = file_get_contents(env('API_IP_ADDRESS'));
-		// $ip = request()->ip();
-		$data = \Location::get($ip);
-		if (now()->gt(Carbon::parse(now()->format('Y-m-d').' '.'13:00:00'))) {		// PM
-			// dd('now greater than 1PM');
+				'latitude' => 'Latitude',
+				'longitude' => 'Longitude',
+				'accuracy' => 'Accuracy',
+		]);
 
-			$y = HROutstationAttendance::updateOrCreate(
+		if ($request->accuracy > 25) {
+			return redirect()->back()->with('flash_danger', 'It Seems your accuracy was too high. Please refresh this page, click on "Allow", and try to get Accuracy below than 25');
+		}
+
+		$inouts = HROutstationAttendance::where([
+																							['staff_id', \Auth::user()->belongstostaff->id],
+																							['outstation_id', $request->outstation_id,],
+																							['date_attend', now()->format('Y-m-d')],
+																			])->get();
+
+		if ($inouts->count()) {
+			if (!is_null($inouts->first()->out)) {
+				return redirect()->back()->with('flash_danger', 'You already marked your attendance');
+			}
+			HROutstationAttendance::updateOrCreate(
 					[
 						'staff_id' => \Auth::user()->belongstostaff->id,
 						'outstation_id' => $request->outstation_id,
@@ -91,31 +125,21 @@ class OutstationAttendanceController extends Controller
 					],
 					[
 						'out' => now()->format('H:i:s'),
-						'out_latitude' => $data->latitude,
-						'out_longitude' => $data->longitude,
-						'out_regionName' => $data->regionName,
-						'out_cityName' => $data->cityName,
-					]
-			);
-		} else {																	// AM
-			// dd('now less than 1PM');
-			$y = HROutstationAttendance::updateOrCreate(
-					[
-						'staff_id' => \Auth::user()->belongstostaff->id,
-						'outstation_id' => $request->outstation_id,
-						'date_attend' => now()->format('Y-m-d')
-					],
-					[
-						'in' => now()->format('H:i:s'),
-						'in_latitude' => $data->latitude,
-						'in_longitude' => $data->longitude,
-						'in_regionName' => $data->regionName,
-						'in_cityName' => $data->cityName,
-					]
-			);
-		}
-		Session::flash('flash_message', 'Successfully Mark Attendance');
-		return redirect()->back();
+						'out_latitude' => $request->latitude,
+						'out_longitude' => $request->longitude,
+					]);
+				} else {
+					HROutstationAttendance::create(
+						[
+							'staff_id' => \Auth::user()->belongstostaff->id,
+							'outstation_id' => $request->outstation_id,
+							'date_attend' => now()->format('Y-m-d'),
+							'in' => now()->format('H:i:s'),
+							'in_latitude' => $request->latitude,
+							'in_longitude' => $request->longitude,
+					]);
+			}
+		return redirect()->back()->with('flash_message', 'Successfully Mark Attendance');
 	}
 
 	/**

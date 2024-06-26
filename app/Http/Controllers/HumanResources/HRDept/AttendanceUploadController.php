@@ -113,7 +113,7 @@ class AttendanceUploadController extends Controller
 
 		// FETCH ACTIVE STAFF USER INFO
 		$query_Recordset1 = Staff::where('active', 1)
-										->whereNotIn('staffs.id', [61,62])
+										->whereNotIn('staffs.id', [61,62,189])
 										// ->ddRawSql();
 										->get();
 

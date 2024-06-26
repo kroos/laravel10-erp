@@ -1,6 +1,5 @@
 @extends('layouts.app')
 
-
 @section('content')
 <?php
 $user = \Auth::user()->belongstostaff->id;
@@ -18,8 +17,6 @@ $appraisals = DB::table('pivot_apoint_appraisals')
 ?>
 
 <div class="container">
-  @include('humanresources.hrdept.navhr')
-
   <div class="row mt-3">
     <div class="col-md-2">
       <h4>Appraisal </h4>

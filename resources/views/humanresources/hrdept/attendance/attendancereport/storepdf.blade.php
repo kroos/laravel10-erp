@@ -70,6 +70,7 @@ use App\Models\HumanResources\HROutstation;
 				$query->whereDate('attend_date', '>=', $request->from)
 				->whereDate('attend_date', '<=', $request->to);
 			})
+			->orderBy('attend_date', 'ASC')
 			->get();
 			?>
 			<div class="avoid-break">
@@ -1184,13 +1185,21 @@ use App\Models\HumanResources\HROutstation;
 								{{ $ll }}
 							</td>
 							<td align="center">
-								{{ $in1 }}
+								<?php if (Carbon::parse($v1->in)->gt($wh?->time_start_am) == '1') { ?>
+									<b><i>{{ $in1 }}</i></b>
+								<?php } else { ?>
+									{{ $in1 }}
+								<?php } ?>
 							</td>
 							<td align="center">
 								{{ $break1 }}
 							</td>
 							<td align="center">
-								{{ $resume1 }}
+								<?php if (Carbon::parse($v1->resume)->gt($wh?->time_start_pm) == '1') { ?>
+									<b><i>{{ $resume1 }}</i></b>
+								<?php } else { ?>
+									{{ $resume1 }}
+								<?php } ?>
 							</td>
 							<td align="center">
 								{{ $out1 }}

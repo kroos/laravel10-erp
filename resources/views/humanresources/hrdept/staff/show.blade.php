@@ -1089,20 +1089,20 @@ $mcupl = $staff->hasmanyleave()?->get();
 					<th>Discipline Action</th>
 					<th>Violation</th>
 					<th>Reason</th>
-					<th>Date</th>
+					<th>Misconduct Date</th>
 					<th>Softcopy</th>
 					<th>&nbsp;</th>
 				</tr>
 			</thead>
 			<tbody>
-				@foreach($staff->hasmanyhrdisciplinary()->orderBy('date', 'DESC')->get() as $al)
+				@foreach($staff->hasmanyhrdisciplinary()->orderBy('misconduct_date', 'DESC')->get() as $al)
 				<tr>
 					<td>{{ $al->belongstooptdisciplinaryaction->disciplinary_action }}</td>
 					<td>{{ $al->belongstooptviolation->violation }}</td>
 					<td data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-html="true" data-bs-title="{{ $al->reason }}">
 						{{ Str::limit($al->reason, 10, '>') }}
 					</td>
-					<td>{{ \Carbon\Carbon::parse($al->date)->format('j M Y') }}</td>
+					<td>{{ \Carbon\Carbon::parse($al->misconduct_date)->format('j M Y') }}</td>
 					<td>
 						@if($al->softcopy)
 						<a href="{{ asset('storage/disciplinary/' . $al->softcopy) }}" target="_blank" class="btn btn-sm btn-outline-secondary">

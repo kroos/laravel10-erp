@@ -177,9 +177,9 @@ $auth = \Auth::user()->belongstostaff?->div_id; // 1/2/5
 $auth_dept = \Auth::user()->belongstostaff?->belongstomanydepartment()->first()->id; // 14/31
 $auth_admin = \Auth::user()->belongstostaff?->authorise_id; // 1
 
-$hrremarksattendance = HRAttendance::where(function (Builder $query) use ($leave) {
-  $query->whereDate('attend_date', '>=', $leave->date_time_start)
-    ->whereDate('attend_date', '<=', $leave->date_time_end);
+$hrremarksattendance = HRAttendance::where(function (Builder $query) use ($start, $end) {
+  $query->whereDate('attend_date', '>=', $start)
+    ->whereDate('attend_date', '<=', $end);
 })
   ->where('staff_id', $leave->staff_id)
   ->where(function (Builder $query) {

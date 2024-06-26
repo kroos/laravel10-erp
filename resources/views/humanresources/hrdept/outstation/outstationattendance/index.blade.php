@@ -31,11 +31,11 @@ use Illuminate\Support\Str;
 						<th>Location</th>
 						<th>Date</th>
 						<th>In</th>
-						<th>Detected Region In</th>
-						<th>Detected City In</th>
+						{{-- <th>Detected Region In</th>
+						<th>Detected City In</th> --}}
 						<th>Out</th>
-						<th>Detected Region Out</th>
-						<th>Detected City Out</th>
+						{{-- <th>Detected Region Out</th>
+						<th>Detected City Out</th> --}}
 						<th>Confirm Attendance</th>
 						<th>Date Confirm Attendance</th>
 						<th>Remarks</th>
@@ -55,11 +55,11 @@ use Illuminate\Support\Str;
 						</td>
 						<td>{{ ($v->date_attend)?Carbon::parse($v->date_attend)->format('j M Y'):NULL }}</td>
 						<td>{{ ($v->in)?Carbon::parse($v->in)->format('g:i a'):NULL }}</td>
-						<td>{{ $v->in_regionName }}</td>
-						<td>{{ $v->in_cityName }}</td>
+						{{-- <td>{{ $v->in_regionName }}</td>
+						<td>{{ $v->in_cityName }}</td> --}}
 						<td>{{ ($v->out)?Carbon::parse($v->out)->format('g:i a'):NULL }}</td>
-						<td>{{ $v->out_regionName }}</td>
-						<td>{{ $v->out_cityName }}</td>
+						{{-- <td>{{ $v->out_regionName }}</td>
+						<td>{{ $v->out_cityName }}</td> --}}
 						<td>{{ ($v->confirm)?'Sended':'Not Sended' }}</td>
 						<td>{{ ($v->date_confirm)?Carbon::parse($v->date_confirm)->format('j M Y'):null }}</td>
 						<td {!! ($v->remarks)?'data-bs-toggle="tooltip" data-bs-custom-class="custom-tooltip" data-bs-html="true" data-bs-title="'.$v->remarks.'"':NULL !!}>
@@ -100,8 +100,8 @@ $.fn.dataTable.moment( 'D MMM YYYY h:mm a' );
 $('#outstation').DataTable({
 	"lengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "All"] ],
 	"columnDefs": [
-					{ type: 'date', 'targets': [3] },
-					{ type: 'time', 'targets': [4, 5] }
+					{ type: 'date', 'targets': [4] },
+					// { type: 'time', 'targets': [4, 5] }
 				],
 	"order": [[4, "desc" ]],	// sorting the 5th column descending
 	responsive: true
@@ -163,7 +163,5 @@ function SwalDelete(outId){
 		}
 	});
 }
-
-
 
 @endsection

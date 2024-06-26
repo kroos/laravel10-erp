@@ -590,7 +590,7 @@ foreach ($c as $v) {
         @endif
         <!-- production manager -->
         @if($deptid == 28 || $deptid == 21)
-        @if($stadept == 2 || $stadept == 3 || $stadept == 4 || $stadept == 8 || $stadept == 18 || $stadept == 19 || $stadept == 20 || $stadept == 25 || $stadept == 27 || $stadept == 30 || $staff->div_id == 4 || $stadept == 21 || $stadept == 28)
+        @if($stadept == 2 || $stadept == 3 || $stadept == 4 || $stadept == 8 || $stadept == 18 || $stadept == 19 || $stadept == 20 || $stadept == 25 || $stadept == 32 || $stadept == 27 || $stadept == 30 || $staff->div_id == 4 || $stadept == 21 || $stadept == 28)
         <tr class="{{ $u }}">
           <td>
             <a href="{{ route('leave.show', $a->leave_id) }}">HR9-{{ str_pad( $leav->leave_no, 5, "0", STR_PAD_LEFT ) }}/{{ $leav->leave_year }}</a>

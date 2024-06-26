@@ -49,6 +49,7 @@ use App\Models\HumanResources\HROutstation;
 							$query->whereDate('attend_date', '>=', $request->from)
 							->whereDate('attend_date', '<=', $request->to);
 						})
+						->orderBy('attend_date', 'ASC')
 						->get();
 				?>
 			<div class="d-print-table">

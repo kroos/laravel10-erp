@@ -1,15 +1,9 @@
-@extends('layouts.app')
-@section('content')
 <?php
-// load model
 use App\Models\HumanResources\HROutstation;
-use App\Models\HumanResources\HROutstationAttendance;
-
 // load db facade
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Facades\DB;
 
-use \Carbon\Carbon;
+use Carbon\Carbon;
 
 $r = HROutstation::where('staff_id', \Auth::user()->belongstostaff->id)
 		->where(function (Builder $query) {
@@ -29,45 +23,40 @@ if ($r->count()) {
 	$t = false;
 }
 
-$m = HROutstationAttendance::whereDate('date_attend', now())
-		->where('staff_id', \Auth::user()->belongstostaff->id)
-		->whereNotNull('outstation_id')
-		// ->whereNull('out')
-		// ->ddrawsql();
-		->get();
-// dump($m->count());
+
 ?>
+
+@extends('layouts.app')
+@section('content')
 <div class="container row align-items-start justify-content-center">
-	@if($t)
-		@if($m->whereNull('out')->count())
-			<h4 class="text-center">Please choose your location from the list and hit the "Mark Attendance" button.</h4>
-		@else
-			<h4 class="text-center">You have mark all your attendance for today.</h4>
-		@endif
-		<div class="col-sm-6 row m-2 " >
-			<dl class="row">
-				<dt class="col-sm-3">Country Name:</dt>
-				<dd class="col-sm-9">{{ $data->countryName }}</dd>
+	@if ($t)
+		<h4>Outstation Attendance</h4>
 
-				<dt class="col-sm-3">Country Code:</dt>
-				<dd class="col-sm-9">{{ $data->countryCode }}</dd>
+		<div id="map_canvas" class="my-2 vw-50 vh-100">
+		</div>
 
-				<dt class="col-sm-3">Region Code:</dt>
-				<dd class="col-sm-9">{{ $data->regionCode }}</dd>
+		{{ Form::open(['route' => ['outstationattendance.store'], 'id' => 'form', 'autocomplete' => 'off', 'files' => true,  'data-toggle' => 'validator']) }}
+			<div class="col-sm-12">
+				<dl class="row">
+					<dt class="col-sm-3">Latitude :</dt>
+					<dd class="col-sm-9">
+						<input name="latitude" type="text" value="" class="col-sm-auto form-control form-control-sm @error('latitude') is-invalid @enderror" id="lat" aria-describedby="in2" readonly>
+						@error('latitude') <div id="in4" class="invalid-feedback">{{ $message }}</div> @enderror
+					</dd>
+					<dt class="col-sm-3">Longitude :</dt>
+					<dd class="col-sm-9">
+						<input name="longitude" type="text" value="" class="col-sm-auto form-control form-control-sm @error('longitude') is-invalid @enderror" id="lon" aria-describedby="in3" readonly>
+						@error('longitude') <div id="in3" class="invalid-feedback">{{ $message }}</div> @enderror
+					</dd>
+					<dt class="col-sm-3">Accuracy :</dt>
+					<dd class="col-sm-9">
+						<input name="accuracy" type="text" value="" class="col-sm-auto form-control form-control-sm @error('accuracy') is-invalid @enderror" id="acc" aria-describedby="in4" readonly>
+						@error('accuracy') <div id="in4" class="invalid-feedback">{{ $message }}</div> @enderror
+					</dd>
+				</dl>
+			</div>
 
-				<dt class="col-sm-3">Region Name:</dt>
-				<dd class="col-sm-9">{{ $data->regionName }}</dd>
-
-				<dt class="col-sm-3">City Name:</dt>
-				<dd class="col-sm-9">{{ $data->cityName }}</dd>
-				<dt class="col-sm-3">Zipcode:</dt>
-				<dd class="col-sm-9">{{ $data->zipCode }}</dd>
-				<dt class="col-sm-3">Latitude:</dt>
-				<dd class="col-sm-9">{{ $data->latitude }}</dd>
-				<dt class="col-sm-3">Longitude:</dt>
-				<dd class="col-sm-9">{{ $data->longitude }}</dd>
-			</dl>
-			<div class="col-sm-12 table-responsive">
+			<div class="col-sm-12 my-2 table-responsive">
 				<table id="att" class="table table-sm table-hover" style="font-size:12px;">
 					<caption>Attendance for today</caption>
 					<thead>
@@ -76,11 +65,11 @@ $m = HROutstationAttendance::whereDate('date_attend', now())
 							<th>Location</th>
 							<th>Date</th>
 							<th>In</th>
-							<th>Detected Region In</th>
-							<th>Detected City In</th>
+							<th>Detected Latitude In</th>
+							<th>Detected Longitude In</th>
 							<th>Out</th>
-							<th>Detected Region Out</th>
-							<th>Detected City Out</th>
+							<th>Detected Latitude Out</th>
+							<th>Detected Longitude Out</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -90,11 +79,11 @@ $m = HROutstationAttendance::whereDate('date_attend', now())
 								<td>{{ $v->belongstooutstation?->belongstocustomer?->customer }}</td>
 								<td>{{ Carbon::parse($v->date_attend)->format('j M Y') }}</td>
 								<td>{{ ($v->in)?Carbon::parse($v->in)->format('g:i a'):NULL }}</td>
-								<td>{{ $v->in_regionName }}</td>
-								<td>{{ $v->in_cityName }}</td>
+								<td>{{ $v->in_latitude }}</td>
+								<td>{{ $v->in_longitude }}</td>
 								<td>{{ ($v->out)?Carbon::parse($v->out)->format('g:i a'):NULL }}</td>
-								<td>{{ $v->out_regionName }}</td>
-								<td>{{ $v->out_cityName }}</td>
+								<td>{{ $v->out_latitude }}</td>
+								<td>{{ $v->out_longitude }}</td>
 							</tr>
 						@endforeach
 					</tbody>
@@ -102,44 +91,63 @@ $m = HROutstationAttendance::whereDate('date_attend', now())
 			</div>
 
 			<p>Click button below to mark your attendance</p>
-			{{ Form::open(['route' => ['outstationattendance.store'], 'id' => 'form', 'autocomplete' => 'off', 'files' => true,  'data-toggle' => 'validator']) }}
-				<div class="form-group row m-2 {{ $errors->has('outstation_id') ? 'has-error' : '' }}">
-					{{ Form::label( 'outstation', 'Location : ', ['class' => 'col-sm-4 col-form-label'] ) }}
-					<div class="col-sm-8">
-						{{ Form::select('outstation_id', $loc, null, ['class' => 'form-select form-select-sm', 'id' => 'outstation', 'placeholder' => 'Please choose']) }}
-					</div>
+			<div class="row my-2 @error('outstation_id') has-error @enderror">
+				<label for="outstation" class="col-sm-4 form-label @error('outstation_id') is-invalid @enderror">Location :</label>
+				<div class="col-sm-8">
+					<select name="outstation_id" id="outstation" class="form-select form-select-sm col-sm-auto @error('outstation_id') is-invalid @enderror" aria-describedby="in1">
+						<option value="">Please choose</option>
+						@foreach ($locations as $location)
+							<option value="{{ $location->id }}">{{ $location->belongstocustomer?->customer }}</option>
+						@endforeach
+					</select>
+					@error('outstation_id') <div id="in1" class="invalid-feedback">{{ $message }}</div> @enderror
 				</div>
-				<div class="offset-sm-4 col-sm-8">
-					{{ Form::submit('Mark Attendance', ['class' => 'btn btn-sm btn-primary']) }}
-				</div>
-			{{ Form::close() }}
-		</div>
+			</div>
+			<div class="row offset-sm-4 col-sm-8">
+				<button type="submit" id="in" class="mx-2 col-sm-auto btn btn-sm btn-outline-secondary">Mark Attendance</button>
+			</div>
+		</form>
+
+
 	@else
 		<h2 class="p-4 m-3 border border-bottom text-center alert alert-danger">Please note, this page can be only use for the outstation personnel. If you are eligible to use this page and mark your attendance, please ask your superior (HR or CS Officer) to assists you by adding your ID into the outstation list.</h2>
 	@endif
-
 </div>
+<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
 @endsection
 
 @section('js')
-/////////////////////////////////////////////////////////////////////////////////////////
-$.getJSON("https://ipgeolocation.abstractapi.com/v1/?api_key={{ env('API_GEOLOCATION_KEY') }}", function(data) {
-	console.log(data);
-})
+	@if ($t)
+		navigator.geolocation.getCurrentPosition(function(location) {
+			console.log(location.coords.latitude);
+			console.log(location.coords.longitude);
+			console.log(location.coords.accuracy);
+			$('#lat').val(location.coords.latitude);
+			$('#lon').val(location.coords.longitude);
+			$('#acc').val(location.coords.accuracy);
+			var lat = location.coords.latitude;
+			var lon = location.coords.longitude;
 
+			// initializing google map
+			let map;
+			async function initMap() {
+				const position = { lat: lat, lng: lon };
+				const { Map } = await google.maps.importLibrary("maps");
+				const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
 
+				map = new Map(document.getElementById("map_canvas"), {
+					zoom: 15,
+					center: position,
+					mapId: "DEMO_MAP_ID",
+				});
 
-let api_key = "{{ env('API_GEOLOCATION_KEY') }}";
-$.getJSON("https://ipgeolocation.abstractapi.com/v1/?api_key=" + api_key, function(data) {
-	var loc_info = "Your location details :\n";
-	loc_info += "Latitude: "+data.latitude +"\n";
-	loc_info += "Longitude: "+data.longitude+"\n";
-	loc_info += "Timezone: GMT"+data.gmt_offset+"\n";
-	loc_info += "Country: "+data.country+"\n";
-	loc_info += "Region: "+data.region+"\n";
-	loc_info += "City: "+data.city+"\n";
-	console.log(loc_info);
-})
-/////////////////////////////////////////////////////////////////////////////////////////
+				const marker = new AdvancedMarkerElement({
+					map: map,
+					position: position,
+					title: "My Location",
+				});
+			}
+			initMap();
+		});
+	@endif
 @endsection
-
